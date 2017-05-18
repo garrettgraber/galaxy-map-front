@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Pane, FeatureGroup, Circle } from 'react-leaflet';
 import L from 'leaflet';
+import width from 'text-width';
+
 // import ReactFauxDOM from 'react-faux-dom';
 
 
@@ -26,7 +28,8 @@ class StarMap extends React.Component {
 
     componentDidMount() {
 
-    	console.log("StarMap has mounted: ", this.props);
+    	// console.log("StarMap has mounted: ", this.props);
+    	// console.log("StarMap this.refs: ", this.refs);
 
     	const that = this;
 
@@ -35,7 +38,17 @@ class StarMap extends React.Component {
 		    	return response.json();
 			}).then(function(data) {
 
-	    		console.log("Star Data: ", data);
+	    		// console.log("Star Data: ", data);
+
+	    		for(let i=0; i < data.length; i++) {
+
+					const textWidth = width(data[i].system, {
+			            size: "1em"
+			        });
+
+			        data[i].textWidth = textWidth + 0.5;
+
+	    		}
 
 	    		that.setState({starData: data}); 
 
@@ -48,7 +61,7 @@ class StarMap extends React.Component {
 
     componentWillReceiveProps(newProps) {
 
-    	console.log("Props update StarMap: ", newProps);
+    	// console.log("Props update StarMap: ", newProps);
 
     }
 
@@ -63,7 +76,7 @@ class StarMap extends React.Component {
 
 				<FeatureGroup>
 
-					{ this.state.starDataLoaded === true && createStarMap(this.state.starData, this.props.zoom) }
+					{ this.state.starDataLoaded === true && createStarMap(this.state.starData, this.props.zoom, this.props.map) }
 
 				</FeatureGroup>
 	    		
@@ -78,13 +91,52 @@ class StarMap extends React.Component {
 
 
 
-function createStarMap(starData, currentZoom) {
+function createStarMap(starData, currentZoom, map) {
 
     const starSystemTempArray = [];
 
     for(let i=0; i < starData.length; i++) {
 
-        starSystemTempArray.push( <StarSystem key={starData[i].system} StarObject={starData[i]} zoom={currentZoom} /> );
+    	const currentStarData = starData[i];
+
+    	if(!currentStarData.hasOwnProperty('latLng')) {
+
+			const starLngLat = currentStarData.LngLat;
+
+	    	const currentLatLng = L.latLng(starLngLat[1], starLngLat[0]);
+
+	    	starData[i].latLng = currentLatLng;
+
+    	}
+
+    	if(currentStarData.zoom === 0) {
+
+	        starSystemTempArray.push( <StarSystem key={starData[i].system} StarObject={starData[i]} zoom={currentZoom} map={map} labels={true} /> );
+
+    	}
+
+    	if(currentStarData.zoom === 1 && currentZoom >= 4) {
+
+
+	        starSystemTempArray.push( <StarSystem key={starData[i].system} StarObject={starData[i]} zoom={currentZoom} map={map} labels={true}  /> );
+
+
+    	}
+
+    	if(currentStarData.zoom === 2 && currentZoom >= 5) {
+
+	        starSystemTempArray.push( <StarSystem key={starData[i].system} StarObject={starData[i]} zoom={currentZoom} map={map} labels={true} /> );
+
+
+    	}
+
+    	if(currentStarData.zoom === 3 && currentZoom >= 6) {
+
+	        starSystemTempArray.push( <StarSystem key={starData[i].system} StarObject={starData[i]} zoom={currentZoom} map={map} labels={true}  /> );
+
+    	}
+
+
 
     }
 
@@ -93,27 +145,44 @@ function createStarMap(starData, currentZoom) {
 };
 
 
-// function placeStarOnMap(StarObject) {
 
-//     const StarLatLng = StarObject.LngLat;
+function galaticXYtoMapPoints(xGalactic, yGalactic) {
 
-//     return L.circle([StarLatLng[1], StarLatLng[0]], {
-//         radius: 200,
-//         color: 'red',
-//         fillColor: '#f03',
-//         fillOpacity: 0.5
-//     })
-//     .bindPopup(StarObject.system + "<br/>" + "<span>x: " +  StarObject.xGalactic + "</span><br/><span>y: " + StarObject.yGalactic + "</span><br /><span>Grid: " + StarObject.coordinates +  "</span>")
-//     .on('mouseover', function (e) {
-//         this.openPopup();
-//     })
-//     .on('mouseout', function (e) {
-//         this.closePopup();
-//     });;
+    const galacticOffset = 19500;
+    const galacticDivisor = 39.0;
+    let yPoint;
 
-// };
+    if(yGalactic > 0 && xGalactic > 0) {
+
+        yPoint = -(yGalactic - galacticOffset) / galacticDivisor;
+
+    } else if (yGalactic < 0) {
+
+        yPoint = ((-yGalactic) + galacticOffset) /  galacticDivisor;
+
+    } else if(yGalactic > 0 && xGalactic < 0) {
+
+        yPoint = (galacticOffset - yGalactic) / galacticDivisor;
+
+    }
 
 
+    if(yGalactic === 0) {
+
+        yPoint = 0;
+
+    }
+
+
+    const xPoint = (xGalactic + galacticOffset) / galacticDivisor;
+
+    return {
+        xPoint: xPoint,
+        yPoint: yPoint
+    };
+
+
+}
 
 
 export default StarMap;

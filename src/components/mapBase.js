@@ -42,7 +42,7 @@ console.log("tileServerUrl: ", tileServerUrl);
 
 // console.log("tiles found in mapBase: ", req);
 
-console.log("L: ", L);
+// console.log("L: ", L);
 
 
 const Coruscant = {
@@ -213,7 +213,7 @@ class MapBase extends React.Component {
 
             window.map = map;
 
-            console.log("map.getBounds: ", map.getBounds());
+            // console.log("map.getBounds: ", map.getBounds());
 
             map.setMaxBounds(map.getBounds());
 
@@ -268,7 +268,7 @@ class MapBase extends React.Component {
                 },
                 onEachFeature: function (feature, layer) {
 
-                    console.log("region: ", feature);
+                    // console.log("region: ", feature);
 
                     // if(feature.properties.region) {
 
@@ -366,7 +366,7 @@ class MapBase extends React.Component {
             gridLayer.addTo(map);
 
             const mapBoundaries = map.getBounds();
-            console.log("Map Boundaries: ", mapBoundaries);
+            // console.log("Map Boundaries: ", mapBoundaries);
 
             const maxZoom = map.getMaxZoom();
 
@@ -511,7 +511,7 @@ class MapBase extends React.Component {
 
             const GalacticCoordinatesTemp = revertCoordinates(CurrentSystem);
 
-            console.log("GalacticCoordinatesTemp: ", GalacticCoordinatesTemp);
+            // console.log("GalacticCoordinatesTemp: ", GalacticCoordinatesTemp);
 
             return galacticToMapCoordinate(GalacticCoordinatesTemp.x, GalacticCoordinatesTemp.y);
 
@@ -522,11 +522,11 @@ class MapBase extends React.Component {
 
             const pixelCoords = csvToPixel(xGalactic, yGalactic);
 
-            console.log("pixelCoords: ", pixelCoords);
+            // console.log("pixelCoords: ", pixelCoords);
 
             const LatLng = convertPixelToLatLng(pixelCoords.x, pixelCoords.y);
 
-            console.log("LatLng: ", LatLng);
+            // console.log("LatLng: ", LatLng);
 
             return LatLng;
 
@@ -557,10 +557,10 @@ class MapBase extends React.Component {
 }
 
 
-function requireAll(r) {
-	console.log("tile files: ", r.keys());
-	r.keys().forEach(r); 
-}
+// function requireAll(r) {
+// 	console.log("tile files: ", r.keys());
+// 	r.keys().forEach(r); 
+// }
 
 function requireAll2(requireContext) {
     return requireContext.keys().map(requireContext);

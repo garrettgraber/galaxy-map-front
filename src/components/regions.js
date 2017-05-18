@@ -23,7 +23,7 @@ class Regions extends React.Component {
 
     componentDidMount() {
 
-    	console.log("componentDidMount in regions");
+    	// console.log("componentDidMount in regions");
 
 
     }

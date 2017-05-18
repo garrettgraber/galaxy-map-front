@@ -14,7 +14,7 @@ import GridLabels from './gridLabels.js';
 
 import GridData from 'json-loader!../data/grid.geojson';
 
-console.log("GridData: ", GridData);
+// console.log("GridData: ", GridData);
 
 
 class Grid extends React.Component {
@@ -30,7 +30,7 @@ class Grid extends React.Component {
 
     	// console.log("grid ref: ", this.refs.grid.leafletElement);
 
-        console.log("componentDidMount in grid");
+        // console.log("componentDidMount in grid");
         // console.log("componentDidMount this.props: ", this.props);
 
     }
@@ -78,7 +78,7 @@ class Grid extends React.Component {
 
         if(this.state.gridLabelsArray.length >= 552) {
 
-            console.log("\n\nGrid Labels Ready. Release the Krakken! ");
+            // console.log("\n\nGrid Labels Ready. Release the Krakken! ");
 
             this.setState({gridLabelsReady: true});
         }
@@ -95,7 +95,7 @@ class Grid extends React.Component {
 
     	const gridStyle = {color: '#49fb35', weight: 0.5, fill: false};
 
-        console.log("\nRender has fired in Grid!");
+        // console.log("\nRender has fired in Grid!");
 
 
     	return (

@@ -22,7 +22,7 @@ class GridLabels extends React.Component {
 
     	// console.log("grid ref: ", this.refs.grid.leafletElement);
 
-        console.log("componentDidMount in GridLables");
+        // console.log("componentDidMount in GridLables");
 
     }
 
@@ -44,7 +44,7 @@ class GridLabels extends React.Component {
 
 function renderGridLabels(labelArrayTemp) {
 
-    console.log("renderGridLabels has fired!");
+    // console.log("renderGridLabels has fired!");
 
     const gridLabelsArrayTemp = [];
 

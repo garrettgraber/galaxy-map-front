@@ -55,6 +55,8 @@
     "redux-thunk": "^2.1.0",
     "reselect": "^2.5.1",
     "sass-loader": "^6.0.5",
+    "text-width": "^1.2.0",
+    "urlencode": "^1.1.0",
     "whatwg-fetch": "^2.0.3"
   }
 }

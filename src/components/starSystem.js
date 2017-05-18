@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { CircleMarker, Popup, Circle, Tooltip } from 'react-leaflet';
+import { CircleMarker, Popup, Circle, Tooltip, Marker } from 'react-leaflet';
 import L from 'leaflet';
+import width from 'text-width';
+
 // import ReactFauxDOM from 'react-faux-dom';
 
 
@@ -26,22 +28,16 @@ class StarSystem extends React.Component {
 
         // console.log("StarSystem has mounted: ", this);
 
-        if(this.refs.star) {
+        if(this.refs.star && this.refs.starText) {
 
             const star = this.refs.star.leafletElement;
 
-            star.bindPopup(this.props.StarObject.system + "<br/>" + "<span>x: " +  this.props.StarObject.xGalactic + "</span><br/><span>y: " + this.props.StarObject.yGalactic + "</span><br /><span>Grid: " + this.props.StarObject.coordinates +  "</span>");
-            
+            const StarObject = this.props.StarObject;
+            const starPoints = this.props.map.latLngToLayerPoint(StarObject.latLng);
+
+            star.bindPopup(StarObject.system + "<br/>" + "<span>x: " + StarObject.xGalactic + "</span><br/><span>y: " + StarObject.yGalactic + "</span><br /><span>Grid: " + StarObject.coordinates +  "</span><br/><span>lat:" + StarObject.latLng.lat + "</span><br/><span>lng: " + StarObject.latLng.lng + "</span></br><span>xp:" + starPoints.x + "</span><br/><span>yp:" + starPoints.y + "</span>");
+
         }
-
-
-        // star.bindPopup(<StarSystemPopup StarObject={this.props.StarObject}/>);
-        // .on('mouseover', function (e) {
-        //     star.openPopup();
-        // })
-        // .on('mouseout', function (e) {
-        //     star.closePopup();
-        // });
 
 
     }
@@ -54,44 +50,28 @@ class StarSystem extends React.Component {
 
     onMouseOver(e) {
 
-        // console.log("mouseOver has fired: ", this);
-        // this.setState({open: true});
-        // console.log("e: ", e);
-
-        if(this.refs.star) {
+        if(this.refs.star && this.refs.starText) {
 
             const star = this.refs.star.leafletElement;
             star.openPopup();
 
         }
 
-
-        // this.openPopup();
-
     }
 
     onMouseOut(e) {
 
-
-        if(this.refs.star) {
+        if(this.refs.star && this.refs.starText) {
 
             const star = this.refs.star.leafletElement;
             star.closePopup();
 
-
         }
- 
-        // console.log("mouseOut has fired: ", this);
-        // this.setState({open: false});
-        // console.log("e: ", e);
 
-        // this.closePopup();
     }
 
     render() {
 
-        let circleMarker = null;
-        // let marker = null;
 
         const StarStyle = {
             color: 'red',
@@ -103,30 +83,33 @@ class StarSystem extends React.Component {
         const fillColor = '#f03';
         const fileOpacity = 0.5;
 
+        const TooltipStyle = {
+            backgroundColor: 'black',
+            color: 'white'
+        };
 
-        if(this.props.StarObject.zoom + 2 <= this.props.zoom) {
 
-            circleMarker = (<CircleMarker center={[this.props.StarObject.LngLat[1], this.props.StarObject.LngLat[0]]} radius={1} color={starColor} fillColor={fillColor} fileOpacity={fileOpacity} onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)} ref='star' />)
+        const textWidth = this.props.StarObject.textWidth;
 
-        }
-
+        let myIcon = L.divIcon({
+            className: "systemLabel",
+            iconSize: new L.Point(this.props.StarObject.textWidth, 20),
+            iconAnchor: new L.Point(textWidth / 2.0, 18),
+            html: this.props.StarObject.system
+        });
 
     	return (
-         
-    		circleMarker
-            
+
+            <div>
+                <CircleMarker center={this.props.StarObject.latLng} radius={1} color={starColor} fillColor={fillColor} fileOpacity={fileOpacity} onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)} ref='star' />
+                <Marker key={this.props.StarObject.system} position={this.props.StarObject.latLng} icon={myIcon} zIndexOffset={-5} onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)} ref='starText'/>
+            </div>
+                                            
     	)
 
     }
 
 }
-
-
-// { this.props.StarObject.zoom <= this.props.zoom ? : null }
-
-// <Tooltip direction={'top'} permanent={true} opacity={0.0}></Tooltip> 
-
-// { this.props.StarObject.zoom > 1 ? <Tooltip>{this.props.StarObject.system}</Tooltip> : null }
 
 
 export default StarSystem;

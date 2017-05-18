@@ -5,7 +5,6 @@ import L from 'leaflet';
 import 'whatwg-fetch';
 const { BaseLayer, Overlay } = LayersControl;
 
-
 import Grid from './grid.js';
 import Regions from './regions.js';
 import Sectors from './sectors.js';
@@ -13,7 +12,7 @@ import HyperspaceLanes from './hyperspaceLanes.js';
 import StarMap from './starMap.js';
 
 
-console.log("Grid: ", Grid);
+// console.log("Grid: ", Grid);
 
 // import GridData from 'json-loader!../data/grid.geojson';
 
@@ -38,37 +37,60 @@ class MapMain extends React.Component {
         this.state = {
         	lat: 0,
         	lng: 0,
-        	zoom: 2
+        	zoom: 2,
+        	map: null
         }
     }
 
     componentDidMount() {
 
-    	console.log("Map componet has mounted");
+    	// console.log("Map componet has mounted");
 
-    	console.log("map ref in componet: ", this.refs.map);
+    	// console.log("map ref in componet: ", this.refs.map);
 
     	const mapBounds = this.refs.map.leafletElement.getBounds();
     	const currentZoom = this.refs.map.leafletElement.getZoom();
 
 
-    	console.log("map bounds in componet: ", mapBounds);
-    	console.log("currentZoom: ", currentZoom);
-    	console.log("zoom state: ", this.state.zoom);
-
+    	// console.log("map bounds in componet: ", mapBounds);
+    	// console.log("currentZoom: ", currentZoom);
+    	// console.log("zoom state: ", this.state.zoom);
 
     	this.refs.map.leafletElement.setMaxBounds(mapBounds);
 
+    	const map = this.refs.map.leafletElement;
 
+    	// this.props.map = map;
+
+    	console.log("map: ", map);
+
+    	if(this.refs.map) {
+
+    		this.setState({map: this.refs.map.leafletElement});
+
+
+    	}
+
+    }
+
+    componentWillReceiveProps(newProps) {
+
+    	// console.log("Props update MapMain: ", newProps);
 
     }
 
     onZoomend(e) {
 
-    	console.log("zoom has ended");
+    	// console.log("zoom has ended");
    		const currentZoom = this.refs.map.leafletElement.getZoom();
-    	console.log("currentZoom: ", currentZoom);
     	this.setState({zoom: currentZoom});
+    	console.log("Map zoom end!");
+
+    }
+
+    onZoomstart(e) {
+
+    	console.log("Map zoom starting...");
 
     }
 
@@ -84,11 +106,12 @@ class MapMain extends React.Component {
     	const zIndexGalaxy = 210;
     	const zIndexGrid = 220;
 
-    	console.log("map bounds: ", this.refs.map);
+    	// console.log("map bounds: ", this.refs.map);
 
 
     	return (
-    		<Map center={position} zoom={this.state.zoom} ref='map' onZoomend={e => this.onZoomend(e)}>
+
+    		<Map center={position} zoom={this.state.zoom} ref='map' onZoomend={e => this.onZoomend(e)} onZoomstart={e => this.onZoomstart(e)} style={{top: "50px", zIndex: 5}} >
 
     			<LayersControl>
 
@@ -96,7 +119,7 @@ class MapMain extends React.Component {
 
     					<Pane name="galaxy-pane" style={{ zIndex: zIndexGalaxy }}>
 
-							<TileLayer url={tileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
+							<TileLayer url={awsTileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
 
 						</Pane>
 
@@ -130,7 +153,7 @@ class MapMain extends React.Component {
 
 					<Overlay name="Stars Systems" checked={false}  ref="layerContainer" >
 
-						<StarMap zoom={this.state.zoom} />
+						<StarMap zoom={this.state.zoom} map={this.state.map}/>
 
 					</Overlay>
 

@@ -31,14 +31,12 @@ class StarSystemPopup extends React.Component {
 
     	return (
 
-    		<Popup>
-	    		<div className="star-system-popup">
-					<span style={{fontWeight: 'bold'}}>{this.props.StarObject.system}</span><br/>
-					<span>x:&nbsp;&nbsp;{this.props.StarObject.xGalactic}</span><br/>
-					<span>y:&nbsp;&nbsp;{this.props.StarObject.yGalactic}</span><br/>
-					<span>Grid:&nbsp;&nbsp;{this.props.StarObject.coordinates}</span>
-	    		</div>
-            </Popup>
+    		<div className="star-system-popup">
+				<span style={{fontWeight: 'bold'}}>{this.props.system}</span><br/>
+				<span>x:&nbsp;&nbsp;{this.props.xGalactic}</span><br/>
+				<span>y:&nbsp;&nbsp;{this.props.yGalactic}</span><br/>
+				<span>Grid:&nbsp;&nbsp;{this.props.coordinates}</span>
+    		</div>
 
 
     	)

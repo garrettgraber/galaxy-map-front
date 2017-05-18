@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 
 import MapBase from './mapBase.js';
 import MapMain from './mapMain.js';
+import NavBar from './navBar.js';
 
-console.log("MapBase:", MapBase);
 
-console.log("MapMain: ", MapMain);
+// console.log("MapBase:", MapBase);
+
+// console.log("MapMain: ", MapMain);
 
 // require("css-loader!../css/main.css")
 
@@ -19,14 +21,17 @@ class App extends React.Component {
 
 	componentDidMount() {
 
-		console.log("App has Mounted");
+		// console.log("App has Mounted");
 	}
 
 
 	render() {
 
 		return (
-			<MapMain />
+			<div>
+				<NavBar />
+				<MapMain />
+			</div>
         );
     }
 }

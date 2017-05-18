@@ -6,25 +6,25 @@ import { Provider, connect } from 'react-redux';
 
 import App from './components/app.js';
 
+import store from './stores/store.js';
+
 
 // console.log("Provider: ", Provider);
 console.log("App: ", App);
 
 
 
-function counter(state = 0, action) {
-  switch (action.type) {
-  case 'INCREMENT':
-    return state + 1
-  case 'DECREMENT':
-    return state - 1
-  default:
-    return state
-  }
-}
+// function counter(state = 0, action) {
+//   switch (action.type) {
+//   case 'INCREMENT':
+//     return state + 1
+//   case 'DECREMENT':
+//     return state - 1
+//   default:
+//     return state
+//   }
+// }
 
-
-var store = createStore(counter);
 
 
 store.subscribe(() => {
