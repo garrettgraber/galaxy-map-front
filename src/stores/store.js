@@ -1,5 +1,5 @@
 import { createStore, combineReducers } from 'redux';
-import { counter } from '../reducers/reducers.js';
+import { counter, currentSystem } from '../reducers/reducers.js';
 
 
 let storeTest = createStore(counter);
@@ -23,9 +23,20 @@ storeTest.dispatch({ type: 'DECREMENT' })
 console.log( (storeTest.getState() === 1)? "redux on" : "redux off" );
 
 
-// const rootReducer = combineReducers({ systems});
 
-// export const store = createStore(rootReducer);
 
-export default storeTest;
+// export default storeTest;
+
+
+const rootReducer = combineReducers({currentSystem});
+
+console.log("rootReducer: ", rootReducer);
+
+const store = createStore(rootReducer);
+
+console.log("store: ", store);
+
+export default store;
+
+
 

@@ -20,25 +20,50 @@ class SearchData extends React.Component {
     };
   }
 
+  componentDidMount() {
+
+    console.log("SearchData has Mounted: ", this.props);
+
+  } 
+
 
   searchData() {
 
     console.log("searchData has been clicked: ", this.state.inputValue);
 
-    findSystem(this.state.inputValue, (error, data) => {
-
-      console.log("data found: ", data);
-
-      if(data.length > 0) {
-
-          // this.props.dispatch({ type: 'SYSTEMS_ON'});
-          // this.props.dispatch({ type: 'DISPLAY_SYSTEMS', payload: data[0] });
-
-      }
+    if(this.state.inputValue.length > 0) {
 
 
-    });
+      findSystem(this.state.inputValue, (error, data) => {
 
+        console.log("data found: ", data);
+
+        const SystemObject = data[0];
+
+        if(data.length > 0 && SystemObject.hasLocation) {
+
+          console.log("this.props: ", this.props.dispatch);
+
+          const LngLat = SystemObject.LngLat
+
+          const SystemData = {
+            lat: LngLat[1],
+            lng: LngLat[0],
+            zoom: 6
+          };
+
+
+          this.props.dispatch({type: 'ZOOM_TO_SYSTEM', payload: SystemData});
+
+            // this.props.dispatch({ type: 'SYSTEMS_ON'});
+            // this.props.dispatch({ type: 'DISPLAY_SYSTEMS', payload: data[0] });
+
+        }
+
+
+      });
+
+    }
 
   }
 
@@ -46,14 +71,15 @@ class SearchData extends React.Component {
 
     return (
       <span>
-        <button id="search-system" type="button" className="btn btn-primary navbar-button" style={  {marginRight: 10} }  onClick={(e) => this.searchData(e)}>Planet Search&nbsp;&nbsp;</button>
-        <input id="search-system-input" type="text" value={this.state.inputValue}  onChange={this.change}/>
+        <input id="search-system-input" type="text" placeholder="Search For Systems" className="search-input" value={this.state.inputValue}  onChange={this.change}/>
+        <button id="search-button-icon" type="button" className="btn btn-primary glyphicon glyphicon-search navbar-button"  onClick={(e) => this.searchData(e)} ></button>
       </span>
     );
   }
 }
 
 
+// <button id="search-system" type="button" className="btn btn-primary navbar-button" style={  {marginRight: 10} }  onClick={(e) => this.searchData(e)}>Planet Search&nbsp;&nbsp;</button>
 
 
 function findSystem(systemName, cb) {
@@ -76,6 +102,6 @@ const mapStateToProps = (state = {}) => {
 };
 
 
-export default SearchData;
+// export default SearchData;
 
-// export default connect(mapStateToProps)(SearchData);
+export default connect(mapStateToProps)(SearchData);

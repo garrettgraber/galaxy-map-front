@@ -1,13 +1,27 @@
 
 
 .navbar-button {
-    margin: 3px;
+    height: 32px;
 }
 
 
 .nav-section {
     height: 50px;
 }
+
+
+.search-input {
+    height: 32px;
+    line-height: 26px;
+    border: solid 1px #dcdcdc;
+    /*transition: box-shadow 0.3s, border 0.3s;*/
+}
+
+/*.search-input.focus,
+.search-input:focus {
+    border: solid 1px #707070;
+    box-shadow: 0 0 5px 1px #969696;
+}*/
 
 
 #nav-container {

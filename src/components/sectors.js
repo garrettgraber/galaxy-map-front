@@ -32,7 +32,7 @@ class Sectors extends React.Component {
 
 		if(feature.properties.sector) {
 
-            layer.bindPopup(feature.properties.sector);
+            layer.bindPopup(feature.properties.sector + " Sector");
 
         }
 

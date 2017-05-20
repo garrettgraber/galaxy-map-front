@@ -24,7 +24,8 @@ import 'leaflet_marker_shadow';
 
 
 
-const tileServerUrl = 'http://172.17.0.3:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
+const tileServerUrl = 'http://172.17.0.4:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
+const blackTileUrl = 'http://172.17.0.4:8110/tiles-black/black-tile.png'
 const awsTileServerUrl = 'https://s3-us-west-2.amazonaws.com/tiledata.sw.map/tiles-leaflet-7/{z}/{x}/{y}.png';
 
 
@@ -44,7 +45,7 @@ class MapMain extends React.Component {
 
     componentDidMount() {
 
-    	// console.log("Map componet has mounted");
+    	console.log("Map componet has mounted: ", this.props);
 
     	// console.log("map ref in componet: ", this.refs.map);
 
@@ -84,7 +85,7 @@ class MapMain extends React.Component {
     	// console.log("zoom has ended");
    		const currentZoom = this.refs.map.leafletElement.getZoom();
     	this.setState({zoom: currentZoom});
-    	console.log("Map zoom end!");
+    	console.log("Map zoom end: ", currentZoom);
 
     }
 
@@ -104,6 +105,7 @@ class MapMain extends React.Component {
     	const height = 1000;
     	const width = 1000;
     	const zIndexGalaxy = 210;
+        const zIndexBlack = 205;
     	const zIndexGrid = 220;
 
     	// console.log("map bounds: ", this.refs.map);
@@ -111,7 +113,7 @@ class MapMain extends React.Component {
 
     	return (
 
-    		<Map center={position} zoom={this.state.zoom} ref='map' onZoomend={e => this.onZoomend(e)} onZoomstart={e => this.onZoomstart(e)} style={{top: "50px", zIndex: 5}} >
+    		<Map center={[this.props.currentSystem.lat, this.props.currentSystem.lng]} zoom={this.props.currentSystem.zoom} ref='map' onZoomend={e => this.onZoomend(e)} onZoomstart={e => this.onZoomstart(e)} style={{top: "50px", zIndex: 5}} >
 
     			<LayersControl>
 
@@ -119,11 +121,21 @@ class MapMain extends React.Component {
 
     					<Pane name="galaxy-pane" style={{ zIndex: zIndexGalaxy }}>
 
-							<TileLayer url={awsTileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
+							<TileLayer url={tileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
 
 						</Pane>
 
 					</BaseLayer>
+
+                    <BaseLayer name="Black" checked={false} >
+
+                        <Pane name="black-pane" style={{ zIndex: zIndexBlack }}>
+
+                            <TileLayer url={blackTileUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} />
+
+                        </Pane>
+
+                    </BaseLayer>
 
 		            <Overlay name="Grid" checked={false}>
 
@@ -185,4 +197,15 @@ function  getStarData() {
 
 }
 
-export default MapMain;
+
+
+
+const mapStateToProps = (state = {}) => {
+    return Object.assign({}, state);
+};
+
+
+// export default MapMain;
+
+export default connect(mapStateToProps)(MapMain);
+

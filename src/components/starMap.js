@@ -95,6 +95,8 @@ function createStarMap(starData, currentZoom, map) {
 
     const starSystemTempArray = [];
 
+    const zoomLevelBasedRendering = true;
+
     for(let i=0; i < starData.length; i++) {
 
     	const currentStarData = starData[i];
@@ -109,33 +111,41 @@ function createStarMap(starData, currentZoom, map) {
 
     	}
 
-    	if(currentStarData.zoom === 0) {
+        if(zoomLevelBasedRendering) {
 
-	        starSystemTempArray.push( <StarSystem key={starData[i].system} StarObject={starData[i]} zoom={currentZoom} map={map} labels={true} /> );
+        	if(currentStarData.zoom === 0) {
 
-    	}
+    	        starSystemTempArray.push( <StarSystem key={starData[i].system} StarObject={starData[i]} zoom={currentZoom} map={map} labels={true} /> );
 
-    	if(currentStarData.zoom === 1 && currentZoom >= 4) {
+        	}
 
-
-	        starSystemTempArray.push( <StarSystem key={starData[i].system} StarObject={starData[i]} zoom={currentZoom} map={map} labels={true}  /> );
-
-
-    	}
-
-    	if(currentStarData.zoom === 2 && currentZoom >= 5) {
-
-	        starSystemTempArray.push( <StarSystem key={starData[i].system} StarObject={starData[i]} zoom={currentZoom} map={map} labels={true} /> );
+        	if(currentStarData.zoom === 1 && currentZoom >= 4) {
 
 
-    	}
+    	        starSystemTempArray.push( <StarSystem key={starData[i].system} StarObject={starData[i]} zoom={currentZoom} map={map} labels={true}  /> );
 
-    	if(currentStarData.zoom === 3 && currentZoom >= 6) {
 
-	        starSystemTempArray.push( <StarSystem key={starData[i].system} StarObject={starData[i]} zoom={currentZoom} map={map} labels={true}  /> );
+        	}
 
-    	}
+        	if(currentStarData.zoom === 2 && currentZoom >= 5) {
 
+    	        starSystemTempArray.push( <StarSystem key={starData[i].system} StarObject={starData[i]} zoom={currentZoom} map={map} labels={true} /> );
+
+
+        	}
+
+        	if(currentStarData.zoom === 3 && currentZoom >= 6) {
+
+    	        starSystemTempArray.push( <StarSystem key={starData[i].system} StarObject={starData[i]} zoom={currentZoom} map={map} labels={true}  /> );
+
+        	}
+
+
+        } else {
+
+            starSystemTempArray.push( <StarSystem key={starData[i].system} StarObject={starData[i]} zoom={currentZoom} map={map} labels={true}  /> );
+
+        }
 
 
     }
@@ -185,4 +195,14 @@ function galaticXYtoMapPoints(xGalactic, yGalactic) {
 }
 
 
-export default StarMap;
+
+
+const mapStateToProps = (state = {}) => {
+    return Object.assign({}, state);
+};
+
+
+// export default StarMap;
+
+export default connect(mapStateToProps)(StarMap);
+

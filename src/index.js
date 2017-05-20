@@ -27,29 +27,29 @@ console.log("App: ", App);
 
 
 
-store.subscribe(() => {
-  console.log("Application state: ", store.getState());
-});
+// store.subscribe(() => {
+//   console.log("Application state: ", store.getState());
+// });
 
 console.log("store: ", store);
 
 // container component
-// var Wrapper = connect(
-// 	function mapStateToProps(state) {
-//     	return Object.assign({}, state);
-//     }
-// )(App);
+var Wrapper = connect(
+	function mapStateToProps(state) {
+    	return Object.assign({}, state);
+    }
+)(App);
 
-// ReactDOM.render(
-// 	<Provider store={store}>
-// 	    <Wrapper />
-// 	</Provider>,
-//     document.getElementById('main')
-// );
+ReactDOM.render(
+	<Provider store={store}>
+	    <Wrapper />
+	</Provider>,
+    document.getElementById('container')
+);
 
 
 // ReactDOM.render(<App />, document.getElementById('main'));
 
-ReactDOM.render(<App />, document.getElementById('container'));
+// ReactDOM.render(<App />, document.getElementById('container'));
 
 

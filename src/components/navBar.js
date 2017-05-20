@@ -7,6 +7,13 @@ import '../css/main.css';
 
 class NavBar extends React.Component {
 
+
+    componentDidMount() {
+
+        console.log("NavBar has mounted: ", this.props);
+        
+    }
+
 	render() {
 
     	return (
@@ -27,7 +34,7 @@ const mapStateToProps = (state = {}) => {
 };
 
 
-export default NavBar;
+// export default NavBar;
 
-// export default connect(mapStateToProps)(NavBar);
+export default connect(mapStateToProps)(NavBar);
 

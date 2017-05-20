@@ -21,7 +21,7 @@ class App extends React.Component {
 
 	componentDidMount() {
 
-		// console.log("App has Mounted");
+		console.log("App has Mounted: ", this.props);
 	}
 
 
@@ -38,11 +38,11 @@ class App extends React.Component {
 
 
 
-// const mapStateToProps = (state = {}) => {
-//     return Object.assign({}, state);
-// };
+const mapStateToProps = (state = {}) => {
+    return Object.assign({}, state);
+};
 
 
-// export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps)(App);
 
-export default App;
+// export default App;
