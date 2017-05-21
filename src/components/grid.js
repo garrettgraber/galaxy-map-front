@@ -101,7 +101,7 @@ class Grid extends React.Component {
     	return (
 
 
-            <LayerGroup className="layer-group-test">
+            <LayerGroup className="layer-group">
 
                 <Pane className="pane-test" name="grid-pane" style={{ zIndex: zIndex }  }>
 

@@ -145,7 +145,7 @@ class MapMain extends React.Component {
 
 			    	<Overlay name="Regions" checked={false}>
 
-			    		<Regions />
+			    		<Regions map={this.props.map} />
 
 			    	</Overlay>
 
