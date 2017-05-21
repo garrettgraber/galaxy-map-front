@@ -11,6 +11,8 @@ import 'leaflet_marker_2x';
 import 'leaflet_marker_shadow';
 
 
+import GridCell from './gridCell.js';
+
 
 class GridLabels extends React.Component {
     constructor(props) {
@@ -50,17 +52,24 @@ function renderGridLabels(labelArrayTemp) {
 
     for(let currentGridObject of labelArrayTemp) {
 
-        let myIcon = L.divIcon({
-            className: "gridClass",
-            iconSize: new L.Point(30, 20), 
-            html: currentGridObject.grid
-        });
+        // let myIcon = L.divIcon({
+        //     className: "gridClass",
+        //     iconSize: new L.Point(30, 20), 
+        //     html: currentGridObject.grid
+        // });
 
         // let labelMarker = L.marker([currentGridObject.point.lat, currentGridObject.point.lng], {icon: myIcon});
 
-        const gridLabelPosition = [currentGridObject.point.lat, currentGridObject.point.lng];
+        // const gridLabelPosition = [currentGridObject.point.lat, currentGridObject.point.lng];
 
-        gridLabelsArrayTemp.push( <Marker key={currentGridObject.grid} position={gridLabelPosition} icon={myIcon} /> ) ;
+        // gridLabelsArrayTemp.push( <Marker key={currentGridObject.grid} position={gridLabelPosition} icon={myIcon} /> ) ;
+
+        const gridName = currentGridObject.grid;
+        const lat = currentGridObject.point.lat;
+        const lng = currentGridObject.point.lng;
+
+        gridLabelsArrayTemp.push( <GridCell key={gridName} grid={gridName} lat={lat} lng={lng} /> ) ;
+
 
     }
 

@@ -30,12 +30,22 @@ class Regions extends React.Component {
 
     pointToLayer() {
 
-
+        console.log("pointToLayer has fired in regions...");
     	
     }
 
-    onEachFeature() {
+    onEachFeature(feature, layer) {
 
+        console.log("region: ", feature.properties.region);
+
+
+    }
+
+
+    regionClick(e) {
+
+
+        console.log("region click e: ", e);
 
     }
 
@@ -44,13 +54,13 @@ class Regions extends React.Component {
     render() {
 
     	const zIndex = 250;
-    	const regionsStyle = {color: 'purple', weight: 2, fill: false};
+    	const regionsStyle = {color: 'purple', weight: 2, fill: true};
 
     	return (
 
     		<Pane name="regions-pane" style={{ zIndex: zIndex }}>
 
-    			<GeoJSON data={RegionsData} style={regionsStyle} ref='regions' onEachFeature={(feature, layer) => this.onEachFeature(feature,layer)}  pointToLayer={(feature, latlng) => this.pointToLayer(feature,latlng)}/>
+    			<GeoJSON data={RegionsData} style={regionsStyle} ref='regions' onEachFeature={(feature, layer) => this.onEachFeature(feature,layer)}  pointToLayer={(feature, latlng) => this.pointToLayer(feature,latlng)}  onClick={(e) => this.regionClick(e)} />
 
     		</Pane>
 
