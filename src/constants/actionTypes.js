@@ -1,0 +1,9 @@
+
+
+
+export const ZOOM_TO_SYSTEM = "ZOOM_TO_SYSTEM";
+export const SEARCH_SYSTEMS_ON = "SEARCH_SYSTEMS_ON";
+export const SEARCH_SYSTEMS_OFF = "SEARCH_SYSTEMS_OFF";
+export const ZOOM_TO_SYSTEM_ERROR = 'ZOOM_TO_SYSTEM_ERROR';
+
+

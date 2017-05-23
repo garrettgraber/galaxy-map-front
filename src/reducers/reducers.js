@@ -1,4 +1,6 @@
 
+import { createStore, combineReducers } from 'redux';
+import * as Actions from '../constants/actionTypes.js';
 
 
 /**
@@ -14,15 +16,10 @@
  * project.
  */
 
-const StartPosition = {
-	lat: 0,
-	lng: 0,
-	zoom: 2
-};
 
 
 
-export function counter(state = 0, action) {
+function counter(state = 0, action) {
   switch (action.type) {
   case 'INCREMENT':
     return state + 1
@@ -34,14 +31,76 @@ export function counter(state = 0, action) {
 }
 
 
-export function currentSystem(state = StartPosition, action) {
+
+
+let storeTest = createStore(counter);
+
+// You can use subscribe() to update the UI in response to state changes.
+// Normally you'd use a view binding library (e.g. React Redux) rather than subscribe() directly.
+// However it can also be handy to persist the current state in the localStorage.
+
+storeTest.subscribe(() => {
+  console.log(storeTest.getState());
+})
+
+// The only way to mutate the internal state is to dispatch an action.
+// The actions can be serialized, logged or stored and later replayed.
+storeTest.dispatch({ type: 'INCREMENT' })
+// 1
+storeTest.dispatch({ type: 'INCREMENT' })
+// 2
+storeTest.dispatch({ type: 'DECREMENT' })
+// 1
+console.log( (storeTest.getState() === 1)? "redux on" : "redux off" );
+
+
+
+
+const StartPosition = {
+	lat: 0,
+	lng: 0,
+	zoom: 2
+};
+
+
+
+function currentSystem(state = StartPosition, action) {
 
 	switch (action.type) {
-		case 'ZOOM_TO_SYSTEM':
-			console.log("zoom to system state: ", action);
+		case Actions.ZOOM_TO_SYSTEM:
+			console.log("zoom to system state: ", action.payload);
 			return action.payload;
+		case Actions.ZOOM_TO_SYSTEM_ERROR:
+			console.log("zoom to system error: ", action.payload);
+			return state;
 		default:
 			return state;
 	}
 
 }
+
+
+function searchSystems(state = false, action) {
+
+	switch (action.type) {
+		case Actions.SEARCH_SYSTEMS_ON:
+			console.log("searching systems: ", true);
+			return true;
+		case Actions.SEARCH_SYSTEMS_OFF:
+			console.log("searching systems: ", false);
+			return false;
+		default:
+			return state;
+
+	}
+}
+
+
+
+// const rootReducer = combineReducers({currentSystem, searchSystems});
+
+export default combineReducers({currentSystem, searchSystems});
+
+
+
+

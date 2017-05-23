@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Map, TileLayer, LayersControl, Pane } from 'react-leaflet';
 import L from 'leaflet';
 import 'whatwg-fetch';
+import { searchSystemsFinish } from '../actions/actionCreators.js';
 const { BaseLayer, Overlay } = LayersControl;
 
 import Grid from './grid.js';
@@ -12,20 +13,14 @@ import HyperspaceLanes from './hyperspaceLanes.js';
 import StarMap from './starMap.js';
 
 
-// console.log("Grid: ", Grid);
-
-// import GridData from 'json-loader!../data/grid.geojson';
-
-
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
 import 'leaflet_marker_2x';
 import 'leaflet_marker_shadow';
 
 
-
-const tileServerUrl = 'http://172.17.0.3:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
-const blackTileUrl = 'http://172.17.0.3:8110/tiles-black/black-tile.png'
+const tileServerUrl = 'http://172.17.0.4:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
+const blackTileUrl = 'http://172.17.0.4:8110/tiles-black/black-tile.png'
 const awsTileServerUrl = 'https://s3-us-west-2.amazonaws.com/tiledata.sw.map/tiles-leaflet-7/{z}/{x}/{y}.png';
 
 
@@ -95,11 +90,22 @@ class MapMain extends React.Component {
 
     }
 
+
+    onMoveend(e) {
+
+        console.log("onMoveend has fired...");
+
+        if(this.props.searchSystems) {
+
+            this.props.dispatch(searchSystemsFinish());
+
+        }
+
+    }
+
     render() {
 
-    	const position = [this.state.lat, this.state.lng];
-
-
+    	// const position = [this.state.lat, this.state.lng];
     	const minZoom = 2;
     	const maxZoom = 7;
     	const height = 1000;
@@ -108,12 +114,10 @@ class MapMain extends React.Component {
         const zIndexBlack = 205;
     	const zIndexGrid = 220;
 
-    	// console.log("map bounds: ", this.refs.map);
-
 
     	return (
 
-    		<Map center={[this.props.currentSystem.lat, this.props.currentSystem.lng]} zoom={this.props.currentSystem.zoom} ref='map' onZoomend={e => this.onZoomend(e)} onZoomstart={e => this.onZoomstart(e)} style={{top: "50px", zIndex: 5}} >
+    		<Map center={[this.props.currentSystem.lat, this.props.currentSystem.lng]} zoom={this.props.currentSystem.zoom} ref='map' onZoomend={e => this.onZoomend(e)} onZoomstart={e => this.onZoomstart(e)}  onMoveend={e => this.onMoveend(e)}  style={{top: "50px", zIndex: 5}} >
 
     			<LayersControl>
 
@@ -121,7 +125,7 @@ class MapMain extends React.Component {
 
     					<Pane name="galaxy-pane" style={{ zIndex: zIndexGalaxy }}>
 
-							<TileLayer url={tileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
+							<TileLayer url={awsTileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
 
 						</Pane>
 
@@ -163,7 +167,7 @@ class MapMain extends React.Component {
 			    	</Overlay>
 
 
-					<Overlay name="Stars Systems" checked={false}  ref="layerContainer" >
+					<Overlay name="Stars Systems" checked={true}  ref="layerContainer" >
 
 						<StarMap zoom={this.state.zoom} map={this.state.map}/>
 
@@ -178,13 +182,6 @@ class MapMain extends React.Component {
 
 }
 
-
-
-// <Overlay name="Stars Systems" checked={false}>
-
-// 	<StarMap />
-
-// </Overlay>
 
 
 

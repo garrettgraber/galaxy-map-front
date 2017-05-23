@@ -4,13 +4,17 @@ import { connect } from 'react-redux';
 // import { displaySystems } from '../actions/mapActions.js';
 import urlencode from 'urlencode';
 
+import { findSystem } from '../actions/actions.js';
+
 import '../css/main.css';
 
 
 class SearchData extends React.Component {
   constructor() {
     super();
-    this.state = { inputValue: '' };
+    this.state = { 
+      inputValue: ''
+    };
     this.change = (e) => {
 
       // console.log("e.target.value: ", e.target.value);
@@ -33,35 +37,53 @@ class SearchData extends React.Component {
 
     if(this.state.inputValue.length > 0) {
 
+      // findSystem(this.state.inputValue);
 
-      findSystem(this.state.inputValue, (error, data) => {
-
-        console.log("data found: ", data);
-
-        const SystemObject = data[0];
-
-        if(data.length > 0 && SystemObject.hasLocation) {
-
-          console.log("this.props: ", this.props.dispatch);
-
-          const LngLat = SystemObject.LngLat
-
-          const SystemData = {
-            lat: LngLat[1],
-            lng: LngLat[0],
-            zoom: 6
-          };
+      this.props.dispatch(findSystem(this.state.inputValue));
 
 
-          this.props.dispatch({type: 'ZOOM_TO_SYSTEM', payload: SystemData});
+      // this.props.dispatch({type: 'SEARCH_SYSTEMS_ON'});
 
-            // this.props.dispatch({ type: 'SYSTEMS_ON'});
-            // this.props.dispatch({ type: 'DISPLAY_SYSTEMS', payload: data[0] });
+      // findSystemOldSchool(this.state.inputValue, (error, data) => {
 
-        }
+      //   console.log("error: ", error);
+
+      //   if(error) {
+
+      //     console.log("Bullshit back from the server!");
+      //     this.props.dispatch({type: 'SEARCH_SYSTEMS_OFF'});
+
+      //   }
+
+      //   if(!error && data.length > 0 && (data[0]).hasLocation) {
+
+      //     console.log("data found: ", data);
+
+      //     const SystemObject = data[0];
+
+      //     console.log("this.props: ", this.props.dispatch);
+
+      //     const LngLat = SystemObject.LngLat
+
+      //     const SystemData = {
+      //       lat: LngLat[1],
+      //       lng: LngLat[0],
+      //       zoom: 6
+      //     };
 
 
-      });
+      //     this.props.dispatch({type: 'ZOOM_TO_SYSTEM', payload: SystemData});
+
+      //       // this.props.dispatch({ type: 'SYSTEMS_ON'});
+      //       // this.props.dispatch({ type: 'DISPLAY_SYSTEMS', payload: data[0] });
+
+      //   }
+
+
+      // });
+
+
+
 
     }
 
@@ -69,26 +91,32 @@ class SearchData extends React.Component {
 
   render() {
 
+    const iconButtonClass = (this.props.searchSystems)? "fa fa-cog fa-spin" : "glyphicon glyphicon-search";
+
     return (
       <span>
         <input id="search-system-input" type="text" placeholder="Search For Systems" className="search-input" value={this.state.inputValue}  onChange={this.change}/>
-        <button id="search-button-icon" type="button" className="btn btn-primary glyphicon glyphicon-search navbar-button"  onClick={(e) => this.searchData(e)} ></button>
+        <button id="search-button-icon" type="button" className="btn btn-primary navbar-button"  onClick={(e) => this.searchData(e)} disabled={this.props.searchSystems} ><i className={iconButtonClass}></i></button>
       </span>
     );
   }
 }
 
 
-// <button id="search-system" type="button" className="btn btn-primary navbar-button" style={  {marginRight: 10} }  onClick={(e) => this.searchData(e)}>Planet Search&nbsp;&nbsp;</button>
+function findSystemOldSchool(systemName, cb) {
 
+  $.ajax({
+    url: "api/search/?system=" + urlencode(systemName),
+    type: 'GET',
+    success: function(data){ 
+      var SystemFound = data[0];
+      cb(null, data);
 
-function findSystem(systemName, cb) {
+    },
+    error: function(error) {
 
-  $.get("api/search/?system=" + urlencode(systemName), function(data) {
-
-    var SystemFound = data[0];
-
-    cb(null, data);
+      cb(error, null);
+    }
 
   });
 
