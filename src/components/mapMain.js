@@ -18,9 +18,15 @@ import 'leaflet_marker';
 import 'leaflet_marker_2x';
 import 'leaflet_marker_shadow';
 
+import imgBlack from '../images/black-tile.png';
 
-const tileServerUrl = 'http://172.17.0.4:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
-const blackTileUrl = 'http://172.17.0.4:8110/tiles-black/black-tile.png'
+console.log("imgBlack: ", imgBlack);
+
+
+
+const tileServerUrl = 'http://172.17.0.3:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
+const blackTileUrl = 'http://172.17.0.3:8110/tiles-black/black-tile.png';
+const blackTileImage = imgBlack;
 const awsTileServerUrl = 'https://s3-us-west-2.amazonaws.com/tiledata.sw.map/tiles-leaflet-7/{z}/{x}/{y}.png';
 
 
@@ -135,7 +141,7 @@ class MapMain extends React.Component {
 
                         <Pane name="black-pane" style={{ zIndex: zIndexBlack }}>
 
-                            <TileLayer url={blackTileUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} />
+                            <TileLayer url={blackTileImage} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} />
 
                         </Pane>
 
