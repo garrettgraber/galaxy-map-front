@@ -13,10 +13,12 @@ console.log("DatabaseLinks: ", DatabaseLinks);
 if(DatabaseLinks.hasOwnProperty('api')) {
 
   var API = 'http://' + DatabaseLinks.api.hostname + ':' + DatabaseLinks.api.port;
+  var hostname =  ip.address();
 
 } else {
 
   var API = 'http://localhost:8107';
+  var hostname = 'localhost';
 
 }
 
@@ -104,11 +106,11 @@ app.use(function(req, res, next) {
 
 
 
-app.listen(port, ip.address(), function onStart(err) {
+app.listen(port, hostname, function onStart(err) {
   if (err) {
     console.log(err);
   }
-  console.info('==> 🌎 Listening on port %s. Open up http://' + ip.address() + ':%s/ in your browser.', port, port);
+  console.info('==> 🌎 Listening on port %s. Open up http://' + hostname + ':%s/ in your browser.', port, port);
 });
 
 
