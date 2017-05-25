@@ -18,7 +18,7 @@ if(DatabaseLinks.hasOwnProperty('api')) {
 } else {
 
   var API = 'http://localhost:8107';
-  var hostname = 'localhost';
+  var hostname = '0.0.0.0';
 
 }
 
