@@ -24,8 +24,8 @@ console.log("imgBlack: ", imgBlack);
 
 
 
-const tileServerUrl = 'http://172.17.0.3:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
-const blackTileUrl = 'http://172.17.0.3:8110/tiles-black/black-tile.png';
+const tileServerUrl = 'http://172.17.0.4:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
+const blackTileUrl = 'http://172.17.0.4:8110/tiles-black/black-tile.png';
 const blackTileImage = imgBlack;
 const awsTileServerUrl = 'https://s3-us-west-2.amazonaws.com/tiledata.sw.map/tiles-leaflet-7/{z}/{x}/{y}.png';
 
@@ -131,7 +131,7 @@ class MapMain extends React.Component {
 
     					<Pane name="galaxy-pane" style={{ zIndex: zIndexGalaxy }}>
 
-							<TileLayer url={awsTileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
+							<TileLayer url={tileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
 
 						</Pane>
 

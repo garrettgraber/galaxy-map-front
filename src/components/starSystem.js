@@ -35,7 +35,7 @@ class StarSystem extends React.Component {
             const StarObject = this.props.StarObject;
             const starPoints = this.props.map.latLngToLayerPoint(StarObject.latLng);
 
-            star.bindPopup(StarObject.system + "<br/>" + "<span>x: " + StarObject.xGalactic + "</span><br/><span>y: " + StarObject.yGalactic + "</span><br /><span>Grid: " + StarObject.coordinates +  "</span><br/><span>lat:" + StarObject.latLng.lat + "</span><br/><span>lng: " + StarObject.latLng.lng + "</span></br><span>xp:" + starPoints.x + "</span><br/><span>yp:" + starPoints.y + "</span>");
+            star.bindPopup(StarObject.system + "<br/>" + "<span>x: " + StarObject.xGalactic.toString() + "</span><br/><span>y: " + StarObject.yGalactic.toString() + "</span><br /><span>Grid: " + StarObject.coordinates +  "</span><br/><span>lat:" + StarObject.latLng.lat + "</span><br/><span>lng: " + StarObject.latLng.lng + "</span></br><span>xp:" + starPoints.x + "</span><br/><span>yp:" + starPoints.y + "</span></br><span>Sector:" + StarObject.sector[0] + "</span>");
 
         }
 
