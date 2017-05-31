@@ -24,8 +24,8 @@ console.log("imgBlack: ", imgBlack);
 
 
 
-const tileServerUrl = 'http://172.17.0.4:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
-const blackTileUrl = 'http://172.17.0.4:8110/tiles-black/black-tile.png';
+const tileServerUrl = 'http://172.17.0.3:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
+const blackTileUrl = 'http://172.17.0.3:8110/tiles-black/black-tile.png';
 const blackTileImage = imgBlack;
 const awsTileServerUrl = 'https://s3-us-west-2.amazonaws.com/tiledata.sw.map/tiles-leaflet-7/{z}/{x}/{y}.png';
 
