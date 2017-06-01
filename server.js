@@ -10,10 +10,28 @@ const DatabaseLinks = require('docker-links').parseLinks(process.env);
 
 console.log("DatabaseLinks: ", DatabaseLinks);
 
-if(DatabaseLinks.hasOwnProperty('api')) {
+
+
+console.log("NODE_ENV: ", process.env.NODE_ENV);
+
+
+const isDeveloping = process.env.NODE_ENV !== 'production';
+const isProduction = process.env.NODE_ENV === 'production';
+// const port = isDeveloping ? 8108 : process.env.PORT;
+
+
+
+if(DatabaseLinks.hasOwnProperty('api') && isDeveloping) {
 
   var API = 'http://' + DatabaseLinks.api.hostname + ':' + DatabaseLinks.api.port;
+  // var TILES = 'http://' + DatabaseLinks.tiles.hostname + ':' + DatabaseLinks.tiles.port + '/tiles-leaflet-new/{z}/{x}/{y}.png';
   var hostname =  ip.address();
+
+} else if(isProduction) {
+
+  var API = 'ec2-54-236-207-60.compute-1.amazonaws.com';
+  var hostname = '0.0.0.0';
+
 
 } else {
 
@@ -24,9 +42,7 @@ if(DatabaseLinks.hasOwnProperty('api')) {
 
 console.log("API: ", API);
 
-
-const isDeveloping = process.env.NODE_ENV !== 'production';
-const port = isDeveloping ? 8108 : process.env.PORT;
+const port = 8108;
 const app = express();
 
 
@@ -35,7 +51,7 @@ console.log("ip: ", ip.address());
 
 
 
-if (isDeveloping) {
+// if (true) {
 
   let webpack = require('webpack');
   let webpackMiddleware = require('webpack-dev-middleware');
@@ -78,10 +94,10 @@ if (isDeveloping) {
     res.redirect(API + req.originalUrl);
   });
 
-} else {
-  const staticPath = path.join(__dirname, 'public/build')
-  app.use(express.static(staticPath));
-}
+// } else {
+//   const staticPath = path.join(__dirname, 'public/build')
+//   app.use(express.static(staticPath));
+// }
 
 
 var utcTimeZoneOffset = -7;
