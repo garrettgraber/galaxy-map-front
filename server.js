@@ -88,7 +88,7 @@ console.log("ip: ", ip.address());
   });
   app.get('/api/*', function(req, res) {
 
-    console.log("\ncall made to api: ", API + req.originalUrl);
+    console.log("\ncall made to api: ", API + req.path);
 
     console.log("request path: ", req.path);
     // req.session.valid = true;
