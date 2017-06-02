@@ -29,7 +29,7 @@ if(DatabaseLinks.hasOwnProperty('api') && isDeveloping) {
 
 } else if(isProduction) {
 
-  var API = 'ec2-54-236-207-60.compute-1.amazonaws.com';
+  var API = 'ec2-52-205-105-107.compute-1.amazonaws.com';
   var hostname = '0.0.0.0';
 
 
