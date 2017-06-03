@@ -89,13 +89,13 @@ console.log("ip: ", ip.address());
   });
   app.get('/api/*', function(req, res) {
 
-    console.log("\ncall made to api: ", API + req.path);
+    console.log("\ncall made to api: ", API + req.url);
 
     console.log("request url: ", req.url);
     console.log("request path: ", req.path);
     // req.session.valid = true;
 
-    res.redirect(API + req.path);
+    res.redirect(API + req.url);
   });
 
 // } else {
