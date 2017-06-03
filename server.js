@@ -91,11 +91,19 @@ console.log("ip: ", ip.address());
 
     console.log("\ncall made to api: ", API + req.url);
 
+    const apiFragUrl = req.url;
+    const apiFullUrl = API + apiFragUrl;
+
+    console.log("API: ", API);
     console.log("request url: ", req.url);
     console.log("request path: ", req.path);
+    console.log("apiFragUrl: ", apiFragUrl);
+    console.log("apiFullUrl: ", apiFullUrl);
+
+
     // req.session.valid = true;
 
-    res.redirect(API + req.url);
+    res.redirect(apiFullUrl);
   });
 
 // } else {
