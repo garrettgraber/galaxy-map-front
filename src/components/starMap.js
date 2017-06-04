@@ -38,7 +38,7 @@ class StarMap extends React.Component {
 		    	return response.json();
 			}).then(function(data) {
 
-	    		// console.log("Star Data: ", data);
+	    		console.log("Star Data: ", data);
 
 	    		for(let i=0; i < data.length; i++) {
 
@@ -47,6 +47,7 @@ class StarMap extends React.Component {
 			        });
 
                     const currentStar = data[i];
+                    console.log("currentStar: ", currentStar);
 			        currentStar.textWidth = textWidth + 0.5;
 
 	    		}
