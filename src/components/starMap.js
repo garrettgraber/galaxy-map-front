@@ -38,25 +38,28 @@ class StarMap extends React.Component {
 		    	return response.json();
 			}).then(function(data) {
 
-                console.log("Star Data Type: ", typeof data);
+                // console.log("Star Data Type: ", typeof data);
 	    		// console.log("Star Data: ", data);
                 const StarData = JSON.parse(data);
-                console.log("starData: ", starData);
 
-	    		for(let i=0; i < data.length; i++) {
+                console.log("Star Data Type: ", typeof StarData);
 
-					const textWidth = width(data[i].system, {
+                console.log("StarData: ", StarData);
+
+	    		for(let i=0; i < StarData.length; i++) {
+
+					const textWidth = width(StarData[i].system, {
 			            size: "1em"
 			        });
 
                     console.log("textWidth: ", textWidth);
-                    const currentStar = data[i];
+                    const currentStar = StarData[i];
                     console.log("currentStar: ", currentStar);
 			        currentStar.textWidth = textWidth + 0.5;
 
 	    		}
 
-	    		that.setState({starData: data}); 
+	    		that.setState({starData: StarData}); 
 
 	    		that.setState({starDataLoaded: true});
 
