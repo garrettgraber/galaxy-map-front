@@ -53,8 +53,10 @@
     "redux": "^3.6.0",
     "redux-standard-actions": "^1.0.1",
     "redux-thunk": "^2.2.0",
+    "request": "^2.81.0",
     "reselect": "^2.5.1",
     "sass-loader": "^6.0.5",
+    "string-width": "^2.0.0",
     "text-width": "^1.2.0",
     "urlencode": "^1.1.0",
     "whatwg-fetch": "^2.0.3"

@@ -34,6 +34,7 @@ export function findSystem(systemName) {
 	      // and update your store, but we'll leave that to you
           	const SystemObject = json[0];
 
+          	console.log("SystemObject: ", SystemObject);
 
 	      	if(SystemObject.hasLocation) {
 
