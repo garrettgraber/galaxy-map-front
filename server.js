@@ -4,6 +4,7 @@ const ip = require('ip');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const jsonfile = require('jsonfile');
+const request = require('request');
 
 
 const DatabaseLinks = require('docker-links').parseLinks(process.env);
@@ -103,7 +104,16 @@ console.log("ip: ", ip.address());
 
     // req.session.valid = true;
 
-    res.redirect(apiFullUrl);
+    // res.redirect(apiFullUrl);
+
+    request(apiFullUrl, function(error, response, body) {
+
+      console.log('error:', error);
+      console.log('statusCode:', response && response.statusCode); 
+      console.log('body:', body);
+
+    });
+
   });
 
 // } else {
