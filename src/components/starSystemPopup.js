@@ -20,14 +20,14 @@ class StarSystemPopup extends React.Component {
 
     componentDidMount() {
 
-        console.log("StarSystem Popup has mounted");
+        // console.log("StarSystem Popup has mounted");
 
 
     }
 
     render() {
 
-    	console.log("Star System Popup has rendered");
+    	// console.log("Star System Popup has rendered");
 
     	return (
 

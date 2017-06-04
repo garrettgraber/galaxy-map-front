@@ -14,6 +14,17 @@ import 'leaflet_marker_shadow';
 
 import StarSystem from './starSystem.js';
 
+const MapBoundariesMax = {
+    latitude: {
+        north: 84.0,
+        south: -84.0
+    },
+    longitude: {
+        east: 170.0,
+        west: -170.0
+    }
+};
+
 
 
 class StarMap extends React.Component {
@@ -21,7 +32,10 @@ class StarMap extends React.Component {
         super(props);
         this.state = {
         	starData: [],
-        	starDataLoaded: false
+            starsInView: [],
+            StarComponents: [],
+        	starDataLoaded: false,
+            zoomLevel: 2
         };
 
     }
@@ -29,7 +43,10 @@ class StarMap extends React.Component {
     componentDidMount() {
 
     	// console.log("StarMap has mounted: ", this.props);
-    	// console.log("StarMap this.refs: ", this.refs);
+    	console.log("StarMap this.refs: ", this.refs);
+          const startZoom = this.props.map.getZoom();
+          console.log("startZoom: ", startZoom);
+          this.setState({zoomLevel: startZoom});
 
     	const that = this;
 
@@ -42,9 +59,7 @@ class StarMap extends React.Component {
 	    		// console.log("Star Data: ", data);
                 const StarData = JSON.parse(data);
 
-                console.log("Star Data Type: ", typeof StarData);
-
-                console.log("StarData: ", StarData);
+                // console.log("StarData: ", StarData);
 
 	    		for(let i=0; i < StarData.length; i++) {
 
@@ -52,12 +67,18 @@ class StarMap extends React.Component {
 			            size: "1em"
 			        });
 
-                    console.log("textWidth: ", textWidth);
+                    // console.log("textWidth: ", textWidth);
                     const currentStar = StarData[i];
-                    console.log("currentStar: ", currentStar);
+                    // console.log("currentStar: ", currentStar);
 			        currentStar.textWidth = textWidth + 0.5;
 
 	    		}
+
+                // const StarComponents = createStarMap(StarData, that.props.zoom, that.props.map);
+
+                // console.log("StarComponents: ", StarComponents);
+
+                // that.setState({StarComponents: StarComponents});
 
 	    		that.setState({starData: StarData}); 
 
@@ -70,13 +91,35 @@ class StarMap extends React.Component {
 
     componentWillReceiveProps(newProps) {
 
-    	// console.log("Props update StarMap: ", newProps);
+    	console.log("Props update StarMap: ", newProps);
+        const currentZoom = this.props.map.getZoom();
+        console.log("currentZoom: ", currentZoom);
+          this.setState({zoomLevel: currentZoom});
+
+
+    }
+
+    onZoomend(e) {
+
+        // console.log("zoom has ended");
+        const currentZoom = this.refs.map.leafletElement.getZoom();
+        console.log("New Zoom: ", currentZoom);
+        this.setState({zoom: currentZoom});
+        console.log("Map zoom end: ", currentZoom);
+
+    }
+
+    onZoomstart(e) {
+
+        console.log("Map zoom starting...");
 
     }
 
     render() {
 
     	const zIndex = 290;
+
+        // console.log("this.state.starData: ", this.state.starData);
 
 
     	return (
@@ -85,7 +128,8 @@ class StarMap extends React.Component {
 
 				<FeatureGroup>
 
-					{ this.state.starDataLoaded === true && createStarMap(this.state.starData, this.props.zoom, this.props.map) }
+                    { this.state.starDataLoaded === true  && createStarMap(this.state.starData, this.state.zoomLevel, this.props.map) }
+
 
 				</FeatureGroup>
 	    		
@@ -98,29 +142,60 @@ class StarMap extends React.Component {
 
 }
 
+// { this.state.starDataLoaded === true && createStarMap(this.state.starData, this.props.zoom, this.props.map) }
+
 
 
 function createStarMap(starData, currentZoom, map) {
 
+    // console.log("createStarMap...");
+    // console.log("map.getBounds(): ", map.getBounds());
+    // console.log("MapBoundariesMax: ", MapBoundariesMax);
+    console.log("currentZoom: ", currentZoom);
+
     const starSystemTempArray = [];
+    let InViewSystems = 0;
 
     const zoomLevelBasedRendering = true;
 
     for(let i=0; i < starData.length; i++) {
 
     	const currentStarData = starData[i];
+        // console.log("Current i: ", i);
 
     	if(!currentStarData.hasOwnProperty('latLng')) {
 
 			const starLngLat = currentStarData.LngLat;
 
 	    	const currentLatLng = L.latLng(starLngLat[1], starLngLat[0]);
+            // console.log("currentLatLng: ", currentLatLng);
+            starData['lat'] = currentLatLng[1];
+            starData['lng'] = currentLatLng[0];
 
 	    	starData[i].latLng = currentLatLng;
 
     	}
 
-        if(zoomLevelBasedRendering) {
+        // ObjectInMapView(starData[i], map);
+
+        let objectInView = ObjectInMapView(starData[i], map);
+
+
+
+        if(zoomLevelBasedRendering && objectInView) {
+
+            // console.log("Star Found! ", starData[i]);
+
+           // const objectInvView = ObjectInMapView(starData[i], map);
+
+           //  if(objectInvView) {
+
+                // console.log("objectInView: ", objectInView);
+
+
+
+           //  }
+
 
         	if(currentStarData.zoom === 0) {
 
@@ -128,7 +203,7 @@ function createStarMap(starData, currentZoom, map) {
 
         	}
 
-        	if(currentStarData.zoom === 1 && currentZoom >= 4) {
+        	if(currentStarData.zoom === 1 && currentZoom >= 3) {
 
 
     	        starSystemTempArray.push( <StarSystem key={starData[i].system} StarObject={starData[i]} zoom={currentZoom} map={map} labels={true}  /> );
@@ -152,16 +227,59 @@ function createStarMap(starData, currentZoom, map) {
 
         } else {
 
-            starSystemTempArray.push( <StarSystem key={starData[i].system} StarObject={starData[i]} zoom={currentZoom} map={map} labels={true}  /> );
+            // console.log("Else has fired...");
+            // starSystemTempArray.push( <StarSystem key={starData[i].system} StarObject={starData[i]} zoom={currentZoom} map={map} labels={true}  /> );
 
         }
 
 
     }
 
+    console.log("starSystemTempArray length: ", starSystemTempArray.length);
+    console.log("zoom: ", currentZoom);
+
     return starSystemTempArray;
 
 };
+
+
+function ObjectInMapView(stellarObject, map) {
+
+    // console.log("map.getBounds(): ", map.getBounds());
+    // console.log("MapBoundariesMax: ", MapBoundariesMax);
+
+    const CurrentMapBoundaries = map.getBounds();
+
+    // console.log("CurrentMapBoundaries: ", CurrentMapBoundaries);
+    // console.log("stellarObject: ", stellarObject);
+    const inNorthSouthRange = (CurrentMapBoundaries._southWest.lat < stellarObject.latLng.lat && stellarObject.latLng.lat < CurrentMapBoundaries._northEast.lat) ? true : false;
+    const inEastWestRange = (CurrentMapBoundaries._southWest.lng < stellarObject.latLng.lng && stellarObject.latLng.lng < CurrentMapBoundaries._northEast.lng) ? true : false;
+
+    // console.log("inNorthSouthRange: ", inNorthSouthRange);
+    // console.log("inEastWestRange: ", inEastWestRange);
+    // console.log("CurrentMapBoundaries: ", CurrentMapBoundaries);
+    // console.log("stellarObject: ", stellarObject);
+    const objectInvView = (inNorthSouthRange && inEastWestRange) ? true : false;
+
+
+    if(objectInvView) {
+
+        // console.log("inNorthSouthRange: ", inNorthSouthRange);
+        // console.log("inEastWestRange: ", inEastWestRange);
+
+        // console.log("CurrentMapBoundaries: ", CurrentMapBoundaries);
+
+        // console.log("MapBoundariesMax: ", MapBoundariesMax);
+
+        // console.log("In range: ", stellarObject);
+
+    }
+
+    return objectInvView;
+
+
+
+}
 
 
 

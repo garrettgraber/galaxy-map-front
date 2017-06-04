@@ -40,7 +40,7 @@ class GridCell extends React.Component {
 
     gridClick(e) {
 
-        console.log("Current cell: ", this.props.grid);
+        // console.log("Current cell: ", this.props.grid);
 
     }
 

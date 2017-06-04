@@ -21,6 +21,10 @@ class RegionLabels extends React.Component {
     constructor(props) {
         super(props);
 
+       this.state = {
+            regionsComponentsReady: false,
+            regionsLabelComponents: []
+        }
     }
 
     componentDidMount() {
@@ -28,15 +32,72 @@ class RegionLabels extends React.Component {
     	// console.log("grid ref: ", this.refs.grid.leafletElement);
 
         console.log("componentDidMount in RegionLabels");
+        // console.log("regionsLabelsArray: ", this.props.regionsLabelsArray);
+        const regionsLabelComponents = renderRegionLabels(this.props.regionsLabelsArray);
+        // console.log("regionsLabelComponents: ", regionsLabelComponents);
+        this.setState({regionsLabelComponents : regionsLabelComponents});
+        this.setState({regionsComponentsReady : true});
+        // console.log("state: ", this.state);
 
     }
 
+
+
+
+    renderRegionLabelsByline(labelArrayTemp) {
+
+        // console.log("renderRegionLabels has fired!");
+
+        const labelsArrayTemp = [];
+
+        for(let currentObject of labelArrayTemp) {
+
+            let currentRegion = currentObject.region;
+            currentRegion = currentRegion.toUpperCase();
+
+            const textWidth = width(currentRegion, {
+                size: "2em"
+            });
+
+            let myIcon = L.divIcon({
+                className: "regionClass",
+                iconSize: new L.Point(textWidth, 20),
+                iconAnchor: new L.Point(textWidth / 2.0, 14),
+                html: currentRegion
+            });
+
+            // let labelMarker = L.marker([currentObject.lat, currentObject.lng], {icon: myIcon});
+
+            const labelPosition = [currentObject.lat, currentObject.lng];
+
+            labelsArrayTemp.push(<Marker key={currentObject.region} position={labelPosition} icon={myIcon}/>);
+
+            // const gridName = currentGridObject.grid;
+            // const lat = currentGridObject.point.lat;
+            // const lng = currentGridObject.point.lng;
+
+            labelsArrayTemp.push( <GridCell key={gridName} grid={gridName} lat={lat} lng={lng} /> ) ;
+
+
+        }
+
+        this.setState({regionsLabelComponents : labelsArrayTemp});
+        this.setState({regionsComponentsReady : true});
+
+        // return labelsArrayTemp;
+
+    }
+
+
     render() {
+
+        console.log("state: ", this.state);
 
     	return (
 
            <FeatureGroup className="regions-test">
-                { renderRegionLabels(this.props.regionsLabelsArray) }
+
+                { this.state.regionsLabelComponents }
             </FeatureGroup>
 
     	)
@@ -47,9 +108,12 @@ class RegionLabels extends React.Component {
 
 
 
+// { renderRegionLabels(this.props.regionsLabelsArray) }
+
+
 function renderRegionLabels(labelArrayTemp) {
 
-    console.log("renderRegionLabels has fired!");
+    // console.log("renderRegionLabels has fired!");
 
     const labelsArrayTemp = [];
 
@@ -83,6 +147,9 @@ function renderRegionLabels(labelArrayTemp) {
 
 
     }
+
+    // this.setState({regionsLabelComponents : labelsArrayTemp});
+    // this.setState({regionsComponentsReady : true});
 
     return labelsArrayTemp;
 

@@ -29,13 +29,13 @@ export function findSystem(systemName) {
 
 	    }).then(json => {
 
-	    	console.log("json: ", json);
+	    	// console.log("json: ", json);
 	      // you should probably get a real id for your new todo item here, 
 	      // and update your store, but we'll leave that to you
           	let SystemObject = JSON.parse(json);
           	SystemObject = SystemObject[0];
 
-          	console.log("SystemObject: ", SystemObject);
+          	// console.log("SystemObject: ", SystemObject);
 
 	      	if(SystemObject.hasLocation) {
 

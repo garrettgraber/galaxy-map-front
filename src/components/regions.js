@@ -82,7 +82,7 @@ class Regions extends React.Component {
 
     pointToLayer() {
 
-        console.log("pointToLayer has fired in regions...");
+        // console.log("pointToLayer has fired in regions...");
     	
     }
 
@@ -102,7 +102,7 @@ class Regions extends React.Component {
 
             // for(let currentLabelLatLng of currentRegionLabelLatLngArray) {
 
-            console.log("region pushed to array: ", currentRegionValue);
+            // console.log("region pushed to array: ", currentRegionValue);
 
             this.state.regionsLabelArray.push({
                 region: currentRegionValue,
@@ -138,7 +138,7 @@ class Regions extends React.Component {
     regionClick(e) {
 
 
-        console.log("region click e: ", e.latlng);
+        // console.log("region click e: ", e.latlng);
 
     }
 

@@ -17,6 +17,10 @@ import GridCell from './gridCell.js';
 class GridLabels extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            gridLabelsArray: [],
+            gridLabelsReady: false
+        };
 
     }
 
@@ -25,15 +29,38 @@ class GridLabels extends React.Component {
     	// console.log("grid ref: ", this.refs.grid.leafletElement);
 
         // console.log("componentDidMount in GridLables");
+        const gridLabelsArray = renderGridLabels(this.props.gridLabelsArray);
+        console.log("gridLabelsArray: ", gridLabelsArray);
+        this.setState({gridLabelsArray : gridLabelsArray});
+        this.setState({gridLabelsReady: true});
+
+        // console.log("renderGridLabelsComponents: ", this.renderGridLabelsComponents());
+
 
     }
+
+
+  renderGridLabelsComponents(){
+    if (this.state.gridLabelsReady) {
+      return (
+            this.state.gridLabelsArray
+          );
+        } else {
+            const gridLabelsArray = renderGridLabels(this.props.gridLabelsArray);
+            console.log("gridLabelsArray: ", gridLabelsArray);
+            this.setState({gridLabelsArray : gridLabelsArray});
+            this.setState({gridLabelsReady: true});
+            return gridLabelsArray;
+        }
+    }
+
 
     render() {
 
     	return (
 
            <FeatureGroup className="labels-test">
-                { renderGridLabels(this.props.gridLabelsArray) }
+                { this.state.gridLabelsArray }
             </FeatureGroup>
 
     	)
@@ -46,7 +73,7 @@ class GridLabels extends React.Component {
 
 function renderGridLabels(labelArrayTemp) {
 
-    // console.log("renderGridLabels has fired!");
+    console.log("renderGridLabels has fired!");
 
     const gridLabelsArrayTemp = [];
 

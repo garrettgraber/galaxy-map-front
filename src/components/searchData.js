@@ -26,14 +26,14 @@ class SearchData extends React.Component {
 
   componentDidMount() {
 
-    console.log("SearchData has Mounted: ", this.props);
+    // console.log("SearchData has Mounted: ", this.props);
 
   } 
 
 
   searchData() {
 
-    console.log("searchData has been clicked: ", this.state.inputValue);
+    // console.log("searchData has been clicked: ", this.state.inputValue);
 
     if(this.state.inputValue.length > 0) {
 

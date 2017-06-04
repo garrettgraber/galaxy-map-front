@@ -13,7 +13,7 @@ console.log("DatabaseLinks: ", DatabaseLinks);
 
 
 
-console.log("NODE_ENV: ", process.env.NODE_ENV);
+// console.log("NODE_ENV: ", process.env.NODE_ENV);
 
 
 const isDeveloping = process.env.NODE_ENV !== 'production';
@@ -42,7 +42,7 @@ if(DatabaseLinks.hasOwnProperty('api') && isDeveloping) {
 
 }
 
-console.log("API: ", API);
+// console.log("API: ", API);
 
 const port = 8108;
 const app = express();
@@ -95,11 +95,11 @@ console.log("ip: ", ip.address());
     const apiFragUrl = req.url;
     const apiFullUrl = API + apiFragUrl;
 
-    console.log("API: ", API);
-    console.log("request url: ", req.url);
-    console.log("request path: ", req.path);
-    console.log("apiFragUrl: ", apiFragUrl);
-    console.log("apiFullUrl: ", apiFullUrl);
+    // console.log("API: ", API);
+    // console.log("request url: ", req.url);
+    // console.log("request path: ", req.path);
+    // console.log("apiFragUrl: ", apiFragUrl);
+    // console.log("apiFullUrl: ", apiFullUrl);
 
 
     // req.session.valid = true;
@@ -108,19 +108,19 @@ console.log("ip: ", ip.address());
 
     request(apiFullUrl, function(error, response, body) {
 
-      console.log('error:', error);
-      console.log('statusCode:', response && response.statusCode); 
-      // console.log('body:', body);
+      // console.log('error:', error);
+      // console.log('statusCode:', response && response.statusCode); 
+      // // console.log('body:', body);
 
       if(error) {
-        console.log("error: ", error);
+        // console.log("error: ", error);
       } else if(response.statusCode === 200) {
 
-        console.log('body:', body.length);
+        // console.log('body:', body.length);
 
         res.json(body);
       } else {
-        console.log("API error");
+        // console.log("API error");
       }
 
 

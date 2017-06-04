@@ -19,18 +19,28 @@ import 'leaflet_marker_2x';
 import 'leaflet_marker_shadow';
 
 import imgBlack from '../images/black-tile.png';
-
-console.log("imgBlack: ", imgBlack);
-
+import DatabaseLinks from 'docker-links'
 
 
-const tileServerUrl = 'http://172.17.0.3:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
-const blackTileUrl = 'http://172.17.0.3:8110/tiles-black/black-tile.png';
+
+
+// const DatabaseLinks = require('docker-links').parseLinks(process.env);
+
+console.log("DatabaseLinks: ", DatabaseLinks);
+
+
+
+// console.log("imgBlack: ", imgBlack);
+
+
+
+const tileServerUrl = 'http://172.17.0.4:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
+const blackTileUrl = 'http://172.17.0.4:8110/tiles-black/black-tile.png';
 const blackTileImage = imgBlack;
 const awsTileServerUrl = 'https://s3-us-west-2.amazonaws.com/tiledata.sw.map/tiles-leaflet-7/{z}/{x}/{y}.png';
 
 
-console.log("tileServerUrl: ", tileServerUrl);
+// console.log("tileServerUrl: ", tileServerUrl);
 
 
 class MapMain extends React.Component {
@@ -40,13 +50,14 @@ class MapMain extends React.Component {
         	lat: 0,
         	lng: 0,
         	zoom: 2,
-        	map: null
+        	map: null,
+            mapMoveEvent: false
         }
     }
 
     componentDidMount() {
 
-    	console.log("Map componet has mounted: ", this.props);
+    	// console.log("Map componet has mounted: ", this.props);
 
     	// console.log("map ref in componet: ", this.refs.map);
 
@@ -64,7 +75,7 @@ class MapMain extends React.Component {
 
     	// this.props.map = map;
 
-    	console.log("map: ", map);
+    	// console.log("map: ", map);
 
     	if(this.refs.map) {
 
@@ -85,6 +96,7 @@ class MapMain extends React.Component {
 
     	// console.log("zoom has ended");
    		const currentZoom = this.refs.map.leafletElement.getZoom();
+        console.log("New Zoom: ", currentZoom);
     	this.setState({zoom: currentZoom});
     	console.log("Map zoom end: ", currentZoom);
 
@@ -96,16 +108,36 @@ class MapMain extends React.Component {
 
     }
 
+    onMovestart(e) {
+
+        console.log("onMovestart has fired...");
+        this.setState({mapMoveEvent: true});
+
+        console.log("mapMoveEvent: ", this.state.mapMoveEvent);
+
+    }
+
 
     onMoveend(e) {
 
         console.log("onMoveend has fired...");
+        this.setState({mapMoveEvent: false});
+
+        console.log("mapMoveEvent: ", this.state.mapMoveEvent);
+
 
         if(this.props.searchSystems) {
 
             this.props.dispatch(searchSystemsFinish());
 
         }
+
+    }
+
+
+    autoPanStart(e) {
+
+        console.log("autoPanStart: ", e);
 
     }
 
@@ -123,7 +155,7 @@ class MapMain extends React.Component {
 
     	return (
 
-    		<Map center={[this.props.currentSystem.lat, this.props.currentSystem.lng]} zoom={this.props.currentSystem.zoom} ref='map' onZoomend={e => this.onZoomend(e)} onZoomstart={e => this.onZoomstart(e)}  onMoveend={e => this.onMoveend(e)}  style={{top: "50px", zIndex: 5}} >
+    		<Map center={[this.props.currentSystem.lat, this.props.currentSystem.lng]} zoom={this.props.currentSystem.zoom} ref='map' onZoomend={e => this.onZoomend(e)} onZoomstart={e => this.onZoomstart(e)}  onMoveend={e => this.onMoveend(e)} onMovestart={e => this.onMovestart(e)}  style={{top: "50px", zIndex: 5}} >
 
     			<LayersControl>
 
@@ -131,7 +163,7 @@ class MapMain extends React.Component {
 
     					<Pane name="galaxy-pane" style={{ zIndex: zIndexGalaxy }}>
 
-							<TileLayer url={awsTileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
+							<TileLayer url={tileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
 
 						</Pane>
 
@@ -175,7 +207,7 @@ class MapMain extends React.Component {
 
 					<Overlay name="Stars Systems" checked={true}  ref="layerContainer" >
 
-						<StarMap zoom={this.state.zoom} map={this.state.map}/>
+						<StarMap zoom={this.state.zoom} map={this.state.map} mapMove={this.state.mapMoveEvent} />
 
 					</Overlay>
 
