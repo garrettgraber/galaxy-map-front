@@ -32,7 +32,8 @@ export function findSystem(systemName) {
 	    	console.log("json: ", json);
 	      // you should probably get a real id for your new todo item here, 
 	      // and update your store, but we'll leave that to you
-          	const SystemObject = JSON.parse(json);
+          	let SystemObject = JSON.parse(json);
+          	SystemObject = SystemObject[0];
 
           	console.log("SystemObject: ", SystemObject);
 
