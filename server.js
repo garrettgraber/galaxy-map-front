@@ -110,7 +110,16 @@ console.log("ip: ", ip.address());
 
       console.log('error:', error);
       console.log('statusCode:', response && response.statusCode); 
-      console.log('body:', body);
+      // console.log('body:', body);
+
+      if(error) {
+        console.log("error: ", error);
+      } else if(response.statusCode === 200) {
+        res.json(body);
+      } else {
+        console.log("API error");
+      }
+
 
     });
 
