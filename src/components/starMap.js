@@ -39,7 +39,9 @@ class StarMap extends React.Component {
 			}).then(function(data) {
 
                 console.log("Star Data Type: ", typeof data);
-	    		console.log("Star Data: ", data);
+	    		// console.log("Star Data: ", data);
+                const StarData = JSON.parse(data);
+                console.log("starData: ", starData);
 
 	    		for(let i=0; i < data.length; i++) {
 
