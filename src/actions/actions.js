@@ -45,6 +45,8 @@ export function findSystem(systemName) {
 					zoom: 6
 				};
 
+				console.log("SystemData: ", SystemData);
+
 				dispatch(zoomToSystem(SystemData));
 
 	      	}
