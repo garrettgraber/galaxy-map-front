@@ -115,6 +115,9 @@ console.log("ip: ", ip.address());
       if(error) {
         console.log("error: ", error);
       } else if(response.statusCode === 200) {
+
+        console.log('body:', body.length);
+
         res.json(body);
       } else {
         console.log("API error");
