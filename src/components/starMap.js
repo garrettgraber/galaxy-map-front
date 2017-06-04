@@ -46,7 +46,8 @@ class StarMap extends React.Component {
 			            size: "1em"
 			        });
 
-			        data[i].textWidth = textWidth + 0.5;
+                    const currentStar = data[i];
+			        currentStar.textWidth = textWidth + 0.5;
 
 	    		}
 
