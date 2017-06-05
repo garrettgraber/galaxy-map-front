@@ -149,9 +149,72 @@ class StarMap extends React.Component {
 function createStarMap(starData, currentZoom, map) {
 
     // console.log("createStarMap...");
-    // console.log("map.getBounds(): ", map.getBounds());
+    console.log("map.getBounds(): ", map.getBounds());
     // console.log("MapBoundariesMax: ", MapBoundariesMax);
     console.log("currentZoom: ", currentZoom);
+
+    const CurrentMapBoundaries = map.getBounds();
+
+    console.log("CurrentMapBoundaries: ", CurrentMapBoundaries);
+
+    const mapWidth = CurrentMapBoundaries._northEast.lng - CurrentMapBoundaries._southWest.lng;
+    const mapHeight = CurrentMapBoundaries._northEast.lat - CurrentMapBoundaries._southWest.lat;
+
+    console.log("mapWidth: ", mapWidth);
+    console.log("mapHeight: ", mapHeight);
+
+    let mapPaddingHeight = 0;
+    let mapPaddingWidth = 0;
+
+    // console.log("map.getBounds(): ", map.getBounds());
+    // console.log("MapBoundariesMax: ", MapBoundariesMax);
+
+    if (currentZoom <= 2) {
+
+        // console.log("Leaving Bounds!");
+
+
+    } else if (currentZoom === 3){
+
+        mapPaddingWidth = 50;
+        mapPaddingHeight = 25;
+
+
+    } else if (currentZoom == 4) {
+
+
+        mapPaddingWidth = 10;
+        mapPaddingHeight = 5;
+    }
+
+
+    const mapOffSetLat = mapPaddingHeight;
+    const mapOffSetLng = mapPaddingWidth;
+
+
+    const southernBoundary = CurrentMapBoundaries._southWest.lat - mapOffSetLat;
+    const northernBoundary = CurrentMapBoundaries._northEast.lat + mapOffSetLat
+    const westernBoundary = CurrentMapBoundaries._southWest.lng - mapOffSetLng;
+    const easternBoundary = CurrentMapBoundaries._northEast.lng + mapOffSetLng;
+    const MapBoundaries = {
+        north: northernBoundary,
+        south: southernBoundary,
+        east: easternBoundary,
+        west: westernBoundary
+    };
+
+
+
+    console.log("MapBoundaries: ", MapBoundaries);
+
+    // console.log("northernBoundary: ", northernBoundary);
+
+    // console.log("southernBoundary: ", southernBoundary);
+
+    // console.log("easternBoundary: ", easternBoundary);
+    // console.log("westernBoundary: ", westernBoundary);
+
+
 
     const starSystemTempArray = [];
     let InViewSystems = 0;
@@ -176,9 +239,10 @@ function createStarMap(starData, currentZoom, map) {
 
     	}
 
+
         // ObjectInMapView(starData[i], map);
 
-        let objectInView = ObjectInMapView(starData[i], map);
+        let objectInView = ObjectInMapView(starData[i], map, mapWidth, mapHeight, MapBoundaries);
 
 
 
@@ -243,17 +307,31 @@ function createStarMap(starData, currentZoom, map) {
 };
 
 
-function ObjectInMapView(stellarObject, map) {
+function ObjectInMapView(stellarObject, map, mapWidth, mapHeight, MapBoundaries) {
 
-    // console.log("map.getBounds(): ", map.getBounds());
-    // console.log("MapBoundariesMax: ", MapBoundariesMax);
+ 
+
+
+
+    // console.log("mapHeight in ObjectInMapView: ", mapHeight);
+    // console.log("mapWidth in ObjectInMapView: ", mapWidth);
 
     const CurrentMapBoundaries = map.getBounds();
 
-    // console.log("CurrentMapBoundaries: ", CurrentMapBoundaries);
+
+
+    // console.log("MapBoundaries: ", MapBoundaries);
     // console.log("stellarObject: ", stellarObject);
-    const inNorthSouthRange = (CurrentMapBoundaries._southWest.lat < stellarObject.latLng.lat && stellarObject.latLng.lat < CurrentMapBoundaries._northEast.lat) ? true : false;
-    const inEastWestRange = (CurrentMapBoundaries._southWest.lng < stellarObject.latLng.lng && stellarObject.latLng.lng < CurrentMapBoundaries._northEast.lng) ? true : false;
+    const mapOffSetLng = 0;
+    const mapOffSetLat = 0;
+
+    // const inNorthSouthRange = (CurrentMapBoundaries._southWest.lat - mapOffSetLat < stellarObject.latLng.lat && stellarObject.latLng.lat < CurrentMapBoundaries._northEast.lat + mapOffSetLat) ? true : false;
+    // const inEastWestRange = (CurrentMapBoundaries._southWest.lng - mapOffSetLng < stellarObject.latLng.lng && stellarObject.latLng.lng < CurrentMapBoundaries._northEast.lng + mapOffSetLng) ? true : false;
+
+
+
+    const inNorthSouthRange = (MapBoundaries.south < stellarObject.latLng.lat && stellarObject.latLng.lat < MapBoundaries.north) ? true : false;
+    const inEastWestRange = (MapBoundaries.west - mapOffSetLng < stellarObject.latLng.lng && stellarObject.latLng.lng < MapBoundaries.east) ? true : false;
 
     // console.log("inNorthSouthRange: ", inNorthSouthRange);
     // console.log("inEastWestRange: ", inEastWestRange);

@@ -10,11 +10,14 @@ class NavBar extends React.Component {
 
     componentDidMount() {
 
-        // console.log("NavBar has mounted: ", this.props);
+        console.log("NavBar has mounted: ", this.props);
         
     }
 
 	render() {
+
+        console.log("NavBar props: ", this.props);
+
 
     	return (
             <div id="nav-container">

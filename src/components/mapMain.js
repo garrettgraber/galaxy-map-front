@@ -11,6 +11,8 @@ import Regions from './regions.js';
 import Sectors from './sectors.js';
 import HyperspaceLanes from './hyperspaceLanes.js';
 import StarMap from './starMap.js';
+import NavBar from './navBar.js';
+
 
 
 import 'leaflet/dist/leaflet.css';
@@ -51,7 +53,8 @@ class MapMain extends React.Component {
         	lng: 0,
         	zoom: 2,
         	map: null,
-            mapMoveEvent: false
+            mapMoveEvent: false,
+            blackTiles: false
         }
     }
 
@@ -96,10 +99,14 @@ class MapMain extends React.Component {
 
     	// console.log("zoom has ended");
    		const currentZoom = this.refs.map.leafletElement.getZoom();
-        console.log("New Zoom: ", currentZoom);
+        console.log("\n\nNew Zoom: ", currentZoom);
+        console.log("Old Zoom: ", this.state.zoom);
     	this.setState({zoom: currentZoom});
     	console.log("Map zoom end: ", currentZoom);
+        // if(currentZoom >= 7) {
+        //     this.setState({blackTiles: true});
 
+        // } 
     }
 
     onZoomstart(e) {
@@ -146,8 +153,8 @@ class MapMain extends React.Component {
     	// const position = [this.state.lat, this.state.lng];
     	const minZoom = 2;
     	const maxZoom = 7;
-    	const height = 1000;
-    	const width = 1000;
+    	// const height = 1000;
+    	// const width = 1000;
     	const zIndexGalaxy = 210;
         const zIndexBlack = 205;
     	const zIndexGrid = 220;
@@ -155,65 +162,71 @@ class MapMain extends React.Component {
 
     	return (
 
-    		<Map center={[this.props.currentSystem.lat, this.props.currentSystem.lng]} zoom={this.props.currentSystem.zoom} ref='map' onZoomend={e => this.onZoomend(e)} onZoomstart={e => this.onZoomstart(e)}  onMoveend={e => this.onMoveend(e)} onMovestart={e => this.onMovestart(e)}  style={{top: "50px", zIndex: 5}} >
+            <div>
 
-    			<LayersControl>
+                <NavBar />
 
-    				<BaseLayer name="Galaxy" checked={true}>
+        		<Map center={[this.props.currentSystem.lat, this.props.currentSystem.lng]} zoom={this.props.currentSystem.zoom} ref='map' onZoomend={e => this.onZoomend(e)} onZoomstart={e => this.onZoomstart(e)}  onMoveend={e => this.onMoveend(e)} onMovestart={e => this.onMovestart(e)}  style={{top: "50px", zIndex: 5}} >
 
-    					<Pane name="galaxy-pane" style={{ zIndex: zIndexGalaxy }}>
+        			<LayersControl>
 
-							<TileLayer url={awsTileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
+        				<BaseLayer name="Galaxy" checked={true}>
 
-						</Pane>
+        					<Pane name="galaxy-pane" style={{ zIndex: zIndexGalaxy }}>
 
-					</BaseLayer>
+    							<TileLayer url={(this.state.blackTiles) ? blackTileImage : tileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
 
-                    <BaseLayer name="Black" checked={false} >
+    						</Pane>
 
-                        <Pane name="black-pane" style={{ zIndex: zIndexBlack }}>
+    					</BaseLayer>
 
-                            <TileLayer url={blackTileImage} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} />
+                        <BaseLayer name="Black" checked={false} >
 
-                        </Pane>
+                            <Pane name="black-pane" style={{ zIndex: zIndexBlack }}>
 
-                    </BaseLayer>
+                                <TileLayer url={blackTileImage} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} />
 
-		            <Overlay name="Grid" checked={false}>
+                            </Pane>
 
-			    		<Grid />
+                        </BaseLayer>
 
-			    	</Overlay>
+    		            <Overlay name="Grid" checked={false}>
 
-			    	<Overlay name="Regions" checked={false}>
+    			    		<Grid />
 
-			    		<Regions map={this.props.map} />
+    			    	</Overlay>
 
-			    	</Overlay>
+    			    	<Overlay name="Regions" checked={false}>
 
-			    	<Overlay name="Sectors" checked={false}>
+    			    		<Regions map={this.props.map} />
 
-			    		<Sectors />
+    			    	</Overlay>
 
-			    	</Overlay>
+    			    	<Overlay name="Sectors" checked={false}>
 
+    			    		<Sectors />
 
-			    	<Overlay name="Hyperspace Lanes" checked={false}>
-
-			    		<HyperspaceLanes />
-
-			    	</Overlay>
+    			    	</Overlay>
 
 
-					<Overlay name="Stars Systems" checked={true}  ref="layerContainer" >
+    			    	<Overlay name="Hyperspace Lanes" checked={false}>
 
-						<StarMap zoom={this.state.zoom} map={this.state.map} mapMove={this.state.mapMoveEvent} />
+    			    		<HyperspaceLanes />
 
-					</Overlay>
+    			    	</Overlay>
 
-				</LayersControl>
 
-    		</Map>
+    					<Overlay name="Stars Systems" checked={true}  ref="layerContainer" >
+
+    						<StarMap zoom={this.state.zoom} map={this.state.map} mapMove={this.state.mapMoveEvent} />
+
+    					</Overlay>
+
+    				</LayersControl>
+
+        		</Map>
+            </div>
+
 
     	)
     }

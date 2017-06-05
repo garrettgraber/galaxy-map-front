@@ -1,9 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import MapBase from './mapBase.js';
+// import MapBase from './mapBase.js';
 import MapMain from './mapMain.js';
-import NavBar from './navBar.js';
 
 
 // console.log("MapBase:", MapBase);
@@ -29,7 +28,6 @@ class App extends React.Component {
 
 		return (
 			<div>
-				<NavBar />
 				<MapMain />
 			</div>
         );

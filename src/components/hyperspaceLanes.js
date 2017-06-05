@@ -26,22 +26,22 @@ class HyperspaceLanes extends React.Component {
         if(feature.properties.hyperspace) {
 
             layer.bindPopup(feature.properties.hyperspace)
-            .on('mouseover', function (e) {
+            .on('click', function (e) {
                 this.openPopup();
             })
-            .on('mouseout', function (e) {
-                this.closePopup();
-            });
+            // .on('mouseout', function (e) {
+            //     this.closePopup();
+            // });
 
         } else {
 
             layer.bindPopup("Unamed Hyperspace Lane")
-            .on('mouseover', function (e) {
+            .on('click', function (e) {
                 this.openPopup();
             })
-            .on('mouseout', function (e) {
-                this.closePopup();
-            });
+            // .on('mouseout', function (e) {
+            //     this.closePopup();
+            // })s;
         }
 	
     }
