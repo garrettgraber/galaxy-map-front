@@ -35,7 +35,7 @@ export function findSystem(systemName) {
           	let SystemObject = JSON.parse(json);
           	SystemObject = SystemObject[0];
 
-          	// console.log("SystemObject: ", SystemObject);
+          	console.log("SystemObject: ", SystemObject);
 
 	      	if(SystemObject.hasLocation) {
 
@@ -44,7 +44,8 @@ export function findSystem(systemName) {
 				const SystemData = {
 					lat: LngLat[1],
 					lng: LngLat[0],
-					zoom: 6
+					zoom: 6,
+					system: SystemObject.system
 				};
 
 				console.log("SystemData: ", SystemData);

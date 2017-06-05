@@ -37,9 +37,20 @@ class SearchData extends React.Component {
 
     if(this.state.inputValue.length > 0) {
 
-      // findSystem(this.state.inputValue);
+      console.log("this.props in SearchData: ", this.props);
+      console.log("this.state.inputValue: ", this.state.inputValue);
 
-      this.props.dispatch(findSystem(this.state.inputValue));
+      if(this.state.inputValue === this.props.currentSystem.system) {
+
+        console.log("Same entry: ", this.props.currentSystem.system);
+
+      } else {
+
+        this.props.dispatch(findSystem(this.state.inputValue));
+
+
+      }
+
 
 
       // this.props.dispatch({type: 'SEARCH_SYSTEMS_ON'});
