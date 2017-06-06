@@ -175,7 +175,7 @@ class MapMain extends React.Component {
 
         					<Pane name="galaxy-pane" style={{ zIndex: zIndexGalaxy }}>
 
-    							<TileLayer url={(this.state.blackTiles) ? blackTileImage : tileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
+    							<TileLayer url={awsTileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
 
     						</Pane>
 
