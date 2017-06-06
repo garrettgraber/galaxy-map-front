@@ -13,6 +13,8 @@ import 'leaflet_marker_shadow';
 
 import HyperspaceData from 'json-loader!../data/hyperspace.geojson';
 
+console.log("HyperspaceData: ", HyperspaceData);
+
 
 
 class HyperspaceLanes extends React.Component {
@@ -56,13 +58,24 @@ class HyperspaceLanes extends React.Component {
     render() {
 
     	const hyperspaceLanesStyle = {color: '#00FFFF', weight: 3};
+
+
+        const hyperspaceLanesStylePink = {color: '#FF69B4', weight: 3};
+
+        const hyperspaceLanesStyleCarolina = {color: '#99badd ', weight: 3};
+
+
+
     	const zIndex = 270;
+
+
+
 
     	return (
 
     		<Pane name="hyperspace-pane" style={{ zIndex: zIndex }}>
 
-    			<GeoJSON data={HyperspaceData} style={hyperspaceLanesStyle} ref='hyperspace' onEachFeature={(feature, layer) => this.onEachFeature(feature,layer)}  pointToLayer={(feature, latlng) => this.pointToLayer(feature,latlng)}/>
+    			<GeoJSON data={HyperspaceData} style={hyperspaceLanesStyleCarolina} ref='hyperspace' onEachFeature={(feature, layer) => this.onEachFeature(feature,layer)}  pointToLayer={(feature, latlng) => this.pointToLayer(feature,latlng)}/>
 
     		</Pane>
 

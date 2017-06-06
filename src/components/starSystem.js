@@ -93,8 +93,8 @@ class StarSystem extends React.Component {
 
         let myIcon = L.divIcon({
             className: "systemLabel",
-            iconSize: new L.Point(this.props.StarObject.textWidth, 20),
-            iconAnchor: new L.Point(textWidth / 2.0, 18),
+            iconSize: new L.Point(this.props.StarObject.textWidth + 30, 24),
+            iconAnchor: new L.Point(textWidth / 3.0, 18),
             html: this.props.StarObject.system
         });
 

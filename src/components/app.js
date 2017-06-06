@@ -20,7 +20,7 @@ class App extends React.Component {
 
 	componentDidMount() {
 
-		console.log("App has Mounted: ", this.props);
+		// console.log("App has Mounted: ", this.props);
 	}
 
 

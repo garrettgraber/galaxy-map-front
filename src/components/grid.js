@@ -95,6 +95,8 @@ class Grid extends React.Component {
 
     	const gridStyle = {color: '#49fb35', weight: 0.5, fill: false};
 
+        const gridStylePink = {color: '#FF69B4', weight: 0.5, fill: false};
+
         // console.log("\nRender has fired in Grid!");
 
 
@@ -105,7 +107,7 @@ class Grid extends React.Component {
 
                 <Pane className="pane-test" name="grid-pane" style={{ zIndex: zIndex }  }>
 
-        			<GeoJSON data={GridData} style={gridStyle} ref='geojson' onEachFeature={(feature, layer) => this.onEachFeature(feature,layer)}  pointToLayer={(feature, latlng) => this.pointToLayer(feature,latlng)}/>
+        			<GeoJSON data={GridData} style={gridStylePink} ref='geojson' onEachFeature={(feature, layer) => this.onEachFeature(feature,layer)}  pointToLayer={(feature, latlng) => this.pointToLayer(feature,latlng)}/>
 
                     { this.state.gridLabelsReady && <GridLabels gridLabelsArray={this.state.gridLabelsArray} /> }
                

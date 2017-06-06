@@ -228,14 +228,27 @@ function createStarMap(starData, currentZoom, map) {
 
     	if(!currentStarData.hasOwnProperty('latLng')) {
 
-			const starLngLat = currentStarData.LngLat;
+            if(currentStarData.lat === null && currentStarData.lng === null) {
 
-	    	const currentLatLng = L.latLng(starLngLat[1], starLngLat[0]);
-            // console.log("currentLatLng: ", currentLatLng);
-            starData['lat'] = currentLatLng[1];
-            starData['lng'] = currentLatLng[0];
+                console.log("currentStar data has lat: ", currentStarData.lat);
 
-	    	starData[i].latLng = currentLatLng;
+    			const starLngLat = currentStarData.LngLat;
+
+    	    	const currentLatLng = L.latLng(starLngLat[1], starLngLat[0]);
+                // console.log("currentLatLng: ", currentLatLng);
+                starData['lat'] = currentLatLng[1];
+                starData['lng'] = currentLatLng[0];
+
+    	    	starData[i].latLng = currentLatLng;
+
+            } else {
+
+                const currentLatLng = L.latLng(currentStarData.lat, currentStarData.lng);
+                // console.log("currentLatLng: ", currentLatLng);
+                starData[i].latLng = currentLatLng;
+
+
+            }
 
     	}
 

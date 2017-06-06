@@ -28,8 +28,9 @@ import DatabaseLinks from 'docker-links'
 
 // const DatabaseLinks = require('docker-links').parseLinks(process.env);
 
-console.log("DatabaseLinks: ", DatabaseLinks);
 
+console.log("DatabaseLinks: ", DatabaseLinks.parseLinks(process.env));
+console.log("process.env.NODE_ENV: ", process.env.NODE_ENV);
 
 
 // console.log("imgBlack: ", imgBlack);
