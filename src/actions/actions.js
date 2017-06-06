@@ -1,6 +1,6 @@
 import 'whatwg-fetch';
 import urlencode from 'urlencode';
-import { zoomToSystem, zoomToSystemError, searchSystemsStart, searchSystemsFinish } from './actionCreators.js';
+import { zoomToSystem, zoomToSystemError, searchSystemsStart, searchSystemsFinish, setZoomValue } from './actionCreators.js';
 
 // the async action creator uses the name of the old action creator, so 
 // it will get called by the existing code when a new todo item should 
@@ -44,13 +44,14 @@ export function findSystem(systemName) {
 				const SystemData = {
 					lat: LngLat[1],
 					lng: LngLat[0],
-					zoom: 6,
 					system: SystemObject.system
 				};
 
 				console.log("SystemData: ", SystemData);
 
 				dispatch(zoomToSystem(SystemData));
+				dispatch(setZoomValue(6));
+
 
 	      	}
 

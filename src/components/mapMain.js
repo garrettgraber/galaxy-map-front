@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Map, TileLayer, LayersControl, Pane } from 'react-leaflet';
 import L from 'leaflet';
 import 'whatwg-fetch';
-import { searchSystemsFinish } from '../actions/actionCreators.js';
+import { searchSystemsFinish, getZoomValue, setZoomValue } from '../actions/actionCreators.js';
 const { BaseLayer, Overlay } = LayersControl;
 
 import Grid from './grid.js';
@@ -75,7 +75,7 @@ class MapMain extends React.Component {
 
     	this.refs.map.leafletElement.setMaxBounds(mapBounds);
 
-    	const map = this.refs.map.leafletElement;
+    	// const map = this.refs.map.leafletElement;
 
     	// this.props.map = map;
 
@@ -101,18 +101,24 @@ class MapMain extends React.Component {
     	// console.log("zoom has ended");
    		const currentZoom = this.refs.map.leafletElement.getZoom();
         console.log("\n\nNew Zoom: ", currentZoom);
-        console.log("Old Zoom: ", this.state.zoom);
-    	this.setState({zoom: currentZoom});
-    	console.log("Map zoom end: ", currentZoom);
+        // console.log("Old Zoom: ", this.state.zoom);
+    	// this.setState({zoom: currentZoom});
+    	// console.log("Map zoom end: ", currentZoom);
         // if(currentZoom >= 7) {
         //     this.setState({blackTiles: true});
 
         // } 
+        this.props.dispatch(setZoomValue(currentZoom));
+
+        console.log("this.props.zoom: ", this.props.zoom);
+
     }
 
     onZoomstart(e) {
 
-    	console.log("Map zoom starting...");
+    	console.log("Map zoom starting: ", e);
+
+        console.log("this.props.zoom: ", this.props.zoom);
 
     }
 
@@ -142,12 +148,26 @@ class MapMain extends React.Component {
 
     }
 
+    onDragend(e) {
+        console.log("onDragend: ", e);
+    }
+
 
     autoPanStart(e) {
 
         console.log("autoPanStart: ", e);
 
     }
+
+
+    triggerZoomStart(e) {
+
+            this.map.on('moveend', this.onMoveEnd);
+
+
+
+    }
+
 
     render() {
 
@@ -161,13 +181,16 @@ class MapMain extends React.Component {
     	const zIndexGrid = 220;
 
 
+        console.log("this.props in MapMain: ", this.props);
+
+
     	return (
 
             <div>
 
-                <NavBar />
+                <NavBar  />
 
-        		<Map center={[this.props.currentSystem.lat, this.props.currentSystem.lng]} zoom={this.props.currentSystem.zoom} ref='map' onZoomend={e => this.onZoomend(e)} onZoomstart={e => this.onZoomstart(e)}  onMoveend={e => this.onMoveend(e)} onMovestart={e => this.onMovestart(e)}  style={{top: "50px", zIndex: 5}} >
+        		<Map center={[this.props.currentSystem.lat, this.props.currentSystem.lng]} zoom={this.props.zoom} ref='map' onZoomend={e => this.onZoomend(e)} onZoomstart={e => this.onZoomstart(e)}  onMoveend={e => this.onMoveend(e)} onMovestart={e => this.onMovestart(e)}    onDragend={e => this.onDragend(e)}   style={{top: "50px", zIndex: 5}} >
 
         			<LayersControl>
 
@@ -175,7 +198,7 @@ class MapMain extends React.Component {
 
         					<Pane name="galaxy-pane" style={{ zIndex: zIndexGalaxy }}>
 
-    							<TileLayer url={awsTileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
+    							<TileLayer url={tileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
 
     						</Pane>
 
@@ -219,7 +242,7 @@ class MapMain extends React.Component {
 
     					<Overlay name="Stars Systems" checked={true}  ref="layerContainer" >
 
-    						<StarMap zoom={this.state.zoom} map={this.state.map} mapMove={this.state.mapMoveEvent} />
+    						<StarMap map={this.state.map} mapMove={this.state.mapMoveEvent} />
 
     					</Overlay>
 

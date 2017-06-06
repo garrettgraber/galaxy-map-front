@@ -46,6 +46,9 @@ class SearchData extends React.Component {
 
       } else {
 
+            
+
+
         this.props.dispatch(findSystem(this.state.inputValue));
 
 

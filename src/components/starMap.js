@@ -35,7 +35,6 @@ class StarMap extends React.Component {
             starsInView: [],
             StarComponents: [],
         	starDataLoaded: false,
-            zoomLevel: 2
         };
 
     }
@@ -43,10 +42,6 @@ class StarMap extends React.Component {
     componentDidMount() {
 
     	// console.log("StarMap has mounted: ", this.props);
-    	console.log("StarMap this.refs: ", this.refs);
-          const startZoom = this.props.map.getZoom();
-          console.log("startZoom: ", startZoom);
-          this.setState({zoomLevel: startZoom});
 
     	const that = this;
 
@@ -92,9 +87,9 @@ class StarMap extends React.Component {
     componentWillReceiveProps(newProps) {
 
     	console.log("Props update StarMap: ", newProps);
-        const currentZoom = this.props.map.getZoom();
-        console.log("currentZoom: ", currentZoom);
-          this.setState({zoomLevel: currentZoom});
+        // const currentZoom = this.props.map.getZoom();
+        console.log("currentZoom: ", newProps.zoom);
+          // this.setState({zoomLevel: currentZoom});
 
 
     }
@@ -103,9 +98,8 @@ class StarMap extends React.Component {
 
         // console.log("zoom has ended");
         const currentZoom = this.refs.map.leafletElement.getZoom();
-        console.log("New Zoom: ", currentZoom);
-        this.setState({zoom: currentZoom});
-        console.log("Map zoom end: ", currentZoom);
+        console.log("Star Map Zoom End: ", this.props.zoom);
+        console.log("Map zoom end found from map: ", currentZoom);
 
     }
 
@@ -128,7 +122,7 @@ class StarMap extends React.Component {
 
 				<FeatureGroup>
 
-                    { this.state.starDataLoaded === true  && createStarMap(this.state.starData, this.state.zoomLevel, this.props.map) }
+                    { this.state.starDataLoaded === true  && createStarMap(this.state.starData, this.props.zoom, this.props.map) }
 
 
 				</FeatureGroup>

@@ -96,10 +96,26 @@ function searchSystems(state = false, action) {
 }
 
 
+function zoom(state = 2, action) {
+
+	switch (action.type) {
+		case Actions.GET_ZOOM_VALUE:
+			console.log("getting zoom value: ", state);
+			return state;
+		case Actions.SET_ZOOM_VALUE:
+			console.log("setting zoom value: ", action.payload);
+			return action.payload;
+		default:
+			return state;
+	}
+}
+
+
+
 
 // const rootReducer = combineReducers({currentSystem, searchSystems});
 
-export default combineReducers({currentSystem, searchSystems});
+export default combineReducers({currentSystem, searchSystems, zoom});
 
 
 

@@ -39,3 +39,19 @@ export function searchSystemsFinish() {
 }
 
 
+export function getZoomValue() {
+
+	return {
+		type: Actions.GET_ZOOM_VALUE
+	}
+}
+
+
+export function setZoomValue(newZoom) {
+
+	return {
+		type: Actions.SET_ZOOM_VALUE,
+		payload: newZoom
+	}
+}
+
