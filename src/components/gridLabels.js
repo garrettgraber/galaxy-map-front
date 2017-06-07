@@ -30,7 +30,7 @@ class GridLabels extends React.Component {
 
         // console.log("componentDidMount in GridLables");
         const gridLabelsArray = renderGridLabels(this.props.gridLabelsArray);
-        console.log("gridLabelsArray: ", gridLabelsArray);
+        // console.log("gridLabelsArray: ", gridLabelsArray);
         this.setState({gridLabelsArray : gridLabelsArray});
         this.setState({gridLabelsReady: true});
 
@@ -47,7 +47,7 @@ class GridLabels extends React.Component {
           );
         } else {
             const gridLabelsArray = renderGridLabels(this.props.gridLabelsArray);
-            console.log("gridLabelsArray: ", gridLabelsArray);
+            // console.log("gridLabelsArray: ", gridLabelsArray);
             this.setState({gridLabelsArray : gridLabelsArray});
             this.setState({gridLabelsReady: true});
             return gridLabelsArray;
@@ -73,7 +73,7 @@ class GridLabels extends React.Component {
 
 function renderGridLabels(labelArrayTemp) {
 
-    console.log("renderGridLabels has fired!");
+    // console.log("renderGridLabels has fired!");
 
     const gridLabelsArrayTemp = [];
 

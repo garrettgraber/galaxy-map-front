@@ -35,7 +35,7 @@ export function findSystem(systemName) {
           	let SystemObject = JSON.parse(json);
           	SystemObject = SystemObject[0];
 
-          	console.log("SystemObject: ", SystemObject);
+          	// console.log("SystemObject: ", SystemObject);
 
 	      	if(SystemObject.hasLocation) {
 

@@ -62,12 +62,10 @@ class MapMain extends React.Component {
     componentDidMount() {
 
     	// console.log("Map componet has mounted: ", this.props);
-
     	// console.log("map ref in componet: ", this.refs.map);
 
     	const mapBounds = this.refs.map.leafletElement.getBounds();
     	const currentZoom = this.refs.map.leafletElement.getZoom();
-
 
     	// console.log("map bounds in componet: ", mapBounds);
     	// console.log("currentZoom: ", currentZoom);
@@ -76,9 +74,7 @@ class MapMain extends React.Component {
     	this.refs.map.leafletElement.setMaxBounds(mapBounds);
 
     	// const map = this.refs.map.leafletElement;
-
     	// this.props.map = map;
-
     	// console.log("map: ", map);
 
     	if(this.refs.map) {
@@ -110,33 +106,30 @@ class MapMain extends React.Component {
         // } 
         this.props.dispatch(setZoomValue(currentZoom));
 
-        console.log("this.props.zoom: ", this.props.zoom);
+        // console.log("this.props.zoom: ", this.props.zoom);
 
     }
 
     onZoomstart(e) {
 
-    	console.log("Map zoom starting: ", e);
-
-        console.log("this.props.zoom: ", this.props.zoom);
+    	// console.log("Map zoom starting: ", this.props.zoom);
+        // console.log("this.props.zoom: ", this.props.zoom);
 
     }
 
     onMovestart(e) {
 
-        console.log("onMovestart has fired...");
+        // console.log("onMovestart has fired...");
         this.setState({mapMoveEvent: true});
-
-        console.log("mapMoveEvent: ", this.state.mapMoveEvent);
+        // console.log("mapMoveEvent: ", this.state.mapMoveEvent);
 
     }
 
 
     onMoveend(e) {
 
-        console.log("onMoveend has fired...");
+        // console.log("onMoveend has fired...");
         this.setState({mapMoveEvent: false});
-
         console.log("mapMoveEvent: ", this.state.mapMoveEvent);
 
 
@@ -181,7 +174,7 @@ class MapMain extends React.Component {
     	const zIndexGrid = 220;
 
 
-        console.log("this.props in MapMain: ", this.props);
+        // console.log("this.props in MapMain: ", this.props);
 
 
     	return (

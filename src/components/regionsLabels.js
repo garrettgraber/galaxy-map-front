@@ -31,7 +31,7 @@ class RegionLabels extends React.Component {
 
     	// console.log("grid ref: ", this.refs.grid.leafletElement);
 
-        console.log("componentDidMount in RegionLabels");
+        // console.log("componentDidMount in RegionLabels");
         // console.log("regionsLabelsArray: ", this.props.regionsLabelsArray);
         const regionsLabelComponents = renderRegionLabels(this.props.regionsLabelsArray);
         // console.log("regionsLabelComponents: ", regionsLabelComponents);

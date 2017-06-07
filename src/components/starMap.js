@@ -86,9 +86,9 @@ class StarMap extends React.Component {
 
     componentWillReceiveProps(newProps) {
 
-    	console.log("Props update StarMap: ", newProps);
+    	// console.log("Props update StarMap: ", newProps);
         // const currentZoom = this.props.map.getZoom();
-        console.log("currentZoom: ", newProps.zoom);
+        // console.log("currentZoom: ", newProps.zoom);
           // this.setState({zoomLevel: currentZoom});
 
 
@@ -98,14 +98,14 @@ class StarMap extends React.Component {
 
         // console.log("zoom has ended");
         const currentZoom = this.refs.map.leafletElement.getZoom();
-        console.log("Star Map Zoom End: ", this.props.zoom);
-        console.log("Map zoom end found from map: ", currentZoom);
+        // console.log("Star Map Zoom End: ", this.props.zoom);
+        // console.log("Map zoom end found from map: ", currentZoom);
 
     }
 
     onZoomstart(e) {
 
-        console.log("Map zoom starting...");
+        // console.log("Map zoom starting...");
 
     }
 
@@ -143,19 +143,19 @@ class StarMap extends React.Component {
 function createStarMap(starData, currentZoom, map) {
 
     // console.log("createStarMap...");
-    console.log("map.getBounds(): ", map.getBounds());
+    // console.log("map.getBounds(): ", map.getBounds());
     // console.log("MapBoundariesMax: ", MapBoundariesMax);
-    console.log("currentZoom: ", currentZoom);
+    console.log("Zoom at Star Creation: ", currentZoom);
 
     const CurrentMapBoundaries = map.getBounds();
 
-    console.log("CurrentMapBoundaries: ", CurrentMapBoundaries);
+    // console.log("CurrentMapBoundaries: ", CurrentMapBoundaries);
 
     const mapWidth = CurrentMapBoundaries._northEast.lng - CurrentMapBoundaries._southWest.lng;
     const mapHeight = CurrentMapBoundaries._northEast.lat - CurrentMapBoundaries._southWest.lat;
 
-    console.log("mapWidth: ", mapWidth);
-    console.log("mapHeight: ", mapHeight);
+    // console.log("mapWidth: ", mapWidth);
+    // console.log("mapHeight: ", mapHeight);
 
     let mapPaddingHeight = 0;
     let mapPaddingWidth = 0;
@@ -307,7 +307,7 @@ function createStarMap(starData, currentZoom, map) {
     }
 
     console.log("starSystemTempArray length: ", starSystemTempArray.length);
-    console.log("zoom: ", currentZoom);
+    // console.log("zoom: ", currentZoom);
 
     return starSystemTempArray;
 

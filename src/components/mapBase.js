@@ -13,11 +13,6 @@ import GridData from 'json-loader!../data/grid.geojson';
 // import config from '../data/config.json';
 
 
-const tileServerUrl = 'http://172.17.0.4:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
-const awsTileServerUrl = 'https://s3-us-west-2.amazonaws.com/tiledata.sw.map/tiles-leaflet-7/{z}/{x}/{y}.png';
-
-console.log("tileServerUrl: ", tileServerUrl);
-
 // console.log("config: ", config);
 
 
