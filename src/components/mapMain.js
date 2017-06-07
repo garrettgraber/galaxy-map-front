@@ -191,7 +191,7 @@ class MapMain extends React.Component {
 
         					<Pane name="galaxy-pane" style={{ zIndex: zIndexGalaxy }}>
 
-    							<TileLayer url={awsTileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
+    							<TileLayer url={tileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
 
     						</Pane>
 
@@ -226,11 +226,6 @@ class MapMain extends React.Component {
     			    	</Overlay>
 
 
-    			    	<Overlay name="Hyperspace Lanes" checked={false}>
-
-    			    		<HyperspaceLanes />
-
-    			    	</Overlay>
 
 
     					<Overlay name="Stars Systems" checked={true}  ref="layerContainer" >
@@ -238,6 +233,13 @@ class MapMain extends React.Component {
     						<StarMap map={this.state.map} mapMove={this.state.mapMoveEvent} />
 
     					</Overlay>
+
+
+                        <Overlay name="Hyperspace Lanes" checked={false}>
+
+                            <HyperspaceLanes />
+
+                        </Overlay>
 
     				</LayersControl>
 

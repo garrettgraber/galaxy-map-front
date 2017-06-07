@@ -10,7 +10,7 @@ import store from './stores/store.js';
 
 
 // console.log("Provider: ", Provider);
-console.log("App: ", App);
+// console.log("App: ", App);
 
 
 
@@ -31,7 +31,7 @@ console.log("App: ", App);
 //   console.log("Application state: ", store.getState());
 // });
 
-console.log("store: ", store);
+// console.log("store: ", store);
 
 // container component
 var Wrapper = connect(

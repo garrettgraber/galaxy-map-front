@@ -23,6 +23,12 @@ class HyperspaceLanes extends React.Component {
 
     }
 
+    componentDidMount() {
+
+                console.log("Hyperspace data has been found!: ", this.props);
+
+    }
+
     onEachFeature(feature, layer) {
 
         if(feature.properties.hyperspace) {
@@ -57,6 +63,7 @@ class HyperspaceLanes extends React.Component {
 
     render() {
 
+
     	const hyperspaceLanesStyle = {color: '#00FFFF', weight: 3};
 
 
@@ -75,8 +82,7 @@ class HyperspaceLanes extends React.Component {
 
     		<Pane name="hyperspace-pane" style={{ zIndex: zIndex }}>
 
-    			<GeoJSON data={HyperspaceData} style={hyperspaceLanesStyleCarolina} ref='hyperspace' onEachFeature={(feature, layer) => this.onEachFeature(feature,layer)}  pointToLayer={(feature, latlng) => this.pointToLayer(feature,latlng)}/>
-
+    			<GeoJSON data={HyperspaceData} style={hyperspaceLanesStyleCarolina} ref='hyperspace' onEachFeature={(feature, layer) => this.onEachFeature(feature,layer)}  pointToLayer={(feature, latlng) => this.pointToLayer(feature, latlng)}/>
     		</Pane>
 
     	)
@@ -85,5 +91,17 @@ class HyperspaceLanes extends React.Component {
 
 }
 
-export default HyperspaceLanes;
+// export default HyperspaceLanes;
+
+
+
+
+const mapStateToProps = (state = {}) => {
+    return Object.assign({}, state);
+};
+
+
+// export default MapMain;
+
+export default connect(mapStateToProps)(HyperspaceLanes);
 
