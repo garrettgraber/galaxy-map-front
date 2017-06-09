@@ -27,6 +27,26 @@
 }*/
 
 
+.gridClass {
+    /*color: #49fb35; */
+    color: #FF69B4;
+}
+
+.gridCell {
+    color: #FF69B4;
+
+}
+
+.gridGreen {
+    color: green;
+}
+
+.gridClassHover {
+    color: #ffa500;
+    /*color: red;*/
+}
+
+
 #nav-container {
     position: fixed;
     top: 0px;

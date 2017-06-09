@@ -225,15 +225,11 @@ class MapMain extends React.Component {
 
     			    	</Overlay>
 
-
-
-
     					<Overlay name="Stars Systems" checked={true}  ref="layerContainer" >
 
-    						<StarMap map={this.state.map} mapMove={this.state.mapMoveEvent} />
+    						<StarMap map={this.state.map} mapMove={this.state.mapMoveEvent}/>
 
     					</Overlay>
-
 
                         <Overlay name="Hyperspace Lanes" checked={false}>
 

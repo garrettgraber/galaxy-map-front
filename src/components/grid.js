@@ -53,18 +53,49 @@ class Grid extends React.Component {
     	let polygonArray = feature.geometry.coordinates[0][0];
         polygonArray = polygonArray.slice(0, 4);
 
-        const polygon = L.polygon(convertGeoJsonToMap(polygonArray));
-        const polygonCenter = polygon.getBounds().getCenter();
+        // console.log("polygonArray: ", polygonArray);
+
+        let polygon = L.polygon(convertGeoJsonToMap(polygonArray));
+        let polygonCenter = polygon.getBounds().getCenter();
 
         let gridInArray = this.state.gridLabelsArray.filter(e => e.grid == currentGridValue);
 
         // console.log("\ngridInArray: ", gridInArray.length);
 
+
+        // console.log("polygon: ", polygon);
+
+
+        // polygon.on('mouseover', e => {
+        //     console.log("e: ", e);
+        //     console.log("mouseover: ", currentGridValue);
+        //     console.log("polygon: ", polygon);
+        // });
+
+        // polygon.on('mouseout', e => {
+        //     console.log("e: ", e);
+        //     console.log("mouseout: ", currentGridValue);
+        //     console.log("polygon: ", polygon);
+
+        // });
+
+        const northWestGeoJson = polygonArray[0];
+        const southEastGeoJson = polygonArray[2];
+
+        // console.log("northWestGeoJson: ", northWestGeoJson);
+        // console.log("southEastGeoJson: ", southEastGeoJson);
+
+        const northWest = geoJsonToLatLng(polygonArray[0]);
+        const southEast = geoJsonToLatLng(polygonArray[2]);
+
+        const gridCellBounds = [northWest,  southEast];
+
         if (gridInArray.length == 0) {
 
 			this.state.gridLabelsArray.push({
 	            grid: feature.properties.grid,
-	            point: polygonCenter
+	            point: polygonCenter,
+                bounds: gridCellBounds
 	        });
 
             // this.state.gridLabelsArray.push( gridLabel({
@@ -78,7 +109,7 @@ class Grid extends React.Component {
 
         if(this.state.gridLabelsArray.length >= 552) {
 
-            // console.log("\n\nGrid Labels Ready. Release the Krakken! ");
+            console.log("\n\nGrid Labels Ready. Release the Krakken! ");
 
             this.setState({gridLabelsReady: true});
         }
@@ -154,6 +185,7 @@ function convertGeoJsonToMap(geojsonArray) {
         latLngArray.push(geoJsonToLatLng(currentCoordinateArray));
 
     }
+
 
     return latLngArray;
 

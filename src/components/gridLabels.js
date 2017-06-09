@@ -40,11 +40,11 @@ class GridLabels extends React.Component {
     }
 
 
-  renderGridLabelsComponents(){
-    if (this.state.gridLabelsReady) {
-      return (
-            this.state.gridLabelsArray
-          );
+    renderGridLabelsComponents(){
+        if (this.state.gridLabelsReady) {
+            return (
+                this.state.gridLabelsArray
+              );
         } else {
             const gridLabelsArray = renderGridLabels(this.props.gridLabelsArray);
             // console.log("gridLabelsArray: ", gridLabelsArray);
@@ -79,6 +79,9 @@ function renderGridLabels(labelArrayTemp) {
 
     for(let currentGridObject of labelArrayTemp) {
 
+
+        // console.log("currentGridObject: ", currentGridObject);
+
         // let myIcon = L.divIcon({
         //     className: "gridClass",
         //     iconSize: new L.Point(30, 20), 
@@ -95,7 +98,7 @@ function renderGridLabels(labelArrayTemp) {
         const lat = currentGridObject.point.lat;
         const lng = currentGridObject.point.lng;
 
-        gridLabelsArrayTemp.push( <GridCell key={gridName} grid={gridName} lat={lat} lng={lng} /> ) ;
+        gridLabelsArrayTemp.push( <GridCell key={gridName} grid={gridName} lat={lat} lng={lng} bounds={currentGridObject.bounds}  /> ) ;
 
 
     }
@@ -103,6 +106,33 @@ function renderGridLabels(labelArrayTemp) {
     return gridLabelsArrayTemp;
 
 };
+
+
+
+
+function convertGeoJsonToMap(geojsonArray) {
+
+    const latLngArray = [];
+
+    for(let currentCoordinateArray of geojsonArray) {
+
+        latLngArray.push(geoJsonToLatLng(currentCoordinateArray));
+
+    }
+
+
+    return latLngArray;
+
+};
+
+
+function geoJsonToLatLng(geojsonLngLat) {
+
+    return [ geojsonLngLat[1], geojsonLngLat[0] ];
+
+};
+
+
 
 
 export default GridLabels;
