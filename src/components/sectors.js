@@ -47,7 +47,7 @@ class Sectors extends React.Component {
 
     render() {
 
-    	const zIndex = 260;
+    	const zIndex = 220;
     	const sectorsStyle = {color: 'gold', weight: 1, opacity: 0.5};
 
 

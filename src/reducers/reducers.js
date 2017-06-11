@@ -112,10 +112,58 @@ function zoom(state = 2, action) {
 
 
 
+function zoomChange(state = true, action) {
+
+	switch (action.type) {
+
+		case Actions.ZOOM_CHANGE_ON:
+			console.log("Map is zooming: ", true);
+			return true;
+		case Actions.ZOOM_CHANGE_OFF:
+			console.log("Map is zooming: ", false);
+			return false;
+		case Actions.ZOOM_CHANGE_STATUS:
+			console.log("Map zoom status: ", state);
+			return state;
+		default:
+			return state;
+
+
+	}
+
+}
+
+
+function renderMap(state = true, action) {
+
+	switch (action.type) {
+
+		case Actions.MAP_RENDER_ON:
+			console.log("rendering map: ", true);
+			return true;
+		case Actions.MAP_RENDER_OFF:
+			console.log("rendering map: ", false);
+			return false;
+		case Actions.MAP_RENDER_STATUS:
+			console.log("rendering map status: ", state);
+			return state;
+		default:
+			return state;
+
+
+
+	}
+
+
+
+}
+
+
+
 
 // const rootReducer = combineReducers({currentSystem, searchSystems});
 
-export default combineReducers({currentSystem, searchSystems, zoom});
+export default combineReducers({currentSystem, searchSystems, zoom, renderMap, zoomChange});
 
 
 

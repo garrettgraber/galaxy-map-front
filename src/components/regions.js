@@ -146,7 +146,7 @@ class Regions extends React.Component {
 
     render() {
 
-    	const zIndex = 250;
+    	const zIndex = 240;
     	const regionsStyle = {color: 'purple', weight: 2, fill: false};
 
     	return (

@@ -7,6 +7,16 @@ import _ from 'lodash';
 
 
 import { Planet, HyperSpaceLane }from '../classes/stellarClasses.js';
+import { 
+    searchSystemsFinish,
+    getZoomValue,
+    setZoomValue,
+    renderMapOn,
+    renderMapOff,
+    renderMapStatus,
+    zoomChangeStatus,
+    zoomChangeOff
+} from '../actions/actionCreators.js';
 
 
 // import ReactFauxDOM from 'react-faux-dom';
@@ -41,9 +51,10 @@ class StarMap extends React.Component {
         this.state = {
         	starData: [],
             starsInView: [],
-            StarComponents: [],
+            StarMapComponents: [],
         	starDataLoaded: false,
-            PlanetArray: []
+            PlanetArray: [],
+            zoom: 2
         };
 
     }
@@ -74,9 +85,10 @@ class StarMap extends React.Component {
                     // console.log("textWidth: ", textWidth);
                     const currentStar = StarData[i];
 			        currentStar.textWidth = textWidth + 0.5;
-                    currentStar.ObjectInMapView = Planet.prototype.ObjectInMapView;
+                    currentStar.starInMapView = Planet.prototype.starInMapView;
                     currentStar.galaticXYtoMapPoints = Planet.prototype.galaticXYtoMapPoints;
                     currentStar.planetIsAtZoomLevel = Planet.prototype.planetIsAtZoomLevel;
+                    currentStar.starIsVisible = Planet.prototype.starIsVisible;
 
 
                     // console.log("currentStar: ", currentStar);
@@ -93,6 +105,9 @@ class StarMap extends React.Component {
 
 	    		that.setState({starDataLoaded: true});
 
+                const StarMapComponents = that.createStarMap();
+                that.setState({StarMapComponents: StarMapComponents});
+
 	    	});
 
     }
@@ -101,40 +116,42 @@ class StarMap extends React.Component {
     componentWillReceiveProps(newProps) {
 
     	// console.log("Props update StarMap: ", newProps);
-        // const currentZoom = this.props.map.getZoom();
-        // console.log("currentZoom: ", newProps.zoom);
+     
           // this.setState({zoomLevel: currentZoom});
 
 
-    }
+        console.log("\nZoom in StarMap: ", this.props.zoom);
+        const currentZoom = this.props.map.getZoom();
+        console.log("currentZoom: ", newProps.zoom);
 
-    onZoomend(e) {
+        if(this.props.zoom !== this.state.zoom) {
 
-        // console.log("zoom has ended");
-        const currentZoom = this.refs.map.leafletElement.getZoom();
-        // console.log("Star Map Zoom End: ", this.props.zoom);
-        // console.log("Map zoom end found from map: ", currentZoom);
+            console.log("Zoom change: ", this.props.zoom);
+        }
 
-    }
+        this.setState({zoom: this.props.zoom});
 
-    onZoomstart(e) {
 
-        // console.log("Map zoom starting...");
 
     }
+
 
 
     createStarMap() {
 
-        console.log("starData: ", this.state.starData);
+        console.log("\n\n****StarMap creation!****\n\n");
+
+        // console.log("starData: ", this.state.starData);
+        // console.log("this.props.zoom: ", this.props.zoom);
 
         // console.log("createStarMap...");
         // console.log("map.getBounds(): ", map.getBounds());
         // console.log("MapBoundariesMax: ", MapBoundariesMax);
         const currentZoom = this.props.zoom;
-        // console.log("Zoom at Star Creation: ", currentZoom);
+        const currentMap = this.props.map;
+        console.log("+++++Zoom at Star Creation: ", currentZoom);
 
-        const CurrentMapBoundaries = this.props.map.getBounds();
+        const CurrentMapBoundaries = currentMap.getBounds();
 
         // console.log("CurrentMapBoundaries: ", CurrentMapBoundaries);
 
@@ -197,21 +214,32 @@ class StarMap extends React.Component {
 
 
         let starsCurrentlyInView = _.filter(this.state.starData, e => { 
-            return e.ObjectInMapView(this.props.map, mapWidth, mapHeight, MapBoundaries) === true; 
+            return e.starInMapView(currentMap, mapWidth, mapHeight, MapBoundaries) === true; 
         });
 
         let starsAtZoomLevel = _.filter(starsCurrentlyInView, e => { 
-            return e.planetIsAtZoomLevel(this.props.zoom) === true; 
+            return e.planetIsAtZoomLevel(currentZoom) === true; 
         });
+
+        let starsCurrentlyVisible = _.filter(this.state.starData, e => { 
+            const starVisible = e.starIsVisible(currentZoom);
+            // console.log("Star is currently in view: ", e);
+            // console.log("starVisible: ", starVisible);
+            return starVisible === true; 
+        });
+
+
 
 
         // _.forEach(starsCurrentlyInView, (e) => { 
         //     console.log("e: ", e); 
+        //     console.log('Planet zoom level: ', e.planetIsAtZoomLevel(this.props.zoom));
         // });
 
 
         console.log("starsCurrentlyInView: ", starsCurrentlyInView);
         console.log("starsAtZoomLevel: ", starsAtZoomLevel);
+        console.log("starsCurrentlyVisible: ", starsCurrentlyVisible);
 
 
         const starSystemTempArray = [];
@@ -219,9 +247,15 @@ class StarMap extends React.Component {
 
         const zoomLevelBasedRendering = true;
 
+        // for(let i=0; i < starsCurrentlyInView.length; i++) {
+
+
         for(let i=0; i < this.state.starData.length; i++) {
 
+
             let currentStarData = this.state.starData[i];
+
+
 
             // let currentStarData = starsCurrentlyInView[i];
 
@@ -255,13 +289,28 @@ class StarMap extends React.Component {
             }
 
 
-            // ObjectInMapView(starData[i], map);
-
-            let objectInView = currentStarData.ObjectInMapView(this.props.map, mapWidth, mapHeight, MapBoundaries);
 
 
+            let objectInView = currentStarData.starInMapView(this.props.map, mapWidth, mapHeight, MapBoundaries);
 
             if(zoomLevelBasedRendering && objectInView) {
+
+
+                if(currentStarData.zoom === 0) {
+
+                    starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true} /> );
+
+                }
+
+
+
+                if(currentStarData.zoom === 1 && currentZoom >= 3) {
+
+
+                    starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true}  /> );
+
+
+                }
 
                 // console.log("Star Found! ", starData[i]);
 
@@ -274,21 +323,24 @@ class StarMap extends React.Component {
 
 
                //  }
+            
 
 
-                if(currentStarData.zoom === 0) {
+                // if(currentStarData.zoom === 0) {
 
-                    starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true} /> );
+                //     starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true} /> );
 
-                }
-
-                if(currentStarData.zoom === 1 && currentZoom >= 3) {
+                // }
 
 
-                    starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true}  /> );
+
+                // if(currentStarData.zoom === 1 && currentZoom >= 3) {
 
 
-                }
+                //     starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true}  /> );
+
+
+                // }
 
                 if(currentStarData.zoom === 2 && currentZoom >= 5) {
 
@@ -304,17 +356,27 @@ class StarMap extends React.Component {
                 }
 
 
-            } else {
+            } else if (!zoomLevelBasedRendering && objectInView)  {
 
-                // console.log("Else has fired...");
-                // starSystemTempArray.push( <StarSystem key={starData[i].system} StarObject={starData[i]} zoom={currentZoom} map={map} labels={true}  /> );
+                starSystemTempArray.push( <StarSystem key={this.state.starData[i].system + "|x:" + this.state.starData[i].xGalactic +  "|y:" + this.state.starData[i].yGalactic} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true}  /> );
 
             }
 
 
-        }
 
+        }
+        // this.props.dispatch( renderMapOff() );
+
+        // console.log("State after render: ", this.props);
+        // console.log("Star Systems rendered: ", starSystemTempArray.length);
+
+
+        console.log("\n\n****StarMap Completed!****");
+
+        console.log("State after render: ", this.props);
         console.log("Star Systems rendered: ", starSystemTempArray.length);
+        console.log("\n\n");
+
         // console.log("zoom: ", currentZoom);
 
         return starSystemTempArray;
@@ -327,7 +389,37 @@ class StarMap extends React.Component {
 
 
 
+        this.props.dispatch( zoomChangeStatus() );
+
         // console.log("Props update MapMain: ", newProps);
+
+        let StarMapComponents = [];
+
+        // StarMapComponents = this.createStarMap();
+        // this.setState({StarMapComponents: StarMapComponents});
+
+        // console.log("Rendering map has fired: ", this.props.renderMap);
+        // console.log("Zooming the map has fired: ", this.props.zoomChange);
+
+
+        if(this.props.renderMap ||  this.props.zoomChange) {
+
+            StarMapComponents = this.createStarMap();
+            this.setState({StarMapComponents: StarMapComponents});
+
+            console.log("Rendering map has fired: ", this.props.renderMap);
+            console.log("Zooming the map has fired: ", this.props.zoomChange);
+
+            // this.props.dispatch( renderMapOff() );
+
+        } else {
+
+            StarMapComponents = this.state.StarMapComponents;
+        }
+
+        // StarMapComponents = this.createStarMap();
+        console.log("Number of StarMapComponents in newProps: ", StarMapComponents.length);
+
 
     }    
 
@@ -336,22 +428,57 @@ class StarMap extends React.Component {
     render() {
 
     	const zIndex = 290;
+        // let StarMapComponents = [];
 
-        console.log("this.props.mapBuilt: ", this.props.mapBuilt );
+        console.log("this.props.render: ", this.props);
+        console.log("this.props.mapMove: ", this.props.mapMove);
+        console.log("this.props.zoom: ", this.props.zoom);
+        
+
+
+
+        // let StarMapComponents =  null;
+
+
+        // if(this.props.renderMap) {
+
+        //     StarMapComponents = this.createStarMap();
+
+        // } else {
+
+        //     StarMapComponents = StarMapComponents;
+        // }
+
+        const StarMapComponents = this.state.StarMapComponents;
+        console.log("\n\nStarMapComponents in render: ", StarMapComponents.length);
+
+        if(this.props.mapMove) {
+
+            console.log("map move is rendering the map\n\n");
+
+
+        } else if(this.props.zoomChange) {
+
+            console.log("zoomChange hasfired map\n\n");
+        } else {
+
+            console.log("Something besides map move and zoom is rendering the map: ", this.props);
+        }
+
+
+
 
 
     	return (
 
     		<Pane name="star-pane" style={{zIndex: zIndex}}>
 
-				<FeatureGroup>
+				<FeatureGroup  onZoomend={e => this.onZoomend(e)}   >  
 
-                    { (this.state.starDataLoaded === true  || this.props.mapMove === true)  && this.createStarMap() }
-
+                    { this.state.StarMapComponents }
 
 				</FeatureGroup>
 	    		
-
     		</Pane>
 
     	)
@@ -360,6 +487,9 @@ class StarMap extends React.Component {
 
 }
 
+
+
+// { ( this.state.starDataLoaded === true  || this.props.mapMove === true || this.props.zoom === 2)  && this.createStarMap()  }
 // { this.state.starDataLoaded === true && createStarMap(this.state.starData, this.props.zoom, this.props.map) }
 
 

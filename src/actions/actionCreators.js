@@ -55,3 +55,60 @@ export function setZoomValue(newZoom) {
 	}
 }
 
+
+export function renderMapOn() {
+
+	return {
+		type: Actions.MAP_RENDER_ON
+	}
+
+}
+
+
+
+export function renderMapOff() {
+
+	return {
+		type: Actions.MAP_RENDER_OFF
+	}
+
+}
+
+export function renderMapStatus() {
+
+	return {
+		type: Actions.MAP_RENDER_STATUS
+	}
+
+
+}
+
+
+
+export function zoomChangeOn() {
+
+	return {
+		type: Actions.Actions.ZOOM_CHANGE_ON
+	}
+
+}
+
+
+
+export function zoomChangeOff() {
+
+	return {
+		type: Actions.ZOOM_CHANGE_OFF
+	}
+
+}
+
+export function zoomChangeStatus() {
+
+	return {
+		type: Actions.ZOOM_CHANGE_STATUS
+	}
+
+	
+}
+

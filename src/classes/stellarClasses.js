@@ -20,7 +20,7 @@ class Planet {
 
 
 
-	ObjectInMapView(map, mapWidth, mapHeight, MapBoundaries) {
+	starInMapView(map, mapWidth, mapHeight, MapBoundaries) {
 
 	    // console.log("mapHeight in ObjectInMapView: ", mapHeight);
 	    // console.log("mapWidth in ObjectInMapView: ", mapWidth);
@@ -36,7 +36,7 @@ class Planet {
 	    // const inEastWestRange = (CurrentMapBoundaries._southWest.lng - mapOffSetLng < stellarObject.latLng.lng && stellarObject.latLng.lng < CurrentMapBoundaries._northEast.lng + mapOffSetLng) ? true : false;
 
 	    const inNorthSouthRange = (MapBoundaries.south < this.lat && this.lat < MapBoundaries.north) ? true : false;
-	    const inEastWestRange = (MapBoundaries.west - mapOffSetLng < this.lng && this.lng < MapBoundaries.east) ? true : false;
+	    const inEastWestRange = (MapBoundaries.west< this.lng && this.lng < MapBoundaries.east) ? true : false;
 	    // console.log("inNorthSouthRange: ", inNorthSouthRange);
 	    // console.log("inEastWestRange: ", inEastWestRange);
 	    // console.log("CurrentMapBoundaries: ", CurrentMapBoundaries);
@@ -60,6 +60,92 @@ class Planet {
 
 	}
 
+
+	starIsVisible(currentZoom) {
+
+		let starIsViewableAtZoom = false;
+
+		// console.log("this.zoom in starIsVisible:  ", this.zoom);
+		// console.log("starIsVisible currentZoom: ", currentZoom);
+
+
+		switch(this.zoom) {
+
+	        case(this.zoom === 0):
+	        	starIsViewableAtZoom = true;
+	        	break;
+	        case((this.zoom === 1 || this.zoom === 2) && currentZoom >= 3):
+	        	starIsViewableAtZoom = true;
+	        	break;
+
+	        case(this.zoom === 3 && currentZoom >= 4):
+	        	starIsViewableAtZoom = true;
+	        	break;
+
+	        case(this.zoom >= 4 && currentZoom >= 5):
+	        	starIsViewableAtZoom = true;
+	        	break;
+
+	        case(this.zoom >= 0 && currentZoom >=6):
+	        	starIsViewableAtZoom = true;
+	        	break;
+
+	        default:
+	        	starIsViewableAtZoom = false;
+	        	break;
+		}
+
+
+		return starIsViewableAtZoom;
+
+
+
+        // if(this.zoom === 0) {
+
+        // 	return true;
+
+        // }
+
+
+
+        // if(this.zoom === 1 && currentZoom >= 3) {
+
+
+        // 	return true;
+
+
+        // }
+
+        // // if(currentStarData.zoom === 0) {
+
+        // //     starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true} /> );
+
+        // // }
+
+
+
+        // // if(currentStarData.zoom === 1 && currentZoom >= 3) {
+
+
+        // //     starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true}  /> );
+
+
+        // // }
+
+        // if(this.zoom === 2 && currentZoom >= 5) {
+
+
+        // 	return true;
+
+
+        // }
+
+        // if(this.zoom >= 3 && currentZoom >= 6) {
+
+        // 	return true;
+        // }
+
+    }
 
 
 	galaticXYtoMapPoints(xGalactic, yGalactic) {
