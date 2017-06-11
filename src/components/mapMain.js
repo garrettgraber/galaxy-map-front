@@ -54,7 +54,7 @@ const blackTileImage = imgBlack;
 const awsTileServerUrl = 'https://s3-us-west-2.amazonaws.com/tiledata.sw.map/tiles-leaflet-7/{z}/{x}/{y}.png';
 
 
-const awsTileServerUrlEast = 'https://s3-us-east-2.amazonaws.com/tiledata.sw.map.east/tiles-leaflet-7/{z}/{x}/{y}.png';
+const awsTileServerUrlEast = 'https://s3-us-east-1.amazonaws.com/tiledata.sw.map.east/tiles-leaflet-7/{z}/{x}/{y}.png';
 
 
 
