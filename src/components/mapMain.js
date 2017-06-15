@@ -48,7 +48,7 @@ console.log("process.env.NODE_ENV: ", process.env.NODE_ENV);
 
 
 
-const tileServerUrl = 'http://172.17.0.4:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
+const tileServerUrl = 'http://172.17.0.4:8110/tiles-leaflet-8/{z}/{x}/{y}.png';
 const blackTileUrl = 'http://172.17.0.4:8110/tiles-black/black-tile.png';
 const blackTileImage = imgBlack;
 const awsTileServerUrl = 'https://s3-us-west-2.amazonaws.com/tiledata.sw.map/tiles-leaflet-7/{z}/{x}/{y}.png';
@@ -228,13 +228,15 @@ class MapMain extends React.Component {
         }
 
 
-        this.props.dispatch( renderMapOn() );
+
+        if(this.props.zoom > 3) {
+
+            this.props.dispatch( renderMapOn() );
+            this.setState({mapMoveEnd: true});
+            console.log("this.props on MOveend after render set: ", this.props);
 
 
-        this.setState({mapMoveEnd: true});
-
-
-        console.log("this.props on MOveend after render set: ", this.props);
+        }
 
     }
 
@@ -244,6 +246,9 @@ class MapMain extends React.Component {
         // this.props.dispatch( renderMapOff() );
 
         this.props.dispatch( renderMapOn() );
+
+        this.setState({mapMoveEnd: true});
+
 
     }
 
@@ -304,7 +309,7 @@ class MapMain extends React.Component {
 
     	// const position = [this.state.lat, this.state.lng];
     	const minZoom = 2;
-    	const maxZoom = 7;
+    	const maxZoom = 8;
     	// const height = 1000;
     	// const width = 1000;
     	const zIndexGalaxy = 210;
@@ -329,7 +334,7 @@ class MapMain extends React.Component {
 
         					<Pane name="galaxy-pane" style={{ zIndex: zIndexGalaxy }}>
 
-    							<TileLayer url={awsTileServerUrlEast} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
+    							<TileLayer url={tileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
 
     						</Pane>
 

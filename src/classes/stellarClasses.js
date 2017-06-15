@@ -1,11 +1,28 @@
 
 
+
+class MyClass {
+  constructor({a,b} = {a:1,b:2}) {
+    this.a = a;
+    this.b = b;
+  }
+}
+
+
+
 class Planet {
-	constructor(systemValue, sectorValue, regionValue, coordinatesValue, xGalactic = 0, yGalactic = 0, xGalacticLong = 0, yGalacticLong = 0, hasLocation = false, LngLat = [], zoom = 5, link = '') {
-		this.system = systemValue;
-		this.sector = sectorValue;
-		this.region = regionValue;
-		this.coordinates = coordinatesValue;
+	// constructor(system, sector, region, coordinates, xGalactic = 0, yGalactic = 0, xGalacticLong = 0, yGalacticLong = 0, hasLocation = false, LngLat = [], zoom = 5, link = '', textWidth = 0) {
+
+
+	constructor( {_id='', system='', sector='', region='', coordinates='', xGalactic=0, yGalactic=0, xGalacticLong=0, yGalacticLong=0, hasLocation=false, LngLat=[], zoom=0, link='', textWidth=0}    =  {} ) {
+
+	// constructor({system , sector, region, coordinates, xGalactic, yGalactic, xGalacticLong,yGalacticLong, hasLocation, LngLat, zoom, link, textWidth} =  ) {
+
+		this._id = _id;
+		this.system = system;
+		this.sector = sector;
+		this.region = region;
+		this.coordinates = coordinates;
 		this.xGalactic = xGalactic;
 		this.yGalactic = yGalactic;
 		this.xGalacticLong = xGalacticLong;
@@ -16,6 +33,7 @@ class Planet {
 		this.lat = (LngLat.length)? LngLat[1] : null;
 		this.zoom = zoom;
 		this.link = link;
+		this.textWidth = textWidth;
 	}
 
 
@@ -61,6 +79,7 @@ class Planet {
 	}
 
 
+
 	starIsVisible(currentZoom) {
 
 		let starIsViewableAtZoom = false;
@@ -69,81 +88,63 @@ class Planet {
 		// console.log("starIsVisible currentZoom: ", currentZoom);
 
 
-		switch(this.zoom) {
+		// switch(this.zoom) {
 
-	        case(this.zoom === 0):
-	        	starIsViewableAtZoom = true;
-	        	break;
-	        case((this.zoom === 1 || this.zoom === 2) && currentZoom >= 3):
-	        	starIsViewableAtZoom = true;
-	        	break;
+	 //        case(this.zoom === 0):
+	 //        	starIsViewableAtZoom = true;
+	 //        	break;
+	 //        case((this.zoom === 1 || this.zoom === 2) && currentZoom >= 3):
+	 //        	starIsViewableAtZoom = true;
+	 //        	break;
 
-	        case(this.zoom === 3 && currentZoom >= 4):
-	        	starIsViewableAtZoom = true;
-	        	break;
+	 //        case(this.zoom === 3 && currentZoom >= 4):
+	 //        	starIsViewableAtZoom = true;
+	 //        	break;
 
-	        case(this.zoom >= 4 && currentZoom >= 5):
-	        	starIsViewableAtZoom = true;
-	        	break;
+	 //        case(this.zoom >= 4 && currentZoom >= 5):
+	 //        	starIsViewableAtZoom = true;
+	 //        	break;
 
-	        case(this.zoom >= 0 && currentZoom >=6):
-	        	starIsViewableAtZoom = true;
-	        	break;
+	 //        case(this.zoom >= 0 && currentZoom >=6):
+	 //        	starIsViewableAtZoom = true;
+	 //        	break;
 
-	        default:
-	        	starIsViewableAtZoom = false;
-	        	break;
-		}
-
-
-		return starIsViewableAtZoom;
+	 //        default:
+	 //        	starIsViewableAtZoom = false;
+	 //        	break;
+		// }
 
 
+		// // console.log("star is viewable at zoom: ", starIsViewableAtZoom);
 
-        // if(this.zoom === 0) {
-
-        // 	return true;
-
-        // }
+		// return starIsViewableAtZoom;
 
 
 
-        // if(this.zoom === 1 && currentZoom >= 3) {
+
+        if(this.zoom === 0) {
+
+			starIsViewableAtZoom = true;
+
+        } else if(this.zoom === 1 && currentZoom >= 3) {
+
+        	starIsViewableAtZoom = true;
+
+        } else if(this.zoom === 2 && currentZoom >= 5) {
+
+        	starIsViewableAtZoom = true;
+
+        } else if(this.zoom === 3 && currentZoom >= 6) {
+
+        	starIsViewableAtZoom = true;
+
+        } else {
+
+        	starIsViewableAtZoom = false;
+        }
 
 
-        // 	return true;
-
-
-        // }
-
-        // // if(currentStarData.zoom === 0) {
-
-        // //     starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true} /> );
-
-        // // }
-
-
-
-        // // if(currentStarData.zoom === 1 && currentZoom >= 3) {
-
-
-        // //     starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true}  /> );
-
-
-        // // }
-
-        // if(this.zoom === 2 && currentZoom >= 5) {
-
-
-        // 	return true;
-
-
-        // }
-
-        // if(this.zoom >= 3 && currentZoom >= 6) {
-
-        // 	return true;
-        // }
+        return starIsViewableAtZoom;
 
     }
 

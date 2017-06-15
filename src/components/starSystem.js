@@ -90,6 +90,9 @@ class StarSystem extends React.Component {
 
 
         const textWidth = this.props.StarObject.textWidth;
+        const starLocation = [ this.props.StarObject.lat, this.props.StarObject.lng ];
+
+
 
         let myIcon = L.divIcon({
             className: "systemLabel",
@@ -101,8 +104,8 @@ class StarSystem extends React.Component {
     	return (
 
             <div>
-                <CircleMarker center={this.props.StarObject.latLng} radius={1} color={starColor} fillColor={fillColor} fileOpacity={fileOpacity} onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)} ref='star' />
-                <Marker key={this.props.StarObject.system} position={this.props.StarObject.latLng} icon={myIcon} zIndexOffset={-5} onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)} ref='starText'/>
+                <CircleMarker center={starLocation} radius={1} color={starColor} fillColor={fillColor} fileOpacity={fileOpacity} onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)} ref='star' />
+                <Marker key={this.props.StarObject.system} position={starLocation} icon={myIcon} zIndexOffset={-5} onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)} ref='starText'/>
             </div>
                                             
     	)

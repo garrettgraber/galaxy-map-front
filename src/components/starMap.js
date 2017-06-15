@@ -45,6 +45,7 @@ const MapBoundariesMax = {
 
 
 
+
 class StarMap extends React.Component {
     constructor(props) {
         super(props);
@@ -53,7 +54,10 @@ class StarMap extends React.Component {
             starsInView: [],
             StarMapComponents: [],
         	starDataLoaded: false,
-            PlanetArray: [],
+            GalacticPlanetsArray: [],
+            GalacticPlanetsSet: new Set(),
+            previousIntersectionMap: new Set(),
+            PlanetarySystemArray: [],
             zoom: 2
         };
 
@@ -74,6 +78,8 @@ class StarMap extends React.Component {
 	    		// console.log("Star Data: ", data);
                 const StarData = JSON.parse(data);
 
+                const PlanetsArray = [];
+
                 // console.log("StarData: ", StarData);
 
 	    		for(let i=0; i < StarData.length; i++) {
@@ -84,7 +90,15 @@ class StarMap extends React.Component {
 
                     // console.log("textWidth: ", textWidth);
                     const currentStar = StarData[i];
-			        currentStar.textWidth = textWidth + 0.5;
+                    currentStar.textWidth = textWidth + 0.5;
+                    delete currentStar.__v;
+
+                    const CurrentSystem = new Planet(currentStar);
+
+                    // console.log("\nCurrentSystem: ", CurrentSystem);
+
+                    PlanetsArray.push(CurrentSystem);
+
                     currentStar.starInMapView = Planet.prototype.starInMapView;
                     currentStar.galaticXYtoMapPoints = Planet.prototype.galaticXYtoMapPoints;
                     currentStar.planetIsAtZoomLevel = Planet.prototype.planetIsAtZoomLevel;
@@ -101,12 +115,21 @@ class StarMap extends React.Component {
 
                 // that.setState({StarComponents: StarComponents});
 
+                const galacticPlanetsSet = new Set(PlanetsArray);
+
+                console.log("Galactic Planets Set: ", galacticPlanetsSet);
+
 	    		that.setState({starData: StarData}); 
 
-	    		that.setState({starDataLoaded: true});
+                that.setState({GalacticPlanetsArray: PlanetsArray});
+
+                that.setState({GalacticPlanetsSet: galacticPlanetsSet});
 
                 const StarMapComponents = that.createStarMap();
                 that.setState({StarMapComponents: StarMapComponents});
+
+	    		that.setState({starDataLoaded: true});
+
 
 	    	});
 
@@ -139,30 +162,40 @@ class StarMap extends React.Component {
 
     createStarMap() {
 
-        console.log("\n\n****StarMap creation!****\n\n");
+        console.log("\n\n\n****StarMap creation!****");
+
+        const currentZoom = this.props.zoom;
+        const currentMap = this.props.map;
+        console.log("+++++Zoom at Star Creation: ", currentZoom);
+
+        const zoomLevelBasedRendering = true;
+        const starSystemArray = [];
+        let starSystemTempArray = [];
+        const CurrentMapBoundaries = currentMap.getBounds();
+        const mapWidth = CurrentMapBoundaries._northEast.lng - CurrentMapBoundaries._southWest.lng;
+        const mapHeight = CurrentMapBoundaries._northEast.lat - CurrentMapBoundaries._southWest.lat;
+
+        let InViewSystems = 0;
+        let mapPaddingHeight = 0;
+        let mapPaddingWidth = 0;
+
 
         // console.log("starData: ", this.state.starData);
+
+        // console.log("Galactic Planets: ", this.state.GalacticPlanetsArray);
         // console.log("this.props.zoom: ", this.props.zoom);
 
         // console.log("createStarMap...");
         // console.log("map.getBounds(): ", map.getBounds());
         // console.log("MapBoundariesMax: ", MapBoundariesMax);
-        const currentZoom = this.props.zoom;
-        const currentMap = this.props.map;
-        console.log("+++++Zoom at Star Creation: ", currentZoom);
+ 
 
-        const CurrentMapBoundaries = currentMap.getBounds();
 
         // console.log("CurrentMapBoundaries: ", CurrentMapBoundaries);
-
-        const mapWidth = CurrentMapBoundaries._northEast.lng - CurrentMapBoundaries._southWest.lng;
-        const mapHeight = CurrentMapBoundaries._northEast.lat - CurrentMapBoundaries._southWest.lat;
 
         // console.log("mapWidth: ", mapWidth);
         // console.log("mapHeight: ", mapHeight);
 
-        let mapPaddingHeight = 0;
-        let mapPaddingWidth = 0;
 
         // console.log("map.getBounds(): ", map.getBounds());
         // console.log("MapBoundariesMax: ", MapBoundariesMax);
@@ -213,75 +246,79 @@ class StarMap extends React.Component {
         // console.log("westernBoundary: ", westernBoundary);
 
 
-        let starsCurrentlyInView = _.filter(this.state.starData, e => { 
+        let starsCurrentlyInView = _.filter(this.state.GalacticPlanetsArray, e => { 
             return e.starInMapView(currentMap, mapWidth, mapHeight, MapBoundaries) === true; 
         });
 
-        let starsAtZoomLevel = _.filter(starsCurrentlyInView, e => { 
-            return e.planetIsAtZoomLevel(currentZoom) === true; 
-        });
-
-        let starsCurrentlyVisible = _.filter(this.state.starData, e => { 
-            const starVisible = e.starIsVisible(currentZoom);
-            // console.log("Star is currently in view: ", e);
-            // console.log("starVisible: ", starVisible);
-            return starVisible === true; 
-        });
-
-
-
-
-        // _.forEach(starsCurrentlyInView, (e) => { 
-        //     console.log("e: ", e); 
-        //     console.log('Planet zoom level: ', e.planetIsAtZoomLevel(this.props.zoom));
+        // let starsAtZoomLevel = _.filter(this.state.GalacticPlanetsArray, e => { 
+        //     return e.planetIsAtZoomLevel(currentZoom) === true; 
         // });
 
-
-        console.log("starsCurrentlyInView: ", starsCurrentlyInView);
-        console.log("starsAtZoomLevel: ", starsAtZoomLevel);
-        console.log("starsCurrentlyVisible: ", starsCurrentlyVisible);
-
-
-        const starSystemTempArray = [];
-        let InViewSystems = 0;
-
-        const zoomLevelBasedRendering = true;
-
-        // for(let i=0; i < starsCurrentlyInView.length; i++) {
-
-
-        for(let i=0; i < this.state.starData.length; i++) {
-
-
-            let currentStarData = this.state.starData[i];
+        let starsCurrentlyVisible = _.filter(this.state.GalacticPlanetsArray, e => { 
+            // console.log("Star is currently in view: ", e);
+            // console.log("starVisible: ", starVisible);
+            return e.starIsVisible(currentZoom) === true; 
+        });
 
 
 
-            // let currentStarData = starsCurrentlyInView[i];
+        const starsInViewSet = new Set(starsCurrentlyInView);
+        const starsVisible = new Set(starsCurrentlyVisible);
 
-            // console.log("currentStarData: ", currentStarData);
-            // console.log("Current i: ", i);
 
-            if(!currentStarData.hasOwnProperty('latLng')) {
+        let union = new Set([...starsInViewSet, ...starsVisible]);
 
-                if(currentStarData.lat === null && currentStarData.lng === null) {
+
+        let intersectionMap = new Set([...starsInViewSet].filter(x => starsVisible.has(x)));
+
+
+
+
+        // console.log("starsCurrentlyInView: ", starsCurrentlyInView);
+        // console.log("starsAtZoomLevel: ", starsAtZoomLevel);
+        // console.log("starsCurrentlyVisible: ", starsCurrentlyVisible);
+        // console.log("GalacticPlanetsSet: ", this.state.GalacticPlanetsSet);
+        // console.log("starsInViewSet: ", starsInViewSet);
+        // console.log("starsVisible: ", starsVisible);
+        // console.log("union: ", union);
+        console.log("intersectionMap: ", intersectionMap);
+        console.log("previousIntersectionMap: ", this.state.previousIntersectionMap);
+
+        this.setState({previousIntersectionMap: intersectionMap});
+
+
+
+
+        const starMapsEqual = eqSet(intersectionMap, this.state.previousIntersectionMap);
+        const unionOfIntersections = new Set([...intersectionMap, ...this.state.previousIntersectionMap]);
+
+
+        console.log("Equal to previous star maps: ", starMapsEqual);
+        console.log("unionOfIntersections: ", unionOfIntersections);
+
+
+        intersectionMap.forEach(function(PlanetarySystem, sameItem) {
+
+            if(!PlanetarySystem.hasOwnProperty('latLng')) {
+
+                if(PlanetarySystem.lat === null && PlanetarySystem.lng === null) {
 
                     // console.log("currentStar data has lat: ", currentStarData.lat);
 
-                    const starLngLat = currentStarData.LngLat;
+                    const starLngLat = PlanetarySystem.LngLat;
 
                     const currentLatLng = L.latLng(starLngLat[1], starLngLat[0]);
                     // console.log("currentLatLng: ", currentLatLng);
-                    this.state.starData['lat'] = currentLatLng[1];
-                    this.state.starData['lng'] = currentLatLng[0];
+                    PlanetarySystem['lat'] = currentLatLng[1];
+                    PlanetarySystem['lng'] = currentLatLng[0];
 
-                    this.state.starData[i].latLng = currentLatLng;
+                    PlanetarySystem[i].latLng = currentLatLng;
 
                 } else {
 
-                    const currentLatLng = L.latLng(currentStarData.lat, currentStarData.lng);
+                    const currentLatLng = L.latLng(PlanetarySystem.lat, PlanetarySystem.lng);
                     // console.log("currentLatLng: ", currentLatLng);
-                    this.state.starData[i].latLng = currentLatLng;
+                    PlanetarySystem.latLng = currentLatLng;
 
 
                 }
@@ -289,95 +326,187 @@ class StarMap extends React.Component {
             }
 
 
+            // console.log("PlanetarySystem: " + typeof PlanetarySystem);
 
+            starSystemTempArray.push( <StarSystem key={PlanetarySystem.system} StarObject={PlanetarySystem} zoom={currentZoom} map={currentMap} labels={true}  /> );
 
-            let objectInView = currentStarData.starInMapView(this.props.map, mapWidth, mapHeight, MapBoundaries);
-
-            if(zoomLevelBasedRendering && objectInView) {
-
-
-                if(currentStarData.zoom === 0) {
-
-                    starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true} /> );
-
-                }
+            starSystemArray.push(PlanetarySystem);
 
 
 
-                if(currentStarData.zoom === 1 && currentZoom >= 3) {
-
-
-                    starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true}  /> );
-
-
-                }
-
-                // console.log("Star Found! ", starData[i]);
-
-               // const objectInvView = ObjectInMapView(starData[i], map);
-
-               //  if(objectInvView) {
-
-                    // console.log("objectInView: ", objectInView);
+        });  
 
 
 
-               //  }
-            
-
-
-                // if(currentStarData.zoom === 0) {
-
-                //     starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true} /> );
-
-                // }
+        if(false) {
 
 
 
-                // if(currentStarData.zoom === 1 && currentZoom >= 3) {
 
 
-                //     starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true}  /> );
+            for(let i=0; i < this.state.starData.length; i++) {
 
 
-                // }
-
-                if(currentStarData.zoom === 2 && currentZoom >= 5) {
-
-                    starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true} /> );
+                let currentStarData = this.state.starData[i];
 
 
-                }
 
-                if(currentStarData.zoom === 3 && currentZoom >= 6) {
+                // let currentStarData = starsCurrentlyInView[i];
 
-                    starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true}  /> );
+                // console.log("currentStarData: ", currentStarData);
+                // console.log("Current i: ", i);
+
+                if(!currentStarData.hasOwnProperty('latLng')) {
+
+                    if(currentStarData.lat === null && currentStarData.lng === null) {
+
+                        // console.log("currentStar data has lat: ", currentStarData.lat);
+
+                        const starLngLat = currentStarData.LngLat;
+
+                        const currentLatLng = L.latLng(starLngLat[1], starLngLat[0]);
+                        // console.log("currentLatLng: ", currentLatLng);
+                        this.state.starData['lat'] = currentLatLng[1];
+                        this.state.starData['lng'] = currentLatLng[0];
+
+                        this.state.starData[i].latLng = currentLatLng;
+
+                    } else {
+
+                        const currentLatLng = L.latLng(currentStarData.lat, currentStarData.lng);
+                        // console.log("currentLatLng: ", currentLatLng);
+                        this.state.starData[i].latLng = currentLatLng;
+
+
+                    }
 
                 }
 
 
-            } else if (!zoomLevelBasedRendering && objectInView)  {
 
-                starSystemTempArray.push( <StarSystem key={this.state.starData[i].system + "|x:" + this.state.starData[i].xGalactic +  "|y:" + this.state.starData[i].yGalactic} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true}  /> );
+
+                let objectInView = currentStarData.starInMapView(this.props.map, mapWidth, mapHeight, MapBoundaries);
+
+                if(zoomLevelBasedRendering && objectInView) {
+
+
+                    if(currentStarData.zoom === 0) {
+
+                        starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true} /> );
+
+
+                        starSystemArray.push(currentStarData);
+
+                    }
+
+
+
+                    if(currentStarData.zoom === 1 && currentZoom >= 3) {
+
+
+                        starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true}  /> );
+
+                        starSystemArray.push(currentStarData);
+
+                    }
+
+                    // console.log("Star Found! ", starData[i]);
+
+                   // const objectInvView = ObjectInMapView(starData[i], map);
+
+                   //  if(objectInvView) {
+
+                        // console.log("objectInView: ", objectInView);
+
+
+
+                   //  }
+                
+
+
+                    // if(currentStarData.zoom === 0) {
+
+                    //     starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true} /> );
+
+                    // }
+
+
+
+                    // if(currentStarData.zoom === 1 && currentZoom >= 3) {
+
+
+                    //     starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true}  /> );
+
+
+                    // }
+
+                    if(currentStarData.zoom === 2 && currentZoom >= 5) {
+
+                        starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true} /> );
+
+                        starSystemArray.push(currentStarData);
+
+
+                    }
+
+                    if(currentStarData.zoom === 3 && currentZoom >= 6) {
+
+                        starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true}  /> );
+
+                        starSystemArray.push(currentStarData);
+
+                    }
+
+
+                } else if (!zoomLevelBasedRendering && objectInView)  {
+
+                    starSystemTempArray.push( <StarSystem key={this.state.starData[i].system + "|x:" + this.state.starData[i].xGalactic +  "|y:" + this.state.starData[i].yGalactic} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true}  /> );
+
+                        starSystemArray.push(currentStarData);
+
+                }
+
+
 
             }
-
-
 
         }
-        // this.props.dispatch( renderMapOff() );
 
-        // console.log("State after render: ", this.props);
-        // console.log("Star Systems rendered: ", starSystemTempArray.length);
+            
+        // // this.props.dispatch( renderMapOff() );
+
+        // // console.log("State after render: ", this.props);
+        // // console.log("Star Systems rendered: ", starSystemTempArray.length);
 
 
-        console.log("\n\n****StarMap Completed!****");
 
-        console.log("State after render: ", this.props);
-        console.log("Star Systems rendered: ", starSystemTempArray.length);
-        console.log("\n\n");
+        console.log("Star Systems rendered: ", starSystemArray.length);
 
         // console.log("zoom: ", currentZoom);
+
+
+        const starSystemSet = new Set(starSystemArray);
+
+        let intersectionOnCreation = new Set([...starSystemSet].filter(x => intersectionMap.has(x)));
+
+        let unionOnCreation = new Set([...starsInViewSet, ...intersectionMap]);
+
+        // console.log("intersection of two sets: ", intersectionOnCreation);
+
+        // console.log("union of two sets: ", unionOnCreation);
+
+        console.log("intersectionMap from above: ", intersectionMap);
+
+        console.log("Star System render: ", starSystemSet);
+
+        console.log("****StarMap Completed!****");
+
+        // const starMapsEqual = eqSet(intersectionMap, starSystemSet);
+
+        // console.log("star maps equal: ", starMapsEqual);
+
+        console.log("\n\n");
+
 
         return starSystemTempArray;
 
@@ -751,6 +880,30 @@ function galaticXYtoMapPoints(xGalactic, yGalactic) {
 }
 
 
+
+
+// function eqSet(as, bs) {
+//     if (as.size !== bs.size) return false;
+//     for (var a of as) if (!bs.has(a)) return false;
+//     return true;
+// }
+
+
+
+function eqSet(as, bs) {
+    return as.size === bs.size && all(isIn(bs), as);
+}
+
+function all(pred, as) {
+    for (var a of as) if (!pred(a)) return false;
+    return true;
+}
+
+function isIn(as) {
+    return function (a) {
+        return as.has(a);
+    };
+}
 
 
 const mapStateToProps = (state = {}) => {
