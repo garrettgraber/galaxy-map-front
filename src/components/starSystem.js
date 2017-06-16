@@ -116,3 +116,148 @@ class StarSystem extends React.Component {
 
 
 export default StarSystem;
+
+
+
+function StarMap(argument) {
+
+
+
+    
+
+        if(false) {
+
+
+
+
+
+            for(let i=0; i < this.state.starData.length; i++) {
+
+
+                let currentStarData = this.state.starData[i];
+
+
+
+                // let currentStarData = starsCurrentlyInView[i];
+
+                // console.log("currentStarData: ", currentStarData);
+                // console.log("Current i: ", i);
+
+                if(!currentStarData.hasOwnProperty('latLng')) {
+
+                    if(currentStarData.lat === null && currentStarData.lng === null) {
+
+                        // console.log("currentStar data has lat: ", currentStarData.lat);
+
+                        const starLngLat = currentStarData.LngLat;
+
+                        const currentLatLng = L.latLng(starLngLat[1], starLngLat[0]);
+                        // console.log("currentLatLng: ", currentLatLng);
+                        this.state.starData['lat'] = currentLatLng[1];
+                        this.state.starData['lng'] = currentLatLng[0];
+
+                        this.state.starData[i].latLng = currentLatLng;
+
+                    } else {
+
+                        const currentLatLng = L.latLng(currentStarData.lat, currentStarData.lng);
+                        // console.log("currentLatLng: ", currentLatLng);
+                        this.state.starData[i].latLng = currentLatLng;
+
+
+                    }
+
+                }
+
+
+
+
+                let objectInView = currentStarData.starInMapView(this.props.map, mapWidth, mapHeight, MapBoundaries);
+
+                if(zoomLevelBasedRendering && objectInView) {
+
+
+                    if(currentStarData.zoom === 0) {
+
+                        starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true} /> );
+
+
+                        starSystemArray.push(currentStarData);
+
+                    }
+
+
+
+                    if(currentStarData.zoom === 1 && currentZoom >= 3) {
+
+
+                        starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true}  /> );
+
+                        starSystemArray.push(currentStarData);
+
+                    }
+
+                    // console.log("Star Found! ", starData[i]);
+
+                   // const objectInvView = ObjectInMapView(starData[i], map);
+
+                   //  if(objectInvView) {
+
+                        // console.log("objectInView: ", objectInView);
+
+
+
+                   //  }
+                
+
+
+                    // if(currentStarData.zoom === 0) {
+
+                    //     starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true} /> );
+
+                    // }
+
+
+
+                    // if(currentStarData.zoom === 1 && currentZoom >= 3) {
+
+
+                    //     starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true}  /> );
+
+
+                    // }
+
+                    if(currentStarData.zoom === 2 && currentZoom >= 5) {
+
+                        starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true} /> );
+
+                        starSystemArray.push(currentStarData);
+
+
+                    }
+
+                    if(currentStarData.zoom === 3 && currentZoom >= 6) {
+
+                        starSystemTempArray.push( <StarSystem key={this.state.starData[i].system} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true}  /> );
+
+                        starSystemArray.push(currentStarData);
+
+                    }
+
+
+                } else if (!zoomLevelBasedRendering && objectInView)  {
+
+                    starSystemTempArray.push( <StarSystem key={this.state.starData[i].system + "|x:" + this.state.starData[i].xGalactic +  "|y:" + this.state.starData[i].yGalactic} StarObject={this.state.starData[i]} zoom={currentZoom} map={this.props.map} labels={true}  /> );
+
+                        starSystemArray.push(currentStarData);
+
+                }
+
+
+
+            }
+
+        }
+
+    // body...
+}
