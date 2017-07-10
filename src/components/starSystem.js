@@ -98,6 +98,7 @@ class StarSystem extends React.Component {
             className: "systemLabel",
             iconSize: new L.Point(this.props.StarObject.textWidth + 30, 24),
             iconAnchor: new L.Point(textWidth / 3.0, 18),
+            // iconAnchor: new L.Point(0, 0),
             html: this.props.StarObject.system
         });
 

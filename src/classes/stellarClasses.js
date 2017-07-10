@@ -1,28 +1,40 @@
 
 
-
-class MyClass {
-  constructor({a,b} = {a:1,b:2}) {
-    this.a = a;
-    this.b = b;
-  }
-}
+// const _ = require('lodash'),
+// 	uuidv1 = require('uuid/v1'),
+//   uuidv4 = require('uuid/v4'),
+//   hash = require('string-hash');
 
 
 
-class Planet {
-	// constructor(system, sector, region, coordinates, xGalactic = 0, yGalactic = 0, xGalacticLong = 0, yGalacticLong = 0, hasLocation = false, LngLat = [], zoom = 5, link = '', textWidth = 0) {
+import _ from 'lodash';
+import { uuidv1 } from 'uuid';
+import { uuidv4 } from 'uuid';
+import hash from 'string-hash';
 
 
-	constructor( {_id='', system='', sector='', region='', coordinates='', xGalactic=0, yGalactic=0, xGalacticLong=0, yGalacticLong=0, hasLocation=false, LngLat=[], zoom=0, link='', textWidth=0}    =  {} ) {
-
-	// constructor({system , sector, region, coordinates, xGalactic, yGalactic, xGalacticLong,yGalacticLong, hasLocation, LngLat, zoom, link, textWidth} =  ) {
-
-		this._id = _id;
-		this.system = system;
-		this.sector = sector;
-		this.region = region;
-		this.coordinates = coordinates;
+export class Planet {
+	constructor(
+		systemValue,
+		sectorValue,
+		regionValue,
+		coordinatesValue,
+		xGalactic = 0,
+		yGalactic = 0,
+		xGalacticLong = 0,
+		yGalacticLong = 0,
+		hasLocation = false,
+		LngLat = [],
+		lat = null,
+		lng = null,
+		zoom = 5,
+		link = '',
+		textWidth = 0
+	) {
+		this.system = systemValue;
+		this.sector = sectorValue;
+		this.region = regionValue;
+		this.coordinates = coordinatesValue;
 		this.xGalactic = xGalactic;
 		this.yGalactic = yGalactic;
 		this.xGalacticLong = xGalacticLong;
@@ -36,216 +48,341 @@ class Planet {
 		this.textWidth = textWidth;
 	}
 
-
-
 	starInMapView(map, mapWidth, mapHeight, MapBoundaries) {
-
-	    // console.log("mapHeight in ObjectInMapView: ", mapHeight);
-	    // console.log("mapWidth in ObjectInMapView: ", mapWidth);
-
-	    const CurrentMapBoundaries = map.getBounds();
-
-	    // console.log("MapBoundaries: ", MapBoundaries);
-	    // console.log("stellarObject: ", stellarObject);
-	    const mapOffSetLng = 0;
-	    const mapOffSetLat = 0;
-
-	    // const inNorthSouthRange = (CurrentMapBoundaries._southWest.lat - mapOffSetLat < stellarObject.latLng.lat && stellarObject.latLng.lat < CurrentMapBoundaries._northEast.lat + mapOffSetLat) ? true : false;
-	    // const inEastWestRange = (CurrentMapBoundaries._southWest.lng - mapOffSetLng < stellarObject.latLng.lng && stellarObject.latLng.lng < CurrentMapBoundaries._northEast.lng + mapOffSetLng) ? true : false;
-
-	    const inNorthSouthRange = (MapBoundaries.south < this.lat && this.lat < MapBoundaries.north) ? true : false;
-	    const inEastWestRange = (MapBoundaries.west< this.lng && this.lng < MapBoundaries.east) ? true : false;
-	    // console.log("inNorthSouthRange: ", inNorthSouthRange);
-	    // console.log("inEastWestRange: ", inEastWestRange);
-	    // console.log("CurrentMapBoundaries: ", CurrentMapBoundaries);
-	    // console.log("stellarObject: ", stellarObject);
-	    const objectInvView = (inNorthSouthRange && inEastWestRange) ? true : false;
-
-	    if(objectInvView) {
-
-	        // console.log("inNorthSouthRange: ", inNorthSouthRange);
-	        // console.log("inEastWestRange: ", inEastWestRange);
-
-	        // console.log("CurrentMapBoundaries: ", CurrentMapBoundaries);
-
-	        // console.log("MapBoundariesMax: ", MapBoundariesMax);
-
-	        // console.log("In range: ", stellarObject);
-
-	    }
-
-	    return objectInvView;
-
+    const CurrentMapBoundaries = map.getBounds();
+    const mapOffSetLng = 0;
+    const mapOffSetLat = 0;
+    const inNorthSouthRange = (MapBoundaries.south < this.lat && this.lat < MapBoundaries.north) ? true : false;
+    const inEastWestRange = (MapBoundaries.west< this.lng && this.lng < MapBoundaries.east) ? true : false;
+    const objectInvView = (inNorthSouthRange && inEastWestRange) ? true : false;
+    return objectInvView;
 	}
-
-
 
 	starIsVisible(currentZoom) {
-
 		let starIsViewableAtZoom = false;
-
-		// console.log("this.zoom in starIsVisible:  ", this.zoom);
-		// console.log("starIsVisible currentZoom: ", currentZoom);
-
-
-		// switch(this.zoom) {
-
-	 //        case(this.zoom === 0):
-	 //        	starIsViewableAtZoom = true;
-	 //        	break;
-	 //        case((this.zoom === 1 || this.zoom === 2) && currentZoom >= 3):
-	 //        	starIsViewableAtZoom = true;
-	 //        	break;
-
-	 //        case(this.zoom === 3 && currentZoom >= 4):
-	 //        	starIsViewableAtZoom = true;
-	 //        	break;
-
-	 //        case(this.zoom >= 4 && currentZoom >= 5):
-	 //        	starIsViewableAtZoom = true;
-	 //        	break;
-
-	 //        case(this.zoom >= 0 && currentZoom >=6):
-	 //        	starIsViewableAtZoom = true;
-	 //        	break;
-
-	 //        default:
-	 //        	starIsViewableAtZoom = false;
-	 //        	break;
-		// }
-
-
-		// // console.log("star is viewable at zoom: ", starIsViewableAtZoom);
-
-		// return starIsViewableAtZoom;
-
-
-
-
-        if(this.zoom === 0) {
-
+    if(this.zoom === 0) {
 			starIsViewableAtZoom = true;
-
-        } else if(this.zoom === 1 && currentZoom >= 3) {
-
-        	starIsViewableAtZoom = true;
-
-        } else if(this.zoom === 2 && currentZoom >= 5) {
-
-        	starIsViewableAtZoom = true;
-
-        } else if(this.zoom === 3 && currentZoom >= 6) {
-
-        	starIsViewableAtZoom = true;
-
-        } else {
-
-        	starIsViewableAtZoom = false;
-        }
-
-
-        return starIsViewableAtZoom;
-
+    } else if(this.zoom === 1 && currentZoom >= 3) {
+    	starIsViewableAtZoom = true;
+    } else if(this.zoom === 2 && currentZoom >= 5) {
+    	starIsViewableAtZoom = true;
+    } else if(this.zoom === 3 && currentZoom >= 6) {
+    	starIsViewableAtZoom = true;
+    } else {
+    	starIsViewableAtZoom = false;
     }
-
+      return starIsViewableAtZoom;
+  }
 
 	galaticXYtoMapPoints(xGalactic, yGalactic) {
-
-	    const galacticOffset = 19500;
-	    const galacticDivisor = 39.0;
-	    let yPoint;
-
-	    if(yGalactic > 0 && xGalactic > 0) {
-
-	        yPoint = -(yGalactic - galacticOffset) / galacticDivisor;
-
-	    } else if (yGalactic < 0) {
-
-	        yPoint = ((-yGalactic) + galacticOffset) /  galacticDivisor;
-
-	    } else if(yGalactic > 0 && xGalactic < 0) {
-
-	        yPoint = (galacticOffset - yGalactic) / galacticDivisor;
-
-	    }
-
-
-	    if(yGalactic === 0) {
-
-	        yPoint = 0;
-
-	    }
-
-
-	    const xPoint = (xGalactic + galacticOffset) / galacticDivisor;
-
-	    return {
-	        xPoint: xPoint,
-	        yPoint: yPoint
-	    };
-
+    const galacticOffset = 19500;
+    const galacticDivisor = 39.0;
+    let yPoint;
+    if(yGalactic > 0 && xGalactic > 0) {
+      yPoint = -(yGalactic - galacticOffset) / galacticDivisor;
+    } else if (yGalactic < 0) {
+      yPoint = ((-yGalactic) + galacticOffset) /  galacticDivisor;
+    } else if(yGalactic > 0 && xGalactic < 0) {
+      yPoint = (galacticOffset - yGalactic) / galacticDivisor;
+    }
+    if(yGalactic === 0) {
+      yPoint = 0;
+    }
+    const xPoint = (xGalactic + galacticOffset) / galacticDivisor;
+    return {
+      xPoint: xPoint,
+      yPoint: yPoint
+    };
 	}
 
-
-	planetIsAtZoomLevel(zoom) {
-
+	planetIsAtZoomLevel(currentZoom) {
 		let atZoomLevel = false;
-
 		switch(this.zoom) {
-
-            case 0:
-
-               atZoomLevel = true;
-               break;
-
-            case (this.zoom === 1 && zoom >= 3): 
-               atZoomLevel = true;
-               break;
-
-
-            case (this.zoom === 2 && zoom >= 5): 
-
-               atZoomLevel = true;
-
-               break;
-
-            case (this.zoom === 3 && zoom >= 6): 
-               atZoomLevel = true;
-
-               break;
-
-
+			case 0:
+				atZoomLevel = true;
+				break;
+			case (this.zoom === 1 && currentZoom >= 3): 
+				atZoomLevel = true;
+				break;
+			case (this.zoom === 2 && currentZoom >= 5): 
+				atZoomLevel = true;
+				break;
+			case (this.zoom === 3 && currentZoom >= 6): 
+				atZoomLevel = true;
+				break;
 			default:
-
 				atZoomLevel = false;
-
 		}
-
 		return atZoomLevel;
-
 	}
-
-
-
-
 };
-
-module.exports.Planet = Planet;
-
-
 
 class HyperSpaceLane {
-	constructor(hyperspace, start, end, startCoords, endCoords, length, link, Start, End) {
-		this.hyperspace = hyperspace || "No Name";
+	constructor(
+		name,
+		hyperspaceHash,
+		start,
+		end,
+		startCoordsLngLat,
+		endCoordsLngLat,
+		length,
+		link,
+		_start,
+		_end,
+		coordinates,
+		_id = 0
+	) {
+		this.name = name || "No Name";
+		this.hyperspaceHash = hyperspaceHash;
 		this.start = start;
 		this.end = end;
-		this.startCoords = startCoords;
-		this.endCoords = endCoords;
+		this.startCoordsLngLat = coordinateStringToArray(startCoordsLngLat);
+		this.endCoordsLngLat = coordinateStringToArray(endCoordsLngLat);
 		this.length = length;
 		this.link = link || "No Link";
-		this.Start = Start;
-		this.End = End;
+		this._start = _start;
+		this._end = _end;
+		this.coordinates = coordinateStringToArray(coordinates);
+		this._id = _id;
+	}
+
+	reverseCoordinatesLatLng() {
+		const latBefore = this.coordinates[0][0];
+		_.forEach(this.coordinates, function(el) {
+		  el.reverse();
+		});
+		const latAfter = this.coordinates[0][0];
+		console.log("Before and after the same: ", (latBefore === latAfter)? true : false);
 	}
 };
 
-module.exports.HyperSpaceLane = HyperSpaceLane;
+function coordinateStringToArray(coordinates) {
+	if(Array.isArray(coordinates)) {
+		return coordinates;
+	} else {
+		let jsonJumpCoordinates = JSON.parse("[" + coordinates + "]");
+		return jsonJumpCoordinates[0];			
+	}
+};
+
+export class HyperSpaceNode {
+	constructor(system, lng, lat, hyperspaceLanes, nodeId, textWidth = 0) {
+		this.system = system;
+		this.lng = lng;
+		this.lat = lat;
+		this.hyperspaceLanes = hyperspaceLanes;
+		this.nodeId = nodeId;
+		this.textWidth = textWidth;
+	}
+
+	latLng() {
+		return {
+			lat: this.lat,
+			lng: this.lng
+		};
+	}
+};
+
+export class HyperSpacePath {
+	constructor(start, end, length, jumps, nodes, hashValue = '') {
+		this.start = start;
+		this.end = end;
+		this.length = length;
+		this.jumps = jumps;
+		this.nodes = nodes;
+		this.hashValue = hashValue;
+	}
+
+	createArrayOfHyperspaceLanes(totalLanesInCollection) {
+		const hyperspaceLanesArray = [];
+		for(let id of this.jumps) {
+			const foundLaneData = _.find(totalLanesInCollection, {_id : id});
+			const Lane = new HyperSpaceLane(
+				foundLaneData.name,
+				foundLaneData.hyperspaceHash,
+				foundLaneData.start,
+				foundLaneData.end,
+				foundLaneData.startCoordsLngLat,
+				foundLaneData.endCoordsLngLat,
+				foundLaneData.length,
+				foundLaneData.link,
+				foundLaneData._start,
+				foundLaneData._end,
+				foundLaneData.coordinates,
+				foundLaneData._id = 0
+			);
+			Lane.reverseCoordinatesLatLng();
+			hyperspaceLanesArray.push(Lane);
+		}
+		return hyperspaceLanesArray;
+	}
+
+	createArrayOfHyperspaceNodes(totalNodesInCollection) {
+		const hyperspaceNodesArray = [];
+		for(let id of this.nodes) {
+			let foundNodeData = _.find(totalNodesInCollection, {nodeId : id});
+			hyperspaceNodesArray.push(foundNodeData);
+		}
+		return hyperspaceNodesArray;
+	}
+
+	getReversedHyperLanes(totalLanesInCollection, totalNodesInCollection) {
+		let reverseLanesSet = new Set();
+		let correctLanesSet = new Set();
+		for(let i=0; i < this.jumps.length; i++) {
+			const jumpLaneId = this.jumps[i];
+			let JumpLane = _.find(totalLanesInCollection, { '_id': jumpLaneId });
+			const start = this.nodes[i];
+			const end = this.nodes[i + 1];
+			if(start !== JumpLane._start) {
+				reverseLanesSet.add(JumpLane._id);
+				this.jumps[i] = -(JumpLane._id);
+			} else {
+				correctLanesSet.add(JumpLane._id);
+			}
+			let intersection = new Set([...reverseLanesSet].filter(x => correctLanesSet.has(x)));
+		}
+		const reversedLanes = [...reverseLanesSet];
+		return reversedLanes;
+	}
+
+	generateHashNumber(totalLanesInCollection) {
+		let sumOfHashes = '|';
+		for(let i=0; i < this.jumps.length; i++) {
+			const jumpLaneId = this.jumps[i];
+			let JumpLane = _.find(totalLanesInCollection, { '_id': jumpLaneId });
+			const jumpLaneHash = JumpLane.hyperspaceHash;
+			sumOfHashes += jumpLaneHash + '|';
+		}
+		const jumpHash = hash(sumOfHashes);
+		return jumpHash;
+	}
+
+	validateJump(totalLanesInCollection, totalNodesInCollection) {
+		if(this.jumps.length + 1 === this.nodes.length) {
+			for(let i=0; i < this.jumps.length; i++) {
+				const jumpLaneId = this.jumps[i];
+				let JumpLane = _.find(totalLanesInCollection, { '_id': jumpLaneId });
+				const startId = this.nodes[i];
+				let StartNode = _.find(totalNodesInCollection, { 'nodeId': startId });
+				const endId = this.nodes[i + 1];
+				let EndNode = _.find(totalNodesInCollection, { 'nodeId': endId });
+				const jumpStartCoordinates = JumpLane.startCoordsLngLat;
+				const jumpEndCoordinates = JumpLane.endCoordsLngLat;
+				const firstCoordinates = JumpLane.coordinates[0];
+				const secondCoordinates = JumpLane.coordinates[JumpLane.coordinates.length - 1];
+				const hyperspacePathIsInvalid = (
+					StartNode.system !== JumpLane.start ||
+					EndNode.system !== JumpLane.end ||
+					!_.isEqual(jumpStartCoordinates, firstCoordinates) ||
+					!_.isEqual(jumpEndCoordinates, secondCoordinates)
+				);
+				if(hyperspacePathIsInvalid) {
+					return false;
+				}
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	generateNodesAndLanes(totalLanesInCollection, totalNodesInCollection) {
+
+
+
+	}
+};
+
+export class HyperSpacePathCollection {
+	constructor(start, end, paths, lanes, nodes) {
+		this.start = start;
+		this.end = end;
+		this.paths = paths;
+		this.lanes = lanes;
+		this.nodes = nodes;
+	}
+
+	linkHyperspacePaths() {
+		let laneSet = new Set([...this.lanes]);
+		let indexSet = new Set();
+  	for(let path of this.paths) {
+  		let reversedHyperspaceLanes = path.getReversedHyperLanes(this.lanes, this.nodes);
+  		for(let reversedLaneId of reversedHyperspaceLanes) {
+  			const index = _.findIndex(this.lanes, {_id: reversedLaneId});
+  			indexSet.add(index);
+  		}
+  	}
+		for(let index of indexSet) {
+			const JumpLane = this.lanes[index];
+			const reversedJumpId = -Math.abs(JumpLane._id);
+			const jumpCoordinatesReversed = JumpLane.coordinates.slice().reverse();
+			const hyperspaceHash = uuidv4();
+			const ReversedHyperspaceLane = new HyperSpaceLane(
+				JumpLane.name,
+				hyperspaceHash,
+				JumpLane.end,
+				JumpLane.start,
+				JumpLane.endCoordsLngLat,
+				JumpLane.startCoordsLngLat,   
+				JumpLane.length,
+				JumpLane.link,
+				JumpLane._end,
+				JumpLane._start,
+				jumpCoordinatesReversed,
+				reversedJumpId
+			);
+  		this.lanes.push(ReversedHyperspaceLane);
+  		const newIndex = _.findIndex(this.lanes, {_id: reversedJumpId});
+		}
+		this.validateJumps();
+	}
+
+	validateJumps() {
+		console.log("\n\nValidating all jumps  **************");
+		for(let path of this.paths) {
+			const pathIsValid = path.validateJump(this.lanes, this.nodes);
+			const jumpHashValue = (pathIsValid)? path.generateHashNumber(this.lanes) : '';
+			console.log("path is valid: ", pathIsValid);
+			path.hashValue = jumpHashValue;
+  		}
+	}
+
+	validateHyperspacePaths() {
+
+		console.log("generateHyperspacePath has fired...", this.paths);
+
+		for(let path of this.paths) {
+
+			console.log("path.hashValue: ", path.hashValue);
+			console.log("path.start: ", path.start);
+			console.log("path.end: ", path.end);
+
+			const Path = new HyperSpacePath(
+				path.start,
+				path.end,
+				path.length,
+				path.jumps,
+				path.nodes,
+				path.hashValue
+			);
+
+			const jumpHash = Path.generateHashNumber(this.lanes);
+
+			console.log("jumpHash: ", jumpHash);
+
+			return Path;
+
+			// const HyperspaceLanes = Path.createArrayOfHyperspaceLanes(this.lanes);
+			// const HyperspaceNodes = Path.createArrayOfHyperspaceNodes(this.nodes);
+			// console.log("HyperspaceLanes: ", HyperspaceLanes);
+			// console.log("HyperspaceNodes: ", HyperspaceNodes);
+
+			// return {
+			// 	lanes: HyperspaceLanes,
+			// 	nodes: HyperspaceNodes
+			// };
+
+		}
+	}
+};

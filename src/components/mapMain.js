@@ -20,9 +20,10 @@ const { BaseLayer, Overlay } = LayersControl;
 import Grid from './grid.js';
 import Regions from './regions.js';
 import Sectors from './sectors.js';
-import HyperspaceLanes from './hyperspaceLanes.js';
+import HyperspaceLanesData from './hyperspaceLanesData.js';
 import StarMap from './starMap.js';
 import NavBar from './navBar.js';
+import HyperspaceNavigation from './hyperspaceNavigation.js';
 
 
 
@@ -48,8 +49,8 @@ console.log("process.env.NODE_ENV: ", process.env.NODE_ENV);
 
 
 
-const tileServerUrl = 'http://172.17.0.4:8110/tiles-leaflet-8/{z}/{x}/{y}.png';
-const blackTileUrl = 'http://172.17.0.4:8110/tiles-black/black-tile.png';
+const tileServerUrl = 'http://172.17.0.6:8110/tiles-leaflet-8/{z}/{x}/{y}.png';
+const blackTileUrl = 'http://172.17.0.6:8110/tiles-black/black-tile.png';
 const blackTileImage = imgBlack;
 const awsTileServerUrl = 'https://s3-us-west-2.amazonaws.com/tiledata.sw.map/tiles-leaflet-7/{z}/{x}/{y}.png';
 
@@ -350,21 +351,17 @@ class MapMain extends React.Component {
 
                         </BaseLayer>
 
-
-
                         <Overlay name="Sectors" checked={false}>
 
                             <Sectors />
 
                         </Overlay>
 
-
     			    	<Overlay name="Regions" checked={false}>
 
     			    		<Regions map={this.state.map} />
 
     			    	</Overlay>
-
                    
                         <Overlay name="Grid" checked={false}>
 
@@ -380,7 +377,13 @@ class MapMain extends React.Component {
 
                         <Overlay name="Hyperspace Lanes" checked={false}>
 
-                            <HyperspaceLanes />
+                            <HyperspaceLanesData />
+
+                        </Overlay>
+
+                        <Overlay name="Hyperspace Navigation" checked={false}>
+
+                            <HyperspaceNavigation />
 
                         </Overlay>
 

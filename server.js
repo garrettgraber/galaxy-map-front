@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const jsonfile = require('jsonfile');
 const request = require('request');
+const bodyParser = require('body-parser');
 
 
 const DatabaseLinks = require('docker-links').parseLinks(process.env);
@@ -47,6 +48,8 @@ if(DatabaseLinks.hasOwnProperty('api') && isDeveloping) {
 const port = 8108;
 const app = express();
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 console.log("DatabaseLinks: ", DatabaseLinks);
 console.log("ip: ", ip.address());
@@ -55,86 +58,122 @@ console.log("ip: ", ip.address());
 
 // if (true) {
 
-  let webpack = require('webpack');
-  let webpackMiddleware = require('webpack-dev-middleware');
-  let webpackHotMiddleware = require('webpack-hot-middleware');
-  let config = require('./webpack.config.js');
+let webpack = require('webpack');
+let webpackMiddleware = require('webpack-dev-middleware');
+let webpackHotMiddleware = require('webpack-hot-middleware');
+let config = require('./webpack.config.js');
 
-  const compiler = webpack(config);
-  const middleware = webpackMiddleware(compiler, {
-    publicPath: config.output.publicPath,
-    noInfo: true,
-    quiet: false,
-    lazy: false,
-    watchOptions: {
-      aggregateTimeout: 300,
-      poll: true
-    },
-    stats: {
-      colors: true,
+const compiler = webpack(config);
+const middleware = webpackMiddleware(compiler, {
+  publicPath: config.output.publicPath,
+  noInfo: true,
+  quiet: false,
+  lazy: false,
+  watchOptions: {
+    aggregateTimeout: 300,
+    poll: true
+  },
+  stats: {
+    colors: true,
+  }
+});
+
+
+const bundlePath = path.join(__dirname, './public/build/index.html');
+
+app.use(middleware);
+app.use(webpackHotMiddleware(compiler));
+app.get(/^\/(?!api).*/, function response(req, res) {
+  console.log("\ncall made to webpack");
+
+  console.log('==> 🌎 Listening on port. Open up http://' + ip.address() + ':' + port);
+
+  res.write(middleware.fileSystem.readFileSync(bundlePath));
+  // res.end();
+});
+app.get('/api/*', function(req, res) {
+  console.log("\ncall made to api: ", API + req.url);
+  const apiFragUrl = req.url;
+  const apiFullUrl = API + apiFragUrl;
+  request(apiFullUrl, function(error, response, body) {
+    // console.log('error:', error);
+    // console.log('statusCode:', response && response.statusCode); 
+    // // console.log('body:', body);
+    if(error) {
+      // console.log("error: ", error);
+    } else if(response.statusCode === 200) {
+      // console.log('body:', body.length);
+      res.json(body);
+    } else {
+      // console.log("API error");
     }
   });
+});
+app.post(/^\/(?!api).*/, function response(req, res) {
+  console.log("\npost made to webpack");
+  console.log('==> 🌎 Listening on port. Open up http://' + ip.address() + ':' + port);
+  // res.end();
+});
+app.post('/api/*', function(req, res) {
+  console.log("\npost made to api: ", API + req.url);
+  console.log("post data: ", req.body);
+  const apiFragUrl = req.url;
+  const apiFullUrl = API + apiFragUrl;
+  // res.json(req.body);
+  const JumpData = req.body;
+  const options = {
+    method: 'post',
+    body: JumpData,
+    json: true,
+    url: API + apiFragUrl
+  };
 
+  request(options, function (error, response, body) {
 
-  const bundlePath = path.join(__dirname, './public/build/index.html');
-
-  app.use(middleware);
-  app.use(webpackHotMiddleware(compiler));
-  app.get(/^\/(?!api).*/, function response(req, res) {
-    console.log("\ncall made to webpack");
-
-    console.log('==> 🌎 Listening on port. Open up http://' + ip.address() + ':' + port);
-
-    res.write(middleware.fileSystem.readFileSync(bundlePath));
-    // res.end();
-  });
-  app.get('/api/*', function(req, res) {
-
-    console.log("\ncall made to api: ", API + req.url);
-
-    const apiFragUrl = req.url;
-    const apiFullUrl = API + apiFragUrl;
-
-    // console.log("API: ", API);
-    // console.log("request url: ", req.url);
-    // console.log("request path: ", req.path);
-    // console.log("apiFragUrl: ", apiFragUrl);
-    // console.log("apiFullUrl: ", apiFullUrl);
-
-
-    // req.session.valid = true;
-
-    // res.redirect(apiFullUrl);
-
-    request(apiFullUrl, function(error, response, body) {
-
-      // console.log('error:', error);
-      // console.log('statusCode:', response && response.statusCode); 
-      // // console.log('body:', body);
-
-      if(error) {
-        // console.log("error: ", error);
-      } else if(response.statusCode === 200) {
-
-        // console.log('body:', body.length);
-
-        res.json(body);
-      } else {
-        // console.log("API error");
-      }
-
-
-    });
+    if(error) {
+      console.log("error getting data from api: ", error);
+      res.sendStatus(500);
+    } else {
+      console.log("Found hyperspace jump, loading to front end!!: ", body);
+      res.json(body);
+    }
 
   });
 
+  // var Options = {
+  //   uri: apiFullUrl,
+  //   method: 'POST',
+  //   json: {
+  //     "longUrl": "http://www.google.com/"
+  //   }
+  // };
+
+  // request.post(apiFullUrl, {
+  //   formData: req.body,
+  //   json: true
+  // }, function(error, response, body) {
+  //   console.log('error:', error);
+  //   console.log('statusCode:', response && response.statusCode); 
+  //   console.log('body:', body);
+  //   if(error) {
+  //     console.log("error: ", error);
+  //   } else if(response.statusCode === 200) {
+  //     console.log('body:', body);
+  //     res.json(req.body);
+  //     // res.json(body);
+  //   } else {
+  //     console.log("API error");
+  //   }
+  // });
+
+
+});
 // } else {
 //   const staticPath = path.join(__dirname, 'public/build')
 //   app.use(express.static(staticPath));
 // }
 
 
-var utcTimeZoneOffset = -7;
 
 app.use(function(req, res, next) {
 
