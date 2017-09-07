@@ -51,6 +51,7 @@ console.log("srcPath: ", srcPath);
 
 
 module.exports = {
+    devtool: 'source-map',
     entry: [
         'whatwg-fetch',
         'webpack-hot-middleware/client?reload=true', 
@@ -99,6 +100,10 @@ module.exports = {
             {   
                 test: /\.(png|jpg)$/,
                 loader: "file-loader?name=images/[name].[ext]"
+            },
+            {   
+                test: /\.(svg|ico)$/,
+                loader: "file-loader?name=[path][name].[ext]"
             },
             // {
             //     test: /\.css$/,

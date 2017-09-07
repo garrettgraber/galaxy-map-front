@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Map, TileLayer, LayersControl, Pane } from 'react-leaflet';
 import L from 'leaflet';
 import 'whatwg-fetch';
+import uuidv4 from 'uuid/v4';
 
 import { 
     searchSystemsFinish,
@@ -12,413 +13,269 @@ import {
     renderMapOff,
     renderMapStatus,
     zoomChangeStatus,
-    zoomChangeOn
+    zoomChangeOn,
+    generateNewMapHash
 } from '../actions/actionCreators.js';
+import { findAndSetNearsetHyperspaceNode } from '../actions/actions.js';
+
 
 const { BaseLayer, Overlay } = LayersControl;
 
-import Grid from './grid.js';
-import Regions from './regions.js';
-import Sectors from './sectors.js';
-import HyperspaceLanesData from './hyperspaceLanesData.js';
-import StarMap from './starMap.js';
-import NavBar from './navBar.js';
-import HyperspaceNavigation from './hyperspaceNavigation.js';
-
-
-
+import Grid from './grid/grid.js';
+import Regions from './regions/regions.js';
+import Sectors from './sectors/sectors.js';
+import HyperspaceLanesData from './hyperspaceData/hyperspaceLanesData.js';
+import StarMap from './stars/starMap.js';
+import NavBar from './navBar/navBar.js';
+import HyperspaceNavigation from './hyperspaceNavigation/hyperspaceNavigation.js';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
 import 'leaflet_marker_2x';
 import 'leaflet_marker_shadow';
-
 import imgBlack from '../images/black-tile.png';
-import DatabaseLinks from 'docker-links'
+import DatabaseLinks from 'docker-links';
 
 
+const tileServerUrlLevel8 = 'http://172.17.0.6:8110/tiles-leaflet-8/{z}/{x}/{y}.png';
+const tileServerUrlLevel7 = 'http://172.17.0.6:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
 
+const tileServerUrl = tileServerUrlLevel7;
 
-// const DatabaseLinks = require('docker-links').parseLinks(process.env);
-
-
-console.log("DatabaseLinks: ", DatabaseLinks.parseLinks(process.env));
-console.log("process.env.NODE_ENV: ", process.env.NODE_ENV);
-
-
-// console.log("imgBlack: ", imgBlack);
-
-
-
-const tileServerUrl = 'http://172.17.0.6:8110/tiles-leaflet-8/{z}/{x}/{y}.png';
 const blackTileUrl = 'http://172.17.0.6:8110/tiles-black/black-tile.png';
 const blackTileImage = imgBlack;
 const awsTileServerUrl = 'https://s3-us-west-2.amazonaws.com/tiledata.sw.map/tiles-leaflet-7/{z}/{x}/{y}.png';
-
-
-// const awsTileServerUrlEast = 'https://s3-us-east-1.amazonaws.com/tiledata.sw.map.east/tiles-leaflet-7/{z}/{x}/{y}.png';
-
-
 const awsTileServerUrlEast = 'https://s3.amazonaws.com/tiledata.sw.map.east/tiles-leaflet-7/{z}/{x}/{y}.png'
 
-
-// console.log("tileServerUrl: ", tileServerUrl);
-
-
 class MapMain extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        	lat: 0,
-        	lng: 0,
-        	zoom: 2,
-        	map: null,
-            mapMoveEnd: false,
-            mapZoomEnd: false,
-            blackTiles: false
-        }
+  constructor(props) {
+    super(props);
+    this.state = {
+    	lat: 0,
+    	lng: 0,
+    	zoom: 2,
+    	map: null,
+      mapMoveEnd: false,
+      mapZoomEnd: false,
+      blackTiles: false,
+      StartLocation: {
+        lat: null,
+        lng: null
+      },
+      EndLocation: {
+        lat: null,
+        lng: null
+      }
     }
+  }
 
-    componentDidMount() {
+  componentDidMount() {
+  	const mapBounds = this.refs.map.leafletElement.getBounds();
+  	const currentZoom = this.refs.map.leafletElement.getZoom();
+  	this.refs.map.leafletElement.setMaxBounds(mapBounds);
+  	if(this.refs.map) {
+  		this.setState({map: this.refs.map.leafletElement});
+  	}
+      // this.props.dispatch( renderMapOn() );
+    console.log("MapMain has mounted");
+    console.log("props in mapMain: ", this.props);
+  }
 
-    	// console.log("Map componet has mounted: ", this.props);
-    	// console.log("map ref in componet: ", this.refs.map);
+  componentWillReceiveProps(newProps) {
+  	// console.log("Props update MapMain: ", newProps);
+  }
 
-    	const mapBounds = this.refs.map.leafletElement.getBounds();
-    	const currentZoom = this.refs.map.leafletElement.getZoom();
+  onZoomend(e) {
+ 		const currentZoom = this.refs.map.leafletElement.getZoom();
+      console.log("\n\n****New Zoom: ****", currentZoom);
+      this.props.dispatch( getZoomValue() );
+      this.props.dispatch( setZoomValue(currentZoom) );
+      this.props.dispatch( getZoomValue() );
+      // this.props.dispatch( zoomChangeStatus() );
+      if(currentZoom === 2) {
+          // this.setState({mapMoveEnd: true});
+          // this.props.dispatch( renderMapOn() );
+          this.props.dispatch( getZoomValue() );
+          // console.log("this.props.mapMain: ", this.props);
+      }
 
-    	// console.log("map bounds in componet: ", mapBounds);
-    	// console.log("currentZoom: ", currentZoom);
-    	// console.log("zoom state: ", this.state.zoom);
+      console.log("mapMoveEnd: ", this.state.mapMoveEnd);
+      // this.props.dispatch( renderMapOn() );
+      // this.setState({mapMoveEnd: false});
+      // this.setState({mapMoveEnd: true});
+      // this.props.dispatch( renderMapOff() );
+      // console.log("this.props.mapMain: ", this.props);
+      console.log("this.props.zoom on Zoomend: ", this.props.zoom);
 
-    	this.refs.map.leafletElement.setMaxBounds(mapBounds);
+      this.props.dispatch( generateNewMapHash() );
 
-    	// const map = this.refs.map.leafletElement;
-    	// this.props.map = map;
-    	// console.log("map: ", map);
+  }
 
-    	if(this.refs.map) {
+  onZoomstart(e) {
+      // this.props.dispatch( renderMapOn() );
+      this.props.dispatch( renderMapOff() );
+      // this.setState({mapMoveEnd: false});
+      console.log("Map zoom starting: ", this.props);
+      console.log("this.props.zoom: ", this.props.zoom);
+  }
 
-    		this.setState({map: this.refs.map.leafletElement});
+  onMovestart(e) {
+      // console.log("onMovestart has fired...");
+      // console.log("mapMoveEnd: ", this.state.mapMoveEnd);
+      // this.props.dispatch( renderMapOff() );
+      // this.setState({mapMoveEnd: false});
+      // console.log("this.props in Movestart: ", this.props);
+  }
+
+  onMoveend(e) {
+      // console.log("onMoveend has fired...");
+      // console.log("mapMoveEnd: ", this.state.mapMoveEnd);
+      // this.props.dispatch( renderMapOff() );
+      // console.log("this.props on MOveend after render is false: ", this.props);
+      if(this.props.searchSystems) {
+          this.props.dispatch(searchSystemsFinish());
+      }
+      if(this.props.zoom > 3) {
+          this.props.dispatch( renderMapOn() );
+          // this.setState({mapMoveEnd: true});
+          // console.log("this.props on MOveend after render set: ", this.props);
+      }
+  }
+
+  onDragend(e) {
+      console.log("onDragend");
+      // this.props.dispatch( renderMapOff() );
+
+      this.props.dispatch( renderMapOn() );
+      this.setState({mapMoveEnd: true});
+  }
+
+  onDragstart(e) {
+      console.log("onDragstart");
+      this.props.dispatch( renderMapOff() );
+      this.setState({mapMoveEnd: false});
+
+      // this.props.dispatch( renderMapOn() );
+  }
 
 
-    	}
+  autoPanStart(e) {
+      console.log("autoPanStart: ", e);
+  }
+
+  onPanto(e) {
+      console.log("onPanto has fired: ", e);
+  }
 
 
-        // this.props.dispatch( renderMapOn() );
+  onViewreset(e) {
+      console.log("***onViewreset has fired!!!", e);
+  }
 
-        console.log("props in mapMain: ", this.props);
+
+
+  onZoomlevelschange(e) {
+      console.log("***onZoomlevelschange has fired!!!", e);
+      // this.props.dispatch( zoomChangeOn() );
+  }
+
+
+  onMove(e) {
+      console.log("***onMove fired: ", e);
+  }
+
+  onClickHyperspaceNavigation(e) {
+    if(this.props.pathSearchEnd || this.props.pathSearchStart) {
+
+      console.log("this.props in hyperspace Navigation: ", this.props);
+      console.log("hyperspace navigation lat and lng: ", e.latlng);
+      const isStartNode = (this.props.pathSearchStart)? true : false;
+      const HyperspaceNodeSearch = {
+        LatLng: e.latlng,
+        isStartNode: isStartNode
+      }
+      this.props.dispatch(findAndSetNearsetHyperspaceNode(HyperspaceNodeSearch));
+
+      const Location = {
+        lat: e.latlng.lat,
+        lng: e.latlng.lng
+      };
+
+      if(this.props.pathSearchStart) {
+        this.setState({StartLocation: Location});
+      }
+
+      if(this.props.pathSearchEnd) {
+        this.setState({EndLocation: Location});
+      }
+      
     }
-
-    componentWillReceiveProps(newProps) {
-    	// console.log("Props update MapMain: ", newProps);
-    }
-
-    onZoomend(e) {
-
-    	// console.log("zoom has ended");
-   		const currentZoom = this.refs.map.leafletElement.getZoom();
-        console.log("\n\n****New Zoom: ****", currentZoom);
-        // console.log("Old Zoom: ", this.state.zoom);
-    	// this.setState({zoom: currentZoom});
-    	// console.log("Map zoom end: ", currentZoom);
-        // if(currentZoom >= 7) {
-        //     this.setState({blackTiles: true});
-
-        // } 
-
-        this.props.dispatch( getZoomValue() );
-
-        this.props.dispatch( setZoomValue(currentZoom) );
-
-        this.props.dispatch( getZoomValue() );
-
-        // this.props.dispatch( zoomChangeStatus() );
-
-
-        if(currentZoom === 2) {
-
-
-            // this.setState({mapMoveEnd: true});
-
-            // this.props.dispatch( renderMapOn() );
-
-            this.props.dispatch( getZoomValue() );
-
-            // console.log("this.props.mapMain: ", this.props);
-
-
-        }
-
-
-        console.log("mapMoveEnd: ", this.state.mapMoveEnd);
-
-
-        this.props.dispatch( renderMapOn() );
-
-        this.setState({mapMoveEnd: false});
-        this.setState({mapMoveEnd: true});
-
-
-
-        // this.props.dispatch( renderMapOff() );
-
-
-
-
-        // console.log("this.props.mapMain: ", this.props);
-
-        console.log("this.props.zoom on Zoomend: ", this.props.zoom);
-
-    }
-
-    onZoomstart(e) {
-
-
-
-        // this.props.dispatch( renderMapOn() );
-
-        this.props.dispatch( renderMapOff() );
-
-
-        this.setState({mapMoveEnd: false});
-
-
-    	console.log("Map zoom starting: ", this.props);
-        console.log("this.props.zoom: ", this.props.zoom);
-
-
-
-    }
-
-    onMovestart(e) {
-
-        console.log("onMovestart has fired...");
-        // console.log("mapMoveEnd: ", this.state.mapMoveEnd);
-
-
-
-        this.props.dispatch( renderMapOff() );
-
-        this.setState({mapMoveEnd: false});
-
-
-        console.log("this.props in Movestart: ", this.props);
-
-
-
-    }
-
-
-    onMoveend(e) {
-
-        console.log("onMoveend has fired...");
-        console.log("mapMoveEnd: ", this.state.mapMoveEnd);
-
-
-
-        // this.props.dispatch( renderMapOff() );
-
-
-        console.log("this.props on MOveend after render is false: ", this.props);
-
-
-        if(this.props.searchSystems) {
-
-            this.props.dispatch(searchSystemsFinish());
-
-        }
-
-
-
-        if(this.props.zoom > 3) {
-
-            this.props.dispatch( renderMapOn() );
-            this.setState({mapMoveEnd: true});
-            console.log("this.props on MOveend after render set: ", this.props);
-
-
-        }
-
-    }
-
-    onDragend(e) {
-        console.log("onDragend: ", e);
-
-        // this.props.dispatch( renderMapOff() );
-
-        this.props.dispatch( renderMapOn() );
-
-        this.setState({mapMoveEnd: true});
-
-
-    }
-
-
-    onDragstart(e) {
-
-        console.log("onDragstart: ", e);
-        // this.props.dispatch( renderMapOn() );
-
-        this.props.dispatch( renderMapOff() );
-
-
-    }
-
-
-    autoPanStart(e) {
-
-        console.log("autoPanStart: ", e);
-
-    }
-
-    onPanto(e) {
-
-
-        console.log("onPanto has fired: ", e);
-
-    }
-
-
-    onViewreset(e) {
-
-
-        console.log("***onViewreset has fired!!!", e);
-
-
-    }
-
-
-
-    onZoomlevelschange(e) {
-
-
-        console.log("***onZoomlevelschange has fired!!!", e);
-
-        // this.props.dispatch( zoomChangeOn() );
-
-
-    }
-
-
-    onMove(e) {
-
-        console.log("***onMove fired: ", e);
-    }
-
-
-    render() {
-
-    	// const position = [this.state.lat, this.state.lng];
-    	const minZoom = 2;
-    	const maxZoom = 8;
-    	// const height = 1000;
-    	// const width = 1000;
-    	const zIndexGalaxy = 210;
-        const zIndexBlack = 205;
-    	const zIndexGrid = 220;
-
-
-        // console.log("this.props in MapMain: ", this.props);
-
-
-    	return (
-
-            <div>
-
-                <NavBar   map={this.state.map}  />
-
-        		<Map center={[this.props.currentSystem.lat, this.props.currentSystem.lng]} zoom={this.props.zoom} ref='map' onZoomend={e => this.onZoomend(e)} onZoomstart={e => this.onZoomstart(e)} onMoveend={e => this.onMoveend(e)} onMovestart={e => this.onMovestart(e)} onDragend={e => this.onDragend(e)} onDragstart={e => this.onDragstart(e)} onPanto={e => this.onPanto(e)} onMove={e => this.onMove(e)}  onViewreset={e => this.onViewreset(e)}   onZoomlevelschange={e => this.onZoomlevelschange(e)} style={{top: "50px", zIndex: 5}} >
-
-        			<LayersControl>
-
-        				<BaseLayer name="Galaxy" checked={true}>
-
-        					<Pane name="galaxy-pane" style={{ zIndex: zIndexGalaxy }}>
-
-    							<TileLayer url={tileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
-
-    						</Pane>
-
-    					</BaseLayer>
-
-                        <BaseLayer name="Black" checked={false} >
-
-                            <Pane name="black-pane" style={{ zIndex: zIndexBlack }}>
-
-                                <TileLayer url={blackTileImage} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} />
-
-                            </Pane>
-
-                        </BaseLayer>
-
-                        <Overlay name="Sectors" checked={false}>
-
-                            <Sectors />
-
-                        </Overlay>
-
-    			    	<Overlay name="Regions" checked={false}>
-
-    			    		<Regions map={this.state.map} />
-
-    			    	</Overlay>
-                   
-                        <Overlay name="Grid" checked={false}>
-
-                            <Grid />
-
-                        </Overlay>
-
-    					<Overlay name="Star Systems" checked={true}  ref="layerContainer" >
-
-    						<StarMap  map={this.state.map} mapMove={this.state.mapMoveEnd}  />
-
-    					</Overlay>
-
-                        <Overlay name="Hyperspace Lanes" checked={false}>
-
-                            <HyperspaceLanesData />
-
-                        </Overlay>
-
-                        <Overlay name="Hyperspace Navigation" checked={false}>
-
-                            <HyperspaceNavigation />
-
-                        </Overlay>
-
-    				</LayersControl>
-
-        		</Map>
-            </div>
-
-
-    	)
-    }
-
+  }
+
+  render() {
+  	// const position = [this.state.lat, this.state.lng];
+  	const minZoom = 2;
+  	const maxZoom = 7;
+  	// const height = 1000;
+  	// const width = 1000;
+  	const zIndexGalaxy = 210;
+      const zIndexBlack = 205;
+  	const zIndexGrid = 220;
+    const defaultStarMapKey = 'StarMap Key';
+    const starMapKey = (this.props.renderMap)? uuidv4() : defaultStarMapKey;
+      // console.log("this.props in MapMain: ", this.props);
+  	return (
+      <div>
+        <NavBar map={this.state.map}/>
+    		<Map center={[this.props.currentSystem.lat, this.props.currentSystem.lng]} zoom={this.props.zoom} ref='map' onZoomend={e => this.onZoomend(e)} onZoomstart={e => this.onZoomstart(e)} onMoveend={e => this.onMoveend(e)} onMovestart={e => this.onMovestart(e)} onDragend={e => this.onDragend(e)} onDragstart={e => this.onDragstart(e)} onPanto={e => this.onPanto(e)} onMove={e => this.onMove(e)}  onViewreset={e => this.onViewreset(e)}   onZoomlevelschange={e => this.onZoomlevelschange(e)} onClick={(e) => this.onClickHyperspaceNavigation(e)} style={{zIndex: 5}} >
+    			<LayersControl>
+    				<BaseLayer name="Galaxy" checked={true}>
+    					<Pane name="galaxy-pane" style={{ zIndex: zIndexGalaxy }}>
+							 <TileLayer url={tileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
+						  </Pane>
+            </BaseLayer>
+            <BaseLayer name="Black" checked={false} >
+              <Pane name="black-pane" style={{ zIndex: zIndexBlack }}>
+                <TileLayer url={blackTileImage} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} />
+              </Pane>
+            </BaseLayer>
+            <Overlay name="Sectors" checked={false}>
+              <Sectors />
+            </Overlay>
+			    	<Overlay name="Regions" checked={false}>
+			    		<Regions map={this.state.map} />
+			    	</Overlay>
+            <Overlay name="Grid" checked={false}>
+              <Grid />
+            </Overlay>
+  					<Overlay name="Star Systems" checked={true}  ref="layerContainer" >
+              <StarMap map={this.state.map} mapMove={this.state.mapMoveEnd} mapHash={this.props.mapHash} />
+  					</Overlay>
+            <Overlay name="Hyperspace Lanes" checked={false}>
+              <HyperspaceLanesData />
+            </Overlay>
+            <Overlay name="Hyperspace Navigation" checked={false}>
+              <HyperspaceNavigation update={this.props.updateHyperspaceNavigation}/>
+            </Overlay>
+				  </LayersControl>
+    		</Map>
+      </div>
+  	)
+  }
 }
 
-
-
+// hyperspacePathUpdate={}
 
 function  getStarData() {
-
 	fetch('/api/has-location')  
 	.then(function(response) {
-    	return response.json();
+  	return response.json();
 	});
-
 }
-
-
 
 
 const mapStateToProps = (state = {}) => {
-    return Object.assign({}, state);
+  return Object.assign({}, state);
 };
 
-
 // export default MapMain;
-
 export default connect(mapStateToProps)(MapMain);
-

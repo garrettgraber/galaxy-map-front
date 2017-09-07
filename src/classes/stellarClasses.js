@@ -147,12 +147,24 @@ class HyperSpaceLane {
 	}
 
 	reverseCoordinatesLatLng() {
-		const latBefore = this.coordinates[0][0];
-		_.forEach(this.coordinates, function(el) {
+		// const latBefore = this.coordinates[0][0];
+		// _.forEach(this.coordinates, function(el) {
+		//   el.reverse();
+		// });
+		// const latAfter = this.coordinates[0][0];
+		// console.log("Before and after the same: ", (latBefore === latAfter)? true : false);
+
+		const coordinatesCopy = _.map(this.coordinates, _.clone);
+		// console.log("coordinatesCopy equals this.coordinates: ", coordinatesCopy == this.coordinates);
+		_.forEach(coordinatesCopy, function(el) {
 		  el.reverse();
 		});
-		const latAfter = this.coordinates[0][0];
-		console.log("Before and after the same: ", (latBefore === latAfter)? true : false);
+		// console.log("coordinatesCopy equals this.coordinates after reverse: ", coordinatesCopy == this.coordinates);
+		// console.log("coordinatesCopy: ", coordinatesCopy);
+		// console.log("this.coordinates: ", this.coordinates);
+		this.coordinates = coordinatesCopy;
+		// console.log("this.coordinates after: ", this.coordinates);
+
 	}
 };
 
@@ -196,7 +208,13 @@ export class HyperSpacePath {
 	createArrayOfHyperspaceLanes(totalLanesInCollection) {
 		const hyperspaceLanesArray = [];
 		for(let id of this.jumps) {
+			console.log("id: ", id);
 			const foundLaneData = _.find(totalLanesInCollection, {_id : id});
+			console.log("foundLaneData: ", foundLaneData);
+
+			if(foundLaneData === undefined) {
+				console.log("totalLanesInCollection: ", totalLanesInCollection);
+			}
 			const Lane = new HyperSpaceLane(
 				foundLaneData.name,
 				foundLaneData.hyperspaceHash,
@@ -209,7 +227,7 @@ export class HyperSpacePath {
 				foundLaneData._start,
 				foundLaneData._end,
 				foundLaneData.coordinates,
-				foundLaneData._id = 0
+				foundLaneData._id
 			);
 			Lane.reverseCoordinatesLatLng();
 			hyperspaceLanesArray.push(Lane);
@@ -251,6 +269,7 @@ export class HyperSpacePath {
 		for(let i=0; i < this.jumps.length; i++) {
 			const jumpLaneId = this.jumps[i];
 			let JumpLane = _.find(totalLanesInCollection, { '_id': jumpLaneId });
+			console.log("JumpLane: ", JumpLane);
 			const jumpLaneHash = JumpLane.hyperspaceHash;
 			sumOfHashes += jumpLaneHash + '|';
 		}
@@ -271,13 +290,18 @@ export class HyperSpacePath {
 				const jumpEndCoordinates = JumpLane.endCoordsLngLat;
 				const firstCoordinates = JumpLane.coordinates[0];
 				const secondCoordinates = JumpLane.coordinates[JumpLane.coordinates.length - 1];
-				const hyperspacePathIsInvalid = (
+				const startIsInvalid = (
 					StartNode.system !== JumpLane.start ||
+					!_.isEqual(jumpStartCoordinates, firstCoordinates)
+				);
+				const endIsInvalid = (
 					EndNode.system !== JumpLane.end ||
-					!_.isEqual(jumpStartCoordinates, firstCoordinates) ||
 					!_.isEqual(jumpEndCoordinates, secondCoordinates)
 				);
-				if(hyperspacePathIsInvalid) {
+
+				console.log("startIsInvalid: ", startIsInvalid);
+				console.log("endIsInvalid: ", endIsInvalid);
+				if(startIsInvalid || endIsInvalid) {
 					return false;
 				}
 			}
@@ -287,11 +311,6 @@ export class HyperSpacePath {
 		}
 	}
 
-	generateNodesAndLanes(totalLanesInCollection, totalNodesInCollection) {
-
-
-
-	}
 };
 
 export class HyperSpacePathCollection {
@@ -306,13 +325,13 @@ export class HyperSpacePathCollection {
 	linkHyperspacePaths() {
 		let laneSet = new Set([...this.lanes]);
 		let indexSet = new Set();
-  	for(let path of this.paths) {
-  		let reversedHyperspaceLanes = path.getReversedHyperLanes(this.lanes, this.nodes);
-  		for(let reversedLaneId of reversedHyperspaceLanes) {
-  			const index = _.findIndex(this.lanes, {_id: reversedLaneId});
-  			indexSet.add(index);
-  		}
-  	}
+	  	for(let path of this.paths) {
+	  		let reversedHyperspaceLanes = path.getReversedHyperLanes(this.lanes, this.nodes);
+	  		for(let reversedLaneId of reversedHyperspaceLanes) {
+	  			const index = _.findIndex(this.lanes, {_id: reversedLaneId});
+	  			indexSet.add(index);
+	  		}
+	  	}
 		for(let index of indexSet) {
 			const JumpLane = this.lanes[index];
 			const reversedJumpId = -Math.abs(JumpLane._id);
@@ -348,15 +367,40 @@ export class HyperSpacePathCollection {
   		}
 	}
 
-	validateHyperspacePaths() {
+	generateHyperspacePaths() {
 
-		console.log("generateHyperspacePath has fired...", this.paths);
+		console.log("generateHyperspacePaths has fired...", this.paths);
+		const hyperspacePaths = [];
 
 		for(let path of this.paths) {
 
-			console.log("path.hashValue: ", path.hashValue);
-			console.log("path.start: ", path.start);
-			console.log("path.end: ", path.end);
+			// console.log("path.hashValue: ", path.hashValue);
+			// console.log("path.start: ", path.start);
+			// console.log("path.end: ", path.end);
+
+			let Path = new HyperSpacePath(
+				path.start,
+				path.end,
+				path.length,
+				path.jumps,
+				path.nodes,
+				path.hashValue
+			);
+			hyperspacePaths.push(Path);
+		}
+		return hyperspacePaths;
+	}
+
+	validateHyperspacePaths() {
+
+		console.log("validateHyperspacePaths has fired...");
+		const invalidJumps = [];
+
+		for(let path of this.paths) {
+
+			// console.log("path.hashValue: ", path.hashValue);
+			// console.log("path.start: ", path.start);
+			// console.log("path.end: ", path.end);
 
 			const Path = new HyperSpacePath(
 				path.start,
@@ -369,20 +413,42 @@ export class HyperSpacePathCollection {
 
 			const jumpHash = Path.generateHashNumber(this.lanes);
 
-			console.log("jumpHash: ", jumpHash);
+			// console.log("jumpHash: ", jumpHash);
+			// console.log("Path.hashValue: ", Path.hashValue);
 
-			return Path;
-
-			// const HyperspaceLanes = Path.createArrayOfHyperspaceLanes(this.lanes);
-			// const HyperspaceNodes = Path.createArrayOfHyperspaceNodes(this.nodes);
-			// console.log("HyperspaceLanes: ", HyperspaceLanes);
-			// console.log("HyperspaceNodes: ", HyperspaceNodes);
-
-			// return {
-			// 	lanes: HyperspaceLanes,
-			// 	nodes: HyperspaceNodes
-			// };
+			if(jumpHash !== Path.hashValue) {
+				invalidJumps.push(jumpHash);
+			}
 
 		}
+		return invalidJumps;
 	}
 };
+
+
+export class Point {
+  constructor(
+  	system,
+    lat,
+    lng
+  ) {
+  	this.system = system;
+    this.lat = lat;
+    this.lng = lng;
+  }
+
+  normalizeLng() {
+    return this.lng / 2.0;
+  }
+
+  coordinatesNormalized() {
+  	// console.log("coordinates has fired!");
+  	const normalizedCoordinates = [this.lat, this.normalizeLng()];
+    return normalizedCoordinates;
+  }
+  coordinates() {
+	const coordinatesLatLng = [this.lat, this.lng];
+	return coordinatesLatLng;
+  }
+};
+

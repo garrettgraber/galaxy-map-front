@@ -2,25 +2,100 @@
 
 .navbar-button {
     height: 32px;
-    margin-right: 2px;
-    margin-left: 2px;
+    margin-right: 3px;
+    margin-left: 3px;
 }
 
 
 .nav-section {
     height: 50px;
+    width: 400px;
+}
+
+.nav-detail-pane {
+    height: 400px;
+    width: 400px;
+}
+
+.pane-row {
+    height: 40px;
+    padding: 4px;
+}
+
+.pane-row-control {
+    height: 40px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+
+.pane-row-text {
+    height: 24px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.pane-column {
+    display: inline-block;
+}
+
+.pane-section {
+    border-bottom: 1px solid #49fb35;
+    padding: 3px;
+}
+
+.nav-text {
+    font-size: 1.1em;
+    /*margin-left: 4px;*/
+    color:  #49fb35;
+    height: 32px;
+}
+
+.display-text {
+    font-size: 1.0em;
+    /*margin-left: 4px;*/
+    color:  #49fb35;
+    height: 28px;  
+}
+
+
+
+.pulse {
+    animation: pulsate 1s ease-out;
+    -webkit-animation: pulsate 1s ease-out;
+    -webkit-animation-iteration-count: infinite; 
+    opacity: 0.0;
+}
+
+
+@keyframes pulsate {
+    0% {opacity: 0.0;}
+    50% {opacity: 1.0;}
+    100% {opacity: 0.0;}
 }
 
 
 .search-input {
     height: 32px;
     line-height: 26px;
-    margin-right: 5px;
+    margin-right: 3px;
+    margin-left: 3px;
     border-radius: 5px;
     padding-left: 5px;
     /*border: solid 1px #dcdcdc;*/
     /*transition: box-shadow 0.3s, border 0.3s;*/
 }
+
+.hyperspace-node-input {
+    width: 200px;
+}
+
+.number-input {
+    padding-left: 8px;
+    width: 56px;
+}
+
+
 
 /*.search-input.focus,
 .search-input:focus {
@@ -49,16 +124,26 @@
 }
 
 
-#nav-container {
+.control-row {
+    position: static;
+    display: block;
+    padding: 5px;
+   /* border-bottom: 1px solid #49fb35;
+    border-right: 1px solid #49fb35;
+    border-top: 1px solid #49fb35;*/
+    border: 1px solid #49fb35;
+
+    background-color: black;
+    margin-bottom: 10px;
+}
+
+
+#control-container {
     position: fixed;
     top: 0px;
-    left: 0px;
-    height: 50px;
-    width: 100%;
+    left: 20px;
+    height: auto;
     z-index: 10;
-    padding: 5px;
-    background-color: black;
-    border-bottom: 1px solid #49fb35;
 }
 
 #planet-data-container {

@@ -1,4 +1,5 @@
 import { createStore, applyMiddleware } from 'redux';
+import { enableBatching } from 'redux-batched-actions';
 import rootReducer from '../reducers/reducers.js';
 import thunk from 'redux-thunk';
 
@@ -8,7 +9,7 @@ import thunk from 'redux-thunk';
 
 console.log("rootReducer: ", rootReducer);
 
-const store = createStore(rootReducer, applyMiddleware(thunk));
+const store = createStore(enableBatching(rootReducer), applyMiddleware(thunk));
 
 console.log("store: ", store);
 
