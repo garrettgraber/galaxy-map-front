@@ -3,20 +3,13 @@ import { connect } from 'react-redux';
 import { Pane, GeoJSON, LayerGroup } from 'react-leaflet';
 import L from 'leaflet';
 // import ReactFauxDOM from 'react-faux-dom';
-
-
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
 import 'leaflet_marker_2x';
 import 'leaflet_marker_shadow';
 
 import RegionLabels from './regionsLabels.js';
-
-
 import RegionsData from 'json-loader!../../data/region.geojson';
-// import RegionsDictionary from '../data/regionData.js';
-
-
 
 const RegionsDictionary = {
     "Deep Core": [{
@@ -62,7 +55,6 @@ const RegionsDictionary = {
 };
 
 
-
 class Regions extends React.Component {
     constructor(props) {
         super(props);
@@ -70,79 +62,38 @@ class Regions extends React.Component {
             regionsReady: false,
             regionsLabelArray: []
         }
-
     }
 
     componentDidMount() {
-
     	// console.log("componentDidMount in regions");
-
-
     }
 
     pointToLayer() {
-
         // console.log("pointToLayer has fired in regions...");
-    	
     }
 
     onEachFeature(feature, layer) {
-
-
         const currentRegionValue = feature.properties.region;
         const currentRegionLabel = RegionsDictionary[currentRegionValue][0];
-
         // console.log("\nregion: ", currentRegionValue);
         // console.log("lat lng: ", currentRegionLabel);
-
-
         let regionInArray = this.state.regionsLabelArray.filter(e => (e.region == currentRegionValue));
-
         if (regionInArray.length == 0) {
-
-            // for(let currentLabelLatLng of currentRegionLabelLatLngArray) {
-
-            // console.log("region pushed to array: ", currentRegionValue);
-
             this.state.regionsLabelArray.push({
                 region: currentRegionValue,
                 lat: currentRegionLabel.lat,
                 lng: currentRegionLabel.lng
             });
-
-
-            // }
-
-
-
-            // this.state.gridLabelsArray.push( gridLabel({
-            //     grid: feature.properties.grid,
-            //     point: polygonCenter
-            // }) );
-
-            // console.log("this.state.gridLabelsArray: ", this.state.gridLabelsArray.length);
-
         }
-
         if(this.state.regionsLabelArray.length >= 10) {
-
             console.log("Regions Ready. The Bull is Loose! ");
-
             this.setState({regionsReady: true});
         }
-
-
     }
-
 
     regionClick(e) {
-
-
         // console.log("region click e: ", e.latlng);
-
     }
-
-
 
     render() {
 
@@ -150,23 +101,15 @@ class Regions extends React.Component {
     	const regionsStyle = {color: 'purple', weight: 2, fill: false};
 
     	return (
-
             <LayerGroup className="layer-group">
-
         		<Pane name="regions-pane" style={{ zIndex: zIndex }}>
-
         			<GeoJSON data={RegionsData} style={regionsStyle} ref='regions' onEachFeature={(feature, layer) => this.onEachFeature(feature,layer)}  pointToLayer={(feature, latlng) => this.pointToLayer(feature,latlng)}  onClick={(e) => this.regionClick(e)} />
-
                     { this.state.regionsReady && <RegionLabels regionsLabelsArray={this.state.regionsLabelArray} /> }
-
         		</Pane>
-
             </LayerGroup>
-
     	)
     }
 }
-
 
 
 export default Regions;

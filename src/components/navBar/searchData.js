@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactFauxDOM from 'react-faux-dom';
 import { connect } from 'react-redux';
-// import { displaySystems } from '../actions/mapActions.js';
 import urlencode from 'urlencode';
 
 import { findSystem } from '../../actions/actions.js';
@@ -40,10 +39,12 @@ class SearchData extends React.Component {
     const buttonClass = (this.props.searchSystems)? "btn navbar-button btn-success" :  "btn navbar-button btn-primary";
 
     return (
-      <span>
-        <input id="search-system-input" type="text" placeholder="Search For Systems" className="search-input" value={this.state.inputValue}  onChange={this.change}/>
-        <button id="search-button-icon" type="button" className={buttonClass}  onClick={(e) => this.searchData(e)} disabled={this.props.searchSystems} ><i className={iconButtonClass}></i></button>
-      </span>
+      <div className="control-row nav-section">
+        <span>
+          <input id="search-system-input" type="text" placeholder="Search For Systems" className="search-input" value={this.state.inputValue}  onChange={this.change}/>
+          <button id="search-button-icon" type="button" className={buttonClass}  onClick={(e) => this.searchData(e)} disabled={this.props.searchSystems} ><i className={iconButtonClass}></i></button>
+        </span>
+      </div>
     );
   }
 }

@@ -56,15 +56,10 @@ class GridLabels extends React.Component {
 
 
     render() {
-
-        console.log("render grid labels: ", this.state.gridLabelsArray);
-
     	return (
-
            <FeatureGroup className="labels-test">
                 { renderComponentsOrNull(this.state.gridLabelsArray) }
             </FeatureGroup>
-
     	)
     
     }

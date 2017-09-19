@@ -5,6 +5,8 @@ import L from 'leaflet';
 import width from 'text-width';
 import 'whatwg-fetch';
 import _ from 'lodash';
+import uuidv1 from 'uuid/v1';
+import uuidv4 from 'uuid/v4';
 
 // import ReactFauxDOM from 'react-faux-dom';
 import 'leaflet/dist/leaflet.css';
@@ -15,11 +17,6 @@ import '../../css/main.css';
 
 import HyperspaceData from 'json-loader!../../data/hyperspace.geojson';
 import HyperspacePathCollection from './hyperspacePathCollection.js';
-
-// import { getHyperspacePathCollection } from '../../actions/actions.js';
-import uuidv1 from 'uuid/v1';
-import uuidv4 from 'uuid/v4';
-
 import {
   addHyperspacePathToCollection,
   updateHyperspacePaths,
@@ -29,16 +26,11 @@ import {
 } from '../../actions/actionCreators.js';
 
 
-
-// console.log("HyperspaceData: ", HyperspaceData);
-
 class HyperspaceNavigation extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       HyperspaceCollectionsComponents: [],
-      // startNavigationComponent: null,
-      // endNavigationComponent: null,
       HSpaceComponentsMaster: []
     };
   }
@@ -63,13 +55,10 @@ class HyperspaceNavigation extends React.Component {
     }
   }
   componentWillReceiveProps(newProps) {
-    // console.log("newProps in Hyperspace Navigation: ", newProps);
-
-    console.log("\nnewProps.update in Hyperspace Navigation: ", newProps.update);
-    console.log("HyperspaceNavigation this.props: ", this.props);
-
+    
     if(newProps.update) {
 
+      console.log("\nnewProps.update in Hyperspace Navigation: ", newProps.update);
       console.log("HyperspaceNavigation this.props: ", this.props);
 
       const StartPoint = this.props.hyperspaceStartPoint;
@@ -166,51 +155,12 @@ class HyperspaceNavigation extends React.Component {
     const hyperspaceLanesStylePink = {color: '#FF69B4', weight: 3};
     const hyperspaceLanesStyleCarolina = {color: '#99badd ', weight: 3};
   	const zIndex = 290;
-
-    // const navigationComponents = mergeComponenets(this.state.startNavigationComponent, this.state.endNavigationComponent);
-
-    console.log("\nHyperspace Navigation is rendering...");
-    console.log("HyperspaceNavigation props: ", this.props);
-    console.log("HyperspaceNavigation state: ", this.state);
-
-    // console.log("navigationComponents: ", navigationComponents);
-
-
-    // let navComponentsRendered = [];
-
-    // if(this.state.HyperspaceCollectionsComponents.length > 0) {
-    //   navComponentsRendered = this.state.HyperspaceCollectionsComponents;
-
-    //   const FirstHyperspacePath = this.props.hyperspacePathCollections[0];
-
-    //   if(FirstHyperspacePath.start !== this.props.hyperspaceStartNode.nodeId) {
-    //     navComponentsRendered.push(this.state.startNavigationComponent);
-    //   }
-
-    //   if(FirstHyperspacePath.end !== this.props.hyperspaceEndNode.nodeId) {
-    //     navComponentsRendered.push(this.state.endNavigationComponent);
-    //   }
-
-    // } else {
-
-    //   if(this.props.hyperspaceStartNode.nodeId) {
-    //     navComponentsRendered.push(this.state.startNavigationComponent);      
-    //   }
-
-    //   if(this.props.hyperspaceEndNode.nodeId) {
-    //     navComponentsRendered.push(this.state.endNavigationComponent);        
-    //   }
-
-    // }
-
-    // console.log("End of decision tree in hyperspace navigation");
-
-    // if(navigationComponents.length > 0  && this.props.hyperspacePathCollections[0].start !== this.props.hyperspaceStartNode.nodeId) {
-    //   navComponentsRendered = _.merge(navigationComponents, navComponentsRendered);
-    // }
-
     const navComponents = renderComponentsOrNull(this.state.HSpaceComponentsMaster);
-    console.log("navComponents: ", navComponents);
+
+    // console.log("\nHyperspace Navigation is rendering...");
+    // console.log("HyperspaceNavigation props: ", this.props);
+    // console.log("HyperspaceNavigation state: ", this.state);
+    // console.log("navComponents: ", navComponents);
 
   	return (
   		<Pane name="hyperspace-navigation-pane" style={{ zIndex: zIndex }}>
@@ -221,7 +171,6 @@ class HyperspaceNavigation extends React.Component {
   	)
   }
 }
-
 
 
 function renderComponentsOrNull(currentComponents) {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import Control from 'react-leaflet-control';
 import { Map, TileLayer, LayersControl, Pane } from 'react-leaflet';
 import L from 'leaflet';
 import 'whatwg-fetch';
@@ -7,14 +8,16 @@ import uuidv4 from 'uuid/v4';
 
 import { 
     searchSystemsFinish,
-    getZoomValue,
-    setZoomValue,
     renderMapOn,
     renderMapOff,
     renderMapStatus,
     zoomChangeStatus,
     zoomChangeOn,
-    generateNewMapHash
+    generateNewMapHash,
+    viewHasChangedAndRender,
+    setMapCenterAndZoom,
+    setMapZoom,
+    addItemToDataStream
 } from '../actions/actionCreators.js';
 import { findAndSetNearsetHyperspaceNode } from '../actions/actions.js';
 
@@ -26,7 +29,11 @@ import Regions from './regions/regions.js';
 import Sectors from './sectors/sectors.js';
 import HyperspaceLanesData from './hyperspaceData/hyperspaceLanesData.js';
 import StarMap from './stars/starMap.js';
-import NavBar from './navBar/navBar.js';
+import ApplicationControllers from './navBar/applicationControllers.js';
+import NavigationBar from './navBar/navigationBar.js';
+import DataStream from './navBar/dataStream.js';
+
+
 import HyperspaceNavigation from './hyperspaceNavigation/hyperspaceNavigation.js';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
@@ -53,18 +60,7 @@ class MapMain extends React.Component {
     	lat: 0,
     	lng: 0,
     	zoom: 2,
-    	map: null,
-      mapMoveEnd: false,
-      mapZoomEnd: false,
-      blackTiles: false,
-      StartLocation: {
-        lat: null,
-        lng: null
-      },
-      EndLocation: {
-        lat: null,
-        lng: null
-      }
+    	map: null
     }
   }
 
@@ -78,6 +74,7 @@ class MapMain extends React.Component {
       // this.props.dispatch( renderMapOn() );
     console.log("MapMain has mounted");
     console.log("props in mapMain: ", this.props);
+    this.props.dispatch(setMapZoom(currentZoom));
   }
 
   componentWillReceiveProps(newProps) {
@@ -85,102 +82,52 @@ class MapMain extends React.Component {
   }
 
   onZoomend(e) {
- 		const currentZoom = this.refs.map.leafletElement.getZoom();
-      console.log("\n\n****New Zoom: ****", currentZoom);
-      this.props.dispatch( getZoomValue() );
-      this.props.dispatch( setZoomValue(currentZoom) );
-      this.props.dispatch( getZoomValue() );
-      // this.props.dispatch( zoomChangeStatus() );
-      if(currentZoom === 2) {
-          // this.setState({mapMoveEnd: true});
-          // this.props.dispatch( renderMapOn() );
-          this.props.dispatch( getZoomValue() );
-          // console.log("this.props.mapMain: ", this.props);
-      }
 
-      console.log("mapMoveEnd: ", this.state.mapMoveEnd);
-      // this.props.dispatch( renderMapOn() );
-      // this.setState({mapMoveEnd: false});
-      // this.setState({mapMoveEnd: true});
-      // this.props.dispatch( renderMapOff() );
-      // console.log("this.props.mapMain: ", this.props);
-      console.log("this.props.zoom on Zoomend: ", this.props.zoom);
-
-      this.props.dispatch( generateNewMapHash() );
+    console.log("onZoomend has fired: ", e);
 
   }
 
   onZoomstart(e) {
-      // this.props.dispatch( renderMapOn() );
-      this.props.dispatch( renderMapOff() );
-      // this.setState({mapMoveEnd: false});
-      console.log("Map zoom starting: ", this.props);
-      console.log("this.props.zoom: ", this.props.zoom);
+
+    console.log("onZoomstart has fired: ", e);
+
   }
 
   onMovestart(e) {
-      // console.log("onMovestart has fired...");
-      // console.log("mapMoveEnd: ", this.state.mapMoveEnd);
-      // this.props.dispatch( renderMapOff() );
-      // this.setState({mapMoveEnd: false});
-      // console.log("this.props in Movestart: ", this.props);
+      console.log("onMovestart has fired...");
   }
 
   onMoveend(e) {
-      // console.log("onMoveend has fired...");
-      // console.log("mapMoveEnd: ", this.state.mapMoveEnd);
-      // this.props.dispatch( renderMapOff() );
-      // console.log("this.props on MOveend after render is false: ", this.props);
-      if(this.props.searchSystems) {
-          this.props.dispatch(searchSystemsFinish());
-      }
-      if(this.props.zoom > 3) {
-          this.props.dispatch( renderMapOn() );
-          // this.setState({mapMoveEnd: true});
-          // console.log("this.props on MOveend after render set: ", this.props);
-      }
+      // if(this.props.searchSystems) {
+      //     this.props.dispatch(searchSystemsFinish());
+      // }
+
   }
 
   onDragend(e) {
-      console.log("onDragend");
-      // this.props.dispatch( renderMapOff() );
-
-      this.props.dispatch( renderMapOn() );
-      this.setState({mapMoveEnd: true});
+      console.log("onDragend: ", e);     
   }
 
   onDragstart(e) {
-      console.log("onDragstart");
-      this.props.dispatch( renderMapOff() );
-      this.setState({mapMoveEnd: false});
-
-      // this.props.dispatch( renderMapOn() );
+      console.log("onDragstart: ", e);
   }
-
-
-  autoPanStart(e) {
-      console.log("autoPanStart: ", e);
-  }
-
-  onPanto(e) {
-      console.log("onPanto has fired: ", e);
-  }
-
-
-  onViewreset(e) {
-      console.log("***onViewreset has fired!!!", e);
-  }
-
-
-
-  onZoomlevelschange(e) {
-      console.log("***onZoomlevelschange has fired!!!", e);
-      // this.props.dispatch( zoomChangeOn() );
-  }
-
 
   onMove(e) {
-      console.log("***onMove fired: ", e);
+      // console.log("***onMove fired: ", e);
+  }
+
+  activateSearchSystems(e) {
+    console.log("Search Systems Now Active");
+  }
+
+  activateMapControls(e) {
+    console.log("Map Controls Now Active");
+
+  }
+
+  activateHyperspaceNavigationControls(e) {
+    console.log("Hyperspace Navigation Now Active");
+
   }
 
   onClickHyperspaceNavigation(e) {
@@ -199,34 +146,90 @@ class MapMain extends React.Component {
         lat: e.latlng.lat,
         lng: e.latlng.lng
       };
-
-      if(this.props.pathSearchStart) {
-        this.setState({StartLocation: Location});
-      }
-
-      if(this.props.pathSearchEnd) {
-        this.setState({EndLocation: Location});
-      }
       
+    } else {
+      return null;
     }
   }
 
+  onViewportChange(ViewportValues) {
+    console.log("viewport has started to change: ", ViewportValues);
+    // if(this.props.mapCenterAndZoom.zoom !== ViewportValues.zoom) {
+    //   console.log("map zoom has changed: ", ViewportValues.zoom);
+    // } else {
+    //   console.log("map center has changed: ", ViewportValues.center);
+    // }
+
+    // this.props.dispatch(setMapCenterAndZoom(
+    //   ViewportValues.center,
+    //   ViewportValues.zoom
+    // ));
+  }
+
+  onViewportChanged(ViewportValues) {
+    console.log("viewport has changed: ", ViewportValues);
+    
+    if(this.props.mapCenterAndZoom.zoom !== ViewportValues.zoom) {
+      console.log("map zoom has changed: ", ViewportValues.zoom);
+    } else {
+      console.log("map center has changed: ", ViewportValues.center);
+    }
+
+    const mapBounds = this.refs.map.leafletElement.getBounds();
+    console.log('Map Bounds after viewport has changed: ', mapBounds);
+
+    this.props.dispatch(setMapCenterAndZoom(
+      ViewportValues.center,
+      ViewportValues.zoom
+    ));
+    
+  }
+
   render() {
-  	// const position = [this.state.lat, this.state.lng];
   	const minZoom = 2;
   	const maxZoom = 7;
   	// const height = 1000;
   	// const width = 1000;
   	const zIndexGalaxy = 210;
-      const zIndexBlack = 205;
+    const zIndexBlack = 205;
   	const zIndexGrid = 220;
     const defaultStarMapKey = 'StarMap Key';
     const starMapKey = (this.props.renderMap)? uuidv4() : defaultStarMapKey;
-      // console.log("this.props in MapMain: ", this.props);
+
+
+    const NavigationStyles = {
+      position: 'fixed',
+      top: 80,
+      height: 500,
+      width: 60,
+      zIndex: 30,
+      backgroundColor: 'black',
+      border: '1px solid #49fb35'
+    };
+
   	return (
-      <div>
-        <NavBar map={this.state.map}/>
-    		<Map center={[this.props.currentSystem.lat, this.props.currentSystem.lng]} zoom={this.props.zoom} ref='map' onZoomend={e => this.onZoomend(e)} onZoomstart={e => this.onZoomstart(e)} onMoveend={e => this.onMoveend(e)} onMovestart={e => this.onMovestart(e)} onDragend={e => this.onDragend(e)} onDragstart={e => this.onDragstart(e)} onPanto={e => this.onPanto(e)} onMove={e => this.onMove(e)}  onViewreset={e => this.onViewreset(e)}   onZoomlevelschange={e => this.onZoomlevelschange(e)} onClick={(e) => this.onClickHyperspaceNavigation(e)} style={{zIndex: 5}} >
+      <div id="map-main">
+        <DataStream dataMessage={this.props.dataStream.currentItem}/>
+        <NavigationBar />
+        <ApplicationControllers map={this.state.map}/>
+    		<Map
+          ref='map'
+          style={{zIndex: 5}}
+          center={this.props.mapCenterAndZoom.center}
+          zoom={this.props.mapCenterAndZoom.zoom}
+          zoomControl={false}
+          onZoomend={e => this.onZoomend(e)}
+          onZoomstart={e => this.onZoomstart(e)}
+          onMoveend={e => this.onMoveend(e)}
+          onMovestart={e => this.onMovestart(e)}
+          onDragend={e => this.onDragend(e)}
+          onDragstart={e => this.onDragstart(e)}
+          onMove={e => this.onMove(e)}
+          onClick={(e) => this.onClickHyperspaceNavigation(e)}
+          onViewportChange={e => this.onViewportChange(e)}
+          onViewportChanged={e => this.onViewportChanged(e)}
+        >
+          
     			<LayersControl>
     				<BaseLayer name="Galaxy" checked={true}>
     					<Pane name="galaxy-pane" style={{ zIndex: zIndexGalaxy }}>
@@ -242,13 +245,13 @@ class MapMain extends React.Component {
               <Sectors />
             </Overlay>
 			    	<Overlay name="Regions" checked={false}>
-			    		<Regions map={this.state.map} />
+			    		<Regions />
 			    	</Overlay>
             <Overlay name="Grid" checked={false}>
               <Grid />
             </Overlay>
   					<Overlay name="Star Systems" checked={true}  ref="layerContainer" >
-              <StarMap map={this.state.map} mapMove={this.state.mapMoveEnd} mapHash={this.props.mapHash} />
+              <StarMap map={this.state.map} />
   					</Overlay>
             <Overlay name="Hyperspace Lanes" checked={false}>
               <HyperspaceLanesData />
@@ -256,14 +259,18 @@ class MapMain extends React.Component {
             <Overlay name="Hyperspace Navigation" checked={false}>
               <HyperspaceNavigation update={this.props.updateHyperspaceNavigation}/>
             </Overlay>
-				  </LayersControl>
+  				  </LayersControl>
+            <Control position="topright" >
+              <button onClick={ () => console.log("Control bitch!!!") } >
+                Reset View
+              </button>
+            </Control>
     		</Map>
       </div>
   	)
   }
 }
 
-// hyperspacePathUpdate={}
 
 function  getStarData() {
 	fetch('/api/has-location')  
@@ -277,5 +284,4 @@ const mapStateToProps = (state = {}) => {
   return Object.assign({}, state);
 };
 
-// export default MapMain;
 export default connect(mapStateToProps)(MapMain);

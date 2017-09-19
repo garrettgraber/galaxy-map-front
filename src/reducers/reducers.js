@@ -49,10 +49,16 @@ storeTest.dispatch({ type: 'DECREMENT' });
 // 1
 console.log( (storeTest.getState() === 1)? "redux on" : "redux off" );
 
-const StartPosition = {
+const CoruscantLocation = {
+	center: [0, 0],
+	zoom: 2
+};
+
+const CoruscantSystem = {
 	lat: 0,
 	lng: 0,
-	zoom: 2
+	zoom: 2,
+	system: 'Coruscant'
 };
 
 const BlankPoint = {
@@ -69,8 +75,179 @@ const BlankNode = {
 	loc: [],
 	nodeId: null
 };
+const DefaultDataStream = {
+	deCodedIndex: 18,
+	currentItem: 'Death to Sith Fags',
+	streamItemArrray: []
+};
+const defaultZoom = 2;
 const maxJumps = 90;
 const pathLimit = 1;
+
+
+function dataStream(state = DefaultDataStream, action) {
+	let StateClone = _.cloneDeep(state);
+
+	switch (action.type) {
+		case Actions.ADD_DATA_STREAM_ITEM:
+			StateClone.currentItem = action.payload;
+			StateClone.streamItemArrray.unshift(action.payload);
+			if(StateClone.streamItemArrray.length > 10) {
+				StateClone.streamItemArrray.pop();
+			}
+			StateClone.deCodedIndex = 0;
+			console.log("New Data Stream Item: ", StateClone.currentItem);
+			return StateClone;
+		case Actions.SET_CURRENT_DATA_STREAM_ITEM_TEMP:
+			StateClone.currentItem = action.payload;
+			console.log("Temporary data stream item: ", StateClone.currentItem);
+			return StateClone;
+		case Actions.SET_CURRENT_DATA_STREAM_ITEM_TO_MOST_RECENT:
+			StateClone.currentItem = StateClone.streamItemArrray[0];
+			console.log("Most recent data stream item: ", StateClone.currentItem);
+			return StateClone;
+		case Actions.SET_CURRENT_DATA_STREAM_ITEM_TO_BLANK:
+			StateClone.currentItem = '';
+			console.log("Data Stream now blank");
+			return StateClone;
+		case Actions.DECODE_ADDITIONAL_LETTER:
+			if(StateClone.deCodedIndex < StateClone.currentItem.length) {
+				StateClone.deCodedIndex += 1;
+			}			
+			console.log("Current Data Stream item decoded");
+			return StateClone;
+		case Actions.RE_ENCODE_PREVIOUS_LETTER:
+			if(StateClone.deCodedIndex > 0) {
+				StateClone.deCodedIndex -= 1;
+			}
+			console.log("Current Data Stream item re-encoded");
+			return StateClone;
+		case Actions.ZERO_DECODE_LETTERS:
+			StateClone.deCodedIndex = 0;
+			console.log("Current Data Stream item has not been decoded");
+			return StateClone;
+		default:
+			return state;
+	}
+}
+
+
+function systemsSearchControlsOn(state = false, action) {
+	switch (action.type) {
+		case Actions.SYSTEMS_SEARCH_CONTROLS_ON:
+			console.log("System search controls on");
+			return true;
+		case Actions.SYSTEMS_SEARCH_CONTROLS_OFF:
+			console.log("System search controls off");
+			return false;
+		case Actions.SYSTEMS_SEARCH_CONTROLS_TOGGLE:
+			let newState = (state)? false : true;
+			console.log("System search controls toggled to: ", newState);
+			return newState;
+		default:
+			return state;
+	}
+}
+
+function mapControlsOn(state = true, action) {
+	switch (action.type) {
+		case Actions.MAP_CONTROLS_ON:
+			console.log("map controls on");
+			return true;
+		case Actions.MAP_CONTROLS_OFF:
+			console.log("map controls off");
+			return false;
+		case Actions.MAP_CONTROLS_TOGGLE:
+			let newState = (state)? false : true;
+			console.log("map controls toggled to: ", newState);
+			return newState;
+		default:
+			return state;
+	}
+}
+
+function hyperspaceNavigationControlsOn(state = false, action) {
+	switch (action.type) {
+		case Actions.HYPERSPACE_NAVIGATION_CONTROLS_ON:
+			console.log("Hyperspace navigation controls on");
+			return true;
+		case Actions.HYPERSPACE_NAVIGATION_CONTROLS_OFF:
+			console.log("Hyperspace navigation controls off");
+			return false;
+		case Actions.HYPERSPACE_NAVIGATION_CONTROLS_TOGGLE:
+			let newState = (state)? false : true;
+			console.log("Hyperspace navigation controls toggled to: ", newState);
+			return newState;
+		default:
+			return state;
+	}
+}
+
+function activeSystem(state = CoruscantSystem, action) {
+	let StateClone = _.cloneDeep(state);
+	switch (action.type) {
+		case Actions.SET_SYSTEM:
+			console.log("zoom to system state: ", action.payload);
+			if(action.payload.zoom === 2) {
+				return CoruscantSystem;
+			} else {
+				return action.payload;
+			}
+		case Actions.INCREMENT_SYSTEM_ZOOM:
+			StateClone.zoom += 1;
+			return StateClone;
+		case Actions.DECREMENT_SYSTEM_ZOOM:
+			StateClone.zoom -= 1;
+			return StateClone;
+		case Actions.SET_SYSTEM_ZOOM_VALUE:
+			if(action.payload.zoom === 2) {
+				return CoruscantSystem;
+			} else {
+				StateClone.zoom = action.payload;
+				return StateClone;
+			}
+		case Actions.SET_SYSTEM_ERROR:
+			console.log("zoom to system error: ", action.payload);
+			return state;
+		case Actions.SET_SYSTEM_TO_CORUSCANT:
+			return CoruscantSystem;
+		default:
+			return state;
+	}
+}
+
+
+function mapCenterAndZoom(state = CoruscantLocation, action) {
+	let StateClone = _.cloneDeep(state);
+	switch (action.type) {
+		case Actions.SET_MAP_CENTER:
+			console.log("set map center: ", action.payload);
+			StateClone.center = action.payload;
+			return StateClone;
+		case Actions.SET_MAP_ZOOM:
+			console.log("set map zoom: ", action.payload);
+			StateClone.zoom = action.payload;
+			return StateClone;
+		case Actions.SET_MAP_CENTER_AND_ZOOM:
+			StateClone.center = action.payload.center;
+			StateClone.zoom = action.payload.zoom;
+			console.log("set map zoom and center: ", StateClone);
+			return StateClone;
+		case Actions.INCREASE_MAP_ZOOM_BY_ONE:
+			StateClone.zoom += 1;
+			console.log("increase map zoom by one: ", StateClone);
+			return StateClone;
+		case Actions.DECREASE_MAP_ZOOM_BY_ONE:
+			StateClone.zoom -= 1;
+			console.log("decrease map zoom by one: ", StateClone);
+			return StateClone;
+		case Actions.SET_MAP_CENTER_AND_ZOOM_TO_DEFAULT:
+			console.log("setting map to Coruscant at Galactic Level");
+			return CoruscantLocation;
+		default:
+			return state;	
+	}
+}
 
 function hyperspacePathCollections(state = [], action) {
 	switch (action.type) {
@@ -198,18 +375,6 @@ function searchSystems(state = false, action) {
 			return state;
 	}
 }
-function currentSystem(state = StartPosition, action) {
-	switch (action.type) {
-		case Actions.ZOOM_TO_SYSTEM:
-			console.log("zoom to system state: ", action.payload);
-			return action.payload;
-		case Actions.ZOOM_TO_SYSTEM_ERROR:
-			console.log("zoom to system error: ", action.payload);
-			return state;
-		default:
-			return state;
-	}
-}
 function calculateHyperspaceJump(state = false, action) {
 	switch (action.type) {
 		case Actions.CALCULATE_HYPERSPACE_JUMP_ON:
@@ -301,7 +466,7 @@ function hyperspaceEndSystem(state = '', action) {
 			return state;
 	}	
 }
-function zoom(state = 2, action) {
+function zoom(state = defaultZoom, action) {
 	switch (action.type) {
 		case Actions.GET_ZOOM_VALUE:
 			console.log("getting zoom value: ", state);
@@ -309,6 +474,8 @@ function zoom(state = 2, action) {
 		case Actions.SET_ZOOM_VALUE:
 			console.log("setting zoom value: ", action.payload);
 			return action.payload;
+		case Actions.ZOOM_TO_GALAXY:
+			return defaultZoom;
 		default:
 			return state;
 	}
@@ -355,29 +522,14 @@ function updateHyperspaceNavigation(state = false, action) {
 			return state;
 	}
 }
-const defaultMapHash = uuidv4();
-function mapHash(state = defaultMapHash, action) {
-	switch (action.type) {
-		case Actions.GENERATE_MAP_HASH:
-			const generatedMapHash = uuidv4();
-			console.log("map hash: ", generatedMapHash);
-			return generatedMapHash;
-		case Actions.DEFAULT_MAP_HASH:
-			console.log("default map hash: ", defaultMapHash);
-			return defaultMapHash;
-		case Actions.SAME_MAP_HASH:
-			console.log("same map hash: ", state);
-			return state;
-		default:
-			return state;
-	}
-}
 
-
-// const rootReducer = combineReducers({currentSystem, searchSystems});
 
 export default combineReducers({
-	currentSystem,
+	dataStream,
+	systemsSearchControlsOn,
+	mapControlsOn,
+	hyperspaceNavigationControlsOn,
+	activeSystem,
 	searchSystems,
 	zoom,
 	renderMap,
@@ -397,8 +549,8 @@ export default combineReducers({
 	pinPointStart,
 	pinPointEnd,
 	calculateHyperspaceJump,
-	mapHash,
-	updateHyperspaceNavigation
+	updateHyperspaceNavigation,
+	mapCenterAndZoom
 });
 
 

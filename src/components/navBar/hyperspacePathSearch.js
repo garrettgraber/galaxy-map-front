@@ -101,42 +101,44 @@ class HyperspacePathSearch extends React.Component {
 
 
     return (
-      <span>
-        <HyperspaceControls />
-        <div className="pane-section">
-          <div className="pane-row-control">
-            <span className="nav-text">Start&nbsp;&nbsp;</span>
-            <button id="point-jump-icon" type="button" className={searchSystemsStart} onClick={(e) => this.switchSearchStart(e)} ><i className={"fa fa-globe"}></i></button>
-            {
-              (this.state.searchSystemsStart) ? (<div className="pane-column">
-                  <span className="nav-text">System:&nbsp;&nbsp;</span>
-                  <input id="start-system-input" type="text" placeholder="Start System" className="search-input" value={this.state.start} onChange={(e) => this.startChange(e)} />
-                  <button type="button" className="btn navbar-button btn-primary"  onClick={(e) => this.searchStart(e)} ><i className="glyphicon glyphicon-search"></i></button>
-                </div>
-              ) : ( <StartPinPoint/> )
-            }
+      <div className="control-row nav-detail-pane">
+        <span>
+          <HyperspaceControls />
+          <div className="pane-section">
+            <div className="pane-row-control">
+              <span className="nav-text">Start&nbsp;&nbsp;</span>
+              <button id="point-jump-icon" type="button" className={searchSystemsStart} onClick={(e) => this.switchSearchStart(e)} ><i className={"fa fa-globe"}></i></button>
+              {
+                (this.state.searchSystemsStart) ? (<div className="pane-column">
+                    <span className="nav-text">System:&nbsp;&nbsp;</span>
+                    <input id="start-system-input" type="text" placeholder="Start System" className="search-input" value={this.state.start} onChange={(e) => this.startChange(e)} />
+                    <button type="button" className="btn navbar-button btn-primary"  onClick={(e) => this.searchStart(e)} ><i className="glyphicon glyphicon-search"></i></button>
+                  </div>
+                ) : ( <StartPinPoint/> )
+              }
+            </div>
+            <HyperspacePoint Point={this.props.hyperspaceStartPoint} />
+            <HyperspaceNode Node={startNode}/>
           </div>
-          <HyperspacePoint Point={this.props.hyperspaceStartPoint} />
-          <HyperspaceNode Node={startNode}/>
-        </div>
 
-        <div className="pane-section">
-          <div className="pane-row-control">
-            <span className="nav-text">End&nbsp;&nbsp;</span>
-            <button id="point-jump-icon" type="button" className={searchSystemsEnd} onClick={(e) => this.switchSearchEnd(e)} ><i className={"fa fa-globe"}></i></button>
-            {
-              (this.state.searchSystemsEnd) ? (<div className="pane-column">
-                  <span className="nav-text">System:&nbsp;&nbsp;</span>
-                  <input id="start-system-input" type="text" placeholder="End System" className="search-input" value={this.state.end} onChange={(e) => this.endChange(e)} />
-                  <button type="button" className="btn navbar-button btn-primary"  onClick={(e) => this.searchEnd(e)} ><i className="glyphicon glyphicon-search"></i></button>
-                </div>
-              ) : ( <EndPinPoint/> )
-            }
+          <div className="pane-section">
+            <div className="pane-row-control">
+              <span className="nav-text">End&nbsp;&nbsp;</span>
+              <button id="point-jump-icon" type="button" className={searchSystemsEnd} onClick={(e) => this.switchSearchEnd(e)} ><i className={"fa fa-globe"}></i></button>
+              {
+                (this.state.searchSystemsEnd) ? (<div className="pane-column">
+                    <span className="nav-text">System:&nbsp;&nbsp;</span>
+                    <input id="start-system-input" type="text" placeholder="End System" className="search-input" value={this.state.end} onChange={(e) => this.endChange(e)} />
+                    <button type="button" className="btn navbar-button btn-primary"  onClick={(e) => this.searchEnd(e)} ><i className="glyphicon glyphicon-search"></i></button>
+                  </div>
+                ) : ( <EndPinPoint/> )
+              }
+            </div>
+            <HyperspacePoint Point={this.props.hyperspaceEndPoint} />
+            <HyperspaceNode Node={endNode}/>
           </div>
-          <HyperspacePoint Point={this.props.hyperspaceEndPoint} />
-          <HyperspaceNode Node={endNode}/>
-        </div>
-      </span>
+        </span>
+      </div>
     );
   }
 }

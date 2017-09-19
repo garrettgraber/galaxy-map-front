@@ -81,7 +81,7 @@ class HyperspaceControls extends React.Component {
     console.log("It's a trap!!");
     console.log("HyperspaceControls this.props: ", this.props);
 
-    console.log("Geohash: ", Geohash);
+    // console.log("Geohash: ", Geohash);
 
 
     const StartPoint = new Point(
@@ -108,10 +108,10 @@ class HyperspaceControls extends React.Component {
       this.props.hyperspaceEndNode.lng
     );
 
-    console.log("StartPoint: ", StartPoint);
-    console.log("StartNode: ", StartNode);
-    console.log("EndPoint: ", EndPoint);
-    console.log("EndNode: ", EndNode);
+    // console.log("StartPoint: ", StartPoint);
+    // console.log("StartNode: ", StartNode);
+    // console.log("EndPoint: ", EndPoint);
+    // console.log("EndNode: ", EndNode);
 
     distanceBetweenPoints(StartPoint, StartNode);
     distanceBetweenPoints(EndPoint, EndNode);

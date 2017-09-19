@@ -9,11 +9,12 @@ import { batchActions } from 'redux-batched-actions';
 
 
 import {
-	zoomToSystem,
-	zoomToSystemError,
+	setActiveSystem,
+	setActiveSystemError,
 	searchSystemsStart,
 	searchSystemsFinish,
-	setZoomValue,
+  setMapCenterAndZoom,
+  viewHasChangedAndRender,
 	addHyperspacePathToCollection,
   loadHyperspacePathCollections,
   updateHyperspacePaths,
@@ -29,7 +30,12 @@ import {
   calculateHyperspaceJumpOff,
   hyperspaceNavigationUpdateOn,
   hyperspaceNavigationUpdateOff,
-  setStartData
+  setStartData,
+  addItemToDataStream,
+  mostRecentDataStreamItem,
+  setCurrentDataStreamItemToBlank,
+  deCodeAdditionalCurrentItemLetter,
+  zeroDecodedCurrentItemLetters
 } from './actionCreators.js';
 
 
@@ -50,7 +56,8 @@ export function findSystem(systemName) {
     // first of all, let's do the optimistic UI update - we need to 
     // dispatch the old synchronous action object, using the renamed 
     // action creator
-    dispatch(searchSystemsStart());
+
+    dispatch( searchSystemsStart() );
 
     // now that the Store has been notified of the new todo item, we 
     // should also notify our server - we'll use here ES6 fetch 
@@ -64,6 +71,7 @@ export function findSystem(systemName) {
     	// console.log("json: ", json);
       // you should probably get a real id for your new todo item here, 
       // and update your store, but we'll leave that to you
+
     	let SystemObject = JSON.parse(json);
     	SystemObject = SystemObject[0];
 
@@ -71,24 +79,53 @@ export function findSystem(systemName) {
 
     	if(SystemObject.hasLocation) {
 
+        const dataStreamMessage = "Zoomed to " + SystemObject.system + ' ...';
+        dispatch( addItemToDataStream(dataStreamMessage) );
+        
+
+
 				const LngLat = SystemObject.LngLat;
+        const CurrentState = getState();
+        const activeSystemZoom = CurrentState.activeSystem.zoom;
+        let newZoom = 6;
+
+        if(activeSystemZoom > 2) {
+          newZoom = activeSystemZoom;
+        }
+
+        console.log("newZoom: ", newZoom);
+        console.log("CurrentState: ", CurrentState);
 
 				const SystemData = {
 					lat: LngLat[1],
 					lng: LngLat[0],
-					system: SystemObject.system
+					system: SystemObject.system,
+          zoom: newZoom
 				};
+        console.log("SystemData: ", SystemData);
 
-				console.log("SystemData: ", SystemData);
+        const stateBeforeDispatches = getState();
+        console.log("State Before: ", stateBeforeDispatches);
 
-				dispatch(zoomToSystem(SystemData));
-				dispatch(setZoomValue(6));
+				dispatch(setActiveSystem(SystemData));
+        const systemCenter = [SystemData.lat, SystemData.lng];
+        dispatch(setMapCenterAndZoom(systemCenter, newZoom));
+        dispatch(searchSystemsFinish());
+
+
+        const stateAfterDispatches = getState();
+        console.log("State After: ", stateAfterDispatches);
+
 
     	}
     }).catch(err => {
     // Error: handle it the way you like, undoing the optimistic update,
     //  showing a "out of sync" message, etc.
-    	dispatch(zoomToSystemError(err));
+      console.log("err in findPlanet: ", err);
+
+      const dataStreamMessage = "Error searching for " + systemName + '.';
+      dispatch( addItemToDataStream(dataStreamMessage) );
+    	dispatch(setActiveSystemError(err));
     	dispatch(searchSystemsFinish());
     });
   // what you return here gets returned by the dispatch function that 
@@ -164,6 +201,7 @@ export function hyperspacePositionSearch(SystemSearch) {
             const NewNodeState = createNodeState(NodeData);
             if(SystemSearch.isStartPosition) {
               
+              console.log("\n\nStart Position Update Begins!!!\n\n");
               dispatch(setStartPosition(NewPositionState));
               dispatch(setStartNode(NewNodeState));
               dispatch(setStartSystem(SystemSearch.system));
@@ -171,6 +209,8 @@ export function hyperspacePositionSearch(SystemSearch) {
               console.log("\n\nStart Position Updated!!!\n\n");
 
             } else {
+
+              console.log("\n\End Position Update Begins!!!\n\n");
               dispatch(setEndPosition(NewPositionState));
               dispatch(setEndNode(NewNodeState));
               dispatch(setEndSystem(SystemSearch.system));
@@ -197,6 +237,8 @@ export function hyperspacePositionSearch(SystemSearch) {
                 const NewNodeStateNearest = createNodeState(NodeDataNearest);
 
                 if(SystemSearch.isStartPosition) {
+
+                  console.log("\n\nStart Position Update Begins!!!\n\n");
                   dispatch(setStartNode(NewNodeStateNearest));
                   dispatch(setStartPosition(NewPositionStateFound));
                   dispatch(setStartSystem(SystemSearch.system));
@@ -204,6 +246,8 @@ export function hyperspacePositionSearch(SystemSearch) {
                   console.log("\n\nStart Position Updated!!!\n\n");
 
                 } else {
+
+                  console.log("\n\End Position Update Begins!!!\n\n");
                   dispatch(setEndNode(NewNodeStateNearest));
                   dispatch(setEndPosition(NewPositionStateFound));
                   dispatch(setEndSystem(SystemSearch.system));
@@ -263,12 +307,14 @@ export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
 
 
       if(LngLatSearch.isStartNode) {
+        console.log("\n\nStart Position Update Begins!!!\n\n");
         dispatch(setStartPosition(NewPositionState));
         dispatch(setStartNode(NewNodeState));
         dispatch(setStartSystem(NewPositionState.system));
         dispatch(hyperspaceNavigationUpdateOn());
         console.log("\n\nStart Position Updated!!!\n\n");
       } else {
+        console.log("\n\End Position Update Begins!!!\n\n");
         dispatch(setEndPosition(NewPositionState));
         dispatch(setEndNode(NewNodeState));
         dispatch(setEndSystem(NewPositionState.system));
@@ -286,6 +332,19 @@ export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
       }
     });
     return null;
+  }
+}
+
+
+
+function setDataStreamItemThenClear(dataStreamItem) {
+
+  return function(dispatch, getState) {
+    dispatch( addItemToDataStream(dataStreamItem) );
+    setTimeout(function() {
+      dispatch( setCurrentDataStreamItemToBlank(dataStreamItem) );
+    }, 20*1000);
+    return null; 
   }
 }
 

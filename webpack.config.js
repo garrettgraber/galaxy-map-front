@@ -121,6 +121,14 @@ module.exports = {
             //         name: '../map-tiles/[path][name].[ext]',
             //     }
             // },
+            // {
+            //     test: /\.(eot|ttf|woff|woff2)$/,
+            //     loader: 'font-loader?name=[path][name].[ext]'
+            // },
+            {
+                test: /\.(woff|eot|ttf|woff2)(\?.*$|$)/,
+                loader: 'url-loader?limit=100000&mimetype=application/font-woff'
+            },
             { 
                 test: /\.json$/,
                 loader: "json-loader"

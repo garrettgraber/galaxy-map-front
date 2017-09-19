@@ -1,16 +1,173 @@
 import * as Actions from '../constants/actionTypes.js';
-export function zoomToSystem(currentSystem) {
+
+export function addItemToDataStream(dataStreamItem) {
 	return { 
-		type: Actions.ZOOM_TO_SYSTEM,
-		payload: currentSystem
+		type: Actions.ADD_DATA_STREAM_ITEM,
+		payload: dataStreamItem
+	}	
+}
+export function setDataStreamItemTemporary(dataStreamItem) {
+	return { 
+		type: Actions.SET_CURRENT_DATA_STREAM_ITEM_TEMP,
+		payload: dataStreamItem
 	}
 }
-export function zoomToSystemError(error) {
+export function mostRecentDataStreamItem(dataStreamItem) {
+	return { 
+		type: Actions.SET_CURRENT_DATA_STREAM_ITEM_TO_MOST_RECENT
+	}	
+}
+export function setCurrentDataStreamItemToBlank() {
+	return { 
+		type: Actions.SET_CURRENT_DATA_STREAM_ITEM_TO_BLANK
+	}	
+}
+export function deCodeAdditionalCurrentItemLetter() {
+	return { 
+		type: Actions.DECODE_ADDITIONAL_LETTER
+	}
+}
+export function reEncodePreviousCurrentItemLetter() {
+	return { 
+		type: Actions.RE_ENCODE_PREVIOUS_LETTER
+	}
+}
+export function zeroDecodedCurrentItemLetters() {
 	return {
-		type: Actions.ZOOM_TO_SYSTEM_ERROR,
+		type: Actions.ZERO_DECODE_LETTERS
+	}
+}
+
+export function activateSystemsSearchControls() {
+	return {
+		type: Actions.SYSTEMS_SEARCH_CONTROLS_ON
+	}
+}
+export function deActivateSystemsSearchControls() {
+	return {
+		type: Actions.SYSTEMS_SEARCH_CONTROLS_OFF
+	}
+}
+export function toggleSystemsSearchControls() {
+	return {
+		type: Actions.SYSTEMS_SEARCH_CONTROLS_TOGGLE
+	}
+}
+
+export function activateMapControls() {
+	return {
+		type: Actions.MAP_CONTROLS_ON
+	}
+}
+export function deActivateMapControls() {
+	return {
+		type: Actions.MAP_CONTROLS_OFF
+	}
+}
+export function toggleMapControls() {
+	return {
+		type: Actions.MAP_CONTROLS_TOGGLE
+	}
+}
+
+export function activateHyperspaceNavigationControls() {
+	return {
+		type: Actions.HYPERSPACE_NAVIGATION_CONTROLS_ON
+	}
+}
+export function deActivateHyperspaceNavigationControls() {
+	return {
+		type: Actions.HYPERSPACE_NAVIGATION_CONTROLS_OFF
+	}
+}
+export function toggleHyperspaceNavigationControls() {
+	return {
+		type: Actions.HYPERSPACE_NAVIGATION_CONTROLS_TOGGLE
+	}
+}
+
+export function setActiveSystem(newActiveSystem) {
+	return { 
+		type: Actions.SET_SYSTEM,
+		payload: newActiveSystem
+	}
+}
+export function setActiveSystemToCourscant() {
+	return {
+		type: Actions.SET_SYSTEM_TO_CORUSCANT
+	}
+}
+export function setActiveSystemError(error) {
+	return {
+		type: Actions.SET_SYSTEM_ERROR,
 		payload: error
 	}
 }
+export function zoomOneCloserToActiveSystem() {
+	return {
+		type: Actions.INCREMENT_SYSTEM_ZOOM
+	}
+}
+export function zoomOneFurtherFromActiveSystem() {
+	return {
+		type: Actions.DECREMENT_SYSTEM_ZOOM
+	}
+}
+export function setZoomValueOnActiveSystem(newZoom) {
+	return {
+		type: Actions.SET_SYSTEM_ZOOM_VALUE,
+		payload: newZoom
+	}
+}
+
+
+
+
+export function setMapCenter(newCenter) {
+	return {
+		type: Actions.SET_MAP_CENTER,
+		payload: newCenter
+	}
+}
+export function setMapZoom(newZoom) {
+	return {
+		type: Actions.SET_MAP_ZOOM,
+		payload: newZoom
+	}
+}
+export function setMapCenterAndZoom(newCenter, newZoom) {
+	return {
+		type: Actions.SET_MAP_CENTER_AND_ZOOM,
+		payload: {
+			center: newCenter,
+			zoom: newZoom
+		}
+	}
+}
+export function setMapToZeroZero() {
+	return {
+		type: Actions.SET_MAP_CENTER_AND_ZOOM_TO_DEFAULT
+	}
+}
+export function setMapError(error) {
+	return {
+		type: Actions.SET_MAP_ERROR,
+		payload: error
+	}
+}
+export function increaseMapZoom() {
+	return {
+		type: Actions.INCREASE_MAP_ZOOM_BY_ONE
+	}
+}
+export function decreaseMapZoom() {
+	return {
+		type: Actions.DECREASE_MAP_ZOOM_BY_ONE
+	}
+}
+
+
+
 export function setStartPosition(StartPosition) {
 	return { 
 		type: Actions.SET_START_POSITION,
@@ -59,6 +216,8 @@ export function setEndNodeError(error) {
 		payload: error
 	}
 }
+
+
 export function searchSystemsStart() {
 	return {
 		type: Actions.SEARCH_SYSTEMS_ON
@@ -69,17 +228,8 @@ export function searchSystemsFinish() {
 		type: Actions.SEARCH_SYSTEMS_OFF
 	}
 }
-export function getZoomValue() {
-	return {
-		type: Actions.GET_ZOOM_VALUE
-	}
-}
-export function setZoomValue(newZoom) {
-	return {
-		type: Actions.SET_ZOOM_VALUE,
-		payload: newZoom
-	}
-}
+
+
 export function renderMapOn() {
 	return {
 		type: Actions.MAP_RENDER_ON

@@ -4,47 +4,30 @@ import { Pane, FeatureGroup, Circle } from 'react-leaflet';
 import L from 'leaflet';
 import width from 'text-width';
 import _ from 'lodash';
+import Geohash from 'latlon-geohash';
+
 import { Planet, HyperSpaceLane } from '../../classes/stellarClasses.js';
 import StarSystem from './starSystem.js';
 import { 
-  searchSystemsFinish,
-  getZoomValue,
-  setZoomValue,
-  renderMapOn,
-  renderMapOff,
-  renderMapStatus,
   zoomChangeStatus,
-  zoomChangeOff
+  viewShouldStayTheSame
 } from '../../actions/actionCreators.js';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
 import 'leaflet_marker_2x';
 import 'leaflet_marker_shadow';
 
-const MapBoundariesMax = {
-  latitude: {
-    north: 84.0,
-    south: -84.0
-  },
-  longitude: {
-    east: 170.0,
-    west: -170.0
-  }
-};
 
 class StarMap extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-    	starData: [],
-      starsInView: [],
       StarMapComponents: [],
-    	starDataLoaded: false,
       GalacticPlanetsArray: [],
-      GalacticPlanetsSet: new Set(),
       previousIntersectionMap: new Set(),
-      PlanetarySystemArray: [],
-      zoom: 2
+      zoom: 2,
+      northEast: null,
+      southWest: null
     };
   }
 
@@ -85,174 +68,115 @@ class StarMap extends React.Component {
   		}
       const galacticPlanetsSet = new Set(PlanetsArray);
       console.log("Galactic Planets Set: ", galacticPlanetsSet);
-  		that.setState({starData: StarData}); 
       that.setState({GalacticPlanetsArray: PlanetsArray});
-      that.setState({GalacticPlanetsSet: galacticPlanetsSet});
-      const StarMapComponents = that.createStarMap();
+
+      const currentMapZoom = that.props.map.getZoom();
+      const StarMapComponents = that.createStarMap(currentMapZoom, that.props.map);
+      const MapBoundariesHashes = getNorthEastAndSoutWestBounds(that.props.map);
+  
       that.setState({StarMapComponents: StarMapComponents});
-  		that.setState({starDataLoaded: true});
+      that.setState({northEast: MapBoundariesHashes.northEast});
+      that.setState({southWest: MapBoundariesHashes.southWest});
+      that.setState({zoom: currentMapZoom});
   	});
   }
 
-  componentWillReceiveProps(newProps) {
-    // console.log("Props update StarMap: ", newProps);
-    // this.setState({zoomLevel: currentZoom});
-    console.log("\nZoom in StarMap: ", this.props.zoom);
-    const currentZoom = this.props.map.getZoom();
-    console.log("New Zoom in StarMap: ", newProps.zoom);
-    if(this.props.zoom !== this.state.zoom) {
-      // console.log("Zoom change: ", this.props.zoom);
-    }
-    this.setState({zoom: this.props.zoom});
-  }
 
-  createStarMap() {
-    console.log("\n\n\****StarMap creation!****");
-    const currentZoom = this.props.zoom;
-    const currentMap = this.props.map;
-    console.log("+++++Zoom at Star Creation: ", currentMap.getZoom());
+  createStarMap(currentZoom, currentMap) {
+    console.log("\n****StarMap creation!****");
+    console.log("Zoom on map: ", currentMap.getZoom());
+    console.log("Zoom on mapCenterAndZoom.zoom: ", currentZoom);
     console.log("Map zoom matchup: ", currentZoom === currentMap.getZoom());
-    const zoomLevelBasedRendering = true;
-    const starSystemArray = [];
-    let stellarComponentsArray = [];
-    const CurrentMapBoundaries = currentMap.getBounds();
-    const mapWidth = CurrentMapBoundaries._northEast.lng - CurrentMapBoundaries._southWest.lng;
-    const mapHeight = CurrentMapBoundaries._northEast.lat - CurrentMapBoundaries._southWest.lat;
-    let InViewSystems = 0;
-    let mapPaddingHeight = 0;
-    let mapPaddingWidth = 0;
-    if (currentZoom <= 2) {
-      // console.log("Leaving Bounds!");
-    } else if (currentZoom === 3){
-      mapPaddingWidth = 50;
-      mapPaddingHeight = 25;
-    } else if (currentZoom == 4) {
-      mapPaddingWidth = 10;
-      mapPaddingHeight = 5;
-    }
-    const mapOffSetLat = mapPaddingHeight;
-    const mapOffSetLng = mapPaddingWidth;
-    const southernBoundary = CurrentMapBoundaries._southWest.lat - mapOffSetLat;
-    const northernBoundary = CurrentMapBoundaries._northEast.lat + mapOffSetLat
-    const westernBoundary = CurrentMapBoundaries._southWest.lng - mapOffSetLng;
-    const easternBoundary = CurrentMapBoundaries._northEast.lng + mapOffSetLng;
-    const MapBoundaries = {
-      north: northernBoundary,
-      south: southernBoundary,
-      east: easternBoundary,
-      west: westernBoundary
-    };
-    // console.log("MapBoundaries: ", MapBoundaries);
-    // console.log("northernBoundary: ", northernBoundary);
-    // console.log("southernBoundary: ", southernBoundary);
-    // console.log("easternBoundary: ", easternBoundary);
-    // console.log("westernBoundary: ", westernBoundary);
-    let starsCurrentlyInView = _.filter(this.state.GalacticPlanetsArray, e => { 
-      return e.starInMapView(currentMap, mapWidth, mapHeight, MapBoundaries) === true; 
-    });
-    let starsCurrentlyVisible = _.filter(this.state.GalacticPlanetsArray, e => { 
-      // console.log("Star is currently in view: ", e);
-      // console.log("starVisible: ", starVisible);
-      return e.starIsVisible(currentZoom) === true; 
-    });
-    const starsInViewSet = new Set(starsCurrentlyInView);
-    const starsVisible = new Set(starsCurrentlyVisible);
-    let union = new Set([...starsInViewSet, ...starsVisible]);
-    let intersectionMap = (currentZoom > 3)? new Set([...starsInViewSet].filter(x => starsVisible.has(x))) : new Set([...starsVisible]);
-    // console.log("starsCurrentlyInView: ", starsCurrentlyInView);
-    // console.log("starsAtZoomLevel: ", starsAtZoomLevel);
-    // console.log("starsCurrentlyVisible: ", starsCurrentlyVisible);
-    // console.log("GalacticPlanetsSet: ", this.state.GalacticPlanetsSet);
-    // console.log("starsInViewSet: ", starsInViewSet);
-    // console.log("starsVisible: ", starsVisible);
-    // console.log("union: ", union);
-    // console.log("intersectionMap: ", intersectionMap);
-    // console.log("intersectionMapDuo: ", intersectionMapDuo);
-    // console.log("previousIntersectionMap: ", this.state.previousIntersectionMap);
-    const starMapsEqual = eqSet(intersectionMap, this.state.previousIntersectionMap);
-    const unionOfIntersections = new Set([...intersectionMap, ...this.state.previousIntersectionMap]);
-    // console.log("Equal to previous star maps: ", starMapsEqual);
-    // console.log("unionOfIntersections: ", unionOfIntersections);
-    if( !starMapsEqual || (this.state.previousIntersectionMap.size === 0 ) ) {
-      intersectionMap.forEach(function(PlanetarySystem, sameItem) {
-        if(!PlanetarySystem.hasOwnProperty('latLng')) {
-          if(PlanetarySystem.lat === null && PlanetarySystem.lng === null) {
-            // console.log("currentStar data has lat: ", currentStarData.lat);
-            const starLngLat = PlanetarySystem.LngLat;
-            const currentLatLng = L.latLng(starLngLat[1], starLngLat[0]);
-            // console.log("currentLatLng: ", currentLatLng);
-            PlanetarySystem['lat'] = currentLatLng[1];
-            PlanetarySystem['lng'] = currentLatLng[0];
-            PlanetarySystem[i].latLng = currentLatLng;
-          } else {
-            const currentLatLng = L.latLng(PlanetarySystem.lat, PlanetarySystem.lng);
-            // console.log("currentLatLng: ", currentLatLng);
-            PlanetarySystem.latLng = currentLatLng;
-          }
-        }
-        // console.log("PlanetarySystem: " + typeof PlanetarySystem);
-        stellarComponentsArray.push( <StarSystem key={PlanetarySystem.system} StarObject={PlanetarySystem} zoom={currentZoom} map={currentMap} labels={true}  /> );
-        starSystemArray.push(PlanetarySystem);
-      });  
-    } else {
-      // console.log("star components: ", this.state.StarMapComponents);
-      stellarComponentsArray = this.state.StarMapComponents;
-    }
+
+    const intersectionMap = generateIntersectionMap(currentZoom, currentMap, this.state.GalacticPlanetsArray);
+    const StellarArrays = generateStellarArrays(currentZoom, currentMap, intersectionMap, this.state.previousIntersectionMap, this.state.StarMapComponents);
+
     this.setState({previousIntersectionMap: intersectionMap});
-    // console.log("star components: ", stellarComponentsArray);
-    // console.log("Star Systems components created: ", starSystemArray.length);
-    // console.log("zoom: ", currentZoom);
-    const starSystemSet = new Set(starSystemArray);
-    let intersectionOnCreation = new Set([...starSystemSet].filter(x => intersectionMap.has(x)));
-    let unionOnCreation = new Set([...starsInViewSet, ...intersectionMap]);
+    const starSystemSet = new Set(StellarArrays.starSystemArray);
+
+    // let intersectionOnCreation = new Set([...starSystemSet].filter(x => intersectionMap.has(x)));
+    // let unionOnCreation = new Set([...starsInViewSet, ...intersectionMap]);
     // console.log("intersection of two sets: ", intersectionOnCreation);
-    // console.log("union of two sets: ", unionOnCreation);
-    console.log("intersectionMap from above: ", intersectionMap.size);
-    console.log("****StarMap Completed!****");
-    // const starMapsEqual = eqSet(intersectionMap, starSystemSet);
-    // console.log("star maps equal: ", starMapsEqual);
-    console.log("\n\n");
-    return stellarComponentsArray;
+    // console.log("intersectionMap from above: ", intersectionMap.size);
+
+    console.log("star maps equal: ", eqSet(intersectionMap, starSystemSet));
+    console.log("Systems Generated for Star Map: ", StellarArrays.stellarComponentsArray.length);
+    console.log("****StarMap finished!****\n");
+
+    return StellarArrays.stellarComponentsArray;
+  }
+
+
+  starMapGeneratorController(zoomInStore, mapInstance) {
+
+    const MapHashes = getNorthEastAndSoutWestBounds(mapInstance);
+    console.log("MapHashes: ", MapHashes);
+    console.log("northEast: ", this.state.northEast);
+    console.log("southWest: ", this.state.southWest);
+    const differentNorthEastPoint = MapHashes.northEast !== this.state.northEast;
+    const differentSouthWestPoint = MapHashes.southWest !== this.state.southWest;
+    const mapBoundsHaveChanged = differentNorthEastPoint && differentSouthWestPoint;
+
+    const northEastLat = MapHashes.NorthEastBounds.lat;
+    const northEastLng = MapHashes.NorthEastBounds.lng;
+    const southWestLat = MapHashes.SouthWestBounds.lat;
+    const southWestLng = MapHashes.SouthWestBounds.lng;
+
+    const galaxyLatitudeView = galaxyLevelLatitude(northEastLat) && galaxyLevelLatitude(southWestLat);
+    const galaxyLongitudeView = galaxyLevelLongitude(northEastLng) && galaxyLevelLongitude(southWestLng);
+    const galaxyLevelBounds = (galaxyLatitudeView && galaxyLongitudeView);
+
+    if(zoomInStore === 2 && galaxyLevelBounds) {
+      console.log("Generating Star Map at Galaxy Level");
+      const StarMapComponents = this.createStarMap(zoomInStore, mapInstance);
+      this.setStarMapState(zoomInStore, StarMapComponents, MapHashes.northEast, MapHashes.southWest);
+    } else if(this.state.zoom !== zoomInStore && mapBoundsHaveChanged) {
+      console.log("Generating Star Map as bounds and zoom are different");
+      const StarMapComponents = this.createStarMap(zoomInStore, mapInstance);
+      this.setStarMapState(zoomInStore, StarMapComponents, MapHashes.northEast, MapHashes.southWest);
+    } else if(zoomInStore !== 2 && this.state.zoom !== 3 && mapBoundsHaveChanged) {
+      console.log("Generating Star Map as map view has changed");
+      const StarMapComponents = this.createStarMap(zoomInStore, mapInstance);
+      this.setStarMapState(zoomInStore, StarMapComponents, MapHashes.northEast, MapHashes.southWest);
+    } else if(!mapBoundsHaveChanged) {
+      console.log("Map Bounds have not changed, Star map is not rebuilding!");
+    } else {
+      console.log("Star map is not rebuilding for some unknow reason!");      
+    }
+
+    if(mapBoundsHaveChanged) {
+      console.log("MapHashes: ", MapHashes);
+    }
+  }
+
+  setStarMapState(zoom, StarMapComponents, northEastHash, southWestHash) {
+    this.setState({zoom: zoom});
+    this.setState({StarMapComponents: StarMapComponents});
+    this.setState({northEast: northEastHash});
+    this.setState({southWest: southWestHash})
   }
 
   componentWillReceiveProps(newProps) {
-    this.props.dispatch( zoomChangeStatus() );
-    // console.log("Props update MapMain: ", newProps);
-    let StarMapComponents = [];
-    // StarMapComponents = this.createStarMap();
-    // this.setState({StarMapComponents: StarMapComponents});
-    // console.log("Rendering map has fired: ", this.props.renderMap);
-    // console.log("Zooming the map has fired: ", this.props.zoomChange);
-    if(this.props.renderMap ||  this.props.zoomChange) {
-      StarMapComponents = this.createStarMap();
-      this.setState({StarMapComponents: StarMapComponents});
-      console.log("Rendering map has fired: ", this.props.renderMap);
-      console.log("Zooming the map has fired: ", this.props.zoomChange);
-      // this.props.dispatch( renderMapOff() );
-    } else {
-      StarMapComponents = this.state.StarMapComponents;
-    }
-    // this.props.dispatch( renderMapOff() );
+    console.log("\n\nProps update StarMap: ", newProps);
+    console.log("this.props: ", this.props);
+    // const mapZoom = this.props.map.getZoom();
+    const zoomInStore = newProps.mapCenterAndZoom.zoom;
+    const mapInstance = newProps.map;
+    // console.log("mapZoom: ", mapZoom);
+    console.log("zoomInStore: ", zoomInStore);
+    console.log("this.state.zoom: ", this.state.zoom);
 
-    // StarMapComponents = this.createStarMap();
+    this.starMapGeneratorController(zoomInStore, mapInstance);
   }    
 
   render() {
   	const zIndex = 290;
-    const StarMapComponents = this.state.StarMapComponents;
-    console.log("\nStarMapComponents in render: ", StarMapComponents.length);
-    const StarMapComponentsToRender = ( this.state.StarMapComponents.length > 0 )? this.state.StarMapComponents : null;
-    console.log("StarMapComponentsToRender: ", StarMapComponentsToRender);
-    console.log("this.props.render: ", this.props);
+    // console.log("StarMapComponentsToRender: ", StarMapComponentsToRender.length);
+    const StarMapComponentsToRender = renderComponentsOrNull(this.state.StarMapComponents);
+    console.log("Total Star Components Rendering: ", (this.state.StarMapComponents)? this.state.StarMapComponents.length : null);
+    // console.log("this.props.render: ", this.props);
     // console.log("this.props.mapMove: ", this.props.mapMove);
-    // console.log("this.props.zoom: ", this.props.zoom);
-    // if(this.props.mapMove) {
-    //   console.log("map move is rendering the map\n");
-    // } else if(this.props.zoomChange) {
-    //   console.log("zoomChange hasfired map\n");
-    // } else {
-    //   console.log("\nSomething besides map move and zoom is rendering the map: ", this.props);
-    // }
+    // console.log("this.props.mapCenterAndZoom.zoom: ", this.props.mapCenterAndZoom.zoom);
   	return (
   		<Pane name="star-pane" style={{zIndex: zIndex}}>
   			<FeatureGroup  onZoomend={e => this.onZoomend(e)}>  
@@ -261,6 +185,152 @@ class StarMap extends React.Component {
   		</Pane>
   	)
   }
+}
+
+
+function getNorthEastAndSoutWestBounds(mapInstance) {
+  const CurrentMapBoundaries = mapInstance.getBounds();
+  const NorthEastBounds = CurrentMapBoundaries._northEast;
+  const SouthWestBounds = CurrentMapBoundaries._southWest;
+
+  console.log("NorthEastBounds: ", NorthEastBounds);
+  console.log("SouthWestBounds: ", SouthWestBounds);
+
+  const northEastGeoHash = Geohash.encode(NorthEastBounds.lat, NorthEastBounds.lng, 22);
+  const southWestGeoHash = Geohash.encode(SouthWestBounds.lat, SouthWestBounds.lng, 22);   
+
+    return {
+      northEast: northEastGeoHash,
+      southWest: southWestGeoHash,
+      NorthEastBounds: NorthEastBounds,
+      SouthWestBounds: SouthWestBounds
+    }
+}
+
+function generateStellarArrays(currentZoom, currentMap, intersectionMap, previousIntersectionMap, currentStarMapComponents) {
+  const starSystemArray = [];
+  let stellarComponentsArray = [];
+  const starMapsEqual = eqSet(intersectionMap, previousIntersectionMap);
+  // console.log("Equal to previous star maps: ", starMapsEqual);
+  if( !starMapsEqual || (previousIntersectionMap.size === 0 ) ) {
+    intersectionMap.forEach(function(PlanetarySystem, sameItem) {
+      if(!PlanetarySystem.hasOwnProperty('latLng')) {
+        if(PlanetarySystem.lat === null && PlanetarySystem.lng === null) {
+          PlanetarySystem.latLng = [PlanetarySystem.lat, PlanetarySystem.lng];
+          // console.log("currentStar data has lat: ", currentStarData.lat);
+          const starLngLat = PlanetarySystem.LngLat;
+          const currentLatLng = L.latLng(starLngLat[1], starLngLat[0]);
+          // console.log("currentLatLng: ", currentLatLng);
+          PlanetarySystem['lat'] = currentLatLng[1];
+          PlanetarySystem['lng'] = currentLatLng[0];
+          PlanetarySystem[i].latLng = currentLatLng;
+
+        } else {
+          const currentLatLng = L.latLng(PlanetarySystem.lat, PlanetarySystem.lng);
+          // console.log("currentLatLng: ", currentLatLng);
+          PlanetarySystem.latLng = currentLatLng;
+        }
+      }
+      const StarPoints = currentMap.latLngToLayerPoint(PlanetarySystem.latLng);
+      // console.log("PlanetarySystem: " + typeof PlanetarySystem);
+      stellarComponentsArray.push( <StarSystem key={PlanetarySystem.system} StarObject={PlanetarySystem} zoom={currentZoom} map={currentMap} labels={true} StarPoints={StarPoints} /> );
+      starSystemArray.push(PlanetarySystem);
+    });  
+  } else {
+    // console.log("star components: ", this.state.StarMapComponents);
+    stellarComponentsArray = currentStarMapComponents;
+  }
+  return {
+    starSystemArray: starSystemArray,
+    stellarComponentsArray: stellarComponentsArray
+  }
+}
+
+function getMapBoundaries(currentZoom, currentMap) {
+  const CurrentMapBoundaries = currentMap.getBounds();
+  const mapWidth = CurrentMapBoundaries._northEast.lng - CurrentMapBoundaries._southWest.lng;
+  const mapHeight = CurrentMapBoundaries._northEast.lat - CurrentMapBoundaries._southWest.lat;
+  let mapPaddingHeight = 0;
+  let mapPaddingWidth = 0;
+  if (currentZoom <= 2) {
+    // console.log("Leaving Bounds!");
+  } else if (currentZoom === 3){
+    mapPaddingWidth = 50;
+    mapPaddingHeight = 25;
+  } else if (currentZoom == 4) {
+    mapPaddingWidth = 10;
+    mapPaddingHeight = 5;
+  }
+  const mapOffSetLat = mapPaddingHeight;
+  const mapOffSetLng = mapPaddingWidth;
+  const southernBoundary = CurrentMapBoundaries._southWest.lat - mapOffSetLat;
+  const northernBoundary = CurrentMapBoundaries._northEast.lat + mapOffSetLat
+  const westernBoundary = CurrentMapBoundaries._southWest.lng - mapOffSetLng;
+  const easternBoundary = CurrentMapBoundaries._northEast.lng + mapOffSetLng;
+  const MapBoundaries = {
+    north: northernBoundary,
+    south: southernBoundary,
+    east: easternBoundary,
+    west: westernBoundary,
+    mapWidth: mapWidth,
+    mapHeight: mapHeight
+  };
+  // console.log("MapBoundaries: ", MapBoundaries);
+  // console.log("northernBoundary: ", northernBoundary);
+  // console.log("southernBoundary: ", southernBoundary);
+  // console.log("easternBoundary: ", easternBoundary);
+  // console.log("westernBoundary: ", westernBoundary);
+  return MapBoundaries;
+}
+
+function generateIntersectionMap(currentZoom, currentMap, galacticPlanetsArray) {
+
+  const MapBoundaries = getMapBoundaries(currentZoom, currentMap);
+  let starsCurrentlyInView = _.filter(galacticPlanetsArray, e => { 
+      return e.starInMapView(
+        MapBoundaries.mapWidth,
+        MapBoundaries.mapHeight,
+        MapBoundaries,
+        currentZoom
+      ) === true; 
+    });
+    let starsCurrentlyVisible = _.filter(galacticPlanetsArray, e => { 
+      // console.log("Star is currently in view: ", e);
+      // console.log("starVisible: ", starVisible);
+      return e.starIsVisible(currentZoom) === true; 
+    });
+    const starsInViewSet = new Set(starsCurrentlyInView);
+    const starsVisible = new Set(starsCurrentlyVisible);
+    // const union = new Set([...starsInViewSet, ...starsVisible]);
+    const intersectionMap = (currentZoom > 3)? new Set([...starsInViewSet].filter(x => starsVisible.has(x))) : new Set([...starsVisible]);
+    // console.log("starsCurrentlyInView: ", starsCurrentlyInView);
+    // console.log("starsAtZoomLevel: ", starsAtZoomLevel);
+    // console.log("starsCurrentlyVisible: ", starsCurrentlyVisible);
+    // console.log("starsInViewSet: ", starsInViewSet);
+    // console.log("starsVisible: ", starsVisible);
+    // console.log("union: ", union);
+    // console.log("intersectionMap: ", intersectionMap);
+    // console.log("intersectionMapDuo: ", intersectionMapDuo);
+    // console.log("previousIntersectionMap: ", this.state.previousIntersectionMap);
+    return intersectionMap;
+}
+
+function renderComponentsOrNull(currentComponents) {
+  if(currentComponents && currentComponents.length > 1) {
+    return currentComponents;
+  } else if(currentComponents && currentComponents.length === 1){
+    return currentComponents[0];
+  } else {
+    return null;
+  }
+}
+
+function galaxyLevelLatitude(latitude) {
+  return (Math.abs(latitude) > 84.0)? true : false;
+}
+
+function galaxyLevelLongitude(longitude) {
+  return (Math.abs(longitude) > 229.0)? true : false;
 }
 
 function eqSet(as, bs) {
