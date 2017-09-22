@@ -1,4 +1,6 @@
 import React from 'react';
+import { If, Then, Else } from 'react-if';
+
 import LatLngDisplay from './latLngDisplay.js';
 
 import '../../css/main.css';
@@ -20,21 +22,37 @@ class HyperspacePoint extends React.Component {
 
 
 function LocationDisplay(Point) {
-  if(!Point.lat || !Point.lng) {
-    return (<div className="pane-row-text">
-        <span className="display-text">Point:&nbsp;&nbsp;None</span>
-        <span>
+  
+  return (
+    <div className="pane-row-text">
+      <If condition={Point.lat === null && Point.lng === null}>
+        <Then>
+          <span className="display-text">Point:&nbsp;&nbsp;None</span>
+        </Then>
+        <Else>
+          <span className="display-text">Point:&nbsp;&nbsp;{Point.system}</span>
+        </Else>
+      </If>
+
+      <If condition={Point.lat === null}>
+        <Then>
           <span className="display-text">&nbsp;&nbsp;Lat:&nbsp;&nbsp;</span>
+        </Then>
+        <Else>
+          <span className="nav-text">&nbsp;&nbsp;Lat:&nbsp;&nbsp;{Point.lat}</span>
+        </Else>
+      </If>
+
+      <If condition={Point.lng === null}>
+        <Then>
           <span className="display-text">&nbsp;&nbsp;Lng:&nbsp;&nbsp;</span>
-        </span>
-      </div>);
-  } else {
-    return (<div className="pane-row-text">
-        <span className="display-text">Point:&nbsp;&nbsp;{(Point.system.length > 10)? Point.system.slice(0, 13) : Point.system}</span>
-        <LatLngDisplay lat={Point.lat} lng={Point.lng} />
-      </div>
-    );
-  }
+        </Then>
+        <Else>
+          <span className="nav-text">&nbsp;&nbsp;Lng:&nbsp;&nbsp;{Point.lng}</span>
+        </Else>
+      </If>
+    </div>
+  );
 }
 
 

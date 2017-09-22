@@ -10,7 +10,9 @@ import { Planet, HyperSpaceLane } from '../../classes/stellarClasses.js';
 import StarSystem from './starSystem.js';
 import { 
   zoomChangeStatus,
-  viewShouldStayTheSame
+  viewShouldStayTheSame,
+  updateSouthWestMapHash,
+  updateNorthEastMapHash
 } from '../../actions/actionCreators.js';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
@@ -41,9 +43,7 @@ class StarMap extends React.Component {
       const StarData = JSON.parse(data);
       const PlanetsArray = [];
   		for(let i=0; i < StarData.length; i++) {
-        let textWidth = width(StarData[i].system, {
-            size: "1em"
-        });
+        let textWidth = width(StarData[i].system, { size: "1em" });
         textWidth +=  0.5;
         const currentStar = StarData[i];
         delete currentStar.__v;
@@ -71,13 +71,10 @@ class StarMap extends React.Component {
       that.setState({GalacticPlanetsArray: PlanetsArray});
 
       const currentMapZoom = that.props.map.getZoom();
-      const StarMapComponents = that.createStarMap(currentMapZoom, that.props.map);
       const MapBoundariesHashes = getNorthEastAndSoutWestBounds(that.props.map);
-  
-      that.setState({StarMapComponents: StarMapComponents});
-      that.setState({northEast: MapBoundariesHashes.northEast});
-      that.setState({southWest: MapBoundariesHashes.southWest});
-      that.setState({zoom: currentMapZoom});
+
+      that.createStarMapAndSetState(currentMapZoom, that.props.map, MapBoundariesHashes);
+
   	});
   }
 
@@ -88,11 +85,22 @@ class StarMap extends React.Component {
     console.log("Zoom on mapCenterAndZoom.zoom: ", currentZoom);
     console.log("Map zoom matchup: ", currentZoom === currentMap.getZoom());
 
-    const intersectionMap = generateIntersectionMap(currentZoom, currentMap, this.state.GalacticPlanetsArray);
-    const StellarArrays = generateStellarArrays(currentZoom, currentMap, intersectionMap, this.state.previousIntersectionMap, this.state.StarMapComponents);
+    const intersectionMap = generateIntersectionMap(
+      currentZoom,
+      currentMap,
+      this.state.GalacticPlanetsArray
+    );
 
-    this.setState({previousIntersectionMap: intersectionMap});
+    const StellarArrays = generateStellarArrays(
+      currentZoom,
+      currentMap,
+      intersectionMap,
+      this.state.previousIntersectionMap,
+      this.state.StarMapComponents
+    );
+    
     const starSystemSet = new Set(StellarArrays.starSystemArray);
+    const StarComponents = StellarArrays.stellarComponentsArray;
 
     // let intersectionOnCreation = new Set([...starSystemSet].filter(x => intersectionMap.has(x)));
     // let unionOnCreation = new Set([...starsInViewSet, ...intersectionMap]);
@@ -103,7 +111,10 @@ class StarMap extends React.Component {
     console.log("Systems Generated for Star Map: ", StellarArrays.stellarComponentsArray.length);
     console.log("****StarMap finished!****\n");
 
-    return StellarArrays.stellarComponentsArray;
+    return {
+      StarComponents,
+      intersectionMap
+    };
   }
 
 
@@ -128,16 +139,13 @@ class StarMap extends React.Component {
 
     if(zoomInStore === 2 && galaxyLevelBounds) {
       console.log("Generating Star Map at Galaxy Level");
-      const StarMapComponents = this.createStarMap(zoomInStore, mapInstance);
-      this.setStarMapState(zoomInStore, StarMapComponents, MapHashes.northEast, MapHashes.southWest);
+      this.createStarMapAndSetState(zoomInStore, mapInstance, MapHashes);
     } else if(this.state.zoom !== zoomInStore && mapBoundsHaveChanged) {
       console.log("Generating Star Map as bounds and zoom are different");
-      const StarMapComponents = this.createStarMap(zoomInStore, mapInstance);
-      this.setStarMapState(zoomInStore, StarMapComponents, MapHashes.northEast, MapHashes.southWest);
+      this.createStarMapAndSetState(zoomInStore, mapInstance, MapHashes);
     } else if(zoomInStore !== 2 && this.state.zoom !== 3 && mapBoundsHaveChanged) {
       console.log("Generating Star Map as map view has changed");
-      const StarMapComponents = this.createStarMap(zoomInStore, mapInstance);
-      this.setStarMapState(zoomInStore, StarMapComponents, MapHashes.northEast, MapHashes.southWest);
+      this.createStarMapAndSetState(zoomInStore, mapInstance, MapHashes);
     } else if(!mapBoundsHaveChanged) {
       console.log("Map Bounds have not changed, Star map is not rebuilding!");
     } else {
@@ -149,11 +157,19 @@ class StarMap extends React.Component {
     }
   }
 
-  setStarMapState(zoom, StarMapComponents, northEastHash, southWestHash) {
+  createStarMapAndSetState(zoomInStore, mapInstance, MapHashes) {
+      const StarMapData = this.createStarMap(zoomInStore, mapInstance);
+      this.setStarMapState(StarMapData, zoomInStore, MapHashes);    
+  }
+
+  setStarMapState(StarMapData, zoom, MapHashes) {
     this.setState({zoom: zoom});
-    this.setState({StarMapComponents: StarMapComponents});
-    this.setState({northEast: northEastHash});
-    this.setState({southWest: southWestHash})
+    this.setState({StarMapComponents: StarMapData.StarComponents});
+    this.setState({northEast: MapHashes.northEast});
+    this.setState({southWest: MapHashes.southWest});
+    this.setState({previousIntersectionMap: StarMapData.intersectionMap})
+    this.props.dispatch(updateNorthEastMapHash(MapHashes.northEast));
+    this.props.dispatch(updateSouthWestMapHash(MapHashes.southWest));
   }
 
   componentWillReceiveProps(newProps) {
@@ -171,12 +187,9 @@ class StarMap extends React.Component {
 
   render() {
   	const zIndex = 290;
-    // console.log("StarMapComponentsToRender: ", StarMapComponentsToRender.length);
     const StarMapComponentsToRender = renderComponentsOrNull(this.state.StarMapComponents);
     console.log("Total Star Components Rendering: ", (this.state.StarMapComponents)? this.state.StarMapComponents.length : null);
-    // console.log("this.props.render: ", this.props);
-    // console.log("this.props.mapMove: ", this.props.mapMove);
-    // console.log("this.props.mapCenterAndZoom.zoom: ", this.props.mapCenterAndZoom.zoom);
+
   	return (
   		<Pane name="star-pane" style={{zIndex: zIndex}}>
   			<FeatureGroup  onZoomend={e => this.onZoomend(e)}>  
@@ -192,12 +205,8 @@ function getNorthEastAndSoutWestBounds(mapInstance) {
   const CurrentMapBoundaries = mapInstance.getBounds();
   const NorthEastBounds = CurrentMapBoundaries._northEast;
   const SouthWestBounds = CurrentMapBoundaries._southWest;
-
-  console.log("NorthEastBounds: ", NorthEastBounds);
-  console.log("SouthWestBounds: ", SouthWestBounds);
-
-  const northEastGeoHash = Geohash.encode(NorthEastBounds.lat, NorthEastBounds.lng, 22);
-  const southWestGeoHash = Geohash.encode(SouthWestBounds.lat, SouthWestBounds.lng, 22);   
+  const northEastGeoHash = Geohash.encode(NorthEastBounds.lat, NorthEastBounds.lng, 20);
+  const southWestGeoHash = Geohash.encode(SouthWestBounds.lat, SouthWestBounds.lng, 20);   
 
     return {
       northEast: northEastGeoHash,

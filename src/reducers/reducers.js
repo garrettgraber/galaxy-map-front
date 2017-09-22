@@ -83,6 +83,34 @@ const DefaultDataStream = {
 const defaultZoom = 2;
 const maxJumps = 90;
 const pathLimit = 1;
+const emptyMapHash = null;
+
+
+function southWestMapHash(state = emptyMapHash, action) {
+	switch (action.type) {
+		case Actions.UPDATE_SOUTH_WEST_MAP_HASH:
+			const newMapHash = action.payload;
+			return newMapHash;
+		case Actions.CLEAR_SOUTH_WEST_MAP_HASH:
+			return emptyMapHash;
+		default:
+			return state;
+	}
+}
+
+
+function northEastMapHash(state = emptyMapHash, action) {
+	switch (action.type) {
+		case Actions.UPDATE_NORTH_EAST_MAP_HASH:
+			const newMapHash = action.payload;
+			return newMapHash;
+		case Actions.CLEAR_NORTH_EAST_MAP_HASH:
+			return emptyMapHash;
+		default:
+			return state;
+	}
+}
+
 
 
 function dataStream(state = DefaultDataStream, action) {
@@ -525,6 +553,8 @@ function updateHyperspaceNavigation(state = false, action) {
 
 
 export default combineReducers({
+	southWestMapHash,
+	northEastMapHash,
 	dataStream,
 	systemsSearchControlsOn,
 	mapControlsOn,

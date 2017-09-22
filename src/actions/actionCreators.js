@@ -1,5 +1,33 @@
 import * as Actions from '../constants/actionTypes.js';
 
+export function updateSouthWestMapHash(newMapHash) {
+	return {
+		type: Actions.UPDATE_SOUTH_WEST_MAP_HASH,
+		payload: newMapHash
+	}
+}
+export function clearSouthWestMapHash(newMapHash) {
+	return {
+		type: Actions.CLEAR_SOUTH_WEST_MAP_HASH,
+		payload: newMapHash
+	}
+}
+
+
+export function updateNorthEastMapHash(newMapHash) {
+	return {
+		type: Actions.UPDATE_NORTH_EAST_MAP_HASH,
+		payload: newMapHash
+	}
+}
+export function clearNorthEastMapHash(newMapHash) {
+	return {
+		type: Actions.CLEAR_NORTH_EAST_MAP_HASH,
+		payload: newMapHash
+	}
+}
+
+
 export function addItemToDataStream(dataStreamItem) {
 	return { 
 		type: Actions.ADD_DATA_STREAM_ITEM,

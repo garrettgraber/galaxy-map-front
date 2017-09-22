@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { If, Then, Else } from 'react-if';
+import Geohash from 'latlon-geohash';
+
 
 import '../../css/main.css';
 
@@ -73,7 +75,7 @@ class DataStream extends React.Component {
       position: 'fixed',
       top: 0,
       height: 40,
-      width: 700,
+      width: 600,
       zIndex: 40,
       color: '#ff0101',
       opacity: 100,
@@ -86,11 +88,24 @@ class DataStream extends React.Component {
       position: 'fixed',
       top: 0,
       height: 40,
+      width: 80,
+      zIndex: 40,
+      color: '#ff0101',
+      opacity: 100,
+      left: 670,
+      fontSize: '1.2em',
+      display: 'table'
+    };
+
+    const MapBoundsStyle = {
+      position: 'fixed',
+      top: 0,
+      height: 40,
       width: 200,
       zIndex: 40,
       color: '#ff0101',
       opacity: 100,
-      left: 770,
+      left: 750,
       fontSize: '1.2em',
       display: 'table'
     };
@@ -118,20 +133,35 @@ class DataStream extends React.Component {
     const deCodedIndex = this.state.deCodedIndex;
     const deCodedMessage = currentMessage.slice(0, deCodedIndex);
     const enCodedMessage = currentMessage.slice(deCodedIndex, currentMessage.length);
+    const northEastMapHash = this.props.northEastMapHash;
+    const southWestMapHash = this.props.southWestMapHash;
+    const northEastPoint = (northEastMapHash)? Geohash.decode(northEastMapHash) : null;
+    const southWestPoint = (southWestMapHash)? Geohash.decode(southWestMapHash) : null;
+    const northEastPointLat = (northEastPoint)? (northEastPoint.lat).toFixed(2) : '';
+    const northEastPointLng = (northEastPoint)? (northEastPoint.lon).toFixed(2) : '';
+    const southWestPointLat = (southWestPoint)? (southWestPoint.lat).toFixed(2) : '';
+    const southWestPointLng = (southWestPoint)? (southWestPoint.lon).toFixed(2) : '';
 
     return (
       <div>
         <div style={DataStreamStyle}>
           <button style={ButtonStyle} className={buttonClasses} onClick={(e) => this.toggleEnglishAurebesh(e)} >Ab</button>
           <span style={MessageStyle}>
-            <i>Data Stream:&nbsp;&nbsp;</i>
+            <i>Data Stream:&nbsp;</i>
             {deCodedMessage}
             <span className="aurebesh-font" >{enCodedMessage}</span>
           </span>
-          
         </div>
         <div style={ZoomStyle}>
-          <span style={{display: "table-cell", verticalAlign: "middle"}} >Zoom:&nbsp;&nbsp;{this.props.mapCenterAndZoom.zoom - 1}</span>
+          <span style={{display: "table-cell", verticalAlign: "middle"}} >Zoom:&nbsp;{this.props.mapCenterAndZoom.zoom - 1}</span>
+        </div>
+        <div style={MapBoundsStyle}>
+          <span style={{display: "table-cell", verticalAlign: "middle"}} >
+            SW:&nbsp;Lat&nbsp;{southWestPointLat}&nbsp;Lng&nbsp;{southWestPointLng}
+          </span>
+          <span style={{display: "table-cell", verticalAlign: "middle"}} >
+            &nbsp;&nbsp;NE:&nbsp;Lat&nbsp;{northEastPointLat}&nbsp;Lng&nbsp;{northEastPointLng}
+          </span>
         </div>
       </div>
     );
