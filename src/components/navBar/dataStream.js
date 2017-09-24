@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { If, Then, Else } from 'react-if';
 import Geohash from 'latlon-geohash';
+import Clock from 'react-live-clock';
 
 
 import '../../css/main.css';
@@ -70,6 +71,19 @@ class DataStream extends React.Component {
 
   
 	render() {
+
+    const ClockStyle = {
+      position: 'fixed',
+      top: 0,
+      height: 40,
+      width: 70,
+      zIndex: 40,
+      color: '#ff0101',
+      opacity: 100,
+      left: 0,
+      fontSize: '1.2em',
+      display: 'table'
+    };
 
     const DataStreamStyle = {
       position: 'fixed',
@@ -142,10 +156,16 @@ class DataStream extends React.Component {
     const southWestPointLat = (southWestPoint)? (southWestPoint.lat).toFixed(2) : '';
     const southWestPointLng = (southWestPoint)? (southWestPoint.lon).toFixed(2) : '';
 
+    console.log("northEastPoint: ", northEastPoint);
+    console.log("southWestPoint: ", southWestPoint);
+
     return (
-      <div>
+      <div id="data-stream" >
+        <div style={ClockStyle}>
+          <span style={MessageStyle}>&nbsp;<Clock format={'HH : mm'} ticking={true}/></span>
+        </div>
         <div style={DataStreamStyle}>
-          <button style={ButtonStyle} className={buttonClasses} onClick={(e) => this.toggleEnglishAurebesh(e)} >Ab</button>
+          <button style={ButtonStyle} className={buttonClasses} onClick={(e) => this.toggleEnglishAurebesh(e)}>Ab</button>
           <span style={MessageStyle}>
             <i>Data Stream:&nbsp;</i>
             {deCodedMessage}
@@ -153,13 +173,13 @@ class DataStream extends React.Component {
           </span>
         </div>
         <div style={ZoomStyle}>
-          <span style={{display: "table-cell", verticalAlign: "middle"}} >Zoom:&nbsp;{this.props.mapCenterAndZoom.zoom - 1}</span>
+          <span style={MessageStyle} >Zoom:&nbsp;{this.props.mapCenterAndZoom.zoom - 1}</span>
         </div>
         <div style={MapBoundsStyle}>
-          <span style={{display: "table-cell", verticalAlign: "middle"}} >
+          <span style={MessageStyle} >
             SW:&nbsp;Lat&nbsp;{southWestPointLat}&nbsp;Lng&nbsp;{southWestPointLng}
           </span>
-          <span style={{display: "table-cell", verticalAlign: "middle"}} >
+          <span style={MessageStyle} >
             &nbsp;&nbsp;NE:&nbsp;Lat&nbsp;{northEastPointLat}&nbsp;Lng&nbsp;{northEastPointLng}
           </span>
         </div>

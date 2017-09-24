@@ -7,6 +7,9 @@ import 'whatwg-fetch';
 import _ from 'lodash';
 import uuidv1 from 'uuid/v1';
 import uuidv4 from 'uuid/v4';
+import distance from 'euclidean-distance';
+import Geohash from 'latlon-geohash';
+
 
 // import ReactFauxDOM from 'react-faux-dom';
 import 'leaflet/dist/leaflet.css';
