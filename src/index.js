@@ -1,3 +1,5 @@
+import { AppContainer } from 'react-hot-loader';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, combineReducers } from 'redux';
@@ -41,11 +43,20 @@ var Wrapper = connect(
 )(App);
 
 ReactDOM.render(
-	<Provider store={store}>
-	    <Wrapper />
-	</Provider>,
+	<AppContainer>
+		<Provider store={store}>
+		    <Wrapper />
+		</Provider>
+	</AppContainer>,
     document.getElementById('container')
 );
+
+if (module.hot) {
+	// Enable Webpack hot module replacement for Component
+	module.hot.accept('./components/app.js', () => {
+		render(App);
+	});
+}
 
 
 // ReactDOM.render(<App />, document.getElementById('main'));

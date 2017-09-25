@@ -1,4 +1,10 @@
-import * as Actions from '../constants/actionTypes.js';
+// import * as Actions from '../constants/actionTypes.js';
+
+import Actions from '../constants/actionTypesModule.js';
+
+console.log("Actions: ", Actions);
+// console.log("ActionModule: ", ActionModule);
+
 
 export function updateSouthWestMapHash(newMapHash) {
 	return {
