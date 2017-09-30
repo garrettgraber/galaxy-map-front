@@ -35,17 +35,11 @@ import store from './stores/store.js';
 
 // console.log("store: ", store);
 
-// container component
-var Wrapper = connect(
-	function mapStateToProps(state) {
-    	return Object.assign({}, state);
-    }
-)(App);
 
 ReactDOM.render(
 	<AppContainer>
 		<Provider store={store}>
-		    <Wrapper />
+		    <App />
 		</Provider>
 	</AppContainer>,
     document.getElementById('container')

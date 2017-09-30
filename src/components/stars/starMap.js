@@ -335,11 +335,11 @@ function renderComponentsOrNull(currentComponents) {
 }
 
 function galaxyLevelLatitude(latitude) {
-  return (Math.abs(latitude) > 84.0)? true : false;
+  return (Math.abs(latitude) > 80.0)? true : false;
 }
 
 function galaxyLevelLongitude(longitude) {
-  return (Math.abs(longitude) > 229.0)? true : false;
+  return (Math.abs(longitude) > 170.0)? true : false;
 }
 
 function eqSet(as, bs) {
