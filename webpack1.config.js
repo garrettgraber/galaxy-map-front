@@ -19,7 +19,6 @@ console.log("srcPath: ", srcPath);
 module.exports = {
     devtool: 'source-map',
     entry: [
-        'react-hot-loader/patch',
         'whatwg-fetch',
         'webpack-hot-middleware/client?reload=true', 
         javascriptEntryPath,
@@ -31,7 +30,7 @@ module.exports = {
         filename: 'bundle.js',
     },
     resolve: {
-        extensions: ['*', '.html', '.js', '.json', '.scss', '.css'],
+        extensions: ['', '.html', '.js', '.json', '.scss', '.css'],
         alias: {
             leaflet_css: path.join(__dirname, "/node_modules/leaflet/dist/leaflet.css"),
             leaflet_marker: path.join(__dirname, "/node_modules/leaflet/dist/images/marker-icon.png"),
@@ -66,27 +65,15 @@ module.exports = {
                 exclude: /(node_modules|bower_components)/,
                 // loaders: ['react-hot-loader', 'babel?presets[]=react,presets[]=es2015'],
                 use: [
-                    // {
-                    //     loader: "react-hot-loader",
-                    // },
+                    {
+                        loader: "react-hot-loader",
+                    },
                     {
                         loader: 'babel-loader',
                         options: {
-                            // presets: ['es2017', 'react']
-                            presets: [
-                                'es2017',
-                                'react',
-                                'stage-3'
-                            ].map(dep => require.resolve(`babel-preset-${dep}`))
-                            // plugins: [
-                            //     "react-hot-loader"
-                            // ]
+                            presets: ['env']
+                            // plugins: [require('babel-plugin-transform-object-rest-spread')]
                         }
-                        // options: {
-                        //     presets: ['env']
-                        //     presets: {}
-                        //     // plugins: [require('babel-plugin-transform-object-rest-spread')]
-                        // }
                     }
                 ]
             },
@@ -184,6 +171,6 @@ module.exports = {
     plugins: [ 
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoEmitOnErrorsPlugin()
+        new webpack.NoErrorsPlugin()
     ]
 };

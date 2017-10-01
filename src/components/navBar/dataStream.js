@@ -79,7 +79,8 @@ class DataStream extends React.Component {
       width: 70,
       zIndex: 40,
       color: '#ff0101',
-      opacity: 100,
+      backgroundColor: 'rgba(255,255,255,.5)',
+      opacity: 1.0,
       left: 0,
       fontSize: '1.2em',
       display: 'table'
@@ -92,10 +93,17 @@ class DataStream extends React.Component {
       width: 600,
       zIndex: 40,
       color: '#ff0101',
-      opacity: 100,
+      // color: '#FF0066',
+      backgroundColor: 'rgba(255,255,255,.5)',
+      // backgroundColor: 'white',
+      opacity: 1.0,
       left: 70,
       fontSize: '1.2em',
-      display: 'table'
+      display: 'table',
+      // textShadow: '#FF0066 0 0 10px'
+
+      // webkitfilter: blur(2px),
+      // filter: blur(2px)
     };
 
     const ZoomStyle = {
@@ -105,7 +113,8 @@ class DataStream extends React.Component {
       width: 80,
       zIndex: 40,
       color: '#ff0101',
-      opacity: 100,
+      backgroundColor: 'rgba(255,255,255,.5)',
+      opacity: 1.0,
       left: 670,
       fontSize: '1.2em',
       display: 'table'
@@ -118,7 +127,8 @@ class DataStream extends React.Component {
       width: 200,
       zIndex: 40,
       color: '#ff0101',
-      opacity: 100,
+      backgroundColor: 'rgba(255,255,255,.5)',
+      opacity: 1.0,
       left: 750,
       fontSize: '1.2em',
       display: 'table'
@@ -128,7 +138,8 @@ class DataStream extends React.Component {
       // paddingTop: 10.5,
       // paddingBottom: 10.5,
       display: "table-cell",
-      verticalAlign: "middle"
+      verticalAlign: "middle",
+      opacity: 1.0
     };
 
     const ButtonStyle = {
@@ -164,7 +175,7 @@ class DataStream extends React.Component {
         <div style={ClockStyle}>
           <span style={MessageStyle}>&nbsp;<Clock format={'HH : mm'} ticking={true}/></span>
         </div>
-        <div style={DataStreamStyle}>
+        <div style={DataStreamStyle} >
           <button style={ButtonStyle} className={buttonClasses} onClick={(e) => this.toggleEnglishAurebesh(e)}>Ab</button>
           <span style={MessageStyle}>
             <i>Data Stream:&nbsp;</i>

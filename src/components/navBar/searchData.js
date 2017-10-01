@@ -14,16 +14,27 @@ class SearchData extends React.Component {
     this.state = { 
       inputValue: ''
     };
-    this.change = (e) => {
+    // this.change = (e) => {
 
-      // console.log("e.target.value: ", e.target.value);
-      // console.log("e.target.keyCode: ", e);
-      this.setState({inputValue: e.target.value});
+    //   // console.log("e.target.value: ", e.target.value);
+    //   // console.log("e.target.keyCode: ", e);
+    //   console.log("change has fired: ", e.target.value);
+    //   this.setState({inputValue: e.target.value});
 
-    };
+    // };
+  }
+
+  onChange(e) {
+
+    // console.log("e.target.value: ", e.target.value);
+    // console.log("e.target.keyCode: ", e);
+    console.log("change has fired: ", e.target.value);
+    this.setState({inputValue: e.target.value});
+
   }
 
   componentDidMount() {
+    console.log("SearchData has mounted!!!");
 
   } 
 
@@ -41,7 +52,7 @@ class SearchData extends React.Component {
     return (
       <div className="control-row nav-section">
         <span>
-          <input id="search-system-input" type="text" placeholder="Search For Systems" className="search-input" value={this.state.inputValue}  onChange={this.change}/>
+          <input id="search-system-input" type="text" placeholder="Search For Systems" className="search-input" value={this.state.inputValue}  onChange={(e) => this.onChange(e)} />
           <button id="search-button-icon" type="button" className={buttonClass}  onClick={(e) => this.searchData(e)} disabled={this.props.searchSystems} ><i className={iconButtonClass}></i></button>
         </span>
       </div>
