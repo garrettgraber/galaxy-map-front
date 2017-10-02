@@ -32,8 +32,8 @@
     width: 400px;
 }
 
-.nav-detail-pane {
-    height: 400px;
+#hyperspace-navigation-pane {
+    height: 500px;
     width: 400px;
 }
 
@@ -46,6 +46,21 @@
     height: 40px;
     padding-top: 4px;
     padding-bottom: 4px;
+}
+
+.pane-row-table {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    overflow-y: scroll;
+    height: 100%;
+}
+
+.pane-row-list {
+    padding-top: 4px;
+    padding-bottom: 4px;
+   /* min-height: 400px;
+    overflow-y: auto;*/
+    /*overflow: hidden;*/
 }
 
 
@@ -61,6 +76,10 @@
 
 .pane-section {
     border-bottom: 1px solid #49fb35;
+    padding: 3px;
+}
+
+.pane-section-padding {
     padding: 3px;
 }
 

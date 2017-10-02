@@ -14,20 +14,9 @@ class SearchData extends React.Component {
     this.state = { 
       inputValue: ''
     };
-    // this.change = (e) => {
-
-    //   // console.log("e.target.value: ", e.target.value);
-    //   // console.log("e.target.keyCode: ", e);
-    //   console.log("change has fired: ", e.target.value);
-    //   this.setState({inputValue: e.target.value});
-
-    // };
   }
 
   onChange(e) {
-
-    // console.log("e.target.value: ", e.target.value);
-    // console.log("e.target.keyCode: ", e);
     console.log("change has fired: ", e.target.value);
     this.setState({inputValue: e.target.value});
 
@@ -87,7 +76,5 @@ const mapStateToProps = (state = {}) => {
     return Object.assign({}, state);
 };
 
-
-// export default SearchData;
 
 export default connect(mapStateToProps)(SearchData);

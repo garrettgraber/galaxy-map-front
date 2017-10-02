@@ -4,12 +4,12 @@ import { If, Then, Else } from 'react-if';
 
 import SearchData from './searchData.js';
 import MapControls from './mapControls.js';
-import HyperspacePathSearch from './hyperspacePathSearch.js';
+import HyperspacePathSearch from './hyperspaceNavigationControls/hyperspacePathSearch.js';
 import '../../css/main.css';
 
-class ApplicationControllers extends React.Component {
+class SideBarController extends React.Component {
   componentDidMount() { 
-    console.log("ApplicationControllers has Mounted");
+    console.log("SideBarController has Mounted");
   }
   
 	render() {
@@ -43,4 +43,4 @@ const mapStateToProps = (state = {}) => {
   return Object.assign({}, state);
 };
 
-export default connect(mapStateToProps)(ApplicationControllers);
+export default connect(mapStateToProps)(SideBarController);

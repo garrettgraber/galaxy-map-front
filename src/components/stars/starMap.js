@@ -137,7 +137,7 @@ class StarMap extends React.Component {
     const galaxyLongitudeView = galaxyLevelLongitude(northEastLng) && galaxyLevelLongitude(southWestLng);
     const galaxyLevelBounds = (galaxyLatitudeView && galaxyLongitudeView);
 
-    if(zoomInStore === 2 && galaxyLevelBounds) {
+    if(zoomInStore === 2 && galaxyLevelBounds && this.state.zoom !== 2) {
       console.log("Generating Star Map at Galaxy Level");
       this.createStarMapAndSetState(zoomInStore, mapInstance, MapHashes);
     } else if(this.state.zoom !== zoomInStore && mapBoundsHaveChanged) {

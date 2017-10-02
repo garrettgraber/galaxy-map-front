@@ -10,9 +10,9 @@ import {
     addItemToDataStream
 } from '../../actions/actionCreators.js';
 
-class NavigationBar extends React.Component {  
+class SideBar extends React.Component {  
   componentDidMount() {
-    console.log("NavigationBar has Mounted");
+    console.log("SideBar has Mounted");
   }
 
   searchSystemsToggle(e) {
@@ -32,7 +32,7 @@ class NavigationBar extends React.Component {
 
 	render() {
 
-    const NavigationStyles = {
+    const SideBarStyles = {
       position: 'fixed',
       top: 80,
       height: 500,
@@ -46,7 +46,7 @@ class NavigationBar extends React.Component {
     const hyperspaceNavigationClasses = (this.props.hyperspaceNavigationControlsOn)? "btn btn-success control-button" : "btn btn-danger control-button";
 
     return (
-      <div id="navigation-bar" style={NavigationStyles}>
+      <div id="side-bar" style={SideBarStyles}>
         <button id="map-controls-toggle" type="button" className={mapClasses}  onClick={e => this.mapControlsToggle(e)} ><i className="glyphicon glyphicon-map-marker"></i></button>
         <button id="search-systems-toggle" type="button" className={searchSystemsClasses}  onClick={e => this.searchSystemsToggle(e)} ><i className="glyphicon glyphicon-globe"></i></button>
         <button id="hyperspace-navigation-controls-toggle" type="button" className={hyperspaceNavigationClasses}  onClick={e => this.hyperspaceNavigationControls(e)} ><i className="fa fa-rocket"></i></button>
@@ -60,4 +60,4 @@ const mapStateToProps = (state = {}) => {
   return Object.assign({}, state);
 };
 
-export default connect(mapStateToProps)(NavigationBar);
+export default connect(mapStateToProps)(SideBar);

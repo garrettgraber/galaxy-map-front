@@ -3,14 +3,14 @@ import { connect } from 'react-redux';
 
 import LatLngDisplay from './latLngDisplay.js';
 
-import '../../css/main.css';
+import '../../../css/main.css';
 import {
   pathSearchStartOn,
   pathSearchStartOff,
   pathSearchEndOff,
   pinPointStartToggle,
   pinPointEndOff
-} from '../../actions/actionCreators.js';
+} from '../../../actions/actionCreators.js';
 
 
 class StartPinPoint extends React.Component {

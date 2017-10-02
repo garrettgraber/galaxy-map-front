@@ -146,6 +146,9 @@ export function getHyperspacePathCollection(HyperspacePathSearch) {
       return response.json();
     }).then(data => {
       console.log("hyperspace route: ", data.paths.length);
+      const dataStreamMessage = "Jump calculated from " + HyperspacePathSearch.startPoint + " to " + HyperspacePathSearch.endPoint;
+      console.log("HyperspacePathSearch: ", HyperspacePathSearch);
+      dispatch(addItemToDataStream(dataStreamMessage));
       // dispatch(addHyperspacePathToCollection(data));
       dispatch(loadHyperspacePathCollections(data));
       dispatch(updateHyperspacePaths());

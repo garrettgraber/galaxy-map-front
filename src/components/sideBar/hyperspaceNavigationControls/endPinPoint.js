@@ -1,14 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import LatLngDisplay from './latLngDisplay.js';
-import '../../css/main.css';
+import '../../../css/main.css';
 import {  
   pathSearchEndOn,
   pathSearchEndOff,
   pinPointEndToggle,
   pinPointStartOff,
   pathSearchStartOff
-} from '../../actions/actionCreators.js';
+} from '../../../actions/actionCreators.js';
 
 
 class EndPinPoint extends React.Component {

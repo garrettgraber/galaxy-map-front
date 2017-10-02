@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../css/main.css';
+import '../../../css/main.css';
 
 class LatLngDisplay extends React.Component {
   constructor() {

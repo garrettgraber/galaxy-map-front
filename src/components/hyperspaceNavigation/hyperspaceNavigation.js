@@ -27,6 +27,9 @@ import {
   errorHyperspacePath,
   hyperspaceNavigationUpdateOff
 } from '../../actions/actionCreators.js';
+import {
+  getHyperspacePathCollection
+} from '../../actions/actions.js';
 
 
 class HyperspaceNavigation extends React.Component {
@@ -150,7 +153,9 @@ class HyperspaceNavigation extends React.Component {
       end: 'Herdessa',
       maxJumps: 20,
       limit: 1,
-      shortest: true
+      shortest: true,
+      startPoint: 'Tatooine',
+      endPoint: 'Herdessa'
     }));
   }
   render() {

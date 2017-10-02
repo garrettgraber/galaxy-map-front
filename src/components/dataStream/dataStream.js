@@ -7,6 +7,8 @@ import Clock from 'react-live-clock';
 
 import '../../css/main.css';
 
+const decodeTimeInMilliseconds = 400;
+
 class DataStream extends React.Component {
   constructor(props) {
     super(props);
@@ -35,7 +37,7 @@ class DataStream extends React.Component {
   componentDidMount() {
     console.log("DataStream has Mounted");
     this.setState({dataMessage: this.props.dataMessage});
-    this.intervalId = setInterval(this.deCodeLetter.bind(this), 500);
+    this.intervalId = setInterval(this.deCodeLetter.bind(this), decodeTimeInMilliseconds);
   }
 
   componentWillUnmount(){
@@ -47,7 +49,7 @@ class DataStream extends React.Component {
       clearInterval(this.intervalId);
       this.state.deCodedIndex = 0;
       this.setState({dataMessage: newProps.dataMessage});
-      this.intervalId = setInterval(this.deCodeLetter.bind(this), 500);
+      this.intervalId = setInterval(this.deCodeLetter.bind(this), decodeTimeInMilliseconds);
     }
   }
 
@@ -139,16 +141,29 @@ class DataStream extends React.Component {
       // paddingBottom: 10.5,
       display: "table-cell",
       verticalAlign: "middle",
-      opacity: 1.0
+      opacity: 1.0,
+      overflow: 'hidden'
+    };
+
+    const MessageDataStyle = {
+      display: "table-cell",
+      verticalAlign: "middle",
+      opacity: 1.0,
+      width: 550
     };
 
     const ButtonStyle = {
       marginBottom: 5,
-      marginTop: 5
+      marginTop: 5,
+      width: 50
       // display: "table-cell",
       // verticalAlign: "middle"
       // paddingBottom: 5,
       // paddingTop: 5
+    };
+
+    const EnCodedeMessageStyle = {
+      fontSize: '1.0em',
     };
 
     let buttonClasses = "btn btn-sm btn-danger ";
@@ -167,8 +182,8 @@ class DataStream extends React.Component {
     const southWestPointLat = (southWestPoint)? (southWestPoint.lat).toFixed(2) : '';
     const southWestPointLng = (southWestPoint)? (southWestPoint.lon).toFixed(2) : '';
 
-    console.log("northEastPoint: ", northEastPoint);
-    console.log("southWestPoint: ", southWestPoint);
+    // console.log("northEastPoint: ", northEastPoint);
+    // console.log("southWestPoint: ", southWestPoint);
 
     return (
       <div id="data-stream" >
@@ -177,10 +192,9 @@ class DataStream extends React.Component {
         </div>
         <div style={DataStreamStyle} >
           <button style={ButtonStyle} className={buttonClasses} onClick={(e) => this.toggleEnglishAurebesh(e)}>Ab</button>
-          <span style={MessageStyle}>
-            <i>Data Stream:&nbsp;</i>
-            {deCodedMessage}
-            <span className="aurebesh-font" >{enCodedMessage}</span>
+          <span style={MessageDataStyle}>
+            &nbsp;&nbsp;{deCodedMessage}
+            <span className="aurebesh-font" style={EnCodedeMessageStyle}>{enCodedMessage}</span>
           </span>
         </div>
         <div style={ZoomStyle}>

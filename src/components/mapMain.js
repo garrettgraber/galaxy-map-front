@@ -29,9 +29,9 @@ import Regions from './regions/regions.js';
 import Sectors from './sectors/sectors.js';
 import HyperspaceLanesData from './hyperspaceData/hyperspaceLanesData.js';
 import StarMap from './stars/starMap.js';
-import ApplicationControllers from './navBar/applicationControllers.js';
-import NavigationBar from './navBar/navigationBar.js';
-import DataStream from './navBar/dataStream.js';
+import SideBarController from './sideBar/sideBarController.js';
+import SideBar from './sideBar/sideBar.js';
+import DataStream from './dataStream/dataStream.js';
 
 
 import HyperspaceNavigation from './hyperspaceNavigation/hyperspaceNavigation.js';
@@ -84,6 +84,15 @@ class MapMain extends React.Component {
   onZoomend(e) {
 
     console.log("onZoomend has fired: ", e);
+    const mapBounds = this.refs.map.leafletElement.getBounds();
+    const currentZoom = this.refs.map.leafletElement.getZoom();
+    console.log("mapBounds: ", mapBounds);
+    console.log("currentZoom: ", currentZoom);
+    console.log("props in mapMain: ", this.props);
+
+    if(!(currentZoom === 2 && this.props.mapCenterAndZoom.zoom === 3)) {
+      this.props.dispatch(setMapZoom(currentZoom));
+    }
 
   }
 
@@ -210,8 +219,8 @@ class MapMain extends React.Component {
   	return (
       <div id="map-main">
         <DataStream dataMessage={this.props.dataStream.currentItem}/>
-        <NavigationBar />
-        <ApplicationControllers map={this.state.map}/>
+        <SideBar />
+        <SideBarController map={this.state.map}/>
     		<Map
           ref='map'
           style={{zIndex: 5}}
@@ -220,7 +229,7 @@ class MapMain extends React.Component {
           zoomControl={false}
           onZoomend={e => this.onZoomend(e)}
           onZoomstart={e => this.onZoomstart(e)}
-          onMoveend={e => this.onMoveend(e)}
+          onMoveend={e => this.onMoveend(e)}F
           onMovestart={e => this.onMovestart(e)}
           onDragend={e => this.onDragend(e)}
           onDragstart={e => this.onDragstart(e)}

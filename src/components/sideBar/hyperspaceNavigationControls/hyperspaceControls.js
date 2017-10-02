@@ -5,27 +5,27 @@ import Geohash from 'latlon-geohash';
 
 
 import LatLngDisplay from './latLngDisplay.js';
-import '../../css/main.css';
+import '../../../css/main.css';
 import {
   calculateHyperspaceJumpOn,
   setMaxJumps,
   setNumberOfHyperspacePaths
-} from '../../actions/actionCreators.js';
+} from '../../../actions/actionCreators.js';
 import {
   getHyperspacePathCollection
-} from '../../actions/actions.js';
-import { Point } from '../../classes/stellarClasses.js';
+} from '../../../actions/actions.js';
+import { Point } from '../../../classes/stellarClasses.js';
 
-import AckbarIcon from '../../images/icons/star-wars/Ackbar.ico';
-import OrbitalIcon from '../../images/icons/sci-fi-generic/orbital.svg';
-import GalaxySpiralIcon from '../../images/icons/sci-fi-generic/twin-shell.svg';
+import AckbarIcon from '../../../images/icons/star-wars/Ackbar.ico';
+import OrbitalIcon from '../../../images/icons/sci-fi-generic/orbital.svg';
+import GalaxySpiralIcon from '../../../images/icons/sci-fi-generic/twin-shell.svg';
 
 class HyperspaceControls extends React.Component {
   constructor() {
     super();
     this.state = { 
-      maxJumps: 57,
-      limit: 1,
+      maxJumps: 20,
+      limit: 10,
     };
   }
 
@@ -37,20 +37,13 @@ class HyperspaceControls extends React.Component {
       this.props.dispatch( calculateHyperspaceJumpOn() );
       console.log("this.state in HyperspacePathSearch: ", this.state);
 
-      // this.props.dispatch(getHyperspacePathCollection(this.state));
-      // const PathSearch = _.cloneDeep(this.state);
-      // const PathSearch = {
-      //   maxJumps: parseInt(this.state.maxJumps),
-      //   limit: parseInt(this.state.limit),
-      //   start: this.props.hyperspaceStartSystem,
-      //   end: this.props.hyperspaceEndSystem
-      // };
-
       const PathSearch = {
         maxJumps: parseInt(this.state.maxJumps),
         limit: parseInt(this.state.limit),
         start: this.props.hyperspaceStartNode.system,
-        end: this.props.hyperspaceEndNode.system
+        end: this.props.hyperspaceEndNode.system,
+        startPoint: this.props.hyperspaceStartPoint.system,
+        endPoint: this.props.hyperspaceEndPoint.system
       };
 
       // console.log("PathSearch: ", PathSearch);

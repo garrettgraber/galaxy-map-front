@@ -3,7 +3,7 @@ import { If, Then, Else } from 'react-if';
 
 import LatLngDisplay from './latLngDisplay.js';
 
-import '../../css/main.css';
+import '../../../css/main.css';
 
 class HyperspaceNode extends React.Component {
   constructor() {
