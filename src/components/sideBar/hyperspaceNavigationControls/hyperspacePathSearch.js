@@ -14,6 +14,7 @@ import StartPinPoint from './startPinPoint.js';
 import EndPinPoint from './endPinPoint.js';
 import HyperspaceControls from './hyperspaceControls.js';
 import HyperspaceShipDetails from './hyperspaceShipDetails.js';
+import JumpGrid from './jumpGrid/jumpGrid.js';
 import ReactTable from 'react-table';
 import ReactScrollTable from 'react-scroll-table';
 
@@ -117,56 +118,6 @@ class HyperspacePathSearch extends React.Component {
     }
 
 
-   
-    const columns = [
-      {
-        Header: 'Jump Hash',
-        accessor: 'hashValue' // String-based value accessors!
-      },
-      {
-        Header: 'Distance',
-        accessor: 'length',
-        Cell: props => <span className='number'>{props.value}</span> // Custom cell components!
-      }, 
-      // {
-      //   id: 'friendName', // Required because our accessor is not a string
-      //   Header: 'Friend Name',
-      //   accessor: d => d.friend.name // Custom value accessors!
-      // },
-      // {
-      //   Header: props => <span>Friend Age</span>, // Custom header components!
-      //   accessor: 'friend.age'
-      // }
-    ];
-
-
-
-    const TableProps = {
-      backgroundColor: 'black',
-      borderColor: '#FF434D',
-      columns: [
-        {
-          header: 'Jump Hash',
-          accessor: 'hashValue',
-          width: '30%',
-        },
-        {
-          header: 'Distance',
-          accessor: 'length',
-          width: '70%',
-          sortable: true,
-        },
-      ],
-      data: hyperspacePathData,
-      downIcon: <i className="fa fa-down"/>,
-      maxHeight: 200,
-      noDataText: 'no data here',
-      shaded: true,
-      shadedColor: '#2AB2FF',
-      textColor: '#ffffff',
-      upIcon: <i className="fa fa-up"/>
-    };
-
     console.log("hyperspacePathData: ", hyperspacePathData);
 
 
@@ -208,24 +159,18 @@ class HyperspacePathSearch extends React.Component {
           <HyperspaceNode Node={endNode}/>         
         </div>
 
-        <div id="foo" className="pane-section-padding">
-          <div className="pane-row-list" >
-            
-            <If condition={ hyperspacePathData.length > 0 }>
-              <Then>
-                <ReactScrollTable {...TableProps} />
-              </Then>
-              <Else>{() => null }</Else>
-            </If>
-
-          </div>
-        </div>
+        
+        <If condition={ hyperspacePathData.length > 0 }>
+          <Then>
+            <JumpGrid />
+          </Then>
+          <Else>{() => null }</Else>
+        </If>
 
       </div>
     );
   }
 }
-
 
 // <ReactTable showPagination={false} data={hyperspacePathData} columns={columns}/>
 

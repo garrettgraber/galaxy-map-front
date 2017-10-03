@@ -35,6 +35,7 @@
 #hyperspace-navigation-pane {
     height: 500px;
     width: 400px;
+    overflow: hidden;
 }
 
 .pane-row {
@@ -62,7 +63,6 @@
     overflow-y: auto;*/
     /*overflow: hidden;*/
 }
-
 
 .pane-row-text {
     height: 24px;

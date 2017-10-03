@@ -8,7 +8,7 @@ import 'leaflet_marker';
 import 'leaflet_marker_2x';
 import 'leaflet_marker_shadow';
 import HyperspaceData from 'json-loader!../../data/hyperspace.geojson';
-import { HyperSpacePathCollection, HyperSpacePath, Point } from '../../classes/stellarClasses.js';
+import { HyperSpacePathCollection, Point } from '../../classes/stellarClasses.js';
 
 import HyperspacePath from './hyperspacePath.js';
 

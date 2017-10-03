@@ -154,13 +154,6 @@ class GridCell extends React.Component {
 
 
 
-
-
-
-
-
-
-
 const mapStateToProps = (state = {}) => {
     return Object.assign({}, state);
 };
