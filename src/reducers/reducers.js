@@ -2,8 +2,9 @@ import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 import multi from 'redux-multi';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import * as Actions from '../constants/actionTypes.js';
+// import * as Actions from '../constants/actionTypes.js';
 
+import Actions from '../constants/actionTypesModule.js';
 
 // applyMiddleware(multi)(createStore);
 
@@ -85,6 +86,20 @@ const defaultZoom = 2;
 const maxJumps = 90;
 const pathLimit = 1;
 const emptyMapHash = null;
+const nullHyperspaceHash = null;
+
+
+function hyperspaceHash(state = nullHyperspaceHash, action) {
+	switch (action.type) {
+		case Actions.SET_SELECTED_HYPERSPACE_HASH:
+			const hyperspaceHash = action.payload;
+			return hyperspaceHash;
+		case Actions.SET_NULL_HYPERSPACE_HASH:
+			return nullHyperspaceHash;
+		default:
+			return state;			
+	}
+}
 
 
 function southWestMapHash(state = emptyMapHash, action) {
@@ -554,6 +569,7 @@ function updateHyperspaceNavigation(state = false, action) {
 
 
 export default combineReducers({
+	hyperspaceHash,
 	southWestMapHash,
 	northEastMapHash,
 	dataStream,

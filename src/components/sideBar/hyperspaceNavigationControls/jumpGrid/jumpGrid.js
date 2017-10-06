@@ -7,7 +7,7 @@ import {
   calculateHyperspaceJumpOn,
 } from '../../../../actions/actionCreators.js';
 import {
-  getHyperspacePathCollection
+  noSetSelectedHyperspaceRoute
 } from '../../../../actions/actions.js';
 
 import AckbarIcon from '../../../../images/icons/star-wars/Ackbar.ico';
@@ -33,6 +33,11 @@ class JumpGrid extends React.Component {
       // const foundPaths = getCorrectPath(this.props.hyperspaceStartNode.system, )
     }
     return hyperspacePathData;
+  }
+
+  onMouseLeave() {
+    console.log("onMouseLeave jump grid!");
+    this.props.dispatch(noSetSelectedHyperspaceRoute());
   }
 
   render() {
@@ -64,7 +69,7 @@ class JumpGrid extends React.Component {
           Jumps
         </div>
         <div id="div1" style={containerDiv1Styles}>
-          <div id="div2" style={containerDiv2Styles}>
+          <div id="div2" style={containerDiv2Styles}  onMouseLeave={(e) => this.onMouseLeave(e)} >
             <div id="div3"  style={containerDiv3Styles}>
 
               { generateGridRowPaths(this.getJumpPaths()) }

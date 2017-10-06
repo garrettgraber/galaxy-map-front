@@ -54,7 +54,7 @@ class HyperSpaceNode extends React.Component {
   	return (
       <div>
         <CircleMarker center={hyperspaceNodeLocation} radius={1} color={nodeColor} fillColor={fillColor} fillOpacity={fillOpacity} onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)} ref='nodeHyperSpace' />
-        <Marker key={this.props.HyperSpaceNodeObject.system} position={hyperspaceNodeLocation} icon={myIcon} zIndexOffset={-5} onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)} ref='nodeText'/>
+        <Marker key={this.props.HyperSpaceNodeObject.system} position={hyperspaceNodeLocation} icon={myIcon} zIndexOffset={5} onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)} ref='nodeText'/>
       </div>                     
   	)
   }

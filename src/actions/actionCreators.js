@@ -6,6 +6,23 @@ console.log("Actions: ", Actions);
 // console.log("ActionModule: ", ActionModule);
 
 
+export function setSelectedHyperspaceHash(hyperspaceHash) {
+	return {
+		type: Actions.SET_SELECTED_HYPERSPACE_HASH,
+		payload: hyperspaceHash
+	}
+}
+
+export function setNullHyperspaceHash() {
+	return {
+		type: Actions.SET_NULL_HYPERSPACE_HASH
+	}
+}
+
+
+
+
+
 export function updateSouthWestMapHash(newMapHash) {
 	return {
 		type: Actions.UPDATE_SOUTH_WEST_MAP_HASH,

@@ -78,6 +78,8 @@ class HyperspaceNavigation extends React.Component {
 
         if(this.props.hyperspacePathChange) {
 
+          console.log("Rendering new hyperspace path!");
+
           const EdgeLocationsLiteral = {
             StartPoint: StartPoint,
             EndPoint: EndPoint,
@@ -98,6 +100,8 @@ class HyperspaceNavigation extends React.Component {
           this.props.dispatch(stopUpdatingHyperspacePath());
 
         } else {
+
+          console.log("Rendering new hyperspace path, NOT!");
 
           navComponentsRendered = _.cloneDeep(this.state.HyperspaceCollectionsComponents);
 

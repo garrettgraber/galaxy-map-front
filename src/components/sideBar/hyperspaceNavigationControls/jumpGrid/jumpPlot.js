@@ -6,7 +6,7 @@ import {
   calculateHyperspaceJumpOn,
 } from '../../../../actions/actionCreators.js';
 import {
-  getHyperspacePathCollection
+  setSelectedHyperspaceRoute
 } from '../../../../actions/actions.js';
 
 import AckbarIcon from '../../../../images/icons/star-wars/Ackbar.ico';
@@ -33,7 +33,13 @@ class JumpPlot extends React.Component {
 
   onMouseEnter(e) {
     console.log("onMouseEnter has fired: ", e);
-    this.setState({selected: true});
+    if(this.props.PathObject.hashValue !== this.props.hyperspaceHash) {
+
+      this.setState({selected: true});
+      this.props.dispatch(setSelectedHyperspaceRoute(this.props.PathObject.hashValue));
+
+    }
+
   }
 
   onMouseLeave(e) {
@@ -41,6 +47,22 @@ class JumpPlot extends React.Component {
     this.setState({selected: false});
   }
 
+  onMouseOver(e) {
+    console.log("onMouseOver has fired: ", e);
+
+    if(this.props.PathObject.hashValue !== this.props.hyperspaceHash) {
+
+      this.setState({selected: true});
+      this.props.dispatch(setSelectedHyperspaceRoute(this.props.PathObject.hashValue));
+
+    }
+
+  }
+
+  onMouseOut(e) {
+    console.log("onMouseOut has fired: ", e);
+    this.setState({selected: false});
+  }
 
   render() {
 
@@ -57,7 +79,9 @@ class JumpPlot extends React.Component {
       <div style={JumpPlotStyle}
         onClick={(e) => this.onClick(e)}
         onMouseEnter={(e) => this.onMouseEnter(e)}
-        onMouseLeave={(e) => this.onMouseLeave(e)}>
+
+        onMouseOver={(e) => this.onMouseOver(e)}
+        onMouseLeave={(e) => this.onMouseLeave(e)} >
 
         <span className="nav-text" >Length:&nbsp;&nbsp;{this.props.PathObject.length}</span>
         <span className="nav-text" >&nbsp;&nbsp;Jumps:&nbsp;&nbsp;{this.props.PathObject.numberOfJumps}</span>
@@ -67,9 +91,9 @@ class JumpPlot extends React.Component {
 }
 
 
-// const mapStateToProps = (state = {}) => {
-//     return Object.assign({}, state);
-// };
+const mapStateToProps = (state = {}) => {
+    return Object.assign({}, state);
+};
 
-// export default connect(mapStateToProps)(JumpPlot);
-export default JumpPlot;
+export default connect(mapStateToProps)(JumpPlot);
+// export default JumpPlot;

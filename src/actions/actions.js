@@ -35,7 +35,9 @@ import {
   mostRecentDataStreamItem,
   setCurrentDataStreamItemToBlank,
   deCodeAdditionalCurrentItemLetter,
-  zeroDecodedCurrentItemLetters
+  zeroDecodedCurrentItemLetters,
+  setNullHyperspaceHash,
+  setSelectedHyperspaceHash
 } from './actionCreators.js';
 
 
@@ -163,6 +165,37 @@ export function getHyperspacePathCollection(HyperspacePathSearch) {
     });
     return null;
 	}
+}
+
+export function setSelectedHyperspaceRoute(hyperspaceHash) {
+  // we return a thunk function, not an action object!
+  // the thunk function needs to dispatch some actions to change 
+  // the Store status, so it receives the "dispatch" function as its
+  // >first parameter
+  return function(dispatch, getState) {
+    console.log('new hash bitch!: ', hyperspaceHash);
+    dispatch(setSelectedHyperspaceHash(hyperspaceHash));
+    dispatch(updateHyperspacePaths());
+    dispatch(hyperspaceNavigationUpdateOn());
+    return null;
+  }
+}
+
+
+
+export function noSetSelectedHyperspaceRoute() {
+  // we return a thunk function, not an action object!
+  // the thunk function needs to dispatch some actions to change 
+  // the Store status, so it receives the "dispatch" function as its
+  // >first parameter
+  return function(dispatch, getState) {
+    console.log('new hash bitch!: ', null);
+
+    dispatch(setNullHyperspaceHash());
+    dispatch(updateHyperspacePaths());
+    dispatch(hyperspaceNavigationUpdateOn());
+    return null;
+  }
 }
 
 export function hyperspacePositionSearch(SystemSearch) {

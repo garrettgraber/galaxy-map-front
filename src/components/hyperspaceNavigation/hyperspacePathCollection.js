@@ -28,18 +28,18 @@ class HyperspacePathCollection extends React.Component {
     console.log("Hyperspace HyperspacePathCollection this.props!: ", this.props);
 
     if(!this.state.pathsLoaded && !_.isEmpty(this.props.PathCollection)) {
-      const HyperspacePathsComponents = createHyperspacePathsComponents(this.props.PathCollection, this.props.EdgeLocations);
+      const HyperspacePathsComponents = createHyperspacePathsComponents(this.props.PathCollection, this.props.EdgeLocations, this.props.hyperspaceHash);
       this.setState({HyperspacePathsComponents: HyperspacePathsComponents});
       this.setState({pathsLoaded: true});
     }
   }
   componentWillReceiveProps(newProps) {
-    // console.log("newProps in HyperspacePathCollection: ", newProps);
-    // if(!this.state.pathsLoaded && !_.isEmpty(newProps.PathCollection)) {
-    //   const HyperspacePathsComponents = createHyperspacePathsComponents(newProps.PathCollection, this.props.EdgeLocations);
-    //   this.setState({HyperspacePathsComponents: HyperspacePathsComponents});
-    //   this.setState({pathsLoaded: true});
-    // }
+    console.log("newProps in HyperspacePathCollection: ", newProps);
+    if(!this.state.pathsLoaded && !_.isEmpty(newProps.PathCollection)) {
+      const HyperspacePathsComponents = createHyperspacePathsComponents(newProps.PathCollection, this.props.EdgeLocations, this.props.hyperspaceHash);
+      this.setState({HyperspacePathsComponents: HyperspacePathsComponents});
+      this.setState({pathsLoaded: true});
+    }
   }
   render() {
   	const hyperspaceLanesStyle = {color: '#00FFFF', weight: 3};
@@ -56,13 +56,13 @@ class HyperspacePathCollection extends React.Component {
   }
 }
 
-export default HyperspacePathCollection;
+// export default HyperspacePathCollection;
 
-// const mapStateToProps = (state = {}) => {
-//     return Object.assign({}, state);
-// };
+const mapStateToProps = (state = {}) => {
+    return Object.assign({}, state);
+};
 
-// export default connect(mapStateToProps)(HyperspacePathCollection);
+export default connect(mapStateToProps)(HyperspacePathCollection);
 
 
 
@@ -78,7 +78,7 @@ function renderComponentsOrNull(currentComponents) {
 
 
 
-function createHyperspacePathsComponents(PathCollectionData, StartAndEndLocations) {
+function createHyperspacePathsComponents(PathCollectionData, StartAndEndLocations, hyperspaceHash) {
   const PathCollection = new HyperSpacePathCollection(
     PathCollectionData.start,
     PathCollectionData.end,
@@ -87,6 +87,8 @@ function createHyperspacePathsComponents(PathCollectionData, StartAndEndLocation
     PathCollectionData.nodes
   );
   // console.log("PathCollection: ", PathCollection.paths.length);
+
+  console.log("hyperspaceHash found little bitch: ", hyperspaceHash);
 
   const Paths = PathCollection.generateHyperspacePaths();
   // console.log("Paths: ", Paths.length);
@@ -102,14 +104,5 @@ function createHyperspacePathsComponents(PathCollectionData, StartAndEndLocation
   }
   return HyperspacePathsComponents;
 
-
-
-  // const invalidHyperspacePaths = PathCollection.validateHyperspacePaths(perviousJumpHash);
-  // console.log("invalidHyperspacePaths: ", invalidHyperspacePaths);
-  // if(invalidHyperspacePaths.length !== 0) {
-  //   return [];
-  // } else {
-  
-  // }
 }
 
