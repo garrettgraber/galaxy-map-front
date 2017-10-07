@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import JumpPlot from './jumpPlot.js';
 import '../../../../css/main.css';
 import {
-  calculateHyperspaceJumpOn,
+  calculateHyperspaceJumpOn
 } from '../../../../actions/actionCreators.js';
 import {
   noSetSelectedHyperspaceRoute
@@ -18,7 +18,8 @@ class JumpGrid extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      
+
+
     };
   }
 
@@ -42,8 +43,12 @@ class JumpGrid extends React.Component {
 
   render() {
 
+    const jumpPlotHeight = 50;
+    const jumpPaths = this.getJumpPaths();
+    const jumpListHeight = jumpPaths.length * jumpPlotHeight;
+
     const containerDiv1Styles = {
-      height: 180,
+      height: 200,
       position: 'relative',
     };
 
@@ -53,8 +58,8 @@ class JumpGrid extends React.Component {
       border: '1px solid #49fb35',
     };
 
-    const containerDiv3Styles = {
-      height: 1000,
+    const JumpListStyle = {
+      height: jumpListHeight,
       border: '1px solid red',
       color:  '#49fb35',
     };
@@ -63,14 +68,16 @@ class JumpGrid extends React.Component {
       color:  '#49fb35',
     };
 
+
     return (
       <div >
-        <div className="pane-row-control display-text" style={JumpGridControllerStyle}>
-          Jumps
+        <div className="pane-row-control" style={JumpGridControllerStyle}>
+          <span className="nav-text">&nbsp;&nbsp;Total Jumps:&nbsp;&nbsp;{jumpPaths.length}</span>
+          <span className="nav-text">&nbsp;&nbsp;Active Jump ID:&nbsp;&nbsp;{this.props.activeHyperspaceJump}</span>
         </div>
         <div id="div1" style={containerDiv1Styles}>
-          <div id="div2" style={containerDiv2Styles}  onMouseLeave={(e) => this.onMouseLeave(e)} >
-            <div id="div3"  style={containerDiv3Styles}>
+          <div id="div2" style={containerDiv2Styles} >
+            <div id="div3"  style={JumpListStyle} onMouseLeave={(e) => this.onMouseLeave(e)} >
 
               { generateGridRowPaths(this.getJumpPaths()) }
 

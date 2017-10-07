@@ -36,7 +36,7 @@ class HyperspacePathCollection extends React.Component {
   componentWillReceiveProps(newProps) {
     console.log("newProps in HyperspacePathCollection: ", newProps);
     if(!this.state.pathsLoaded && !_.isEmpty(newProps.PathCollection)) {
-      const HyperspacePathsComponents = createHyperspacePathsComponents(newProps.PathCollection, this.props.EdgeLocations, this.props.hyperspaceHash);
+      const HyperspacePathsComponents = createHyperspacePathsComponents(newProps.PathCollection, newProps.EdgeLocations, newProps.hyperspaceHash);
       this.setState({HyperspacePathsComponents: HyperspacePathsComponents});
       this.setState({pathsLoaded: true});
     }
@@ -56,13 +56,13 @@ class HyperspacePathCollection extends React.Component {
   }
 }
 
-// export default HyperspacePathCollection;
+export default HyperspacePathCollection;
 
-const mapStateToProps = (state = {}) => {
-    return Object.assign({}, state);
-};
+// const mapStateToProps = (state = {}) => {
+//     return Object.assign({}, state);
+// };
 
-export default connect(mapStateToProps)(HyperspacePathCollection);
+// export default connect(mapStateToProps)(HyperspacePathCollection);
 
 
 
@@ -91,10 +91,18 @@ function createHyperspacePathsComponents(PathCollectionData, StartAndEndLocation
   console.log("hyperspaceHash found little bitch: ", hyperspaceHash);
 
   const Paths = PathCollection.generateHyperspacePaths();
-  // console.log("Paths: ", Paths.length);
+  const displayedLanes = _.filter(Paths, function(currentPath) { 
+    return currentPath.hashValue === hyperspaceHash; 
+  });
+  console.log("displayedLanes: ", displayedLanes);
+
+  const displayedPaths = (displayedLanes.length > 0)? displayedLanes : Paths;
+  console.log("displayedPaths: ", displayedPaths);
+
   const HyperspacePathsComponents = [];
-  for(let Path of Paths) {
-    const index = _.findIndex(Paths, function(el) { return el.hashValue == Path.hashValue });
+
+  for(let Path of displayedPaths) {
+    // const index = _.findIndex(Paths, function(el) { return el.hashValue == Path.hashValue });
     // console.log("Path index number: ", index);
     let lanes = Path.createArrayOfHyperspaceLanes(PathCollection.lanes);
     let nodes = Path.createArrayOfHyperspaceNodes(PathCollection.nodes);

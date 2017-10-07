@@ -64,7 +64,7 @@ class HyperspaceNavigation extends React.Component {
     
     if(newProps.update) {
 
-      console.log("\nnewProps.update in Hyperspace Navigation: ", newProps.update);
+      console.log("\nnewProps in Hyperspace Navigation: ", newProps);
       console.log("HyperspaceNavigation this.props: ", this.props);
 
       const StartPoint = this.props.hyperspaceStartPoint;
@@ -76,7 +76,7 @@ class HyperspaceNavigation extends React.Component {
 
       if(this.props.hyperspacePathCollections.length > 0) {
 
-        if(this.props.hyperspacePathChange) {
+        if(newProps.hyperspacePathChange) {
 
           console.log("Rendering new hyperspace path!");
 
@@ -89,7 +89,11 @@ class HyperspaceNavigation extends React.Component {
 
           const EdgeLocations = _.cloneDeep(EdgeLocationsLiteral);
 
-          const HSpaceCollectionsComponents = createCollectionsComponents(this.props.hyperspacePathCollections, EdgeLocations);
+          const hyperspaceHash = newProps.hyperspaceHash;
+
+          console.log("Hyperspace hash: ", hyperspaceHash);
+
+          const HSpaceCollectionsComponents = createCollectionsComponents(this.props.hyperspacePathCollections, EdgeLocations, hyperspaceHash);
           console.log("HSpaceCollectionsComponents: ", HSpaceCollectionsComponents);
           this.setState({HyperspaceCollectionsComponents: HSpaceCollectionsComponents});
           navComponentsRendered = HSpaceCollectionsComponents;
@@ -128,12 +132,12 @@ class HyperspaceNavigation extends React.Component {
 
       } else {
 
-        if(!this.props.hyperspacePathChange && StartPoint.lat && StartPoint.lng) {
+        if(!newProps.hyperspacePathChange && StartPoint.lat && StartPoint.lng) {
           const startNavigationComponent = NavigationPointComponent(StartPoint, true);
           navComponentsRendered.push(startNavigationComponent);
         }
 
-        if(!this.props.hyperspacePathChange && EndPoint.lat && EndPoint.lng) {
+        if(!newProps.hyperspacePathChange && EndPoint.lat && EndPoint.lng) {
           const endNavigationComponent = NavigationPointComponent(EndPoint, false);
           navComponentsRendered.push(endNavigationComponent);
         }
@@ -219,11 +223,11 @@ function addComponent(Component, resultsArray) {
 }
 
 
-function createCollectionsComponents(PathCollections, EdgeLocations) {
+function createCollectionsComponents(PathCollections, EdgeLocations, hyperspaceHash) {
   console.log("\n\n!!!Creat hyperspace paths Components has fired: ", PathCollections.length);
   const PathCollectionsComponentsArray = [];
   for(let PathCollection of PathCollections) {
-    PathCollectionsComponentsArray.push(<HyperspacePathCollection key={uuidv4()} PathCollection={PathCollection} EdgeLocations={EdgeLocations} />);
+    PathCollectionsComponentsArray.push(<HyperspacePathCollection key={uuidv4()} PathCollection={PathCollection} EdgeLocations={EdgeLocations} hyperspaceHash={hyperspaceHash} />);
   }
   return PathCollectionsComponentsArray;
 }

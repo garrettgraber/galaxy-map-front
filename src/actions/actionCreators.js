@@ -6,6 +6,21 @@ console.log("Actions: ", Actions);
 // console.log("ActionModule: ", ActionModule);
 
 
+
+export function activeHyperspaceJump(hyperspaceHash) {
+	return {
+		type: Actions.SET_ACTIVE_HYPERSPACE_JUMP,
+		payload: hyperspaceHash
+	}
+}
+
+export function nullActiveHyperspaceJump() {
+	return {
+		type: Actions.SET_NULL_ACTIVE_HYPERSPACE_JUMP
+	}
+}
+
+
 export function setSelectedHyperspaceHash(hyperspaceHash) {
 	return {
 		type: Actions.SET_SELECTED_HYPERSPACE_HASH,

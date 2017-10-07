@@ -89,6 +89,22 @@ const emptyMapHash = null;
 const nullHyperspaceHash = null;
 
 
+
+
+function activeHyperspaceJump(state = nullHyperspaceHash, action) {
+	switch (action.type) {
+		case Actions.SET_ACTIVE_HYPERSPACE_JUMP:
+			const hyperspaceHash = action.payload;
+			return hyperspaceHash;
+		case Actions.SET_NULL_ACTIVE_HYPERSPACE_JUMP:
+			return nullHyperspaceHash;
+		default:
+			return state;
+	}	
+}
+
+
+
 function hyperspaceHash(state = nullHyperspaceHash, action) {
 	switch (action.type) {
 		case Actions.SET_SELECTED_HYPERSPACE_HASH:
@@ -569,6 +585,7 @@ function updateHyperspaceNavigation(state = false, action) {
 
 
 export default combineReducers({
+	activeHyperspaceJump,
 	hyperspaceHash,
 	southWestMapHash,
 	northEastMapHash,

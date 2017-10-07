@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import '../../../../css/main.css';
 import {
   calculateHyperspaceJumpOn,
+  nullActiveHyperspaceJump,
+  activeHyperspaceJump
 } from '../../../../actions/actionCreators.js';
 import {
   setSelectedHyperspaceRoute
@@ -17,7 +19,8 @@ class JumpPlot extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      selected: false
+      selected: false,
+      currentlyActive: false
     };
   }
 
@@ -26,9 +29,22 @@ class JumpPlot extends React.Component {
   }
 
   onClick(e) {
-    console.log('onClick, ', e);
-    console.log("this.props.PathObject: ", this.props.PathObject);
+    // console.log('onClick, ', e);
+    const selectedAndNoActiveJump = this.state.selected && this.props.activeHyperspaceJump === null;
+    const jumpIsActive = this.props.activeHyperspaceJump === this.props.PathObject.hashValue;
 
+    console.log('selectedAndNoActiveJump: ', selectedAndNoActiveJump);
+    console.log('jumpIsActive: ', jumpIsActive);
+
+    if(!jumpIsActive) {
+      this.setState({currentlyActive: true});
+      this.props.dispatch(activeHyperspaceJump(this.props.PathObject.hashValue));
+    } else if(jumpIsActive) {
+      this.setState({currentlyActive: false});
+      this.props.dispatch(nullActiveHyperspaceJump());
+    } else {
+      console.log("Miss click bitch!");
+    }
   }
 
   onMouseEnter(e) {
@@ -64,9 +80,35 @@ class JumpPlot extends React.Component {
     this.setState({selected: false});
   }
 
+    componentWillReceiveProps(newProps) {
+
+      console.log("Jump component receiving props: ", newProps);
+      if(this.state.currentlyActive && this.props.PathObject.hashValue !== newProps.activeHyperspaceJump) {
+        this.setState({currentlyActive: false});
+      }
+
+    }
+
   render() {
 
-    const backgroundColor = (this.state.selected)? 'rgba(50,205,50,0.25)' : 'rgba(255,0,0,0.25)';
+
+    // let backgroundColor = (this.state.selected)? 'rgba(50,205,50,0.25)' : 'rgba(255,0,0,0.25)';
+
+
+    let backgroundColor = 'rgba(255,0,0,0.25)';
+
+
+
+    if(this.state.currentlyActive) {
+
+      backgroundColor = 'rgba(50,205,50,0.25)';
+
+    } else if(this.state.selected && !this.state.currentlyActive && this.props.PathObject.hashValue !== this.props.activeHyperspaceJump) {
+      backgroundColor = 'rgba(255, 215, 0, 0.25)';
+    }
+
+
+
 
     const JumpPlotStyle = {
       width: '100%',
@@ -74,6 +116,7 @@ class JumpPlot extends React.Component {
       backgroundColor: backgroundColor,
       border: '1px solid #49fb35',
     };
+
 
     return (
       <div style={JumpPlotStyle}
@@ -83,8 +126,8 @@ class JumpPlot extends React.Component {
         onMouseOver={(e) => this.onMouseOver(e)}
         onMouseLeave={(e) => this.onMouseLeave(e)} >
 
-        <span className="nav-text" >Length:&nbsp;&nbsp;{this.props.PathObject.length}</span>
-        <span className="nav-text" >&nbsp;&nbsp;Jumps:&nbsp;&nbsp;{this.props.PathObject.numberOfJumps}</span>
+        <span className="nav-text" >Length:&nbsp;{this.props.PathObject.length.toFixed(2)}</span>
+        <span className="nav-text" >&nbsp;&nbsp;Jumps:&nbsp;{this.props.PathObject.numberOfJumps}</span>
       </div>
     );
   }

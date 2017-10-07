@@ -160,8 +160,15 @@ export function getHyperspacePathCollection(HyperspacePathSearch) {
     }).catch(err => {
     // Error: handle it the way you like, undoing the optimistic update,
     //  showing a "out of sync" message, etc.
+
+      const dataStreamMessage = "Error calculating from " + HyperspacePathSearch.startPoint + " to " + HyperspacePathSearch.endPoint;
+
       console.log("err: ", err);
+      dispatch(addItemToDataStream(dataStreamMessage));
+
       dispatch(errorHyperspacePath(err));
+      dispatch(calculateHyperspaceJumpOff());
+
     });
     return null;
 	}
