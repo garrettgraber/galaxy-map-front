@@ -57,12 +57,13 @@ class HyperSpaceLane extends React.Component {
   render() {
     const laneColorGold = 'gold';
     const laneColorPink =  '#FF69B4';
+    const laneColorLightGreen = '#90EE90';
     
   	return (
       <div>
         <AntPath
           positions={this.props.HyperSpaceLaneObject.coordinates}
-          options={{color: laneColorPink}}
+          options={{color: laneColorPink, opacity: 0.25, interactive: false}}
           ref="lane"
           onMouseOver={e => this.onMouseOver(e)}
           onMouseOut={e => this.onMouseOut(e)}

@@ -578,6 +578,8 @@ function updateHyperspaceNavigation(state = false, action) {
 		case Actions.UPDATE_HYPERSPACE_NAVIGATION_OFF:
 			console.log("update hyperspace navigation: ", false);
 			return false;
+		case Actions.SET_ACTIVE_HYPERSPACE_JUMP:
+			return true;
 		default:
 			return state;
 	}

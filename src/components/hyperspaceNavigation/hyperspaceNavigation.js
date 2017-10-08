@@ -89,7 +89,25 @@ class HyperspaceNavigation extends React.Component {
 
           const EdgeLocations = _.cloneDeep(EdgeLocationsLiteral);
 
-          const hyperspaceHash = newProps.hyperspaceHash;
+          // const hyperspaceHash = newProps.hyperspaceHash;          
+
+          const activeHyperspaceJump = newProps.activeHyperspaceJump !== null;
+          const selectedHyperspaceJump  = newProps.hyperspaceHash !== null;
+          const activeJumpNoGridSelection = activeHyperspaceJump && !selectedHyperspaceJump;
+          let hyperspaceHash = null;
+
+          if(activeJumpNoGridSelection) {
+            hyperspaceHash = newProps.activeHyperspaceJump;
+          } else if(selectedHyperspaceJump) {
+            hyperspaceHash = newProps.hyperspaceHash;
+          }
+
+
+          console.log("hyperspaceHash foo: ", hyperspaceHash);
+          console.log("newProps.hyperspaceHash foo: ", newProps.hyperspaceHash);
+          console.log("newProps.activeHyperspaceJump foo: ", newProps.activeHyperspaceJump);
+
+
 
           console.log("Hyperspace hash: ", hyperspaceHash);
 
@@ -170,7 +188,7 @@ class HyperspaceNavigation extends React.Component {
   	const hyperspaceLanesStyle = {color: '#00FFFF', weight: 3};
     const hyperspaceLanesStylePink = {color: '#FF69B4', weight: 3};
     const hyperspaceLanesStyleCarolina = {color: '#99badd ', weight: 3};
-  	const zIndex = 290;
+  	const zIndex = 260;
     const navComponents = renderComponentsOrNull(this.state.HSpaceComponentsMaster);
 
     // console.log("\nHyperspace Navigation is rendering...");
@@ -227,7 +245,7 @@ function createCollectionsComponents(PathCollections, EdgeLocations, hyperspaceH
   console.log("\n\n!!!Creat hyperspace paths Components has fired: ", PathCollections.length);
   const PathCollectionsComponentsArray = [];
   for(let PathCollection of PathCollections) {
-    PathCollectionsComponentsArray.push(<HyperspacePathCollection key={uuidv4()} PathCollection={PathCollection} EdgeLocations={EdgeLocations} hyperspaceHash={hyperspaceHash} />);
+    PathCollectionsComponentsArray.push(<HyperspacePathCollection key={uuidv4()} PathCollection={PathCollection} EdgeLocations={EdgeLocations} hyperspaceHashDisplayed={hyperspaceHash} />);
   }
   return PathCollectionsComponentsArray;
 }

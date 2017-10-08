@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Pane, GeoJSON, FeatureGroup } from 'react-leaflet';
 import L from 'leaflet';
+import _ from 'lodash';
 // import ReactFauxDOM from 'react-faux-dom';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
@@ -9,6 +10,8 @@ import 'leaflet_marker_2x';
 import 'leaflet_marker_shadow';
 import HyperspaceData from 'json-loader!../../data/hyperspace.geojson';
 import { HyperSpacePathCollection, Point } from '../../classes/stellarClasses.js';
+
+import { createHyperspacePathsComponents } from './hyperspaceMethods.js'
 
 import HyperspacePath from './hyperspacePath.js';
 
@@ -28,7 +31,8 @@ class HyperspacePathCollection extends React.Component {
     console.log("Hyperspace HyperspacePathCollection this.props!: ", this.props);
 
     if(!this.state.pathsLoaded && !_.isEmpty(this.props.PathCollection)) {
-      const HyperspacePathsComponents = createHyperspacePathsComponents(this.props.PathCollection, this.props.EdgeLocations, this.props.hyperspaceHash);
+
+      const HyperspacePathsComponents = createHyperspacePathsComponents(this.props.PathCollection, this.props.EdgeLocations, this.props.hyperspaceHashDisplayed);
       this.setState({HyperspacePathsComponents: HyperspacePathsComponents});
       this.setState({pathsLoaded: true});
     }
@@ -36,7 +40,8 @@ class HyperspacePathCollection extends React.Component {
   componentWillReceiveProps(newProps) {
     console.log("newProps in HyperspacePathCollection: ", newProps);
     if(!this.state.pathsLoaded && !_.isEmpty(newProps.PathCollection)) {
-      const HyperspacePathsComponents = createHyperspacePathsComponents(newProps.PathCollection, newProps.EdgeLocations, newProps.hyperspaceHash);
+      
+      const HyperspacePathsComponents = createHyperspacePathsComponents(newProps.PathCollection, newProps.EdgeLocations, newProps.hyperspaceHashDisplayed);
       this.setState({HyperspacePathsComponents: HyperspacePathsComponents});
       this.setState({pathsLoaded: true});
     }
@@ -74,43 +79,5 @@ function renderComponentsOrNull(currentComponents) {
   } else {
     return null;
   }
-}
-
-
-
-function createHyperspacePathsComponents(PathCollectionData, StartAndEndLocations, hyperspaceHash) {
-  const PathCollection = new HyperSpacePathCollection(
-    PathCollectionData.start,
-    PathCollectionData.end,
-    PathCollectionData.paths,
-    PathCollectionData.lanes,
-    PathCollectionData.nodes
-  );
-  // console.log("PathCollection: ", PathCollection.paths.length);
-
-  console.log("hyperspaceHash found little bitch: ", hyperspaceHash);
-
-  const Paths = PathCollection.generateHyperspacePaths();
-  const displayedLanes = _.filter(Paths, function(currentPath) { 
-    return currentPath.hashValue === hyperspaceHash; 
-  });
-  console.log("displayedLanes: ", displayedLanes);
-
-  const displayedPaths = (displayedLanes.length > 0)? displayedLanes : Paths;
-  console.log("displayedPaths: ", displayedPaths);
-
-  const HyperspacePathsComponents = [];
-
-  for(let Path of displayedPaths) {
-    // const index = _.findIndex(Paths, function(el) { return el.hashValue == Path.hashValue });
-    // console.log("Path index number: ", index);
-    let lanes = Path.createArrayOfHyperspaceLanes(PathCollection.lanes);
-    let nodes = Path.createArrayOfHyperspaceNodes(PathCollection.nodes);
-    HyperspacePathsComponents.push(<HyperspacePath key={Path.hashValue} Path={Path} lanes={lanes} nodes={nodes}  StartAndEndLocations={StartAndEndLocations}  />);
-    // console.log("lanes: ", lanes.length);
-    // console.log("nodes: ", nodes.length);
-  }
-  return HyperspacePathsComponents;
-
 }
 

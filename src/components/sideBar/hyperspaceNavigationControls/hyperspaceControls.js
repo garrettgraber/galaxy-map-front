@@ -71,8 +71,7 @@ class HyperspaceControls extends React.Component {
     console.log("this.state.limit: ", this.state.limit);
   }
   itsATrap(e) {
-    console.log("It's a trap!!");
-    console.log("HyperspaceControls this.props: ", this.props);
+    console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
 
     // console.log("Geohash: ", Geohash);
 
@@ -106,8 +105,8 @@ class HyperspaceControls extends React.Component {
     // console.log("EndPoint: ", EndPoint);
     // console.log("EndNode: ", EndNode);
 
-    distanceBetweenPoints(StartPoint, StartNode);
-    distanceBetweenPoints(EndPoint, EndNode);
+    // distanceBetweenPoints(StartPoint, StartNode);
+    // distanceBetweenPoints(EndPoint, EndNode);
 
   }
 

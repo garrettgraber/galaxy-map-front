@@ -186,7 +186,7 @@ class StarMap extends React.Component {
   }    
 
   render() {
-  	const zIndex = 290;
+  	const zIndex = 270;
     const StarMapComponentsToRender = renderComponentsOrNull(this.state.StarMapComponents);
     console.log("Total Star Components Rendering: ", (this.state.StarMapComponents)? this.state.StarMapComponents.length : null);
 

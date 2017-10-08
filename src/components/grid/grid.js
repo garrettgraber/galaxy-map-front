@@ -63,7 +63,7 @@ class Grid extends React.Component {
 
     render() {
 
-    	const zIndex = 260;
+    	const zIndex = 240;
     	const gridStyle = {color: '#49fb35', weight: 0.5, fill: false};
         const gridStylePink = {color: '#FF69B4', weight: 0.5, fill: false};
 

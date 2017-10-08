@@ -259,14 +259,16 @@ class MapMain extends React.Component {
             <Overlay name="Grid" checked={false}>
               <Grid />
             </Overlay>
-  					<Overlay name="Star Systems" checked={true}  ref="layerContainer" >
-              <StarMap map={this.state.map} />
-  					</Overlay>
+  					
             <Overlay name="Hyperspace Lanes" checked={false}>
               <HyperspaceLanesData />
             </Overlay>
             <Overlay name="Hyperspace Navigation" checked={false}>
               <HyperspaceNavigation update={this.props.updateHyperspaceNavigation}/>
+            </Overlay>
+            
+            <Overlay name="Star Systems" checked={true}  ref="layerContainer" >
+              <StarMap map={this.state.map} />
             </Overlay>
   				  </LayersControl>
             <Control position="topright" >

@@ -72,8 +72,8 @@ class HyperSpaceFreeSpaceJump extends React.Component {
     const laneColor = 'gold';
     const laneColorPink =  '#FF69B4';
   
-    const nodeColor = 'green';
-    const fillColor = 'green';
+    const nodeColor = 'gold';
+    const fillColor = 'gold';
     const pointColor = 'teal';
     const fillOpacity = 0.5;
     const hyperspaceNodeLocation = [HyperSpaceNode.lat, HyperSpaceNode.lng];
@@ -100,7 +100,7 @@ class HyperSpaceFreeSpaceJump extends React.Component {
       <div >
         { (nodeAndPointAreEqual(this.props.HyperSpacePoint, this.props.HyperSpaceNode))? (null) : 
           ( <div>
-              <Polyline positions={jumpCoordinates} color={laneColor}  ref="lane" onMouseOver={e => this.onMouseOver(e)}  onMouseOut={e => this.onMouseOut(e)}/>
+              <Polyline positions={jumpCoordinates} color={laneColorPink}  ref="lane" onMouseOver={e => this.onMouseOver(e)}  onMouseOut={e => this.onMouseOut(e)}/>
               <CircleMarker center={hyperspaceNodeLocation} radius={1} color={nodeColor} ref='nodeHyperSpace' />
             </div>
           )
