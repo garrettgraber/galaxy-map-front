@@ -53,6 +53,8 @@ const blackTileImage = imgBlack;
 const awsTileServerUrl = 'https://s3-us-west-2.amazonaws.com/tiledata.sw.map/tiles-leaflet-7/{z}/{x}/{y}.png';
 const awsTileServerUrlEast = 'https://s3.amazonaws.com/tiledata.sw.map.east/tiles-leaflet-7/{z}/{x}/{y}.png'
 
+const activeTileServer = awsTileServerUrlEast;
+
 class MapMain extends React.Component {
   constructor(props) {
     super(props);
@@ -242,7 +244,7 @@ class MapMain extends React.Component {
     			<LayersControl>
     				<BaseLayer name="Galaxy" checked={true}>
     					<Pane name="galaxy-pane" style={{ zIndex: zIndexGalaxy }}>
-							 <TileLayer url={tileServerUrl} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
+							 <TileLayer url={activeTileServer} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
 						  </Pane>
             </BaseLayer>
             <BaseLayer name="Black" checked={false} >
