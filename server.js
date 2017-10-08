@@ -32,7 +32,8 @@ if(DatabaseLinks.hasOwnProperty('api') && isDeveloping) {
 } else if(isProduction) {
 
   // var API = 'ec2-52-205-105-107.compute-1.amazonaws.com';
-  var API = 'http://172.31.70.31:80'
+
+  var API = 'http://172.31.45.213:80';
   var hostname = '0.0.0.0';
 
 
