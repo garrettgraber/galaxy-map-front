@@ -46,12 +46,18 @@ import DatabaseLinks from 'docker-links';
 const tileServerUrlLevel8 = 'http://172.17.0.6:8110/tiles-leaflet-8/{z}/{x}/{y}.png';
 const tileServerUrlLevel7 = 'http://172.17.0.6:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
 
-const tileServerUrl = tileServerUrlLevel7;
 
 const blackTileUrl = 'http://172.17.0.6:8110/tiles-black/black-tile.png';
 const blackTileImage = imgBlack;
 const awsTileServerUrl = 'https://s3-us-west-2.amazonaws.com/tiledata.sw.map/tiles-leaflet-7/{z}/{x}/{y}.png';
 const awsTileServerUrlEast = 'https://s3.amazonaws.com/tiledata.sw.map.east/tiles-leaflet-7/{z}/{x}/{y}.png'
+const awsTileServerUrlEastEight = 'https://s3.amazonaws.com/tiledata.sw.8.map.east/tiles-leaflet-8/{z}/{x}/{y}.png';
+const awsTileServerUrlEastMaster = 'https://s3.amazonaws.com/tiledata.sw.map.east.master/tiles-leaflet-8-master/{z}/{x}/{y}.png';
+
+
+const tileServerUrl = awsTileServerUrlEastMaster;
+
+
 
 const activeTileServer = awsTileServerUrlEast;
 
@@ -198,7 +204,7 @@ class MapMain extends React.Component {
 
   render() {
   	const minZoom = 2;
-  	const maxZoom = 7;
+  	const maxZoom = 8;
   	// const height = 1000;
   	// const width = 1000;
   	const zIndexGalaxy = 210;
