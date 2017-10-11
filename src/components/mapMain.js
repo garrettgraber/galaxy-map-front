@@ -33,7 +33,6 @@ import SideBarController from './sideBar/sideBarController.js';
 import SideBar from './sideBar/sideBar.js';
 import DataStream from './dataStream/dataStream.js';
 
-
 import HyperspaceNavigation from './hyperspaceNavigation/hyperspaceNavigation.js';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
@@ -42,10 +41,8 @@ import 'leaflet_marker_shadow';
 import imgBlack from '../images/black-tile.png';
 import DatabaseLinks from 'docker-links';
 
-
 const tileServerUrlLevel8 = 'http://172.17.0.6:8110/tiles-leaflet-8/{z}/{x}/{y}.png';
 const tileServerUrlLevel7 = 'http://172.17.0.6:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
-
 
 const blackTileUrl = 'http://172.17.0.6:8110/tiles-black/black-tile.png';
 const blackTileImage = imgBlack;
@@ -54,12 +51,7 @@ const awsTileServerUrlEast = 'https://s3.amazonaws.com/tiledata.sw.map.east/tile
 const awsTileServerUrlEastEight = 'https://s3.amazonaws.com/tiledata.sw.8.map.east/tiles-leaflet-8/{z}/{x}/{y}.png';
 const awsTileServerUrlEastMaster = 'https://s3.amazonaws.com/tiledata.sw.map.east.master/tiles-leaflet-8-master/{z}/{x}/{y}.png';
 
-
-const tileServerUrl = awsTileServerUrlEastMaster;
-
-
-
-const activeTileServer = awsTileServerUrlEast;
+const activeTileServer = awsTileServerUrlEastMaster;
 
 class MapMain extends React.Component {
   constructor(props) {
