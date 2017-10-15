@@ -2,9 +2,7 @@ import React from 'react';
 import ReactFauxDOM from 'react-faux-dom';
 import { connect } from 'react-redux';
 import urlencode from 'urlencode';
-
 import { findSystem } from '../../actions/actions.js';
-
 import '../../css/main.css';
 
 
@@ -15,29 +13,17 @@ class SearchData extends React.Component {
       inputValue: ''
     };
   }
-
   onChange(e) {
-    console.log("change has fired: ", e.target.value);
     this.setState({inputValue: e.target.value});
-
   }
-
-  componentDidMount() {
-    console.log("SearchData has mounted!!!");
-
-  } 
-
   searchData() {
     if(this.state.inputValue.length > 0) {
       this.props.dispatch(findSystem(this.state.inputValue));
     }
   }
-
   render() {
-
     const iconButtonClass = (this.props.searchSystems)? "fa fa-cog fa-spin" : "glyphicon glyphicon-search";
     const buttonClass = (this.props.searchSystems)? "btn navbar-button btn-success" :  "btn navbar-button btn-primary";
-
     return (
       <div className="control-row nav-section">
         <span>
@@ -49,32 +35,22 @@ class SearchData extends React.Component {
   }
 }
 
-
 function findSystemOldSchool(systemName, cb) {
-
   $.ajax({
     url: "api/search/?system=" + urlencode(systemName),
     type: 'GET',
     success: function(data){ 
       var SystemFound = data[0];
       cb(null, data);
-
     },
     error: function(error) {
-
       cb(error, null);
     }
-
   });
-
 };
-
-
-
 
 const mapStateToProps = (state = {}) => {
     return Object.assign({}, state);
 };
-
 
 export default connect(mapStateToProps)(SearchData);

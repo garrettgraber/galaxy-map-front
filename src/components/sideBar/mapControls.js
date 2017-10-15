@@ -9,6 +9,9 @@ import {
 } from '../../actions/actionCreators.js';
 
 class MapControls extends React.Component {
+  constructor() {
+    super();
+  }
   componentDidMount() { 
     console.log("MapControls has Mounted");
   }
@@ -17,53 +20,38 @@ class MapControls extends React.Component {
       this.props.dispatch(addItemToDataStream('Moved to Galaxy View...'));
       this.props.dispatch(setMapToZeroZero());
     }
-    console.log("goHome has fired: ", this.props);   
   }
   handleUpPanClick() {
     const map = this.props.map;
     if(this.props.mapCenterAndZoom.zoom > 2) {
       map.panBy([0, -100]);
-      console.log('Panning up');
     }
   }
   handleRightPanClick() {
     const map = this.props.map;
     if(this.props.mapCenterAndZoom.zoom > 2) {
       map.panBy([100, 0]);
-      console.log('Panning right');
     }
   }
   handleLeftPanClick() {
     const map = this.props.map;
     if(this.props.mapCenterAndZoom.zoom > 2) {
       map.panBy([-100, 0]);
-      console.log('Panning left');
     }
   }
   handleDownPanClick() {
     const map = this.props.map;
     if(this.props.mapCenterAndZoom.zoom > 2) {
-
-      console.log('Panning down!!!');
-
       const mapBoundsBeforeMove = map.getBounds();
-      console.log('Map Bounds Before Move: ', mapBoundsBeforeMove);
-
       let point = L.point(0, 100); // x=0,y=0
       let latlng = map.layerPointToLatLng(point);
-
       map.panBy(point, {animate: true, duration: 0.25, noMoveStart: true});
-
-      console.log("latlng: ", latlng);
-
     }
   }
   increaseZoom() {
-    console.log("increase zoom");
     this.props.dispatch( increaseMapZoom() );
   }
   decreaseZoom() {
-    console.log("decrease zoom");
     this.props.dispatch( decreaseMapZoom() );
   }
   

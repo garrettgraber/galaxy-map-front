@@ -1,8 +1,5 @@
 import React from 'react';
 import { If, Then, Else } from 'react-if';
-
-import LatLngDisplay from './latLngDisplay.js';
-
 import '../../../css/main.css';
 
 class HyperspaceNode extends React.Component {
@@ -31,7 +28,7 @@ function LocationDisplay(Node) {
           <span className="display-text">Node:&nbsp;&nbsp;None</span>
         </Then>
         <Else>
-          <span className="display-text">Node:&nbsp;&nbsp;{Node.system}</span>
+          <span className="display-text">Node:&nbsp;&nbsp;{Node.system.slice(0, 10)}</span>
         </Else>
       </If>
 
@@ -40,7 +37,7 @@ function LocationDisplay(Node) {
           <span className="display-text">&nbsp;&nbsp;Lat:&nbsp;&nbsp;</span>
         </Then>
         <Else>
-          <span className="nav-text">&nbsp;&nbsp;Lat:&nbsp;&nbsp;{Node.lat}</span>
+          <span className="nav-text">&nbsp;&nbsp;Lat:&nbsp;&nbsp;{parseFloat(Node.lat).toFixed(6)}</span>
         </Else>
       </If>
 
@@ -49,7 +46,7 @@ function LocationDisplay(Node) {
           <span className="display-text">&nbsp;&nbsp;Lng:&nbsp;&nbsp;</span>
         </Then>
         <Else>
-          <span className="nav-text">&nbsp;&nbsp;Lng:&nbsp;&nbsp;{Node.lng}</span>
+          <span className="nav-text">&nbsp;&nbsp;Lng:&nbsp;&nbsp;{parseFloat(Node.lng).toFixed(6)}</span>
         </Else>
       </If>
     </div>

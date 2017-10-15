@@ -2,42 +2,51 @@
 
 import Actions from '../constants/actionTypesModule.js';
 
-console.log("Actions: ", Actions);
-// console.log("ActionModule: ", ActionModule);
 
-
-
+export function activeStartPosition(StartPosition) {
+	return {
+		type: Actions.SET_ACTVIE_START_POSITION,
+		payload: StartPosition
+	}
+}
+export function activeStartPositionDefault() {
+	return {
+		type: Actions.SET_ACTVIE_START_POSITION_DEFAULT
+	}
+}
+export function activeEndPosition(EndPosition) {
+	return {
+		type: Actions.SET_ACTVIE_END_POSITION,
+		payload: EndPosition
+	}
+}
+export function activeEndPositionDefault() {
+	return {
+		type: Actions.SET_ACTVIE_END_POSITION_DEFAULT
+	}
+}
 export function activeHyperspaceJump(hyperspaceHash) {
 	return {
 		type: Actions.SET_ACTIVE_HYPERSPACE_JUMP,
 		payload: hyperspaceHash
 	}
 }
-
 export function nullActiveHyperspaceJump() {
 	return {
 		type: Actions.SET_NULL_ACTIVE_HYPERSPACE_JUMP
 	}
 }
-
-
 export function setSelectedHyperspaceHash(hyperspaceHash) {
 	return {
 		type: Actions.SET_SELECTED_HYPERSPACE_HASH,
 		payload: hyperspaceHash
 	}
 }
-
 export function setNullHyperspaceHash() {
 	return {
 		type: Actions.SET_NULL_HYPERSPACE_HASH
 	}
 }
-
-
-
-
-
 export function updateSouthWestMapHash(newMapHash) {
 	return {
 		type: Actions.UPDATE_SOUTH_WEST_MAP_HASH,
@@ -50,8 +59,6 @@ export function clearSouthWestMapHash(newMapHash) {
 		payload: newMapHash
 	}
 }
-
-
 export function updateNorthEastMapHash(newMapHash) {
 	return {
 		type: Actions.UPDATE_NORTH_EAST_MAP_HASH,
@@ -64,8 +71,6 @@ export function clearNorthEastMapHash(newMapHash) {
 		payload: newMapHash
 	}
 }
-
-
 export function addItemToDataStream(dataStreamItem) {
 	return { 
 		type: Actions.ADD_DATA_STREAM_ITEM,
@@ -103,7 +108,6 @@ export function zeroDecodedCurrentItemLetters() {
 		type: Actions.ZERO_DECODE_LETTERS
 	}
 }
-
 export function activateSystemsSearchControls() {
 	return {
 		type: Actions.SYSTEMS_SEARCH_CONTROLS_ON
@@ -119,7 +123,6 @@ export function toggleSystemsSearchControls() {
 		type: Actions.SYSTEMS_SEARCH_CONTROLS_TOGGLE
 	}
 }
-
 export function activateMapControls() {
 	return {
 		type: Actions.MAP_CONTROLS_ON
@@ -135,7 +138,6 @@ export function toggleMapControls() {
 		type: Actions.MAP_CONTROLS_TOGGLE
 	}
 }
-
 export function activateHyperspaceNavigationControls() {
 	return {
 		type: Actions.HYPERSPACE_NAVIGATION_CONTROLS_ON
@@ -151,7 +153,6 @@ export function toggleHyperspaceNavigationControls() {
 		type: Actions.HYPERSPACE_NAVIGATION_CONTROLS_TOGGLE
 	}
 }
-
 export function setActiveSystem(newActiveSystem) {
 	return { 
 		type: Actions.SET_SYSTEM,
@@ -185,10 +186,6 @@ export function setZoomValueOnActiveSystem(newZoom) {
 		payload: newZoom
 	}
 }
-
-
-
-
 export function setMapCenter(newCenter) {
 	return {
 		type: Actions.SET_MAP_CENTER,
@@ -231,9 +228,6 @@ export function decreaseMapZoom() {
 		type: Actions.DECREASE_MAP_ZOOM_BY_ONE
 	}
 }
-
-
-
 export function setStartPosition(StartPosition) {
 	return { 
 		type: Actions.SET_START_POSITION,
@@ -282,8 +276,6 @@ export function setEndNodeError(error) {
 		payload: error
 	}
 }
-
-
 export function searchSystemsStart() {
 	return {
 		type: Actions.SEARCH_SYSTEMS_ON
@@ -294,23 +286,6 @@ export function searchSystemsFinish() {
 		type: Actions.SEARCH_SYSTEMS_OFF
 	}
 }
-
-
-export function renderMapOn() {
-	return {
-		type: Actions.MAP_RENDER_ON
-	}
-}
-export function renderMapOff() {
-	return {
-		type: Actions.MAP_RENDER_OFF
-	}
-}
-export function renderMapStatus() {
-	return {
-		type: Actions.MAP_RENDER_STATUS
-	}
-}
 export function hyperspaceNavigationUpdateOn() {
 	return {
 		type: Actions.UPDATE_HYPERSPACE_NAVIGATION_ON
@@ -319,21 +294,6 @@ export function hyperspaceNavigationUpdateOn() {
 export function hyperspaceNavigationUpdateOff() {
 	return {
 		type: Actions.UPDATE_HYPERSPACE_NAVIGATION_OFF
-	}
-}
-export function zoomChangeOn() {
-	return {
-		type: Actions.Actions.ZOOM_CHANGE_ON
-	}
-}
-export function zoomChangeOff() {
-	return {
-		type: Actions.ZOOM_CHANGE_OFF
-	}
-}
-export function zoomChangeStatus() {
-	return {
-		type: Actions.ZOOM_CHANGE_STATUS
 	}
 }
 export function loadHyperspacePathCollections(collections) {
@@ -434,14 +394,12 @@ export function calculateHyperspaceJumpOff() {
 	}
 }
 export function setStartSystem(system) {
-	console.log("set start system: ", system);
 	return { 
 		type: Actions.SET_START_SYSTEM,
 		payload: system
 	}	
 }
 export function setEndSystem(system) {
-	console.log("set end system: ", system);
 	return { 
 		type: Actions.SET_END_SYSTEM,
 		payload: system
@@ -478,18 +436,6 @@ export function setMaxJumps(jumps) {
 export function setMaxJumpsError(error) {
 	return {
 		type: Actions.SET_MAX_JUMPS_ERROR,
-		payload: error
-	}
-}
-export function setNumberOfHyperspacePaths(pathNumber) {
-	return {
-		type: Actions.SET_PATH_NUMBER,
-		payload: jumps
-	}
-}
-export function setNumberOfHyperspacePathsError(error) {
-	return {
-		type: Actions.SET_PATH_NUMBER_ERROR,
 		payload: error
 	}
 }

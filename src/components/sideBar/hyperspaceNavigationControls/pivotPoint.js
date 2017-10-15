@@ -28,8 +28,7 @@ class PivotPoint extends React.Component {
     if(!_.isEmpty(this.props.Point)) {
       const Point = this.props.Point;
       const spaceCoordinates = [Point.lat, Point.lng];
-      // this.props.dispatch(setMapCenterAndZoom(spaceCoordinates, 8));
-      this.props.dispatch(zoomToLocation(spaceCoordinates, 8));
+      this.props.dispatch(setMapCenterAndZoom(spaceCoordinates, 8));
     }    
   }
   switchSearchType() {

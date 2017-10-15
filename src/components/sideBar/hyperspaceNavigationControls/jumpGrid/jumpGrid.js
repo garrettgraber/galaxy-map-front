@@ -1,15 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
 import JumpPlot from './jumpPlot.js';
 import '../../../../css/main.css';
 import {
-  calculateHyperspaceJumpOn
+  calculateHyperspaceJumpOn,
+  activeHyperspaceJump
 } from '../../../../actions/actionCreators.js';
 import {
   noSetSelectedHyperspaceRoute
 } from '../../../../actions/actions.js';
-
 import AckbarIcon from '../../../../images/icons/star-wars/Ackbar.ico';
 import OrbitalIcon from '../../../../images/icons/sci-fi-generic/orbital.svg';
 import GalaxySpiralIcon from '../../../../images/icons/sci-fi-generic/twin-shell.svg';
@@ -17,17 +16,12 @@ import GalaxySpiralIcon from '../../../../images/icons/sci-fi-generic/twin-shell
 class JumpGrid extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
-
-
-    };
   }
-
-  componentDidMount() {}
-
+  componentDidMount() {
+    console.log("JumpGrid has mounted");
+  }
   getJumpPaths() {
     let hyperspacePathData = [];
-
     if(this.props.hyperspacePathCollections.length > 0) {
       const FirstHyperspaceCollection = this.props.hyperspacePathCollections[0];
       hyperspacePathData = FirstHyperspaceCollection.paths;
@@ -35,40 +29,35 @@ class JumpGrid extends React.Component {
     }
     return hyperspacePathData;
   }
-
   onMouseLeave() {
     console.log("onMouseLeave jump grid!");
     this.props.dispatch(noSetSelectedHyperspaceRoute());
   }
-
   render() {
-
     const jumpPlotHeight = 50;
     const jumpPaths = this.getJumpPaths();
     const jumpListHeight = jumpPaths.length * jumpPlotHeight;
-
     const containerDiv1Styles = {
       height: 200,
       position: 'relative',
     };
-
     const containerDiv2Styles = {
       maxHeight:'100%',
-      overflow: 'auto',
       border: '1px solid #49fb35',
     };
-
+    if(jumpPaths.length > 4) {
+      containerDiv2Styles['overflowY'] = 'scroll';
+    } else {
+      containerDiv2Styles['overflowY'] = 'hidden';
+    }
     const JumpListStyle = {
       height: jumpListHeight,
       border: '1px solid red',
       color:  '#49fb35',
     };
-
     const JumpGridControllerStyle = {
       color:  '#49fb35',
     };
-
-
     return (
       <div >
         <div className="pane-row-control" style={JumpGridControllerStyle}>
@@ -78,9 +67,7 @@ class JumpGrid extends React.Component {
         <div id="div1" style={containerDiv1Styles}>
           <div id="div2" style={containerDiv2Styles} >
             <div id="div3"  style={JumpListStyle} onMouseLeave={(e) => this.onMouseLeave(e)} >
-
               { generateGridRowPaths(this.getJumpPaths()) }
-
             </div>
           </div>
         </div>
@@ -88,7 +75,6 @@ class JumpGrid extends React.Component {
     );
   }
 }
-
 
 function generateGridRowPaths(pathsArray) {
   let masterJumpPlotsArray = [];
@@ -98,9 +84,6 @@ function generateGridRowPaths(pathsArray) {
   }
   return masterJumpPlotsArray;
 }
-
-
-
 
 const mapStateToProps = (state = {}) => {
     return Object.assign({}, state);

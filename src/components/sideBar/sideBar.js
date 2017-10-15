@@ -10,28 +10,20 @@ import {
     addItemToDataStream
 } from '../../actions/actionCreators.js';
 
-class SideBar extends React.Component {  
-  componentDidMount() {
-    console.log("SideBar has Mounted");
+class SideBar extends React.Component {
+  constructor() {
+    super();
   }
-
   searchSystemsToggle(e) {
-    console.log("Search Systems Now Active: ",  this.props);
     this.props.dispatch( toggleSystemsSearchControls() );
   }
-
   mapControlsToggle(e) {
-    console.log("Map Controls Now Active");
     this.props.dispatch( toggleMapControls() );
   }
-
   hyperspaceNavigationControls(e) {
-    console.log("Hyperspace Navigation Now Active");
     this.props.dispatch( toggleHyperspaceNavigationControls() );
   }
-
 	render() {
-
     const SideBarStyles = {
       position: 'fixed',
       top: 80,
@@ -44,7 +36,6 @@ class SideBar extends React.Component {
     const searchSystemsClasses = (this.props.systemsSearchControlsOn)? "btn btn-success control-button" : "btn btn-danger control-button";
     const mapClasses = (this.props.mapControlsOn)? "btn btn-success control-button" : "btn btn-danger control-button";
     const hyperspaceNavigationClasses = (this.props.hyperspaceNavigationControlsOn)? "btn btn-success control-button" : "btn btn-danger control-button";
-
     return (
       <div id="side-bar" style={SideBarStyles}>
         <button id="map-controls-toggle" type="button" className={mapClasses}  onClick={e => this.mapControlsToggle(e)} ><i className="glyphicon glyphicon-map-marker"></i></button>

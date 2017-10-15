@@ -42,16 +42,16 @@ import imgBlack from '../images/black-tile.png';
 import DatabaseLinks from 'docker-links';
 
 const tileServerUrlLevel8 = 'http://172.17.0.6:8110/tiles-leaflet-8/{z}/{x}/{y}.png';
-const tileServerUrlLevel7 = 'http://172.17.0.6:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
+// const tileServerUrlLevel7 = 'http://172.17.0.6:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
 
 const blackTileUrl = 'http://172.17.0.6:8110/tiles-black/black-tile.png';
 const blackTileImage = imgBlack;
-const awsTileServerUrl = 'https://s3-us-west-2.amazonaws.com/tiledata.sw.map/tiles-leaflet-7/{z}/{x}/{y}.png';
-const awsTileServerUrlEast = 'https://s3.amazonaws.com/tiledata.sw.map.east/tiles-leaflet-7/{z}/{x}/{y}.png'
-const awsTileServerUrlEastEight = 'https://s3.amazonaws.com/tiledata.sw.8.map.east/tiles-leaflet-8/{z}/{x}/{y}.png';
+// const awsTileServerUrl = 'https://s3-us-west-2.amazonaws.com/tiledata.sw.map/tiles-leaflet-7/{z}/{x}/{y}.png';
+// const awsTileServerUrlEast = 'https://s3.amazonaws.com/tiledata.sw.map.east/tiles-leaflet-7/{z}/{x}/{y}.png'
+// const awsTileServerUrlEastEight = 'https://s3.amazonaws.com/tiledata.sw.8.map.east/tiles-leaflet-8/{z}/{x}/{y}.png';
 const awsTileServerUrlEastMaster = 'https://s3.amazonaws.com/tiledata.sw.map.east.master/tiles-leaflet-8-master/{z}/{x}/{y}.png';
 
-const activeTileServer = awsTileServerUrlEastMaster;
+const activeTileServer = tileServerUrlLevel8;
 
 class MapMain extends React.Component {
   constructor(props) {
@@ -150,11 +150,6 @@ class MapMain extends React.Component {
         isStartNode: isStartNode
       }
       this.props.dispatch(findAndSetNearsetHyperspaceNode(HyperspaceNodeSearch));
-
-      const Location = {
-        lat: e.latlng.lat,
-        lng: e.latlng.lng
-      };
       
     } else {
       return null;
@@ -202,9 +197,6 @@ class MapMain extends React.Component {
   	const zIndexGalaxy = 210;
     const zIndexBlack = 205;
   	const zIndexGrid = 220;
-    const defaultStarMapKey = 'StarMap Key';
-    const starMapKey = (this.props.renderMap)? uuidv4() : defaultStarMapKey;
-
 
     const NavigationStyles = {
       position: 'fixed',
@@ -238,7 +230,6 @@ class MapMain extends React.Component {
           onViewportChange={e => this.onViewportChange(e)}
           onViewportChanged={e => this.onViewportChanged(e)}
         >
-          
     			<LayersControl>
     				<BaseLayer name="Galaxy" checked={true}>
     					<Pane name="galaxy-pane" style={{ zIndex: zIndexGalaxy }}>
@@ -263,7 +254,7 @@ class MapMain extends React.Component {
             <Overlay name="Hyperspace Lanes" checked={false}>
               <HyperspaceLanesData />
             </Overlay>
-            <Overlay name="Hyperspace Navigation" checked={false}>
+            <Overlay name="Hyperspace Navigation" checked={true}>
               <HyperspaceNavigation update={this.props.updateHyperspaceNavigation}/>
             </Overlay>
             

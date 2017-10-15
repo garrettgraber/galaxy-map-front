@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import LatLngDisplay from './latLngDisplay.js';
 import '../../../css/main.css';
 import {  
   pathSearchEndOn,
@@ -15,11 +14,6 @@ class EndPinPoint extends React.Component {
   constructor() {
     super();
   }
-
-  componentDidMount() {
-  }
-
-
   pinPointEndToggle(e) {
     console.log("\nToggle end");
     const currentEnd = (this.props.pinPointEnd) ? false : true;
@@ -52,7 +46,7 @@ class EndPinPoint extends React.Component {
     return (
       <div className="pane-column">
         <button id="start-path-pinpoint-icon" type="button" className={pinPointEnd}  onClick={(e) => this.pinPointEndToggle(e)} ><i className={pinPointIconButtonClass}></i></button>
-        <span className="display-text">&nbsp;&nbsp;{EndPoint.system}</span>
+        <span className="display-text">&nbsp;&nbsp;{EndPoint.system.slice(0, 10)}</span>
       </div>
     );
   }
@@ -72,5 +66,4 @@ const mapStateToProps = (state = {}) => {
     return Object.assign({}, state);
 };
 
-// export default EndPinPoint;
 export default connect(mapStateToProps)(EndPinPoint);

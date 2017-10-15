@@ -102,6 +102,9 @@ class DataStream extends React.Component {
       left: 70,
       fontSize: '1.2em',
       display: 'table',
+      // overflow: 'hidden',
+      // whiteSpace: 'nowrap',
+      clip: 'rect(0, auto, auto, 0)'
       // textShadow: '#FF0066 0 0 10px'
 
       // webkitfilter: blur(2px),
@@ -149,7 +152,10 @@ class DataStream extends React.Component {
       display: "table-cell",
       verticalAlign: "middle",
       opacity: 1.0,
-      width: 550
+      width: 550,
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      wordBreak:' break-all'
     };
 
     const ButtonStyle = {
@@ -164,12 +170,19 @@ class DataStream extends React.Component {
 
     const EnCodedeMessageStyle = {
       fontSize: '1.0em',
+      textOverflow: 'ellipsis',
+
+  /* Required for text-overflow to do anything */
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      height: 40
     };
 
     let buttonClasses = "btn btn-sm btn-danger ";
     const buttonClassesFont = (this.state.dataMessageInEnglish)? "" : "aurebesh-font";
     buttonClasses += buttonClassesFont;
-    const currentMessage = this.props.dataMessage;
+    let currentMessage = this.props.dataMessage;
+    currentMessage = currentMessage.slice(0, 60);
     const deCodedIndex = this.state.deCodedIndex;
     const deCodedMessage = currentMessage.slice(0, deCodedIndex);
     const enCodedMessage = currentMessage.slice(deCodedIndex, currentMessage.length);
@@ -192,10 +205,10 @@ class DataStream extends React.Component {
         </div>
         <div style={DataStreamStyle} >
           <button style={ButtonStyle} className={buttonClasses} onClick={(e) => this.toggleEnglishAurebesh(e)}>Ab</button>
-          <span style={MessageDataStyle}>
+          <div style={MessageDataStyle}>
             &nbsp;&nbsp;{deCodedMessage}
             <span className="aurebesh-font" style={EnCodedeMessageStyle}>{enCodedMessage}</span>
-          </span>
+          </div>
         </div>
         <div style={ZoomStyle}>
           <span style={MessageStyle} >Zoom:&nbsp;{this.props.mapCenterAndZoom.zoom - 1}</span>

@@ -1,12 +1,3 @@
-
-
-// const _ = require('lodash'),
-// 	uuidv1 = require('uuid/v1'),
-//   uuidv4 = require('uuid/v4'),
-//   hash = require('string-hash');
-
-
-
 import _ from 'lodash';
 import { uuidv1 } from 'uuid';
 import { uuidv4 } from 'uuid';
@@ -209,12 +200,11 @@ export class HyperSpacePath {
 	createArrayOfHyperspaceLanes(totalLanesInCollection) {
 		const hyperspaceLanesArray = [];
 		for(let id of this.jumps) {
-			console.log("id: ", id);
 			const foundLaneData = _.find(totalLanesInCollection, {_id : id});
-			console.log("foundLaneData: ", foundLaneData);
+			// console.log("foundLaneData: ", foundLaneData);
 
 			if(foundLaneData === undefined) {
-				console.log("totalLanesInCollection: ", totalLanesInCollection);
+				// console.log("totalLanesInCollection: ", totalLanesInCollection);
 			}
 			const Lane = new HyperSpaceLane(
 				foundLaneData.name,
@@ -270,7 +260,6 @@ export class HyperSpacePath {
 		for(let i=0; i < this.jumps.length; i++) {
 			const jumpLaneId = this.jumps[i];
 			let JumpLane = _.find(totalLanesInCollection, { '_id': jumpLaneId });
-			console.log("JumpLane: ", JumpLane);
 			const jumpLaneHash = JumpLane.hyperspaceHash;
 			sumOfHashes += jumpLaneHash + '|';
 		}
@@ -300,8 +289,6 @@ export class HyperSpacePath {
 					!_.isEqual(jumpEndCoordinates, secondCoordinates)
 				);
 
-				console.log("startIsInvalid: ", startIsInvalid);
-				console.log("endIsInvalid: ", endIsInvalid);
 				if(startIsInvalid || endIsInvalid) {
 					return false;
 				}

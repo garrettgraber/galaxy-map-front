@@ -3,10 +3,8 @@ import { connect } from 'react-redux';
 import distance from 'euclidean-distance';
 import Geohash from 'latlon-geohash';
 
-
 import LatLngDisplay from './latLngDisplay.js';
 import '../../../css/main.css';
-
 
 import AckbarIcon from '../../../images/icons/star-wars/Ackbar.ico';
 import OrbitalIcon from '../../../images/icons/sci-fi-generic/orbital.svg';
@@ -15,16 +13,8 @@ import GalaxySpiralIcon from '../../../images/icons/sci-fi-generic/twin-shell.sv
 class HyperspaceShipDetails extends React.Component {
   constructor() {
     super();
-    this.state = { 
-      
-    };
   }
-
-  componentDidMount() {
-  }
-
   render() {
-
     return (
       <div className="pane-row-control pane-section">
         <span className="nav-text">Ship Name:&nbsp;&nbsp;Temp Ship Name </span>
@@ -47,5 +37,4 @@ const mapStateToProps = (state = {}) => {
     return Object.assign({}, state);
 };
 
-// export default HyperspaceControls;
 export default connect(mapStateToProps)(HyperspaceShipDetails);

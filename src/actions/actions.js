@@ -7,7 +7,6 @@ import Geohash from 'latlon-geohash';
 import { batchActions } from 'redux-batched-actions';
 
 
-
 import {
 	setActiveSystem,
 	setActiveSystemError,
@@ -37,7 +36,9 @@ import {
   deCodeAdditionalCurrentItemLetter,
   zeroDecodedCurrentItemLetters,
   setNullHyperspaceHash,
-  setSelectedHyperspaceHash
+  setSelectedHyperspaceHash,
+  activeStartPosition,
+  activeEndPosition
 } from './actionCreators.js';
 
 
@@ -70,14 +71,12 @@ export function findSystem(systemName) {
 
     }).then(json => {
 
-    	// console.log("json: ", json);
       // you should probably get a real id for your new todo item here, 
       // and update your store, but we'll leave that to you
 
     	let SystemObject = JSON.parse(json);
     	SystemObject = SystemObject[0];
 
-    	// console.log("SystemObject: ", SystemObject);
 
     	if(SystemObject.hasLocation) {
 
@@ -95,29 +94,21 @@ export function findSystem(systemName) {
           newZoom = activeSystemZoom;
         }
 
-        console.log("newZoom: ", newZoom);
-        console.log("CurrentState: ", CurrentState);
-
 				const SystemData = {
 					lat: LngLat[1],
 					lng: LngLat[0],
 					system: SystemObject.system,
           zoom: newZoom
 				};
-        console.log("SystemData: ", SystemData);
 
         const stateBeforeDispatches = getState();
-        console.log("State Before: ", stateBeforeDispatches);
 
 				dispatch(setActiveSystem(SystemData));
         const systemCenter = [SystemData.lat, SystemData.lng];
         dispatch(setMapCenterAndZoom(systemCenter, newZoom));
         dispatch(searchSystemsFinish());
 
-
         const stateAfterDispatches = getState();
-        console.log("State After: ", stateAfterDispatches);
-
 
     	}
     }).catch(err => {
@@ -136,7 +127,7 @@ export function findSystem(systemName) {
 	}
 }
 
-export function getHyperspacePathCollection(HyperspacePathSearch) {
+export function getHyperspacePathCollection(HyperspacePathSearch, HyperspacePathData) {
   // we return a thunk function, not an action object!
   // the thunk function needs to dispatch some actions to change 
   // the Store status, so it receives the "dispatch" function as its
@@ -144,15 +135,17 @@ export function getHyperspacePathCollection(HyperspacePathSearch) {
 	return function(dispatch, getState) {
     getHyperspacePathData(HyperspacePathSearch).then(response => {
     // getPathDataMany('Hovan', 'Tyluun', 40, 20).then(response => {
-      console.log("json response: ", response);
       return response.json();
     }).then(data => {
-      console.log("hyperspace route: ", data.paths.length);
       const dataStreamMessage = "Jump calculated from " + HyperspacePathSearch.startPoint + " to " + HyperspacePathSearch.endPoint;
-      console.log("HyperspacePathSearch: ", HyperspacePathSearch);
+      
+      console.log("Pepsi! HyperspacePathData: ", HyperspacePathData);
+
       dispatch(addItemToDataStream(dataStreamMessage));
       // dispatch(addHyperspacePathToCollection(data));
       dispatch(loadHyperspacePathCollections(data));
+      dispatch(activeStartPosition(HyperspacePathData.StartPoint));
+      dispatch(activeEndPosition(HyperspacePathData.EndPoint));
       dispatch(updateHyperspacePaths());
       dispatch(calculateHyperspaceJumpOff());
       dispatch(hyperspaceNavigationUpdateOn());
@@ -180,7 +173,6 @@ export function setSelectedHyperspaceRoute(hyperspaceHash) {
   // the Store status, so it receives the "dispatch" function as its
   // >first parameter
   return function(dispatch, getState) {
-    console.log('new hash bitch!: ', hyperspaceHash);
     dispatch(setSelectedHyperspaceHash(hyperspaceHash));
     dispatch(updateHyperspacePaths());
     dispatch(hyperspaceNavigationUpdateOn());
@@ -188,16 +180,12 @@ export function setSelectedHyperspaceRoute(hyperspaceHash) {
   }
 }
 
-
-
 export function noSetSelectedHyperspaceRoute() {
   // we return a thunk function, not an action object!
   // the thunk function needs to dispatch some actions to change 
   // the Store status, so it receives the "dispatch" function as its
   // >first parameter
   return function(dispatch, getState) {
-    console.log('new hash bitch!: ', null);
-
     dispatch(setNullHyperspaceHash());
     dispatch(updateHyperspacePaths());
     dispatch(hyperspaceNavigationUpdateOn());
@@ -211,7 +199,6 @@ export function hyperspacePositionSearch(SystemSearch) {
   // the Store status, so it receives the "dispatch" function as its
   // >first parameter
   return function(dispatch, getState) {
-    console.log("SystemSearch: ", SystemSearch);
     const SystemSearchSent = omit(SystemSearch, ['isStartPosition']);
     findPlanet(SystemSearchSent).then(response => {
     // getPathDataMany('Hovan', 'Tyluun', 40, 20).then(response => {
@@ -221,17 +208,13 @@ export function hyperspacePositionSearch(SystemSearch) {
       if(PlanetDataArray.length > 0) {
         const PlanetDataArray = JSON.parse(data);
         const PlanetData = PlanetDataArray[0];
-        console.log("PlanetData: ", PlanetData);
         const NodeSearch = {system: PlanetData.system};
         findHyperspaceNode(NodeSearch).then(responseNode => {
-          console.log("responseNode: ", responseNode);
           return responseNode.json();
         }).then(dataNode => {
           const NodeDataArray = JSON.parse(dataNode);
-          console.log("NodeDataArray: ", NodeDataArray);
           if(NodeDataArray.length > 0) {
             const NodeData = NodeDataArray[0];
-            console.log("node data: ", NodeData);
             // const NewNodeState = omit(NodeData, ['_id', '__v']);
             // const NewPositionState = omit(NodeData, [
             //   '_id',
@@ -244,26 +227,21 @@ export function hyperspacePositionSearch(SystemSearch) {
             const NewNodeState = createNodeState(NodeData);
             if(SystemSearch.isStartPosition) {
               
-              console.log("\n\nStart Position Update Begins!!!\n\n");
               dispatch(setStartPosition(NewPositionState));
               dispatch(setStartNode(NewNodeState));
               dispatch(setStartSystem(SystemSearch.system));
               dispatch(hyperspaceNavigationUpdateOn());
-              console.log("\n\nStart Position Updated!!!\n\n");
 
             } else {
 
-              console.log("\n\End Position Update Begins!!!\n\n");
               dispatch(setEndPosition(NewPositionState));
               dispatch(setEndNode(NewNodeState));
               dispatch(setEndSystem(SystemSearch.system));
               dispatch(hyperspaceNavigationUpdateOn());
-              console.log("\n\nEnd Position Updated!!!\n\n");
 
             }
           } else {
-            console.log("Not a hyperspace node: ", NodeSearch.system);
-            console.log("PlanetData: ", PlanetData);
+            
             const PlanetLocation = {
               lat: PlanetData.lat,
               lng: PlanetData.lng
@@ -275,30 +253,24 @@ export function hyperspacePositionSearch(SystemSearch) {
 
               if(NodeDataArrayNearest.length > 0) {
                 const NodeDataNearest = NodeDataArrayNearest[0];
-                console.log("NodeDataNearest: ", NodeDataNearest);
                 const NewPositionStateFound = createPositionFromPlanet(PlanetData);
                 const NewNodeStateNearest = createNodeState(NodeDataNearest);
 
                 if(SystemSearch.isStartPosition) {
 
-                  console.log("\n\nStart Position Update Begins!!!\n\n");
                   dispatch(setStartNode(NewNodeStateNearest));
                   dispatch(setStartPosition(NewPositionStateFound));
                   dispatch(setStartSystem(SystemSearch.system));
                   dispatch(hyperspaceNavigationUpdateOn());
-                  console.log("\n\nStart Position Updated!!!\n\n");
 
                 } else {
 
-                  console.log("\n\End Position Update Begins!!!\n\n");
                   dispatch(setEndNode(NewNodeStateNearest));
                   dispatch(setEndPosition(NewPositionStateFound));
                   dispatch(setEndSystem(SystemSearch.system));
                   dispatch(hyperspaceNavigationUpdateOn());
-                  console.log("\n\nEnd Position Updated!!!\n\n");
                 }
 
-                console.log("dispatches have been set");
               }        
             }).catch(errNearestNode => {
               console.log("node nearest data error: ", errNearestNode);
@@ -329,12 +301,9 @@ export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
   // the Store status, so it receives the "dispatch" function as its
   // >first parameter
   return function(dispatch, getState) {
-    console.log("LngLatSearch.LatLng: ", LngLatSearch.LatLng);
     findNearestNode(LngLatSearch.LatLng).then(response => {
-      console.log("response data is present");
       return response.json();
     }).then(data => {
-
 
       const NodeDataArray = JSON.parse(data);
       const NodeState = NodeDataArray[0]
@@ -349,20 +318,18 @@ export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
       };
 
 
+      console.log("Empty Space point should render: ", NewPositionState);
+
       if(LngLatSearch.isStartNode) {
-        console.log("\n\nStart Position Update Begins!!!\n\n");
         dispatch(setStartPosition(NewPositionState));
         dispatch(setStartNode(NewNodeState));
         dispatch(setStartSystem(NewPositionState.system));
         dispatch(hyperspaceNavigationUpdateOn());
-        console.log("\n\nStart Position Updated!!!\n\n");
       } else {
-        console.log("\n\End Position Update Begins!!!\n\n");
         dispatch(setEndPosition(NewPositionState));
         dispatch(setEndNode(NewNodeState));
         dispatch(setEndSystem(NewPositionState.system));
         dispatch(hyperspaceNavigationUpdateOn());
-        console.log("\n\nEnd Position Updated!!!\n\n");
       }
     }).catch(err => {
     // Error: handle it the way you like, undoing the optimistic update,
@@ -379,9 +346,7 @@ export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
 }
 
 
-
 function setDataStreamItemThenClear(dataStreamItem) {
-
   return function(dispatch, getState) {
     dispatch( addItemToDataStream(dataStreamItem) );
     setTimeout(function() {
@@ -390,7 +355,6 @@ function setDataStreamItemThenClear(dataStreamItem) {
     return null; 
   }
 }
-
 
 function createPositionFromNode(NodeData) {
   return omit(NodeData, [
@@ -410,13 +374,10 @@ function createPositionFromPlanet(PlanetData) {
   }
 }
 
-function createNodeState(NodeData) {
-  return omit(NodeData, ['_id', '__v']);
-}
+function createNodeState(NodeData) { return omit(NodeData, ['_id', '__v']) }
 
 function findPlanet(systemSearch) {
   const planetQuery = 'api/search/?' + queryString.stringify(systemSearch);
-  console.log("url for planet query: ", planetQuery);
   return fetch(planetQuery, {
     method: 'GET',
     headers: {
@@ -427,7 +388,6 @@ function findPlanet(systemSearch) {
 
 function findHyperspaceNode(nodeSearch) {
   const nodeQuery = '/api/hyperspacenode/search?' + queryString.stringify(nodeSearch);
-  console.log("url for node query: ", nodeQuery);
   return fetch(nodeQuery, {
     method: 'GET',
     headers: {
@@ -438,7 +398,6 @@ function findHyperspaceNode(nodeSearch) {
 
 function findNearestNode(LngLatSearch) {
   const nodeQuery = '/api/hyperspacenode/closet?' + queryString.stringify(LngLatSearch);
-  console.log("url for nearest: ", nodeQuery);
   return fetch(nodeQuery, {
     method: 'GET',
     headers: {
@@ -476,7 +435,6 @@ function getPathDataMany(start, end, maxJumps, limit) {
   });
 }
 
-
 function getHyperspacePathData(PathSearch) {
 	let jumpEndpoint = '/api/hyperspace-jump/';
 	jumpEndpoint += (PathSearch.shortest)? 'calc-shortest' : 'calc-many';
@@ -489,14 +447,11 @@ function getHyperspacePathData(PathSearch) {
   });
 }
 
-
 function createId() {
   let text = "";
   const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
   for (var i = 0; i < 10; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
-
   return text;
 }

@@ -1,10 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import distance from 'euclidean-distance';
 import Geohash from 'latlon-geohash';
-
-
-import LatLngDisplay from './latLngDisplay.js';
 import '../../../css/main.css';
 import {
   calculateHyperspaceJumpOn,
@@ -15,7 +13,6 @@ import {
   getHyperspacePathCollection
 } from '../../../actions/actions.js';
 import { Point } from '../../../classes/stellarClasses.js';
-
 import AckbarIcon from '../../../images/icons/star-wars/Ackbar.ico';
 import OrbitalIcon from '../../../images/icons/sci-fi-generic/orbital.svg';
 import GalaxySpiralIcon from '../../../images/icons/sci-fi-generic/twin-shell.svg';
@@ -24,12 +21,9 @@ class HyperspaceControls extends React.Component {
   constructor() {
     super();
     this.state = { 
-      maxJumps: 20,
-      limit: 10,
+      maxJumps: 30,
+      limit: 5,
     };
-  }
-
-  componentDidMount() {
   }
   findPath() {
     console.log("findPath has been hit!! ", this.props);
@@ -43,7 +37,12 @@ class HyperspaceControls extends React.Component {
         start: this.props.hyperspaceStartNode.system,
         end: this.props.hyperspaceEndNode.system,
         startPoint: this.props.hyperspaceStartPoint.system,
-        endPoint: this.props.hyperspaceEndPoint.system
+        endPoint: this.props.hyperspaceEndPoint.system,
+      };
+
+      const PathData = {
+        StartPoint: _.cloneDeep(this.props.hyperspaceStartPoint),
+        EndPoint: _.cloneDeep(this.props.hyperspaceEndPoint),
       };
 
       // console.log("PathSearch: ", PathSearch);
@@ -53,28 +52,20 @@ class HyperspaceControls extends React.Component {
       // const isShortestPath = (PathSearch.limit > 1) ? false : true;
       PathSearch.shortest = (PathSearch.limit > 1) ? false : true;
       // PathSearch.shortest = isShortestPath;
-      console.log("PathSearch: ", PathSearch);
-
-      this.props.dispatch( getHyperspacePathCollection(PathSearch) );
+      this.props.dispatch( getHyperspacePathCollection(PathSearch, PathData) );
     }
   }
   maxJumpsChange(e) {
     const maxJumps = parseInt(e.target.value);
     // this.props.dispatch( setMaxJumps( parseInt(maxJumps) ));
     this.setState({maxJumps: maxJumps});
-    console.log("this.state.maxJumps: ", maxJumps);
   }
   limitChange(e) {
     const pathNumber = parseInt(e.target.value);
     // this.props.dispatch(setNumberOfHyperspacePaths( parseInt(pathNumber) ));
     this.setState({limit: pathNumber});
-    console.log("this.state.limit: ", this.state.limit);
   }
   itsATrap(e) {
-
-    // console.log("Geohash: ", Geohash);
-
-
     const StartPoint = new Point(
       this.props.hyperspaceStartPoint.system,
       this.props.hyperspaceStartPoint.lat,
@@ -108,8 +99,6 @@ class HyperspaceControls extends React.Component {
     distanceBetweenPoints(EndPoint, EndNode);
 
     console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
-
-
   }
 
   render() {
@@ -143,5 +132,4 @@ const mapStateToProps = (state = {}) => {
     return Object.assign({}, state);
 };
 
-// export default HyperspaceControls;
 export default connect(mapStateToProps)(HyperspaceControls);

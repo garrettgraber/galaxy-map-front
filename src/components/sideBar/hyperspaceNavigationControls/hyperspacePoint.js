@@ -9,20 +9,13 @@ class HyperspacePoint extends React.Component {
   constructor() {
     super();
   }
-
-  componentDidMount() {
-
-  } 
-
   render() {
     const Point = this.props.Point;
     return LocationDisplay(Point);
   }
 }
 
-
 function LocationDisplay(Point) {
-  
   return (
     <div className="pane-row-text">
       <If condition={Point.lat === null && Point.lng === null}>
@@ -30,7 +23,7 @@ function LocationDisplay(Point) {
           <span className="display-text">Point:&nbsp;&nbsp;None</span>
         </Then>
         <Else>
-          <span className="display-text">Point:&nbsp;&nbsp;{Point.system}</span>
+          <span className="display-text">Point:&nbsp;&nbsp;{Point.system.slice(0, 10)}</span>
         </Else>
       </If>
 
@@ -39,7 +32,7 @@ function LocationDisplay(Point) {
           <span className="display-text">&nbsp;&nbsp;Lat:&nbsp;&nbsp;</span>
         </Then>
         <Else>
-          <span className="nav-text">&nbsp;&nbsp;Lat:&nbsp;&nbsp;{Point.lat}</span>
+          <span className="nav-text">&nbsp;&nbsp;Lat:&nbsp;&nbsp;{parseFloat(Point.lat).toFixed(6)}</span>
         </Else>
       </If>
 
@@ -48,7 +41,7 @@ function LocationDisplay(Point) {
           <span className="display-text">&nbsp;&nbsp;Lng:&nbsp;&nbsp;</span>
         </Then>
         <Else>
-          <span className="nav-text">&nbsp;&nbsp;Lng:&nbsp;&nbsp;{Point.lng}</span>
+          <span className="nav-text">&nbsp;&nbsp;Lng:&nbsp;&nbsp;{parseFloat(Point.lng).toFixed(6)}</span>
         </Else>
       </If>
     </div>

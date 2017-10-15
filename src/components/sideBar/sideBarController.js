@@ -8,10 +8,9 @@ import HyperspacePathSearch from './hyperspaceNavigationControls/hyperspacePathS
 import '../../css/main.css';
 
 class SideBarController extends React.Component {
-  componentDidMount() { 
-    console.log("SideBarController has Mounted");
+  constructor() {
+    super();
   }
-  
 	render() {
     return (
       <div id="control-container">
