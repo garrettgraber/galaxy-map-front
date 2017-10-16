@@ -76,6 +76,7 @@
     "react-tap-event-plugin": "^2.0.1",
     "redux": "^3.7.2",
     "redux-batched-actions": "^0.1.6",
+    "redux-chain": "0.0.4",
     "redux-multi": "^0.1.12",
     "redux-standard-actions": "^1.0.1",
     "redux-thunk": "^2.2.0",

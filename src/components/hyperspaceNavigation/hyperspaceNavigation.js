@@ -55,28 +55,22 @@ class HyperspaceNavigation extends React.Component {
       const EndPoint = this.props.hyperspaceEndPoint;
       const StartNode = this.props.hyperspaceStartNode;
       const EndNode = this.props.hyperspaceEndNode;
+      const ActiveStartPoint = this.props.hyperspaceActiveStartPoint;
+      const ActiveEndPoint = this.props.hyperspaceActiveEndPoint;
+      const StartPointsEqual = _.isEqual(ActiveStartPoint, StartPoint);
+      const EndPointsEqual = _.isEqual(ActiveEndPoint, EndPoint);
+
       let navComponentsRendered = [];
-
-
-      console.log("\n\nValid points: ");
-      console.log("StartPoint: ", pointIsValid(StartPoint));
-      console.log("EndPoint: ", pointIsValid(EndPoint));
-      console.log("StartNode: ", pointIsValid(StartNode));
-      console.log("EndNode: ", pointIsValid(EndNode));
-      console.log("\n\n");
 
       if(this.props.hyperspacePathCollections.length > 0) {
 
         if(newProps.hyperspacePathChange) {
 
           console.log("Pepsi! Rendering new hyperspace path!");
-          console.log("Pepsi! hyperspaceActiveStartPoint: ", this.props.hyperspaceActiveStartPoint);
-          console.log("Pepsi! hyperspaceActiveEndPoint: ", this.props.hyperspaceActiveEndPoint);
-
 
           const EdgeLocationsLiteral = {
-            StartPoint: StartPoint,
-            EndPoint: EndPoint,
+            StartPoint: ActiveStartPoint,
+            EndPoint: ActiveEndPoint,
             StartNode: StartNode,
             EndNode: EndNode
           };
@@ -93,110 +87,52 @@ class HyperspaceNavigation extends React.Component {
             hyperspaceHash = newProps.hyperspaceHash;
           }
 
-          // console.log("hyperspaceHash foo: ", hyperspaceHash);
-          // console.log("newProps.hyperspaceHash foo: ", newProps.hyperspaceHash);
-          // console.log("newProps.activeHyperspaceJump foo: ", newProps.activeHyperspaceJump);
-          // console.log("Hyperspace hash: ", hyperspaceHash);
-
           const HSpaceCollectionsComponents = createCollectionsComponents(this.props.hyperspacePathCollections, EdgeLocations, hyperspaceHash);
-          // console.log("HSpaceCollectionsComponents: ", HSpaceCollectionsComponents);
-          
-          const startNavigationComponent = NavigationPointComponent(StartPoint, true);
-          HSpaceCollectionsComponents.push(startNavigationComponent);
-          const endNavigationComponent = NavigationPointComponent(EndPoint, false);
-          HSpaceCollectionsComponents.push(endNavigationComponent);
-
-          navComponentsRendered = HSpaceCollectionsComponents;
-
+          // navComponentsRendered = HSpaceCollectionsComponents;
+          navComponentsRendered.push(HSpaceCollectionsComponents);
 
           this.setState({HyperspaceCollectionsComponents: HSpaceCollectionsComponents});
           this.props.dispatch(stopUpdatingHyperspacePath());
 
         } else {
-          navComponentsRendered = _.cloneDeep(this.state.HyperspaceCollectionsComponents);
-
-          console.log("\n\nPepsi! Not Rendering new hyperspace paths!");
-          console.log("Pepsi! StartPoint: ", this.props.hyperspaceStartPoint);
-          console.log("Pepsi! EndPoint: ", this.props.hyperspaceEndPoint);
-          console.log("Pepsi! hyperspaceActiveStartPoint: ", this.props.hyperspaceActiveStartPoint);
-          console.log("Pepsi! hyperspaceActiveEndPoint: ", this.props.hyperspaceActiveEndPoint);
-
-          const ActiveStartPoint = this.props.hyperspaceActiveStartPoint;
-          const ActiveEndPoint = this.props.hyperspaceActiveEndPoint;
-          const StartPointsEqual = _.isEqual(ActiveStartPoint, StartPoint);
-          const EndPointsEqual = _.isEqual(ActiveEndPoint, EndPoint);
-
-          console.log("Pepsi! Start Points not equal: ", !StartPointsEqual);
-          
-
-          if(!StartPointsEqual) {
-            const startNavigationComponent = NavigationPointComponent(StartPoint, true);
-            navComponentsRendered.push(startNavigationComponent);
-            console.log("Pepsi! Start Point Added: ", StartPoint);
-          }
-
-          if(!EndPointsEqual) {
-            const endNavigationComponent = NavigationPointComponent(EndPoint, false);
-            navComponentsRendered.push(endNavigationComponent);
-            console.log("Pepsi! End Point Added: ", EndPoint);
-          }
-
-        }
-
-        const FirstHyperspacePath = this.props.hyperspacePathCollections[0];
-
-        if(FirstHyperspacePath.start !== StartNode.nodeId) {
-          console.log("Pepsi! Start Node and Path Start Not the Same!");
-          const startNavigationComponent = NavigationPointComponent(StartPoint, true);
-          navComponentsRendered.push(startNavigationComponent);
-        }
-
-        if(FirstHyperspacePath.end !== EndNode.nodeId) {
-          console.log("Pepsi! End Node and Path End Not the Same!");
-          const endNavigationComponent = NavigationPointComponent(EndPoint, false);
-          navComponentsRendered.push(endNavigationComponent);
-        }
-
-        // if(pointIsValid(StartPoint)) {
-        //   console.log("Pepsi! Start Point is valid and rendering");
-        //   const startNavigationComponent = NavigationPointComponent(StartPoint, true);
-        //   navComponentsRendered.push(startNavigationComponent);
-        // }
-
-        // if(pointIsValid(EndPoint)) {
-        //   console.log("Pepsi! End Point is valid and rendering");
-        //   const endNavigationComponent = NavigationPointComponent(EndPoint, false);
-        //   navComponentsRendered.push(endNavigationComponent);
-        // }
-
-      } else {
-
-        const noPathChangeAndStartIsValid = !newProps.hyperspacePathChange && pointIsValid(StartPoint);
-        const noPathChangeAndEndIsValid = !newProps.hyperspacePathChange && pointIsValid(EndPoint);
-
-        if(noPathChangeAndStartIsValid) {
-          console.log("Pepsi! No Path change and Start Point is valid and rendering");
-
-          const startNavigationComponent = NavigationPointComponent(StartPoint, true);
-          navComponentsRendered.push(startNavigationComponent);
-        }
-
-        if(noPathChangeAndEndIsValid) {
-
-          console.log("Pepsi! No Path change and End Point is valid and rendering");
-
-          const endNavigationComponent = NavigationPointComponent(EndPoint, false);
-          navComponentsRendered.push(endNavigationComponent);
+          // navComponentsRendered = _.cloneDeep(this.state.HyperspaceCollectionsComponents);
+          const HyperspaceCollectionsClone = _.cloneDeep(this.state.HyperspaceCollectionsComponents);
+          navComponentsRendered.push(HyperspaceCollectionsClone);
+          console.log("\n\nPepsi! Not Rendering new hyperspace paths!: ", HyperspaceCollectionsClone);
         }
 
       }
 
-      console.log("navComponentsRendered rendered array length: ", navComponentsRendered.length);
-      this.setState({HSpaceComponentsMaster: navComponentsRendered});
+      if(pointIsValid(StartPoint)) {
+        const startNavigationComponent = NavigationPointComponent(StartPoint, true);
+        navComponentsRendered.push(startNavigationComponent);
+        console.log("Pepsi! Start Point Added: ", StartPoint);
+      }
 
+      if(pointIsValid(EndPoint)) {
+        const endNavigationComponent = NavigationPointComponent(EndPoint, false);
+        navComponentsRendered.push(endNavigationComponent);
+        console.log("Pepsi! End Point Added: ", EndPoint);
+      }
+
+      if(pointIsValid(ActiveStartPoint)) {
+        const startNavigationComponentActive = NavigationPointComponent(ActiveStartPoint, true);
+        navComponentsRendered.push(startNavigationComponentActive);
+        console.log("Pepsi! Active Start Point Added: ", ActiveStartPoint);
+        console.log("Pepsi! startNavigationComponentActive: ", startNavigationComponentActive);
+      }
+
+      if(pointIsValid(ActiveEndPoint)) {
+        const endNavigationComponentActive = NavigationPointComponent(ActiveEndPoint, false);
+        navComponentsRendered.push(endNavigationComponentActive);
+        console.log("Pepsi! Active End Point Added: ", ActiveEndPoint);
+        console.log("Pepsi! endNavigationComponentActive: ", endNavigationComponentActive);
+      }
+
+      console.log("Pepsi! navComponentsRendered rendered array length: ", navComponentsRendered.length);
+      this.setState({HSpaceComponentsMaster: navComponentsRendered});
       this.props.dispatch(hyperspaceNavigationUpdateOff());
     }
-
   }
 
   render() {

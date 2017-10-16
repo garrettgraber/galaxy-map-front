@@ -43,6 +43,8 @@ class HyperspaceControls extends React.Component {
       const PathData = {
         StartPoint: _.cloneDeep(this.props.hyperspaceStartPoint),
         EndPoint: _.cloneDeep(this.props.hyperspaceEndPoint),
+        StartNode: _.cloneDeep(this.props.hyperspaceStartNode),
+        EndNode: _.cloneDeep(this.props.hyperspaceEndNode),
       };
 
       // console.log("PathSearch: ", PathSearch);

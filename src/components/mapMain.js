@@ -110,6 +110,21 @@ class MapMain extends React.Component {
       // if(this.props.searchSystems) {
       //     this.props.dispatch(searchSystemsFinish());
       // }
+      console.log("onMoveend has fired: ", e);
+
+      // if(this.props.mapCenterAndZoom.zoom !== ViewportValues.zoom) {
+      //   console.log("map zoom has changed: ", ViewportValues.zoom);
+      // } else {
+      //   console.log("map center has changed: ", ViewportValues.center);
+      // }
+
+      // const mapBounds = this.refs.map.leafletElement.getBounds();
+      // console.log('Map Bounds after viewport has changed: ', mapBounds);
+
+      // this.props.dispatch(setMapCenterAndZoom(
+      //   ViewportValues.center,
+      //   ViewportValues.zoom
+      // ));
 
   }
 

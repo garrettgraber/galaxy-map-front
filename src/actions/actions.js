@@ -5,6 +5,8 @@ import omit from 'object.omit';
 import hash from 'string-hash';
 import Geohash from 'latlon-geohash';
 import { batchActions } from 'redux-batched-actions';
+import { chain } from 'redux-chain';
+
 
 
 import {
@@ -13,6 +15,10 @@ import {
 	searchSystemsStart,
 	searchSystemsFinish,
   setMapCenterAndZoom,
+  setMapZoom,
+  setMapCenter,
+  zoomPointOn,
+  zoomPointOff,
   viewHasChangedAndRender,
 	addHyperspacePathToCollection,
   loadHyperspacePathCollections,
@@ -125,6 +131,25 @@ export function findSystem(systemName) {
   // used this action creator
 		return null; 
 	}
+}
+
+
+export function zoomToLocation(locationCenter, zoom) {
+
+  return function(dispatch, getState) {
+
+    // dispatch(setMapZoom(zoom));
+    // dispatch(setMapCenter(locationCenter));
+    // dispatch(zoomPointOn());
+
+    dispatch(chain(
+      setMapCenter(locationCenter),
+      setMapZoom(zoom),
+      zoomPointOn()
+    ));
+
+    return null;
+  }
 }
 
 export function getHyperspacePathCollection(HyperspacePathSearch, HyperspacePathData) {

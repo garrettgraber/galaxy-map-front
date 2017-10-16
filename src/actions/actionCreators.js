@@ -218,6 +218,16 @@ export function setMapError(error) {
 		payload: error
 	}
 }
+export function zoomPointOn(){
+	return {
+		type: Actions.HYPERSPACE_POINT_ZOOM_ON
+	}
+}
+export function zoomPointOff(){
+	return {
+		type: Actions.HYPERSPACE_POINT_ZOOM_OFF
+	}
+}
 export function increaseMapZoom() {
 	return {
 		type: Actions.INCREASE_MAP_ZOOM_BY_ONE

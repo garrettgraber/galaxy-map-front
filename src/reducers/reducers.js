@@ -357,6 +357,18 @@ function hyperspaceActiveEndPoint(state = BlankPoint, action) {
 			return state;	
 	}
 }
+function hyperspacePointZoomOn(state = false, action) {
+	switch (action.type) {
+		case Actions.HYPERSPACE_POINT_ZOOM_ON:
+			console.log("point zoom: ", true);
+			return true;
+		case Actions.HYPERSPACE_POINT_ZOOM_OFF:
+			console.log("point zoom: ", false);
+			return false;
+		default:
+			return state;	
+	}
+}
 function hyperspaceMaxJumps(state = maxJumps, action) {
 	switch (action.type) {
 		case Actions.SET_MAX_JUMPS:
@@ -469,6 +481,7 @@ function updateHyperspaceNavigation(state = false, action) {
 }
 
 export default combineReducers({
+	hyperspacePointZoomOn,
 	hyperspaceActiveStartPoint,
 	hyperspaceActiveEndPoint,
 	activeHyperspaceJump,
