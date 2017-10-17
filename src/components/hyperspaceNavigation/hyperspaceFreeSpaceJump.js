@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import { CircleMarker, Popup, Circle, Tooltip, Marker, Polyline } from 'react-leaflet';
 import L from 'leaflet';
 import width from 'text-width';
+import AntPath from "react-leaflet-ant-path";
+import { If, Then, Else } from 'react-if';
+
 
 // import ReactFauxDOM from 'react-faux-dom';
 
@@ -78,36 +81,30 @@ class HyperSpaceFreeSpaceJump extends React.Component {
     const fillOpacity = 0.5;
     const hyperspaceNodeLocation = [HyperSpaceNode.lat, HyperSpaceNode.lng];
     const hyperspacePointLocation = [HyperSpacePoint.lat, HyperSpacePoint.lng];
-
-    
-    // console.log("HyperSpacePoint: ", HyperSpacePoint);
-    // console.log("HyperSpaceNode: ", HyperSpaceNode);
-    const jumpCoordinates = freeSpaceJumpCoordinates(this.props.HyperSpacePoint, this.props.HyperSpaceNode);
-    // const jumpCoordinates = [[0.0000, 0.0000], [85.4297, -72.9196], [2.4061, 78.7271]];
-    // const jumpCoordinates = [[0.0000, 0.0000], [-72.9196, 85.4297], [-78.7271, 2.4061]];
-
-    // console.log("jumpCoordinates: ", jumpCoordinates);
-    // console.log("this.props.HyperSpacePoint: ", this.props.HyperSpacePoint);
-    // console.log("this.props.HyperSpaceNode: ", this.props.HyperSpaceNode);
-
-     // Lat:  -72.9196  Lng:  85.4297
-     // Lat:  -78.7271  Lng:  2.4061
-
-
-
-
+    const jumpCoordinates = freeSpaceJumpCoordinates(HyperSpacePoint, HyperSpaceNode);
+ 
   	return (
       <div >
-        { (nodeAndPointAreEqual(this.props.HyperSpacePoint, this.props.HyperSpaceNode))? (null) : 
-          ( <div>
-              <Polyline positions={jumpCoordinates} color={laneColorPink}  ref="lane" onMouseOver={e => this.onMouseOver(e)}  onMouseOut={e => this.onMouseOut(e)}/>
+        <If condition={nodeAndPointAreEqual(HyperSpacePoint, HyperSpaceNode)}>
+          <Then>{() => null }</Then>
+          <Else>
+            <div>
+              
+              <AntPath
+                positions={jumpCoordinates}
+                options={{color: laneColorPink, opacity: 0.25, interactive: false}}
+                ref="lane"
+                onMouseOver={e => this.onMouseOver(e)}
+                onMouseOut={e => this.onMouseOut(e)}
+              />
+
               <CircleMarker center={hyperspaceNodeLocation} radius={1} color={nodeColor} ref='nodeHyperSpace' />
             </div>
-          )
-        }
+          </Else>
+        </If>
         <div>
           <CircleMarker center={hyperspacePointLocation} radius={1} color={'red'}  ref='starPoint' />
-          <CircleMarker className="pulse" center={hyperspacePointLocation} radius={4} color={'#87CEFA'} ref='pointHyperSpace' />
+          
         </div>
       </div>                         
   	)
@@ -115,14 +112,14 @@ class HyperSpaceFreeSpaceJump extends React.Component {
 }
 
 
+// <CircleMarker className="pulse" center={hyperspacePointLocation} radius={4} color={'#87CEFA'} ref='pointHyperSpace' />
+
 function freeSpaceJumpCoordinates(Point, Node) {
   const PointCoordinates = [Point.lat, Point.lng];
   const NodeCoordinates = [Node.lat, Node.lng];
   const jumpCoordinates = [NodeCoordinates, PointCoordinates];
   return jumpCoordinates;
 }
-
- // <Marker key={this.props.HyperSpaceLaneObject.hyperspaceHash} position={starLocation} icon={myIcon} zIndexOffset={-5} onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)} ref='laneText'/>
 
 
 function nodeAndPointAreEqual(point1, point2) {

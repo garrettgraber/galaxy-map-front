@@ -25,6 +25,35 @@ export function activeEndPositionDefault() {
 		type: Actions.SET_ACTVIE_END_POSITION_DEFAULT
 	}
 }
+
+
+export function activeStartNode(StartNode) {
+	return {
+		type: Actions.SET_ACTVIE_START_NODE,
+		payload: StartNode
+	}
+}
+export function activeStartNodeDefault() {
+	return {
+		type: Actions.SET_ACTVIE_START_NODE_DEFAULT
+	}
+}
+export function activeEndNode(EndNode) {
+	return {
+		type: Actions.SET_ACTVIE_END_NODE,
+		payload: EndNode
+	}
+}
+export function activeEndNodeDefault() {
+	return {
+		type: Actions.SET_ACTVIE_END_NODE_DEFAULT
+	}
+}
+
+
+
+
+
 export function activeHyperspaceJump(hyperspaceHash) {
 	return {
 		type: Actions.SET_ACTIVE_HYPERSPACE_JUMP,

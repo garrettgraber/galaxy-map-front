@@ -357,6 +357,26 @@ function hyperspaceActiveEndPoint(state = BlankPoint, action) {
 			return state;	
 	}
 }
+function hyperspaceActiveStartNode(state = BlankPoint, action) {
+	switch (action.type) {
+		case Actions.SET_ACTVIE_START_NODE:
+			return action.payload;
+		case Actions.SET_ACTVIE_START_NODE_DEFAULT:
+			return BlankPoint;
+		default:
+			return state;
+	}
+}
+function hyperspaceActiveEndNode(state = BlankPoint, action) {
+	switch (action.type) {
+		case Actions.SET_ACTVIE_END_NODE:
+			return action.payload;
+		case Actions.SET_ACTVIE_END_NODE_DEFAULT:
+			return BlankPoint;
+		default:
+			return state;
+	}
+}
 function hyperspacePointZoomOn(state = false, action) {
 	switch (action.type) {
 		case Actions.HYPERSPACE_POINT_ZOOM_ON:
@@ -484,6 +504,8 @@ export default combineReducers({
 	hyperspacePointZoomOn,
 	hyperspaceActiveStartPoint,
 	hyperspaceActiveEndPoint,
+	hyperspaceActiveStartNode,
+	hyperspaceActiveEndNode,
 	activeHyperspaceJump,
 	hyperspaceHash,
 	southWestMapHash,

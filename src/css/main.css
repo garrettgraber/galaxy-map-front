@@ -114,6 +114,21 @@
 }
 
 
+.pulse-counter {
+    animation: pulsate-counter 1s ease-out;
+    -webkit-animation: pulsate-counter 1s ease-out;
+    -webkit-animation-iteration-count: infinite; 
+    opacity: 0.0;
+}
+
+
+@keyframes pulsate-counter {
+    0% {opacity: 1.0;}
+    50% {opacity: 0.0;}
+    100% {opacity: 1.0;}
+}
+
+
 .search-input {
     width: 150px;
     height: 32px;

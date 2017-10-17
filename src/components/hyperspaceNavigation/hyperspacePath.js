@@ -14,8 +14,6 @@ import HyperspaceFreeSpaceJump from './hyperspaceFreeSpaceJump.js';
 import uuidv1 from 'uuid/v1';
 import uuidv4 from 'uuid/v4';
 
-// console.log("HyperspaceData: ", HyperspaceData);
-
 const hyperspaceLanesStylePink = {color: '#FF69B4', weight: 3};
 
 class HyperspacePath extends React.Component {
@@ -32,19 +30,14 @@ class HyperspacePath extends React.Component {
     const hyperspacePathComponents = generateHyperspaceNodesAndLanes(this.props.nodes, this.props.lanes);
     const startPointEqualsNode = nodeAndPointAreEqual(EdgeLocations.StartPoint, EdgeLocations.StartNode);
     const endPointEqualsNode = nodeAndPointAreEqual(EdgeLocations.EndPoint, EdgeLocations.EndNode);
-    // console.log("startPointEqualsNode: ", startPointEqualsNode);
-    // console.log("endPointEqualsNode: ", endPointEqualsNode);
     if(!startPointEqualsNode) {
       const PointToNodeJumpComponentStart = createFreespaceLane(EdgeLocations.StartNode, EdgeLocations.StartPoint);
-      // console.log("Start PointToNodeJumpComponent: ", PointToNodeJumpComponentStart);
       hyperspacePathComponents.push(PointToNodeJumpComponentStart);
     }
     if(!endPointEqualsNode) {
       const PointToNodeJumpComponentEnd = createFreespaceLane(EdgeLocations.EndNode, EdgeLocations.EndPoint);
-      // console.log("End PointToNodeJumpComponent: ", PointToNodeJumpComponentEnd);
       hyperspacePathComponents.push(PointToNodeJumpComponentEnd);
     }
-    // console.log("hyperspacePathComponents after freespaceJump addition: ", hyperspacePathComponents);
     this.setState({HyperspacePathComponents: hyperspacePathComponents});
   }
     
@@ -61,13 +54,8 @@ class HyperspacePath extends React.Component {
   }
 }
 
-// const mapStateToProps = (state = {}) => {
-//     return Object.assign({}, state);
-// };
 
 export default HyperspacePath;
-// export default connect(mapStateToProps)(HyperspacePath);
-
 
 
 function renderComponentsOrNull(currentComponents) {
@@ -102,8 +90,6 @@ function createNodesComponents(nodes) {
 function generateHyperspaceNodesAndLanes(nodes, lanes) {
   const hyperspaceNodes = createNodesComponents(nodes);
   const hyperspaceLanes = createLanesComponents(lanes);
-  // console.log("\nhyperspaceNodes.length: ", hyperspaceNodes.length);
-  // console.log("hyperspaceLanes.length: ", hyperspaceLanes.length);
   const nodeAndLaneComponents = [];
   for(let i=0; i < hyperspaceLanes.length; i++) {
     let Lane = hyperspaceLanes[i];

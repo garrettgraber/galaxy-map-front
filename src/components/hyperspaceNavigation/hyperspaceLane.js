@@ -73,8 +73,4 @@ class HyperSpaceLane extends React.Component {
   }
 }
 
-
-// <Polyline positions={this.props.HyperSpaceLaneObject.coordinates} color={laneColorPink} ref="lane" onMouseOver={e => this.onMouseOver(e)}  onMouseOut={e => this.onMouseOut(e)}/>
-
-
 export default HyperSpaceLane;

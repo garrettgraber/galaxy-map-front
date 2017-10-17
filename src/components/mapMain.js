@@ -60,7 +60,8 @@ class MapMain extends React.Component {
     	lat: 0,
     	lng: 0,
     	zoom: 2,
-    	map: null
+    	map: null,
+      
     }
   }
 
@@ -104,6 +105,9 @@ class MapMain extends React.Component {
 
   onMovestart(e) {
       console.log("onMovestart has fired...");
+
+      const mapBounds = this.refs.map.leafletElement.getBounds();
+      console.log('Map Bounds on move start: ', mapBounds);
   }
 
   onMoveend(e) {
@@ -118,8 +122,8 @@ class MapMain extends React.Component {
       //   console.log("map center has changed: ", ViewportValues.center);
       // }
 
-      // const mapBounds = this.refs.map.leafletElement.getBounds();
-      // console.log('Map Bounds after viewport has changed: ', mapBounds);
+      const mapBounds = this.refs.map.leafletElement.getBounds();
+      console.log('Map Bounds on move end: ', mapBounds);
 
       // this.props.dispatch(setMapCenterAndZoom(
       //   ViewportValues.center,

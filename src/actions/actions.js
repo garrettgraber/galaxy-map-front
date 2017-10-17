@@ -44,7 +44,9 @@ import {
   setNullHyperspaceHash,
   setSelectedHyperspaceHash,
   activeStartPosition,
-  activeEndPosition
+  activeEndPosition,
+  activeStartNode,
+  activeEndNode
 } from './actionCreators.js';
 
 
@@ -171,6 +173,12 @@ export function getHyperspacePathCollection(HyperspacePathSearch, HyperspacePath
       dispatch(loadHyperspacePathCollections(data));
       dispatch(activeStartPosition(HyperspacePathData.StartPoint));
       dispatch(activeEndPosition(HyperspacePathData.EndPoint));
+
+      
+      dispatch(activeStartNode(HyperspacePathData.StartNode));
+      dispatch(activeEndNode(HyperspacePathData.EndNode));
+
+
       dispatch(updateHyperspacePaths());
       dispatch(calculateHyperspaceJumpOff());
       dispatch(hyperspaceNavigationUpdateOn());
