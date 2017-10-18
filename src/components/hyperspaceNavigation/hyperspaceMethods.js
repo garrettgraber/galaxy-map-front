@@ -6,8 +6,10 @@ import _ from 'lodash';
 
 import { HyperSpacePathCollection, Point } from '../../classes/stellarClasses.js';
 import HyperspacePath from './hyperspacePath.js';
+import HyperspaceFreeSpaceJump from './hyperspaceFreeSpaceJump.js';
 
 
+const hyperspaceLanesStylePink = {color: '#FF69B4', weight: 3};
 
 
 
@@ -47,3 +49,19 @@ export function createHyperspacePathsComponents(PathCollectionData, StartAndEndL
 
 }
 
+
+export function createFreespaceLane(Node, Point) {
+  return (<HyperspaceFreeSpaceJump  key={uuidv4()} HyperSpaceNode={Node} HyperSpacePoint={Point} style={hyperspaceLanesStylePink}/>);
+}
+
+
+export function nodeAndPointAreEqual(point1, point2) {
+  const sameName = (point1.system === point2.system)? true : false;
+  const sameLatitude = (point1.lat === point2.lat)? true : false;
+  const sameLongitude = (point1.lng === point2.lng)? true : false;
+  if(sameName && sameLatitude && sameLongitude) {
+    return true;
+  } else {
+    return false;
+  }
+}

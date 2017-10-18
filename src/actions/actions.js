@@ -137,19 +137,8 @@ export function findSystem(systemName) {
 
 
 export function zoomToLocation(locationCenter, zoom) {
-
   return function(dispatch, getState) {
-
-    // dispatch(setMapZoom(zoom));
-    // dispatch(setMapCenter(locationCenter));
-    // dispatch(zoomPointOn());
-
-    dispatch(chain(
-      setMapCenter(locationCenter),
-      setMapZoom(zoom),
-      zoomPointOn()
-    ));
-
+    dispatch(setMapCenterAndZoom(locationCenter, zoom));
     return null;
   }
 }

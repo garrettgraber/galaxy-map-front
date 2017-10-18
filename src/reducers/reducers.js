@@ -112,6 +112,7 @@ function southWestMapHash(state = emptyMapHash, action) {
 	switch (action.type) {
 		case Actions.UPDATE_SOUTH_WEST_MAP_HASH:
 			const newMapHash = action.payload;
+			console.log("Pepsi!! New southWestMapHash: ", newMapHash);
 			return newMapHash;
 		case Actions.CLEAR_SOUTH_WEST_MAP_HASH:
 			return emptyMapHash;
@@ -123,6 +124,7 @@ function northEastMapHash(state = emptyMapHash, action) {
 	switch (action.type) {
 		case Actions.UPDATE_NORTH_EAST_MAP_HASH:
 			const newMapHash = action.payload;
+			console.log("Pepsi!! New northEastMapHash: ", newMapHash);
 			return newMapHash;
 		case Actions.CLEAR_NORTH_EAST_MAP_HASH:
 			return emptyMapHash;

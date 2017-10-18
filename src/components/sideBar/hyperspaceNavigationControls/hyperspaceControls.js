@@ -54,7 +54,17 @@ class HyperspaceControls extends React.Component {
       // const isShortestPath = (PathSearch.limit > 1) ? false : true;
       PathSearch.shortest = (PathSearch.limit > 1) ? false : true;
       // PathSearch.shortest = isShortestPath;
-      this.props.dispatch( getHyperspacePathCollection(PathSearch, PathData) );
+
+      if(PathData.StartPoint.nodeId === PathData.EndNode.nodeId) {
+
+        console.log("Start and End Nodes are the same, calculate free space jump(s)..");
+
+      } else {
+
+        this.props.dispatch( getHyperspacePathCollection(PathSearch, PathData) );
+
+      }
+      
     }
   }
   maxJumpsChange(e) {

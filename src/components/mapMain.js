@@ -5,6 +5,9 @@ import { Map, TileLayer, LayersControl, Pane } from 'react-leaflet';
 import L from 'leaflet';
 import 'whatwg-fetch';
 import uuidv4 from 'uuid/v4';
+import Geohash from 'latlon-geohash';
+import { chain } from 'redux-chain';
+
 
 import { 
     searchSystemsFinish,
@@ -17,7 +20,9 @@ import {
     viewHasChangedAndRender,
     setMapCenterAndZoom,
     setMapZoom,
-    addItemToDataStream
+    addItemToDataStream,
+    updateNorthEastMapHash,
+    updateSouthWestMapHash
 } from '../actions/actionCreators.js';
 import { findAndSetNearsetHyperspaceNode } from '../actions/actions.js';
 
@@ -106,8 +111,9 @@ class MapMain extends React.Component {
   onMovestart(e) {
       console.log("onMovestart has fired...");
 
-      const mapBounds = this.refs.map.leafletElement.getBounds();
-      console.log('Map Bounds on move start: ', mapBounds);
+      const mapInstance = this.refs.map.leafletElement;
+      const MapBounds = getNorthEastAndSoutWestBounds(mapInstance);
+      console.log('Map Bounds on move start: ', MapBounds);
   }
 
   onMoveend(e) {
@@ -122,8 +128,31 @@ class MapMain extends React.Component {
       //   console.log("map center has changed: ", ViewportValues.center);
       // }
 
-      const mapBounds = this.refs.map.leafletElement.getBounds();
-      console.log('Map Bounds on move end: ', mapBounds);
+      const mapInstance = this.refs.map.leafletElement;
+      const mapState = this.state.map;
+      const MapBounds = getNorthEastAndSoutWestBounds(mapInstance);
+      console.log('Pepsi Map Bounds on move end: ', MapBounds);
+
+      const MapStateBounds = getNorthEastAndSoutWestBounds(mapInstance);
+      console.log('Pepsi Map State Bounds on move end: ', MapStateBounds);
+
+      if(MapStateBounds.northEast !== this.props.northEastMapHash || MapStateBounds.southWest !== this.props.southWestMapHash) {
+
+        console.log("Map Bounds havd changed!!!");
+        this.props.dispatch(updateNorthEastMapHash(MapStateBounds.northEast));
+        this.props.dispatch(updateSouthWestMapHash(MapStateBounds.southWest));
+
+        // this.props.dispatch(chain(
+        //   updateNorthEastMapHash(MapStateBounds.northEast),
+        //   updateSouthWestMapHash(MapStateBounds.southWest)
+        // ));
+
+
+      }
+
+      // this.props.dispatch(updateNorthEastMapHash(MapBounds.northEast));
+      // this.props.dispatch(updateSouthWestMapHash(MapBounds.southWest));
+
 
       // this.props.dispatch(setMapCenterAndZoom(
       //   ViewportValues.center,
@@ -298,6 +327,22 @@ function  getStarData() {
 	.then(function(response) {
   	return response.json();
 	});
+}
+
+
+function getNorthEastAndSoutWestBounds(mapInstance) {
+  const CurrentMapBoundaries = mapInstance.getBounds();
+  const NorthEastBounds = CurrentMapBoundaries._northEast;
+  const SouthWestBounds = CurrentMapBoundaries._southWest;
+  const northEastGeoHash = Geohash.encode(NorthEastBounds.lat, NorthEastBounds.lng, 20);
+  const southWestGeoHash = Geohash.encode(SouthWestBounds.lat, SouthWestBounds.lng, 20);   
+
+    return {
+      northEast: northEastGeoHash,
+      southWest: southWestGeoHash,
+      NorthEastBounds: NorthEastBounds,
+      SouthWestBounds: SouthWestBounds
+    }
 }
 
 

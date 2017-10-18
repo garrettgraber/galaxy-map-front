@@ -11,6 +11,7 @@ import distance from 'euclidean-distance';
 import Geohash from 'latlon-geohash';
 
 
+
 // import ReactFauxDOM from 'react-faux-dom';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
@@ -20,7 +21,9 @@ import '../../css/main.css';
 
 import HyperspaceData from 'json-loader!../../data/hyperspace.geojson';
 import HyperspacePathCollection from './hyperspacePathCollection.js';
-import HyperspaceNavigationPoint from './hyperspaceNavigationPoint.js'
+import HyperspaceNavigationPoint from './hyperspaceNavigationPoint.js';
+import { createFreespaceLane, nodeAndPointAreEqual } from './hyperspaceMethods.js'
+
 import {
   addHyperspacePathToCollection,
   updateHyperspacePaths,
@@ -64,9 +67,9 @@ class HyperspaceNavigation extends React.Component {
 
       let navComponentsRendered = [];
 
-      if(this.props.hyperspacePathCollections.length > 0) {
+      if(newProps.hyperspacePathChange) {
 
-        if(newProps.hyperspacePathChange) {
+        if(this.props.hyperspacePathCollections.length > 0) {
 
           const EdgeLocationsLiteral = {
             StartPoint: ActiveStartPoint,
@@ -92,6 +95,19 @@ class HyperspaceNavigation extends React.Component {
 
           this.setState({HyperspaceCollectionsComponents: HSpaceCollectionsComponents});
           this.props.dispatch(stopUpdatingHyperspacePath());
+
+        } else if(StartNode.nodeId === EndNode.nodeId) {
+
+          console.log("Generating free space jump, hoooaaa");
+
+          if(!nodeAndPointAreEqual(StartPoint, StartNode)) {
+            const PointToNodeJumpComponentStart = createFreespaceLane(StartNode, StartPoint);
+            navComponentsRendered.push(PointToNodeJumpComponentStart);
+          }
+          if(!nodeAndPointAreEqual(EndPoint, EndNode)) {
+            const PointToNodeJumpComponentEnd = createFreespaceLane(EndNode, EndPoint);
+            navComponentsRendered.push(PointToNodeJumpComponentEnd);
+          }
 
         } else {
           const HyperspaceCollectionsClone = _.cloneDeep(this.state.HyperspaceCollectionsComponents);

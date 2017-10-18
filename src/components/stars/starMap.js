@@ -119,22 +119,24 @@ class StarMap extends React.Component {
     const galaxyLevelBounds = (galaxyLatitudeView && galaxyLongitudeView);
 
     if(zoomInStore === 2 && galaxyLevelBounds && this.state.zoom !== 2) {
-      // console.log("Generating Star Map at Galaxy Level");
+      console.log("Pepsi!! Generating Star Map at Galaxy Level");
       this.createStarMapAndSetState(zoomInStore, mapInstance, MapHashes);
     } else if(this.state.zoom !== zoomInStore && mapBoundsHaveChanged) {
-      // console.log("Generating Star Map as bounds and zoom are different");
+      console.log("Pepsi!! Generating Star Map as bounds and zoom are different");
       this.createStarMapAndSetState(zoomInStore, mapInstance, MapHashes);
     } else if(zoomInStore !== 2 && this.state.zoom !== 3 && mapBoundsHaveChanged) {
-      // console.log("Generating Star Map as map view has changed");
+      console.log("Pepsi!! Generating Star Map as map view has changed");
       this.createStarMapAndSetState(zoomInStore, mapInstance, MapHashes);
     } else if(!mapBoundsHaveChanged) {
-      console.log("Map Bounds have not changed, Star map is not rebuilding!");
+      console.log("Pepsi!! Map Bounds have not changed, Star map is not rebuilding!");
     } else {
-      console.log("Star map is not rebuilding for some unknow reason!");      
+      console.log("Pepsi!! Star map is not rebuilding for some unknow reason!");      
     }
 
     if(mapBoundsHaveChanged) {
-      console.log("Map Bounds have changed: ", MapHashes);
+      console.log("Pepsi!! Map Bounds have changed: ", MapHashes);
+    } else {
+      console.log("Pepsi!! Map Bounds have not changed: ", MapHashes);
     }
   }
 
