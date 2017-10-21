@@ -74,12 +74,14 @@ class HyperspaceNavigationPoint extends React.Component {
 
     const hyperspacePointLocation = [this.props.HyperSpacePoint.lat, this.props.HyperSpacePoint.lng];
     const LocationColorCyan = '#87CEFA';
+    const LocationColorPurple = '#c32aff';
+    const LocationColorBackground = (this.props.isActive)? LocationColorCyan : LocationColorPurple;  
     const LocationColor = (this.props.isStart)? '#49fb35' : '#ff0101';
 
   	return (
       <div key={this.props.HyperSpacePoint.system + ":" + uuidv4()}>
         <CircleMarker center={hyperspacePointLocation} radius={1} color={pointColor}  onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)} />
-        <CircleMarker className="pulse" center={hyperspacePointLocation} radius={6} color={LocationColorCyan}/>
+        <CircleMarker className="pulse" center={hyperspacePointLocation} radius={6} color={LocationColorBackground}/>
         <CircleMarker className="pulse-counter" center={hyperspacePointLocation} radius={8} color={LocationColor}/>
       </div>                  
   	)

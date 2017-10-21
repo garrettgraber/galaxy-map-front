@@ -22,6 +22,7 @@ import {
   viewHasChangedAndRender,
 	addHyperspacePathToCollection,
   loadHyperspacePathCollections,
+  emptyHyperspacePathCollections,
   updateHyperspacePaths,
 	errorHyperspacePath,
   setStartPosition,
@@ -139,6 +140,28 @@ export function findSystem(systemName) {
 export function zoomToLocation(locationCenter, zoom) {
   return function(dispatch, getState) {
     dispatch(setMapCenterAndZoom(locationCenter, zoom));
+    return null;
+  }
+}
+
+export function plotFreeSpaceJumpToNode(HyperspacePathData) {
+  return function(dispatch, getState) {
+
+    const dataStreamMessage = "Jump calculated from " + HyperspacePathData.StartPoint.system + " to " + HyperspacePathData.EndPoint.system;
+
+    dispatch(addItemToDataStream(dataStreamMessage));
+    dispatch(emptyHyperspacePathCollections());
+
+    dispatch(activeStartPosition(HyperspacePathData.StartPoint));
+    dispatch(activeEndPosition(HyperspacePathData.EndPoint));
+    
+    dispatch(activeStartNode(HyperspacePathData.StartNode));
+    dispatch(activeEndNode(HyperspacePathData.EndNode));
+
+    dispatch(updateHyperspacePaths());
+    dispatch(calculateHyperspaceJumpOff());
+    dispatch(hyperspaceNavigationUpdateOn());
+
     return null;
   }
 }

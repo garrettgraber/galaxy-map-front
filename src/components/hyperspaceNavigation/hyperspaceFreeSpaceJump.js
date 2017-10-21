@@ -81,7 +81,13 @@ class HyperSpaceFreeSpaceJump extends React.Component {
     const fillOpacity = 0.5;
     const hyperspaceNodeLocation = [HyperSpaceNode.lat, HyperSpaceNode.lng];
     const hyperspacePointLocation = [HyperSpacePoint.lat, HyperSpacePoint.lng];
-    const jumpCoordinates = freeSpaceJumpCoordinates(HyperSpacePoint, HyperSpaceNode);
+    let jumpCoordinates = freeSpaceJumpCoordinates(HyperSpacePoint, HyperSpaceNode);
+
+    console.log("jumpCoordinates: ", jumpCoordinates);
+
+    if(this.props.isStart) {
+      jumpCoordinates.reverse();
+    }
  
   	return (
       <div >

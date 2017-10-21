@@ -1,8 +1,6 @@
-
-
-
 import React from 'react';
 import _ from 'lodash';
+import uuidv4 from 'uuid/v4';
 
 import { HyperSpacePathCollection, Point } from '../../classes/stellarClasses.js';
 import HyperspacePath from './hyperspacePath.js';
@@ -50,8 +48,8 @@ export function createHyperspacePathsComponents(PathCollectionData, StartAndEndL
 }
 
 
-export function createFreespaceLane(Node, Point) {
-  return (<HyperspaceFreeSpaceJump  key={uuidv4()} HyperSpaceNode={Node} HyperSpacePoint={Point} style={hyperspaceLanesStylePink}/>);
+export function createFreespaceLane(Node, Point, isStart) {
+  return (<HyperspaceFreeSpaceJump  key={uuidv4()} HyperSpaceNode={Node} HyperSpacePoint={Point} style={hyperspaceLanesStylePink}  isStart={isStart} />);
 }
 
 

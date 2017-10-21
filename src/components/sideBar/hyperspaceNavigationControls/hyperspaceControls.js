@@ -10,7 +10,8 @@ import {
   setNumberOfHyperspacePaths
 } from '../../../actions/actionCreators.js';
 import {
-  getHyperspacePathCollection
+  getHyperspacePathCollection,
+  plotFreeSpaceJumpToNode
 } from '../../../actions/actions.js';
 import { Point } from '../../../classes/stellarClasses.js';
 import AckbarIcon from '../../../images/icons/star-wars/Ackbar.ico';
@@ -55,9 +56,15 @@ class HyperspaceControls extends React.Component {
       PathSearch.shortest = (PathSearch.limit > 1) ? false : true;
       // PathSearch.shortest = isShortestPath;
 
-      if(PathData.StartPoint.nodeId === PathData.EndNode.nodeId) {
+      console.log("PathData.StartNode: ", PathData.StartNode);
+      console.log("PathData.EndNode: ", PathData.EndNode);
+
+
+      if(PathData.StartNode.nodeId === PathData.EndNode.nodeId) {
 
         console.log("Start and End Nodes are the same, calculate free space jump(s)..");
+
+        this.props.dispatch( plotFreeSpaceJumpToNode(PathData) );
 
       } else {
 

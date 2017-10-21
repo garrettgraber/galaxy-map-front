@@ -58,11 +58,15 @@ class JumpGrid extends React.Component {
     const JumpGridControllerStyle = {
       color:  '#49fb35',
     };
+    const activeStartSystem = this.props.hyperspaceActiveStartPoint.system;
+    const acttveEndSystem = this.props.hyperspaceActiveEndPoint.system;
+
     return (
       <div >
         <div className="pane-row-control" style={JumpGridControllerStyle}>
+          <span className="nav-text" >{activeStartSystem}&nbsp;&mdash;&mdash;&raquo;&nbsp;</span>
+          <span className="nav-text" >{acttveEndSystem}&nbsp;</span>
           <span className="nav-text">&nbsp;&nbsp;Total Jumps:&nbsp;&nbsp;{jumpPaths.length}</span>
-          <span className="nav-text">&nbsp;&nbsp;Active Jump ID:&nbsp;&nbsp;{this.props.activeHyperspaceJump}</span>
         </div>
         <div id="div1" style={containerDiv1Styles}>
           <div id="div2" style={containerDiv2Styles} >

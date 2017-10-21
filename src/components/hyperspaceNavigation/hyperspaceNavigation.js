@@ -22,7 +22,7 @@ import '../../css/main.css';
 import HyperspaceData from 'json-loader!../../data/hyperspace.geojson';
 import HyperspacePathCollection from './hyperspacePathCollection.js';
 import HyperspaceNavigationPoint from './hyperspaceNavigationPoint.js';
-import { createFreespaceLane, nodeAndPointAreEqual } from './hyperspaceMethods.js'
+import { createFreespaceLane, nodeAndPointAreEqual } from './hyperspaceMethods.js';
 
 import {
   addHyperspacePathToCollection,
@@ -94,18 +94,17 @@ class HyperspaceNavigation extends React.Component {
           navComponentsRendered.push(HSpaceCollectionsComponents);
 
           this.setState({HyperspaceCollectionsComponents: HSpaceCollectionsComponents});
-          this.props.dispatch(stopUpdatingHyperspacePath());
 
         } else if(StartNode.nodeId === EndNode.nodeId) {
 
           console.log("Generating free space jump, hoooaaa");
 
           if(!nodeAndPointAreEqual(StartPoint, StartNode)) {
-            const PointToNodeJumpComponentStart = createFreespaceLane(StartNode, StartPoint);
+            const PointToNodeJumpComponentStart = createFreespaceLane(StartNode, StartPoint, true);
             navComponentsRendered.push(PointToNodeJumpComponentStart);
           }
           if(!nodeAndPointAreEqual(EndPoint, EndNode)) {
-            const PointToNodeJumpComponentEnd = createFreespaceLane(EndNode, EndPoint);
+            const PointToNodeJumpComponentEnd = createFreespaceLane(EndNode, EndPoint, false);
             navComponentsRendered.push(PointToNodeJumpComponentEnd);
           }
 
@@ -114,23 +113,39 @@ class HyperspaceNavigation extends React.Component {
           navComponentsRendered.push(HyperspaceCollectionsClone);
         }
 
+        this.props.dispatch(stopUpdatingHyperspacePath());
+
+      } else if(this.props.hyperspacePathCollections.length > 0) {
+
+        const HyperspaceCollectionsClone = _.cloneDeep(this.state.HyperspaceCollectionsComponents);
+        navComponentsRendered.push(HyperspaceCollectionsClone);
+
       }
 
-      if(pointIsValid(StartPoint)) {
-        navComponentsRendered.push(<HyperspaceNavigationPoint key={uuidv4()} HyperSpacePoint={StartPoint} isStart={true}/>);
-      }
+      const hyperspacePointsArray = [
+        {
+          Point: StartPoint,
+          isStart: true,
+          isActive: false
+        },
+        {
+          Point: EndPoint,
+          isStart: false,
+          isActive: false
+        },
+        {
+          Point: ActiveStartPoint,
+          isStart: true,
+          isActive: true
+        },
+        {
+          Point: ActiveEndPoint,
+          isStart: false,
+          isActive: true
+        },
+      ];
 
-      if(pointIsValid(EndPoint)) {
-        navComponentsRendered.push(<HyperspaceNavigationPoint key={uuidv4()} HyperSpacePoint={EndPoint} isStart={false}/>);
-      }
-
-      if(pointIsValid(ActiveStartPoint)) {
-        navComponentsRendered.push(<HyperspaceNavigationPoint key={uuidv4()} HyperSpacePoint={ActiveStartPoint} isStart={true}/>);
-      }
-
-      if(pointIsValid(ActiveEndPoint)) {
-        navComponentsRendered.push(<HyperspaceNavigationPoint key={uuidv4()} HyperSpacePoint={ActiveEndPoint} isStart={false}/>);
-      }
+      navComponentsRendered = generateHyperspaceNavigationPoints(hyperspacePointsArray, navComponentsRendered);
 
       this.setState({HSpaceComponentsMaster: navComponentsRendered});
       this.props.dispatch(hyperspaceNavigationUpdateOff());
@@ -187,6 +202,23 @@ function renderComponentsOrNull(currentComponents) {
 //     return resultsArray;
 //   }
 // }
+
+
+function generateHyperspaceNavigationPoints(pointsArray, hyperspaceArray) {
+  for(let PointValues of pointsArray) {
+    hyperspaceArray = addPointToHyperspaceArray(PointValues.Point, PointValues.isStart, PointValues.isActive, hyperspaceArray);
+  }
+  return hyperspaceArray;
+}
+
+
+function addPointToHyperspaceArray(Point, isStart, isActive, hyperspaceArray) {
+  if(pointIsValid(Point)) {
+    hyperspaceArray.push(<HyperspaceNavigationPoint key={uuidv4()} HyperSpacePoint={Point} isStart={isStart} isActive={isActive} />);
+  }
+  return hyperspaceArray;
+}
+
 
 function pointIsValid(Point) {
   const pointStatus = (Point.lat && Point.lng)? true : false;

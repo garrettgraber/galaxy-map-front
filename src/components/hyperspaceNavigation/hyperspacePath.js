@@ -11,6 +11,7 @@ import HyperspaceData from 'json-loader!../../data/hyperspace.geojson';
 import HyperspaceNode from './hyperspaceNode.js';
 import HyperspaceLane from './hyperspaceLane.js';
 import HyperspaceFreeSpaceJump from './hyperspaceFreeSpaceJump.js';
+import { createFreespaceLane } from './hyperspaceMethods.js';
 import uuidv1 from 'uuid/v1';
 import uuidv4 from 'uuid/v4';
 
@@ -31,11 +32,11 @@ class HyperspacePath extends React.Component {
     const startPointEqualsNode = nodeAndPointAreEqual(EdgeLocations.StartPoint, EdgeLocations.StartNode);
     const endPointEqualsNode = nodeAndPointAreEqual(EdgeLocations.EndPoint, EdgeLocations.EndNode);
     if(!startPointEqualsNode) {
-      const PointToNodeJumpComponentStart = createFreespaceLane(EdgeLocations.StartNode, EdgeLocations.StartPoint);
+      const PointToNodeJumpComponentStart = createFreespaceLane(EdgeLocations.StartNode, EdgeLocations.StartPoint, true);
       hyperspacePathComponents.push(PointToNodeJumpComponentStart);
     }
     if(!endPointEqualsNode) {
-      const PointToNodeJumpComponentEnd = createFreespaceLane(EdgeLocations.EndNode, EdgeLocations.EndPoint);
+      const PointToNodeJumpComponentEnd = createFreespaceLane(EdgeLocations.EndNode, EdgeLocations.EndPoint, false);
       hyperspacePathComponents.push(PointToNodeJumpComponentEnd);
     }
     this.setState({HyperspacePathComponents: hyperspacePathComponents});
@@ -104,9 +105,9 @@ function generateHyperspaceNodesAndLanes(nodes, lanes) {
 
 
 
-function createFreespaceLane(Node, Point) {
-  return (<HyperspaceFreeSpaceJump  key={uuidv4()} HyperSpaceNode={Node} HyperSpacePoint={Point} style={hyperspaceLanesStylePink}/>);
-}
+// function createFreespaceLane(Node, Point) {
+//   return (<HyperspaceFreeSpaceJump  key={uuidv4()} HyperSpaceNode={Node} HyperSpacePoint={Point} style={hyperspaceLanesStylePink}/>);
+// }
 
 function nodeAndPointAreEqual(point1, point2) {
   const sameName = (point1.system === point2.system)? true : false;

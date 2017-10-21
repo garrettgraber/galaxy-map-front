@@ -80,14 +80,29 @@ class JumpPlot extends React.Component {
       backgroundColor: backgroundColor,
       border: '1px solid #49fb35',
     };
+    const activeStartSystem = this.props.hyperspaceActiveStartPoint.system;
+    const acttveEndSystem = this.props.hyperspaceActiveEndPoint.system;
+
     return (
       <div style={JumpPlotStyle}
         onClick={(e) => this.onClick(e)}
         onMouseEnter={(e) => this.onMouseEnter(e)}
         onMouseOver={(e) => this.onMouseOver(e)}
         onMouseLeave={(e) => this.onMouseLeave(e)} >
-        <span className="nav-text" >Length:&nbsp;{this.props.PathObject.length.toFixed(2)}</span>
-        <span className="nav-text" >&nbsp;&nbsp;Jumps:&nbsp;{this.props.PathObject.numberOfJumps}</span>
+        <div style={{width: '100%'}} >
+
+          <span className="nav-text" >{activeStartSystem}&nbsp;&mdash;&mdash;&raquo;&nbsp;</span>
+          <span className="nav-text" >{acttveEndSystem}&nbsp;</span>
+
+        </div>
+
+        <div style={{width: '100%'}} >
+
+          <span className="nav-text" >Length:&nbsp;{this.props.PathObject.length.toFixed(2)}</span>
+          <span className="nav-text" >&nbsp;&nbsp;Jumps:&nbsp;{this.props.PathObject.numberOfJumps}</span>
+
+        </div>
+
       </div>
     );
   }

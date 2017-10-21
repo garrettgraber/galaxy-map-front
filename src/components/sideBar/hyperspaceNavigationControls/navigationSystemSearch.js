@@ -15,7 +15,23 @@ class NavigationSystemSearch extends React.Component {
     };
   }
   componentDidMount() {
-    this.setState({system: this.props.system});
+
+
+    const startSystem = this.props.hyperspaceStartPoint.system;
+    const endSystem = this.props.hyperspaceEndPoint.system;
+
+    const isStartEmptySpace = startSystem.slice(0, 3) === 'ES@';
+    const isEndEmptySpace = endSystem.slice(0, 3) === 'ES@';
+
+    if(startSystem && !isStartEmptySpace && this.props.isStartPosition) {
+      this.setState({system: startSystem});
+    }
+
+    if(endSystem && !isEndEmptySpace && !this.props.isStartPosition) {
+      this.setState({system: endSystem});
+    }
+
+    // this.setState({system: this.props.system});
   }
   systemChange(e) {
     const searchInput = e.target.value;

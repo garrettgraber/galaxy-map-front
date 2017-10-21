@@ -26,7 +26,7 @@ class SideBar extends React.Component {
 	render() {
     const SideBarStyles = {
       position: 'fixed',
-      top: 80,
+      top: 50,
       height: 500,
       width: 60,
       zIndex: 30,
