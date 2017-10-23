@@ -28,7 +28,7 @@ class HyperspacePath extends React.Component {
     console.log("HyperspacePath has mounted: ", this.props);
     const Path = this.props.Path;
     const EdgeLocations = this.props.StartAndEndLocations;
-    const hyperspacePathComponents = generateHyperspaceNodesAndLanes(this.props.nodes, this.props.lanes);
+    const hyperspacePathComponents = generateHyperspaceNodesAndLanes(this.props.nodes, this.props.lanes, this.props.isSinglePath);
     const startPointEqualsNode = nodeAndPointAreEqual(EdgeLocations.StartPoint, EdgeLocations.StartNode);
     const endPointEqualsNode = nodeAndPointAreEqual(EdgeLocations.EndPoint, EdgeLocations.EndNode);
     if(!startPointEqualsNode) {
@@ -71,10 +71,10 @@ function renderComponentsOrNull(currentComponents) {
 
 
 
-function createLanesComponents(lanes) {
+function createLanesComponents(lanes, isSinglePath) {
   const laneComponents = [];
   for(let Lane of lanes) {
-    laneComponents.push(<HyperspaceLane key={Lane.hyperspaceHash}  HyperSpaceLaneObject={Lane} style={hyperspaceLanesStylePink}/>);
+    laneComponents.push(<HyperspaceLane key={Lane.hyperspaceHash}  HyperSpaceLaneObject={Lane} style={hyperspaceLanesStylePink} isSinglePath={isSinglePath} />);
   }
   return laneComponents;
 }
@@ -88,9 +88,9 @@ function createNodesComponents(nodes) {
   return nodesComponents;
 }
 
-function generateHyperspaceNodesAndLanes(nodes, lanes) {
+function generateHyperspaceNodesAndLanes(nodes, lanes, isSinglePath) {
   const hyperspaceNodes = createNodesComponents(nodes);
-  const hyperspaceLanes = createLanesComponents(lanes);
+  const hyperspaceLanes = createLanesComponents(lanes, isSinglePath);
   const nodeAndLaneComponents = [];
   for(let i=0; i < hyperspaceLanes.length; i++) {
     let Lane = hyperspaceLanes[i];

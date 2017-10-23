@@ -84,40 +84,106 @@ class HyperspaceControls extends React.Component {
     // this.props.dispatch(setNumberOfHyperspacePaths( parseInt(pathNumber) ));
     this.setState({limit: pathNumber});
   }
+
+
   itsATrap(e) {
-    const StartPoint = new Point(
-      this.props.hyperspaceStartPoint.system,
-      this.props.hyperspaceStartPoint.lat,
-      this.props.hyperspaceStartPoint.lng
+
+    // const StartPoint = new Point(
+    //   this.props.hyperspaceStartPoint.system,
+    //   this.props.hyperspaceStartPoint.lat,
+    //   this.props.hyperspaceStartPoint.lng
+    // );
+
+    // const StartNode = new Point(
+    //   this.props.hyperspaceStartNode.system,
+    //   this.props.hyperspaceStartNode.lat,
+    //   this.props.hyperspaceStartNode.lng
+    // );
+
+    // const EndPoint = new Point(
+    //   this.props.hyperspaceEndPoint.system,
+    //   this.props.hyperspaceEndPoint.lat,
+    //   this.props.hyperspaceEndPoint.lng
+    // );
+
+    // const EndNode = new Point(
+    //   this.props.hyperspaceEndNode.system,
+    //   this.props.hyperspaceEndNode.lat,
+    //   this.props.hyperspaceEndNode.lng
+    // );
+
+    // console.log("StartPoint: ", StartPoint);
+    // console.log("StartNode: ", StartNode);
+    // console.log("EndPoint: ", EndPoint);
+    // console.log("EndNode: ", EndNode);
+
+   // distanceBetweenPoints(EndPoint, EndNode);
+    // distanceBetweenPoints(StartNode, EndNode);
+    // distanceBetweenPoints(StartPoint, EndPoint);
+
+
+
+
+    const currentActiveStartPoint = this.props.hyperspaceActiveStartPoint;
+    const currentActiveEndPoint = this.props.hyperspaceActiveEndPoint;
+    const currentActiveStartNode = this.props.hyperspaceActiveStartNode;
+    const currentActiveEndNode =  this.props.hyperspaceActiveEndNode;
+
+
+    const currentStartPoint = this.props.hyperspaceStartPoint;
+    const currentEndPoint = this.props.hyperspaceEndPoint;
+    const currentStartNode = this.props.hyperspaceStartNode;
+    const currentEndNode =  this.props.hyperspaceEndNode;
+
+
+    console.log("currentActiveStartPoint: ", currentActiveStartPoint);
+    console.log("currentActiveEndPoint: ", currentActiveEndPoint);
+    console.log("currentActiveStartNode: ", currentActiveStartNode);
+    console.log("currentActiveEndNode: ", currentActiveEndNode);
+
+
+    console.log("currentStartPoint: ", currentActiveStartPoint);
+    console.log("currentEndPoint: ", currentActiveEndPoint);
+    console.log("currentStartNode: ", currentActiveStartNode);
+    console.log("currentEndNode: ", currentActiveEndNode);
+
+    const activeStartPoint = [currentActiveStartPoint.xGalacticLong, currentActiveStartPoint.yGalacticLong];
+
+    const activeStartNode = [currentActiveStartNode.xGalacticLong, currentActiveStartNode.yGalacticLong];
+
+    console.log("activeStartPoint: ", activeStartPoint);
+    console.log("activeStartNode: ", activeStartNode);
+
+
+    const distanceStartPointToNode = distance(
+      [currentActiveStartPoint.xGalacticLong, currentActiveStartPoint.yGalacticLong],
+      [currentActiveStartNode.xGalacticLong, currentActiveStartNode.yGalacticLong]
     );
 
-    const StartNode = new Point(
-      this.props.hyperspaceStartNode.system,
-      this.props.hyperspaceStartNode.lat,
-      this.props.hyperspaceStartNode.lng
+
+
+    const distanceEndPointToNode = distance(
+      [currentActiveEndPoint.xGalacticLong, currentActiveEndPoint.yGalacticLong],
+      [currentActiveEndNode.xGalacticLong, currentActiveEndNode.yGalacticLong]
     );
 
-    const EndPoint = new Point(
-      this.props.hyperspaceEndPoint.system,
-      this.props.hyperspaceEndPoint.lat,
-      this.props.hyperspaceEndPoint.lng
+    const distanceStartToEndPoint = distance(
+      [currentActiveStartPoint.xGalacticLong, currentActiveStartPoint.yGalacticLong],
+      [currentActiveEndPoint.xGalacticLong, currentActiveEndPoint.yGalacticLong]
     );
 
-    const EndNode = new Point(
-      this.props.hyperspaceEndNode.system,
-      this.props.hyperspaceEndNode.lat,
-      this.props.hyperspaceEndNode.lng
-    );
 
-    console.log("StartPoint: ", StartPoint);
-    console.log("StartNode: ", StartNode);
-    console.log("EndPoint: ", EndPoint);
-    console.log("EndNode: ", EndNode);
+    console.log("Distance Start Point To Node", distanceStartPointToNode);
+    console.log("Distance End Point To Node", distanceEndPointToNode);
+    console.log("Distance Start Point To End Point", distanceStartToEndPoint);
 
-    distanceBetweenPoints(StartPoint, StartNode);
-    distanceBetweenPoints(EndPoint, EndNode);
+ 
+
+
 
     console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
+
+
   }
 
   render() {
@@ -145,6 +211,28 @@ function distanceBetweenPoints(Point1, Point2) {
   console.log("Point2: ", Point2.system);
   console.log("distanceBetween: ", distanceBetween);
   console.log("distanceBetweenNormalized: ", distanceBetweenNormalized);
+}
+
+
+function findPlanet(systemSearch) {
+  const planetQuery = 'api/search/?' + queryString.stringify(systemSearch);
+  return fetch(planetQuery, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  });
+}
+
+
+function findHyperspaceNode(nodeSearch) {
+  const nodeQuery = '/api/hyperspacenode/search?' + queryString.stringify(nodeSearch);
+  return fetch(nodeQuery, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  });
 }
 
 const mapStateToProps = (state = {}) => {

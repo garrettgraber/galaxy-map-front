@@ -98,7 +98,7 @@ class HyperSpaceFreeSpaceJump extends React.Component {
               
               <AntPath
                 positions={jumpCoordinates}
-                options={{color: laneColorPink, opacity: 0.25, interactive: false}}
+                options={{color: laneColorPink, opacity: 0.4, interactive: false}}
                 ref="lane"
                 onMouseOver={e => this.onMouseOver(e)}
                 onMouseOut={e => this.onMouseOut(e)}

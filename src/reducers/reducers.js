@@ -64,15 +64,18 @@ const CoruscantSystem = {
 const BlankPoint = {
 	system: '',
 	lat: null,
-	lng: null
+	lng: null,
+	xGalactic: null,
+	yGalactic: null
 };
 const BlankNode = {
 	system: '',
 	lat: null,
 	lng: null,
 	hyperspaceLanes: [],
-	loc: [],
-	nodeId: null
+	nodeId: null,
+	xGalactic: null,
+	yGalactic: null
 };
 const DefaultDataStream = {
 	deCodedIndex: 18,

@@ -4,6 +4,11 @@ import { If, Then, Else } from 'react-if';
 import Geohash from 'latlon-geohash';
 import Clock from 'react-live-clock';
 
+import {
+  getGalacticYFromLatitude,
+  getGalacticXFromLongitude
+} from '../hyperspaceNavigation/hyperspaceMethods.js';
+
 
 import '../../css/main.css';
 
@@ -35,7 +40,6 @@ class DataStream extends React.Component {
   }
 
   componentDidMount() {
-    console.log("DataStream has Mounted");
     this.setState({dataMessage: this.props.dataMessage});
     this.intervalId = setInterval(this.deCodeLetter.bind(this), decodeTimeInMilliseconds);
   }
@@ -55,9 +59,8 @@ class DataStream extends React.Component {
 
   toggleEnglishAurebesh(e) {
     if(this.state.deCodedIndex !== 0 && this.state.deCodedIndex !== this.props.dataMessage.length) {
-      console.log("Message decrypting...");
+      // console.log("Message decrypting...");
     } else {
-      console.log("Translating message");
       let newDeCodedIndex = this.state.deCodedIndex;
       if(this.state.dataMessageInEnglish) {
         newDeCodedIndex = this.props.dataMessage.length;
@@ -92,7 +95,7 @@ class DataStream extends React.Component {
       position: 'fixed',
       top: 0,
       height: 40,
-      width: 600,
+      width: 560,
       zIndex: 40,
       color: '#ff0101',
       // color: '#FF0066',
@@ -120,7 +123,7 @@ class DataStream extends React.Component {
       color: '#ff0101',
       backgroundColor: 'rgba(255,255,255,.5)',
       opacity: 1.0,
-      left: 670,
+      left: 630,
       fontSize: '1.2em',
       display: 'table'
     };
@@ -134,7 +137,7 @@ class DataStream extends React.Component {
       color: '#ff0101',
       backgroundColor: 'rgba(255,255,255,.5)',
       opacity: 1.0,
-      left: 750,
+      left: 710,
       fontSize: '1.2em',
       display: 'table'
     };
@@ -194,9 +197,10 @@ class DataStream extends React.Component {
     const northEastPointLng = (northEastPoint)? (northEastPoint.lon).toFixed(2) : '';
     const southWestPointLat = (southWestPoint)? (southWestPoint.lat).toFixed(2) : '';
     const southWestPointLng = (southWestPoint)? (southWestPoint.lon).toFixed(2) : '';
-
-    // console.log("northEastPoint: ", northEastPoint);
-    // console.log("southWestPoint: ", southWestPoint);
+    const northEastPointGalacticY = (northEastPointLat)? getGalacticYFromLatitude(northEastPoint.lat).toFixed(2) : '';
+    const northEastPointGalacticX = (northEastPointLng)? getGalacticXFromLongitude(northEastPoint.lon).toFixed(2) : '';
+    const southWestPointGalacticY = (southWestPointLat)? getGalacticYFromLatitude(southWestPoint.lat).toFixed(2) : '';
+    const southWestPointGalacticX = (southWestPointLng)? getGalacticXFromLongitude(southWestPoint.lon).toFixed(2) : '';
 
     return (
       <div id="data-stream" >
@@ -213,14 +217,31 @@ class DataStream extends React.Component {
         <div style={ZoomStyle}>
           <span style={MessageStyle} >Zoom:&nbsp;{this.props.mapCenterAndZoom.zoom - 1}</span>
         </div>
-        <div style={MapBoundsStyle}>
-          <span style={MessageStyle} >
-            SW:&nbsp;Lat&nbsp;{southWestPointLat}&nbsp;Lng&nbsp;{southWestPointLng}
-          </span>
-          <span style={MessageStyle} >
-            &nbsp;&nbsp;NE:&nbsp;Lat&nbsp;{northEastPointLat}&nbsp;Lng&nbsp;{northEastPointLng}
-          </span>
-        </div>
+        
+
+
+        <If condition={false}>
+          <Then>
+            <div style={MapBoundsStyle}>
+              <span style={MessageStyle} >
+                SW:&nbsp;Lat&nbsp;{southWestPointLat}&nbsp;Lng&nbsp;{southWestPointLng}
+              </span>
+              <span style={MessageStyle} >
+                &nbsp;&nbsp;NE:&nbsp;Lat&nbsp;{northEastPointLat}&nbsp;Lng&nbsp;{northEastPointLng}
+              </span>
+            </div>
+          </Then>
+          <Else>
+            <div style={MapBoundsStyle}>
+              <span style={MessageStyle} >
+                SW&nbsp;&nbsp;Y:&nbsp;{southWestPointGalacticY}&nbsp;X:&nbsp;{southWestPointGalacticX}
+              </span>
+              <span style={MessageStyle} >
+                &nbsp;&nbsp;NE&nbsp;&nbsp;Y:&nbsp;{northEastPointGalacticY}&nbsp;X:&nbsp;{northEastPointGalacticX}
+              </span>
+            </div>
+          </Else>
+        </If>
       </div>
     );
   }

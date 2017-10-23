@@ -50,6 +50,11 @@ import {
   activeEndNode
 } from './actionCreators.js';
 
+import {
+  getGalacticYFromLatitude,
+  getGalacticXFromLongitude
+} from '../components/hyperspaceNavigation/hyperspaceMethods.js';
+
 
 import * as ActionCreators from '../constants/actionTypes.js';
 // the async action creator uses the name of the old action creator, so 
@@ -136,7 +141,6 @@ export function findSystem(systemName) {
 	}
 }
 
-
 export function zoomToLocation(locationCenter, zoom) {
   return function(dispatch, getState) {
     dispatch(setMapCenterAndZoom(locationCenter, zoom));
@@ -178,7 +182,7 @@ export function getHyperspacePathCollection(HyperspacePathSearch, HyperspacePath
     }).then(data => {
       const dataStreamMessage = "Jump calculated from " + HyperspacePathSearch.startPoint + " to " + HyperspacePathSearch.endPoint;
       
-      console.log("Pepsi! HyperspacePathData: ", HyperspacePathData);
+      console.log("Zima! HyperspacePathData: ", HyperspacePathData);
 
       dispatch(addItemToDataStream(dataStreamMessage));
       // dispatch(addHyperspacePathToCollection(data));
@@ -270,6 +274,11 @@ export function hyperspacePositionSearch(SystemSearch) {
             // ]);
             const NewPositionState = createPositionFromNode(NodeData);
             const NewNodeState = createNodeState(NodeData);
+
+            console.log("Pepsi NewPositionState: ", NewPositionState);
+            console.log("Pepsi NewNodeState: ", NewNodeState);
+            console.log("Pepsi NodeData: ", NodeData);
+
             if(SystemSearch.isStartPosition) {
               
               dispatch(setStartPosition(NewPositionState));
@@ -300,6 +309,9 @@ export function hyperspacePositionSearch(SystemSearch) {
                 const NodeDataNearest = NodeDataArrayNearest[0];
                 const NewPositionStateFound = createPositionFromPlanet(PlanetData);
                 const NewNodeStateNearest = createNodeState(NodeDataNearest);
+
+                console.log("Pepsi NodeDataNearest: ", NodeDataNearest);
+                console.log("Pepsi New Node State Nearest: ", NewNodeStateNearest);
 
                 if(SystemSearch.isStartPosition) {
 
@@ -356,14 +368,19 @@ export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
       const lat = LngLatSearch.LatLng.lat;
       const lng = LngLatSearch.LatLng.lng;
       const NameHash = "ES@" + Geohash.encode(lat, lng, 22);
+      const xGalacticLong = getGalacticXFromLongitude(lng);
+      const yGalacticLong = getGalacticYFromLatitude(lat);
       const NewPositionState = {
         system: NameHash,
         lat: lat,
-        lng: lng
+        lng: lng,
+        xGalacticLong: xGalacticLong,
+        yGalacticLong: yGalacticLong
       };
 
 
-      console.log("Empty Space point should render: ", NewPositionState);
+      console.log("Pepsi New Node State: ", NewNodeState);
+      console.log("Pepsi New Position State: ", NewPositionState);
 
       if(LngLatSearch.isStartNode) {
         dispatch(setStartPosition(NewPositionState));
@@ -415,11 +432,13 @@ function createPositionFromPlanet(PlanetData) {
   return {
     system: PlanetData.system,
     lat: PlanetData.lat,
-    lng: PlanetData.lng
+    lng: PlanetData.lng,
+    xGalacticLong: PlanetData.xGalacticLong,
+    yGalacticLong: PlanetData.yGalacticLong
   }
 }
 
-function createNodeState(NodeData) { return omit(NodeData, ['_id', '__v']) }
+function createNodeState(NodeData) { return omit(NodeData, ['_id', '__v', 'loc']) }
 
 function findPlanet(systemSearch) {
   const planetQuery = 'api/search/?' + queryString.stringify(systemSearch);
@@ -451,6 +470,7 @@ function findNearestNode(LngLatSearch) {
   });
 }
 
+// Un-used
 function getPathDataShortest(start, end, maxJumps) {
   return fetch('/api/hyperspace-jump/calc-shortest', {
     method: 'POST',
@@ -465,6 +485,7 @@ function getPathDataShortest(start, end, maxJumps) {
   });
 }
 
+// Un-used
 function getPathDataMany(start, end, maxJumps, limit) {
   return fetch('/api/hyperspace-jump/calc-many', {
     method: 'POST',

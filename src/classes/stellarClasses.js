@@ -169,13 +169,15 @@ function coordinateStringToArray(coordinates) {
 };
 
 export class HyperSpaceNode {
-	constructor(system, lng, lat, hyperspaceLanes, nodeId, textWidth = 0) {
+	constructor(system, lng, lat, hyperspaceLanes, nodeId, textWidth = 0, xGalacticLong, yGalacticLong) {
 		this.system = system;
 		this.lng = lng;
 		this.lat = lat;
 		this.hyperspaceLanes = hyperspaceLanes;
 		this.nodeId = nodeId;
 		this.textWidth = textWidth;
+		this.xGalacticLong = xGalacticLong;
+		this.yGalacticLong = yGalacticLong;
 	}
 
 	latLng() {
