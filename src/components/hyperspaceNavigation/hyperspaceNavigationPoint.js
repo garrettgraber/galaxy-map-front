@@ -41,21 +41,12 @@ class HyperspaceNavigationPoint extends React.Component {
     // }
   }
   render() {
-    // const nodeColor = 'green';
-    // const fillColor = 'green';
-
     const pointColor = 'red';
-    const fillColor = 'red';
-
-    const fillOpacity = 1.0;
-
     const HyperspacePointCurrent = this.props.HyperSpacePoint;
     const pointIsEmptySpace = HyperspacePointCurrent.system.slice(0,3) === 'ES@';
 
     // let myIcon = null;
-
     // if(pointIsEmptySpace) {
-
     //   const textWidth = HyperspacePointCurrent.system.textWidth;
     //   const hyperspaceNodeLocation = [HyperspacePointCurrent.lat, HyperspacePointCurrent.lng];
     //   let myIcon = L.divIcon({
@@ -65,18 +56,15 @@ class HyperspaceNavigationPoint extends React.Component {
     //     // iconAnchor: new L.Point(0, 0),
     //     html: HyperspacePointCurrent.system
     //   });
-
     // }
 
-
-
-    
-
-    const hyperspacePointLocation = [this.props.HyperSpacePoint.lat, this.props.HyperSpacePoint.lng];
+    const hyperspacePointLocation = [HyperspacePointCurrent.lat, HyperspacePointCurrent.lng];
     const LocationColorCyan = '#87CEFA';
     const LocationColorPurple = '#c32aff';
+    const LocationStartColorGreen = '#49fb35';
+    const LocationEndColorRed = '#ff0101';
     const LocationColorBackground = (this.props.isActive)? LocationColorCyan : LocationColorPurple;  
-    const LocationColor = (this.props.isStart)? '#49fb35' : '#ff0101';
+    const LocationColor = (this.props.isStart)? LocationStartColorGreen : LocationEndColorRed;
 
   	return (
       <div key={this.props.HyperSpacePoint.system + ":" + uuidv4()}>
@@ -87,12 +75,6 @@ class HyperspaceNavigationPoint extends React.Component {
   	)
   }
 }
-
-
-// <div>
-//   <CircleMarker center={hyperspaceNodeLocation} radius={1} color={nodeColor} fillColor={fillColor} fillOpacity={fillOpacity} onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)} ref='nodeHyperSpace' />
-//   <Marker key={this.props.HyperSpaceNodeObject.system} position={hyperspaceNodeLocation} icon={myIcon} zIndexOffset={5} onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)} ref='nodeText'/>
-// </div>   
 
 
 export default HyperspaceNavigationPoint;

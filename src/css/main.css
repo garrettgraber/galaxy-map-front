@@ -1,6 +1,4 @@
 
-
-
 @font-face {
     font-family: 'Aurebesh';
     src: url('../fonts/Aurebesh.ttf') format('truetype');
@@ -257,6 +255,4 @@
     border: 2px solid white;
     /*border-radius: 10px;*/
     /*overflow-y: scroll;*/
-
-
 }

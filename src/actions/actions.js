@@ -7,8 +7,6 @@ import Geohash from 'latlon-geohash';
 import { batchActions } from 'redux-batched-actions';
 import { chain } from 'redux-chain';
 
-
-
 import {
 	setActiveSystem,
 	setActiveSystemError,
@@ -49,56 +47,26 @@ import {
   activeStartNode,
   activeEndNode
 } from './actionCreators.js';
-
 import {
   getGalacticYFromLatitude,
   getGalacticXFromLongitude
 } from '../components/hyperspaceNavigation/hyperspaceMethods.js';
-
-
 import * as ActionCreators from '../constants/actionTypes.js';
-// the async action creator uses the name of the old action creator, so 
-// it will get called by the existing code when a new todo item should 
-//  be added
+
 export function findSystem(systemName) {
-  // we return a thunk function, not an action object!
-  // the thunk function needs to dispatch some actions to change 
-  // the Store status, so it receives the "dispatch" function as its
-  // >first parameter
-
 	return function(dispatch, getState) {
-    // here starts the code that actually gets executed when the 
-    //  addTodo action creator is dispatched
-
-    // first of all, let's do the optimistic UI update - we need to 
-    // dispatch the old synchronous action object, using the renamed 
-    // action creator
-
     dispatch( searchSystemsStart() );
 
-    // now that the Store has been notified of the new todo item, we 
-    // should also notify our server - we'll use here ES6 fetch 
-    // function to post the data
     fetch('api/search/?system=' + urlencode(systemName)).then(response => {
-
     	return response.json();
-
     }).then(json => {
-
-      // you should probably get a real id for your new todo item here, 
-      // and update your store, but we'll leave that to you
-
     	let SystemObject = JSON.parse(json);
     	SystemObject = SystemObject[0];
-
 
     	if(SystemObject.hasLocation) {
 
         const dataStreamMessage = "Zoomed to " + SystemObject.system + ' ...';
         dispatch( addItemToDataStream(dataStreamMessage) );
-        
-
-
 				const LngLat = SystemObject.LngLat;
         const CurrentState = getState();
         const activeSystemZoom = CurrentState.activeSystem.zoom;
@@ -116,27 +84,19 @@ export function findSystem(systemName) {
 				};
 
         const stateBeforeDispatches = getState();
-
 				dispatch(setActiveSystem(SystemData));
         const systemCenter = [SystemData.lat, SystemData.lng];
         dispatch(setMapCenterAndZoom(systemCenter, newZoom));
         dispatch(searchSystemsFinish());
-
         const stateAfterDispatches = getState();
-
     	}
     }).catch(err => {
-    // Error: handle it the way you like, undoing the optimistic update,
-    //  showing a "out of sync" message, etc.
       console.log("err in findPlanet: ", err);
-
       const dataStreamMessage = "Error searching for " + systemName + '.';
       dispatch( addItemToDataStream(dataStreamMessage) );
     	dispatch(setActiveSystemError(err));
     	dispatch(searchSystemsFinish());
     });
-  // what you return here gets returned by the dispatch function that 
-  // used this action creator
 		return null; 
 	}
 }
@@ -155,13 +115,10 @@ export function plotFreeSpaceJumpToNode(HyperspacePathData) {
 
     dispatch(addItemToDataStream(dataStreamMessage));
     dispatch(emptyHyperspacePathCollections());
-
     dispatch(activeStartPosition(HyperspacePathData.StartPoint));
     dispatch(activeEndPosition(HyperspacePathData.EndPoint));
-    
     dispatch(activeStartNode(HyperspacePathData.StartNode));
     dispatch(activeEndNode(HyperspacePathData.EndNode));
-
     dispatch(updateHyperspacePaths());
     dispatch(calculateHyperspaceJumpOff());
     dispatch(hyperspaceNavigationUpdateOn());
@@ -171,43 +128,28 @@ export function plotFreeSpaceJumpToNode(HyperspacePathData) {
 }
 
 export function getHyperspacePathCollection(HyperspacePathSearch, HyperspacePathData) {
-  // we return a thunk function, not an action object!
-  // the thunk function needs to dispatch some actions to change 
-  // the Store status, so it receives the "dispatch" function as its
-  // >first parameter
 	return function(dispatch, getState) {
     getHyperspacePathData(HyperspacePathSearch).then(response => {
-    // getPathDataMany('Hovan', 'Tyluun', 40, 20).then(response => {
       return response.json();
     }).then(data => {
       const dataStreamMessage = "Jump calculated from " + HyperspacePathSearch.startPoint + " to " + HyperspacePathSearch.endPoint;
-      
-      console.log("Zima! HyperspacePathData: ", HyperspacePathData);
 
       dispatch(addItemToDataStream(dataStreamMessage));
       // dispatch(addHyperspacePathToCollection(data));
       dispatch(loadHyperspacePathCollections(data));
       dispatch(activeStartPosition(HyperspacePathData.StartPoint));
       dispatch(activeEndPosition(HyperspacePathData.EndPoint));
-
-      
       dispatch(activeStartNode(HyperspacePathData.StartNode));
       dispatch(activeEndNode(HyperspacePathData.EndNode));
-
-
       dispatch(updateHyperspacePaths());
       dispatch(calculateHyperspaceJumpOff());
       dispatch(hyperspaceNavigationUpdateOn());
 
     }).catch(err => {
-    // Error: handle it the way you like, undoing the optimistic update,
-    //  showing a "out of sync" message, etc.
 
       const dataStreamMessage = "Error calculating from " + HyperspacePathSearch.startPoint + " to " + HyperspacePathSearch.endPoint;
-
       console.log("err: ", err);
       dispatch(addItemToDataStream(dataStreamMessage));
-
       dispatch(errorHyperspacePath(err));
       dispatch(calculateHyperspaceJumpOff());
 
@@ -217,10 +159,6 @@ export function getHyperspacePathCollection(HyperspacePathSearch, HyperspacePath
 }
 
 export function setSelectedHyperspaceRoute(hyperspaceHash) {
-  // we return a thunk function, not an action object!
-  // the thunk function needs to dispatch some actions to change 
-  // the Store status, so it receives the "dispatch" function as its
-  // >first parameter
   return function(dispatch, getState) {
     dispatch(setSelectedHyperspaceHash(hyperspaceHash));
     dispatch(updateHyperspacePaths());
@@ -230,10 +168,6 @@ export function setSelectedHyperspaceRoute(hyperspaceHash) {
 }
 
 export function noSetSelectedHyperspaceRoute() {
-  // we return a thunk function, not an action object!
-  // the thunk function needs to dispatch some actions to change 
-  // the Store status, so it receives the "dispatch" function as its
-  // >first parameter
   return function(dispatch, getState) {
     dispatch(setNullHyperspaceHash());
     dispatch(updateHyperspacePaths());
@@ -243,14 +177,9 @@ export function noSetSelectedHyperspaceRoute() {
 }
 
 export function hyperspacePositionSearch(SystemSearch) {
-  // we return a thunk function, not an action object!
-  // the thunk function needs to dispatch some actions to change 
-  // the Store status, so it receives the "dispatch" function as its
-  // >first parameter
   return function(dispatch, getState) {
     const SystemSearchSent = omit(SystemSearch, ['isStartPosition']);
     findPlanet(SystemSearchSent).then(response => {
-    // getPathDataMany('Hovan', 'Tyluun', 40, 20).then(response => {
       return response.json();
     }).then(data => {
       const PlanetDataArray = JSON.parse(data);
@@ -264,20 +193,8 @@ export function hyperspacePositionSearch(SystemSearch) {
           const NodeDataArray = JSON.parse(dataNode);
           if(NodeDataArray.length > 0) {
             const NodeData = NodeDataArray[0];
-            // const NewNodeState = omit(NodeData, ['_id', '__v']);
-            // const NewPositionState = omit(NodeData, [
-            //   '_id',
-            //   '__v',
-            //   'hyperspaceLanes',
-            //   'loc',
-            //   'nodeId'
-            // ]);
             const NewPositionState = createPositionFromNode(NodeData);
             const NewNodeState = createNodeState(NodeData);
-
-            console.log("Pepsi NewPositionState: ", NewPositionState);
-            console.log("Pepsi NewNodeState: ", NewNodeState);
-            console.log("Pepsi NodeData: ", NodeData);
 
             if(SystemSearch.isStartPosition) {
               
@@ -310,9 +227,6 @@ export function hyperspacePositionSearch(SystemSearch) {
                 const NewPositionStateFound = createPositionFromPlanet(PlanetData);
                 const NewNodeStateNearest = createNodeState(NodeDataNearest);
 
-                console.log("Pepsi NodeDataNearest: ", NodeDataNearest);
-                console.log("Pepsi New Node State Nearest: ", NewNodeStateNearest);
-
                 if(SystemSearch.isStartPosition) {
 
                   dispatch(setStartNode(NewNodeStateNearest));
@@ -338,10 +252,7 @@ export function hyperspacePositionSearch(SystemSearch) {
         });
       }
     }).catch(err => {
-    // Error: handle it the way you like, undoing the optimistic update,
-    //  showing a "out of sync" message, etc.
       console.log("err: ", err);
-      // dispatch(errorHyperspacePath(err));
       if(SystemSearch.isStartPosition) {
         dispatch(setStartPositionError(err));
       } else {
@@ -353,10 +264,6 @@ export function hyperspacePositionSearch(SystemSearch) {
 }
 
 export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
-  // we return a thunk function, not an action object!
-  // the thunk function needs to dispatch some actions to change 
-  // the Store status, so it receives the "dispatch" function as its
-  // >first parameter
   return function(dispatch, getState) {
     findNearestNode(LngLatSearch.LatLng).then(response => {
       return response.json();
@@ -378,10 +285,6 @@ export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
         yGalacticLong: yGalacticLong
       };
 
-
-      console.log("Pepsi New Node State: ", NewNodeState);
-      console.log("Pepsi New Position State: ", NewPositionState);
-
       if(LngLatSearch.isStartNode) {
         dispatch(setStartPosition(NewPositionState));
         dispatch(setStartNode(NewNodeState));
@@ -394,8 +297,6 @@ export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
         dispatch(hyperspaceNavigationUpdateOn());
       }
     }).catch(err => {
-    // Error: handle it the way you like, undoing the optimistic update,
-    //  showing a "out of sync" message, etc.
       console.log("err: ", err);
       if(LngLatSearch.isStartNode) {
         dispatch(setStartPositionError(err));

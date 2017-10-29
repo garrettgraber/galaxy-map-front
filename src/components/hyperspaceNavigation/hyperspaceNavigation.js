@@ -1,6 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Pane, GeoJSON, CircleMarker, Popup, Circle, Tooltip, Marker, FeatureGroup } from 'react-leaflet';
+import {
+  Pane,
+  GeoJSON,
+  CircleMarker,
+  Popup,
+  Circle,
+  Tooltip,
+  Marker,
+  FeatureGroup
+} from 'react-leaflet';
 import L from 'leaflet';
 import width from 'text-width';
 import 'whatwg-fetch';
@@ -22,8 +31,13 @@ import '../../css/main.css';
 import HyperspaceData from 'json-loader!../../data/hyperspace.geojson';
 import HyperspacePathCollection from './hyperspacePathCollection.js';
 import HyperspaceNavigationPoint from './hyperspaceNavigationPoint.js';
-import { createFreespaceLane, nodeAndPointAreEqual } from './hyperspaceMethods.js';
-
+import {
+  createFreespaceLane,
+  nodeAndPointAreEqual
+} from './hyperspaceMethods.js';
+import {
+  PathGenerator
+} from '../../classes/stellarClasses.js';
 import {
   addHyperspacePathToCollection,
   updateHyperspacePaths,
@@ -47,107 +61,39 @@ class HyperspaceNavigation extends React.Component {
   componentDidMount() { }
   componentWillReceiveProps(newProps) {
 
-    console.log("\n\nHyperspace Navigation newProps.update: ", newProps.update);
-    console.log("\n\n");
-    
     if(newProps.update) {
 
-      console.log("\nnewProps in Hyperspace Navigation: ", newProps);
-      console.log("HyperspaceNavigation this.props: ", this.props);
+      const CurentPathGenerator = new PathGenerator(
+        newProps.hyperspaceActiveStartPoint,
+        newProps.hyperspaceActiveEndPoint,
+        newProps.hyperspaceActiveStartNode,
+        newProps.hyperspaceActiveEndNode,
+        this.props.hyperspaceStartPoint,
+        this.props.hyperspaceEndPoint,
+        this.props.hyperspaceStartNode,
+        this.props.hyperspaceEndNode,
+        newProps.activeHyperspaceJump,
+        newProps.hyperspaceHash,
+        this.state.HyperspaceCollectionsComponents,
+        newProps.hyperspacePathCollections,
+        newProps.hyperspacePathChange
+      );
 
-      const StartPoint = this.props.hyperspaceStartPoint;
-      const EndPoint = this.props.hyperspaceEndPoint;
-      const StartNode = this.props.hyperspaceStartNode;
-      const EndNode = this.props.hyperspaceEndNode;
-      const ActiveStartPoint = this.props.hyperspaceActiveStartPoint;
-      const ActiveEndPoint = this.props.hyperspaceActiveEndPoint;
+      CurentPathGenerator.generateNavigationComponents();
 
-      const ActiveStartNode = this.props.hyperspaceActiveStartNode;
-      const ActiveEndNode = this.props.hyperspaceActiveEndNode;
-
-      let navComponentsRendered = [];
-
-      if(newProps.hyperspacePathChange) {
-
-        if(this.props.hyperspacePathCollections.length > 0) {
-
-          const EdgeLocationsLiteral = {
-            StartPoint: ActiveStartPoint,
-            EndPoint: ActiveEndPoint,
-            StartNode: ActiveStartNode,
-            EndNode: ActiveEndNode
-          };
-
-          const EdgeLocations = _.cloneDeep(EdgeLocationsLiteral);
-          const activeHyperspaceJump = newProps.activeHyperspaceJump !== null;
-          const selectedHyperspaceJump  = newProps.hyperspaceHash !== null;
-          const activeJumpNoGridSelection = activeHyperspaceJump && !selectedHyperspaceJump;
-          let hyperspaceHash = null;
-
-          if(activeJumpNoGridSelection) {
-            hyperspaceHash = newProps.activeHyperspaceJump;
-          } else if(selectedHyperspaceJump) {
-            hyperspaceHash = newProps.hyperspaceHash;
+      if(CurentPathGenerator.pathUpdateAndHyperspaceJumpsInArray()){
+        this.setState(
+          {
+            HyperspaceCollectionsComponents: CurentPathGenerator.HyperspaceCollectionsComponents
           }
-
-          const HSpaceCollectionsComponents = createCollectionsComponents(this.props.hyperspacePathCollections, EdgeLocations, hyperspaceHash);
-          navComponentsRendered.push(HSpaceCollectionsComponents);
-
-          this.setState({HyperspaceCollectionsComponents: HSpaceCollectionsComponents});
-
-        } else if(StartNode.nodeId === EndNode.nodeId) {
-
-          console.log("Generating free space jump, hoooaaa");
-
-          if(!nodeAndPointAreEqual(StartPoint, StartNode)) {
-            const PointToNodeJumpComponentStart = createFreespaceLane(StartNode, StartPoint, true);
-            navComponentsRendered.push(PointToNodeJumpComponentStart);
-          }
-          if(!nodeAndPointAreEqual(EndPoint, EndNode)) {
-            const PointToNodeJumpComponentEnd = createFreespaceLane(EndNode, EndPoint, false);
-            navComponentsRendered.push(PointToNodeJumpComponentEnd);
-          }
-
-        } else {
-          const HyperspaceCollectionsClone = _.cloneDeep(this.state.HyperspaceCollectionsComponents);
-          navComponentsRendered.push(HyperspaceCollectionsClone);
-        }
-
-        this.props.dispatch(stopUpdatingHyperspacePath());
-
-      } else if(this.props.hyperspacePathCollections.length > 0) {
-
-        const HyperspaceCollectionsClone = _.cloneDeep(this.state.HyperspaceCollectionsComponents);
-        navComponentsRendered.push(HyperspaceCollectionsClone);
-
+        );
       }
 
-      const hyperspacePointsArray = [
-        {
-          Point: StartPoint,
-          isStart: true,
-          isActive: false
-        },
-        {
-          Point: EndPoint,
-          isStart: false,
-          isActive: false
-        },
-        {
-          Point: ActiveStartPoint,
-          isStart: true,
-          isActive: true
-        },
-        {
-          Point: ActiveEndPoint,
-          isStart: false,
-          isActive: true
-        },
-      ];
+      if(CurentPathGenerator.hyperspacePathChange) {
+        this.props.dispatch(stopUpdatingHyperspacePath());
+      }
 
-      navComponentsRendered = generateHyperspaceNavigationPoints(hyperspacePointsArray, navComponentsRendered);
-
-      this.setState({HSpaceComponentsMaster: navComponentsRendered});
+      this.setState({HSpaceComponentsMaster: CurentPathGenerator.navComponentsRendered});
       this.props.dispatch(hyperspaceNavigationUpdateOff());
     }
   }
@@ -179,105 +125,6 @@ function renderComponentsOrNull(currentComponents) {
     return null;
   }
 }
-
-
-// function mergeComponenets(component1, component2) {
-//   let resultingComponents = [];
-//   const componentsArray = [component1, component2];
-//   for(let component of componentsArray) {
-//     resultingComponents = addComponent(component, resultingComponents);
-//   }
-//   return resultingComponents;
-// }
-
-
-// function addComponent(Component, resultsArray) {
-//   if(Array.isArray(Component)) {
-//     const mergedArray = _.merge(Component, resultsArray);
-//     return mergedArray;
-//   } else if(Component !== null) {
-//     resultsArray.push(Component);
-//     return resultsArray;
-//   } else {
-//     return resultsArray;
-//   }
-// }
-
-
-function generateHyperspaceNavigationPoints(pointsArray, hyperspaceArray) {
-  for(let PointValues of pointsArray) {
-    hyperspaceArray = addPointToHyperspaceArray(PointValues.Point, PointValues.isStart, PointValues.isActive, hyperspaceArray);
-  }
-  return hyperspaceArray;
-}
-
-
-function addPointToHyperspaceArray(Point, isStart, isActive, hyperspaceArray) {
-  if(pointIsValid(Point)) {
-    hyperspaceArray.push(<HyperspaceNavigationPoint key={uuidv4()} HyperSpacePoint={Point} isStart={isStart} isActive={isActive} />);
-  }
-  return hyperspaceArray;
-}
-
-
-function pointIsValid(Point) {
-  const pointStatus = (Point.lat && Point.lng)? true : false;
-  return pointStatus;
-}
-
-
-function renderNewHyperspacePaths(EdgeLocations, activeHyperspaceJumpValue, hyperspaceHashSelectedValue, hyperspacePathCollections) {
-
-  console.log("Rendering new hyperspace path!");
-
-  let navComponentsRendered = [];
-
-  const activeHyperspaceJump = activeHyperspaceJumpValue !== null;
-  const selectedHyperspaceJump  = hyperspaceHashSelectedValue !== null;
-  const activeJumpNoGridSelection = activeHyperspaceJump && !selectedHyperspaceJump;
-  let hyperspaceHash = null;
-
-  if(activeJumpNoGridSelection) {
-    hyperspaceHash = activeHyperspaceJumpValue;
-  } else if(selectedHyperspaceJump) {
-    hyperspaceHash = hyperspaceHashSelectedValue;
-  }
-
-
-  const HSpaceCollectionsComponents = createCollectionsComponents(hyperspacePathCollections, EdgeLocations, hyperspaceHash);
-  console.log("HSpaceCollectionsComponents: ", HSpaceCollectionsComponents);
-  
-  navComponentsRendered = HSpaceCollectionsComponents;
-  const startNavigationComponent = NavigationPointComponent(StartPoint, true);
-  navComponentsRendered.push(startNavigationComponent);
-  const endNavigationComponent = NavigationPointComponent(EndPoint, false);
-  navComponentsRendered.push(endNavigationComponent);
-
-  return navComponentsRendered;
-}
-
-
-function createCollectionsComponents(PathCollections, EdgeLocations, hyperspaceHash) {
-  console.log("\n\n!!!Creat hyperspace paths Components has fired: ", PathCollections.length);
-  const PathCollectionsComponentsArray = [];
-  for(let PathCollection of PathCollections) {
-    PathCollectionsComponentsArray.push(<HyperspacePathCollection key={uuidv4()} PathCollection={PathCollection} EdgeLocations={EdgeLocations} hyperspaceHashDisplayed={hyperspaceHash} />);
-  }
-  return PathCollectionsComponentsArray;
-}
-
-
-function NavigationPointComponent(HyperSpacePoint, isStart) {
-  console.log("rendering NavigationPointComponent HyperSpacePoint: ", HyperSpacePoint);
-  const hyperspacePointLocation = [HyperSpacePoint.lat, HyperSpacePoint.lng];
-  const LocationColorCyan = '#87CEFA';
-  const LocationColor = (isStart)? '#49fb35' : '#ff0101';
-  return (<div key={HyperSpacePoint.system + ":" + uuidv4()}>
-      <CircleMarker center={hyperspacePointLocation} radius={1} color={'orange'}/>
-      <CircleMarker className="pulse" center={hyperspacePointLocation} radius={6} color={LocationColor}/>
-    </div>);
-}
-
 
 function getPathDataShortest(start, end, maxJumps) {
   return fetch('/api/hyperspace-jump/calc-shortest', {

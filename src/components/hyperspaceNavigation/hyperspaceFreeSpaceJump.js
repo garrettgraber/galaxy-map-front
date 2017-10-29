@@ -16,6 +16,9 @@ import 'leaflet_marker_shadow';
 
 import '../../css/main.css';
 
+const freeSpaceJumpSlowdownModifier = 10;
+const freeSpaceJumpDelay = 400 * freeSpaceJumpSlowdownModifier;
+
 
 class HyperSpaceFreeSpaceJump extends React.Component {
   constructor(props) {
@@ -88,6 +91,7 @@ class HyperSpaceFreeSpaceJump extends React.Component {
     if(this.props.isStart) {
       jumpCoordinates.reverse();
     }
+
  
   	return (
       <div >
@@ -98,7 +102,14 @@ class HyperSpaceFreeSpaceJump extends React.Component {
               
               <AntPath
                 positions={jumpCoordinates}
-                options={{color: laneColorPink, opacity: 0.4, interactive: false}}
+                options={
+                  {
+                    color: this.props.styleOfJump.color,
+                    opacity: 0.4,
+                    interactive: false,
+                    delay: freeSpaceJumpDelay
+                  }
+                }
                 ref="lane"
                 onMouseOver={e => this.onMouseOver(e)}
                 onMouseOut={e => this.onMouseOut(e)}

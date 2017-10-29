@@ -13,7 +13,10 @@ import {
   getHyperspacePathCollection,
   plotFreeSpaceJumpToNode
 } from '../../../actions/actions.js';
-import { Point } from '../../../classes/stellarClasses.js';
+import {
+  Point,
+  PathGenerator
+} from '../../../classes/stellarClasses.js';
 import AckbarIcon from '../../../images/icons/star-wars/Ackbar.ico';
 import OrbitalIcon from '../../../images/icons/sci-fi-generic/orbital.svg';
 import GalaxySpiralIcon from '../../../images/icons/sci-fi-generic/twin-shell.svg';
@@ -27,52 +30,41 @@ class HyperspaceControls extends React.Component {
     };
   }
   findPath() {
-    console.log("findPath has been hit!! ", this.props);
-    if(this.props.hyperspaceStartSystem.length > 0 && this.props.hyperspaceEndSystem.length > 0) {
+
+    const startSystemExists = this.props.hyperspaceStartSystem.length > 0;
+    const endSystemExists = this.props.hyperspaceEndSystem.length > 0;
+
+    if(startSystemExists && endSystemExists) {
+
       this.props.dispatch( calculateHyperspaceJumpOn() );
-      console.log("this.state in HyperspacePathSearch: ", this.state);
+ 
+      const CurentPathGenerator = new PathGenerator(
+        this.props.hyperspaceActiveStartPoint,
+        this.props.hyperspaceActiveEndPoint,
+        this.props.hyperspaceActiveStartNode,
+        this.props.hyperspaceActiveEndNode,
+        this.props.hyperspaceStartPoint,
+        this.props.hyperspaceEndPoint,
+        this.props.hyperspaceStartNode,
+        this.props.hyperspaceEndNode,
+        this.props.activeHyperspaceJump,
+        this.props.hyperspaceHash,
+        this.state.HyperspaceCollectionsComponents,
+        this.props.hyperspacePathCollections,
+        this.props.hyperspacePathChange
+      );
 
-      const PathSearch = {
-        maxJumps: parseInt(this.state.maxJumps),
-        limit: parseInt(this.state.limit),
-        start: this.props.hyperspaceStartNode.system,
-        end: this.props.hyperspaceEndNode.system,
-        startPoint: this.props.hyperspaceStartPoint.system,
-        endPoint: this.props.hyperspaceEndPoint.system,
-      };
-
-      const PathData = {
-        StartPoint: _.cloneDeep(this.props.hyperspaceStartPoint),
-        EndPoint: _.cloneDeep(this.props.hyperspaceEndPoint),
-        StartNode: _.cloneDeep(this.props.hyperspaceStartNode),
-        EndNode: _.cloneDeep(this.props.hyperspaceEndNode),
-      };
-
-      // console.log("PathSearch: ", PathSearch);
-
-      // PathSearch.maxJumps = parseInt(PathSearch.maxJumps);
-      // PathSearch.limit = parseInt(PathSearch.limit);
-      // const isShortestPath = (PathSearch.limit > 1) ? false : true;
-      PathSearch.shortest = (PathSearch.limit > 1) ? false : true;
-      // PathSearch.shortest = isShortestPath;
-
-      console.log("PathData.StartNode: ", PathData.StartNode);
-      console.log("PathData.EndNode: ", PathData.EndNode);
-
-
-      if(PathData.StartNode.nodeId === PathData.EndNode.nodeId) {
-
-        console.log("Start and End Nodes are the same, calculate free space jump(s)..");
-
-        this.props.dispatch( plotFreeSpaceJumpToNode(PathData) );
-
+      if(CurentPathGenerator.shouldAFreeSpaceJumpBePlotted()) {
+        this.props.dispatch( plotFreeSpaceJumpToNode(CurentPathGenerator.edgeLocationsSearch()) );
       } else {
-
-        this.props.dispatch( getHyperspacePathCollection(PathSearch, PathData) );
-
+        this.props.dispatch(getHyperspacePathCollection(
+          CurentPathGenerator.pathSearch(this.state.maxJumps, this.state.limit),
+          CurentPathGenerator.edgeLocationsSearch()
+        ));
       }
-      
+
     }
+
   }
   maxJumpsChange(e) {
     const maxJumps = parseInt(e.target.value);
@@ -84,106 +76,8 @@ class HyperspaceControls extends React.Component {
     // this.props.dispatch(setNumberOfHyperspacePaths( parseInt(pathNumber) ));
     this.setState({limit: pathNumber});
   }
-
-
   itsATrap(e) {
-
-    // const StartPoint = new Point(
-    //   this.props.hyperspaceStartPoint.system,
-    //   this.props.hyperspaceStartPoint.lat,
-    //   this.props.hyperspaceStartPoint.lng
-    // );
-
-    // const StartNode = new Point(
-    //   this.props.hyperspaceStartNode.system,
-    //   this.props.hyperspaceStartNode.lat,
-    //   this.props.hyperspaceStartNode.lng
-    // );
-
-    // const EndPoint = new Point(
-    //   this.props.hyperspaceEndPoint.system,
-    //   this.props.hyperspaceEndPoint.lat,
-    //   this.props.hyperspaceEndPoint.lng
-    // );
-
-    // const EndNode = new Point(
-    //   this.props.hyperspaceEndNode.system,
-    //   this.props.hyperspaceEndNode.lat,
-    //   this.props.hyperspaceEndNode.lng
-    // );
-
-    // console.log("StartPoint: ", StartPoint);
-    // console.log("StartNode: ", StartNode);
-    // console.log("EndPoint: ", EndPoint);
-    // console.log("EndNode: ", EndNode);
-
-   // distanceBetweenPoints(EndPoint, EndNode);
-    // distanceBetweenPoints(StartNode, EndNode);
-    // distanceBetweenPoints(StartPoint, EndPoint);
-
-
-
-
-    const currentActiveStartPoint = this.props.hyperspaceActiveStartPoint;
-    const currentActiveEndPoint = this.props.hyperspaceActiveEndPoint;
-    const currentActiveStartNode = this.props.hyperspaceActiveStartNode;
-    const currentActiveEndNode =  this.props.hyperspaceActiveEndNode;
-
-
-    const currentStartPoint = this.props.hyperspaceStartPoint;
-    const currentEndPoint = this.props.hyperspaceEndPoint;
-    const currentStartNode = this.props.hyperspaceStartNode;
-    const currentEndNode =  this.props.hyperspaceEndNode;
-
-
-    console.log("currentActiveStartPoint: ", currentActiveStartPoint);
-    console.log("currentActiveEndPoint: ", currentActiveEndPoint);
-    console.log("currentActiveStartNode: ", currentActiveStartNode);
-    console.log("currentActiveEndNode: ", currentActiveEndNode);
-
-
-    console.log("currentStartPoint: ", currentActiveStartPoint);
-    console.log("currentEndPoint: ", currentActiveEndPoint);
-    console.log("currentStartNode: ", currentActiveStartNode);
-    console.log("currentEndNode: ", currentActiveEndNode);
-
-    const activeStartPoint = [currentActiveStartPoint.xGalacticLong, currentActiveStartPoint.yGalacticLong];
-
-    const activeStartNode = [currentActiveStartNode.xGalacticLong, currentActiveStartNode.yGalacticLong];
-
-    console.log("activeStartPoint: ", activeStartPoint);
-    console.log("activeStartNode: ", activeStartNode);
-
-
-    const distanceStartPointToNode = distance(
-      [currentActiveStartPoint.xGalacticLong, currentActiveStartPoint.yGalacticLong],
-      [currentActiveStartNode.xGalacticLong, currentActiveStartNode.yGalacticLong]
-    );
-
-
-
-    const distanceEndPointToNode = distance(
-      [currentActiveEndPoint.xGalacticLong, currentActiveEndPoint.yGalacticLong],
-      [currentActiveEndNode.xGalacticLong, currentActiveEndNode.yGalacticLong]
-    );
-
-    const distanceStartToEndPoint = distance(
-      [currentActiveStartPoint.xGalacticLong, currentActiveStartPoint.yGalacticLong],
-      [currentActiveEndPoint.xGalacticLong, currentActiveEndPoint.yGalacticLong]
-    );
-
-
-    console.log("Distance Start Point To Node", distanceStartPointToNode);
-    console.log("Distance End Point To Node", distanceEndPointToNode);
-    console.log("Distance Start Point To End Point", distanceStartToEndPoint);
-
- 
-
-
-
     console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
-
-
   }
 
   render() {
@@ -205,13 +99,13 @@ class HyperspaceControls extends React.Component {
 
 
 function distanceBetweenPoints(Point1, Point2) {
-  const distanceBetween = distance(Point1.coordinates(), Point2.coordinates());
-  const distanceBetweenNormalized = distance(Point1.coordinatesNormalized(), Point2.coordinatesNormalized());
-  console.log("Point1: ", Point1.system);
-  console.log("Point2: ", Point2.system);
-  console.log("distanceBetween: ", distanceBetween);
-  console.log("distanceBetweenNormalized: ", distanceBetweenNormalized);
+  return distance(pointArrayGalactic(Point1), pointArrayGalactic(Point2));
 }
+
+function pointArrayGalactic(Point) {
+  return [Point.xGalacticLong, Point.yGalacticLong];
+}
+
 
 
 function findPlanet(systemSearch) {

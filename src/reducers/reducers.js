@@ -115,7 +115,6 @@ function southWestMapHash(state = emptyMapHash, action) {
 	switch (action.type) {
 		case Actions.UPDATE_SOUTH_WEST_MAP_HASH:
 			const newMapHash = action.payload;
-			console.log("Pepsi!! New southWestMapHash: ", newMapHash);
 			return newMapHash;
 		case Actions.CLEAR_SOUTH_WEST_MAP_HASH:
 			return emptyMapHash;
@@ -127,7 +126,6 @@ function northEastMapHash(state = emptyMapHash, action) {
 	switch (action.type) {
 		case Actions.UPDATE_NORTH_EAST_MAP_HASH:
 			const newMapHash = action.payload;
-			console.log("Pepsi!! New northEastMapHash: ", newMapHash);
 			return newMapHash;
 		case Actions.CLEAR_NORTH_EAST_MAP_HASH:
 			return emptyMapHash;
@@ -254,7 +252,6 @@ function mapCenterAndZoom(state = CoruscantLocation, action) {
 		case Actions.SET_MAP_CENTER_AND_ZOOM:
 			StateClone.center = action.payload.center;
 			StateClone.zoom = action.payload.zoom;
-			console.log("set map zoom and center: ", StateClone);
 			return StateClone;
 		case Actions.INCREASE_MAP_ZOOM_BY_ONE:
 			StateClone.zoom += 1;
@@ -385,10 +382,8 @@ function hyperspaceActiveEndNode(state = BlankPoint, action) {
 function hyperspacePointZoomOn(state = false, action) {
 	switch (action.type) {
 		case Actions.HYPERSPACE_POINT_ZOOM_ON:
-			console.log("point zoom: ", true);
 			return true;
 		case Actions.HYPERSPACE_POINT_ZOOM_OFF:
-			console.log("point zoom: ", false);
 			return false;
 		default:
 			return state;	
