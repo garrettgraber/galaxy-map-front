@@ -26,6 +26,36 @@ export function activeEndPositionDefault() {
 	}
 }
 
+export function pathStartClickOn() {
+	return {
+		type: Actions.PATH_START_CLICK_ON
+	}
+}
+export function pathStartClickOff() {
+	return {
+		type: Actions.PATH_START_CLICK_OFF
+	}
+}
+export function pathStartClickToggle() {
+	return {
+		type: Actions.PATH_START_CLICK_TOGGLE
+	}
+}
+export function pathEndClickOn() {
+	return {
+		type: Actions.PATH_END_CLICK_ON
+	}
+}
+export function pathEndClickOff() {
+	return {
+		type: Actions.PATH_END_CLICK_OFF
+	}
+}
+export function pathEndClickToggle() {
+	return {
+		type: Actions.PATH_END_CLICK_TOGGLE
+	}
+}
 
 export function activeStartNode(StartNode) {
 	return {

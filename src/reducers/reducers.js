@@ -463,6 +463,30 @@ function pinPointEnd(state = false, action) {
 			return state;
 	}	
 }
+function pathStartClick(state = false, action) {
+	switch (action.type) {
+		case Actions.PATH_START_CLICK_ON:
+			return true;
+		case Actions.PATH_START_CLICK_OFF:
+			return false;
+		case Actions.PATH_START_CLICK_TOGGLE:
+			return (state)? false : true;
+		default:
+			return state;
+	}	
+}
+function pathEndClick(state = false, action) {
+	switch (action.type) {
+		case Actions.PATH_END_CLICK_ON:
+			return true;
+		case Actions.PATH_END_CLICK_OFF:
+			return false;
+		case Actions.PATH_END_CLICK_TOGGLE:
+			return (state)? false : true;
+		default:
+			return state;
+	}
+}
 function hyperspaceStartSystem(state = '', action) {
 	switch (action.type) {
 		case Actions.SET_START_SYSTEM:
@@ -529,6 +553,8 @@ export default combineReducers({
 	hyperspaceMaxJumps,
 	pinPointStart,
 	pinPointEnd,
+	pathStartClick,
+	pathEndClick,
 	calculateHyperspaceJump,
 	updateHyperspaceNavigation,
 	mapCenterAndZoom

@@ -63,8 +63,6 @@ class HyperSpaceFreeSpaceJump extends React.Component {
     }
   }
   onMouseOut(e) {
-    // console.log("lane mouse over!");
-
     if(this.refs.lane) {
       const lane = this.refs.lane.leafletElement;
       // lane.closePopup();
@@ -77,7 +75,6 @@ class HyperSpaceFreeSpaceJump extends React.Component {
     const HyperSpacePoint = this.props.HyperSpacePoint;
     const laneColor = 'gold';
     const laneColorPink =  '#FF69B4';
-  
     const nodeColor = 'gold';
     const fillColor = 'gold';
     const pointColor = 'teal';
@@ -86,12 +83,11 @@ class HyperSpaceFreeSpaceJump extends React.Component {
     const hyperspacePointLocation = [HyperSpacePoint.lat, HyperSpacePoint.lng];
     let jumpCoordinates = freeSpaceJumpCoordinates(HyperSpacePoint, HyperSpaceNode);
 
-    console.log("jumpCoordinates: ", jumpCoordinates);
+    // console.log("jumpCoordinates: ", jumpCoordinates);
 
     if(this.props.isStart) {
       jumpCoordinates.reverse();
     }
-
  
   	return (
       <div >
@@ -128,8 +124,6 @@ class HyperSpaceFreeSpaceJump extends React.Component {
   }
 }
 
-
-// <CircleMarker className="pulse" center={hyperspacePointLocation} radius={4} color={'#87CEFA'} ref='pointHyperSpace' />
 
 function freeSpaceJumpCoordinates(Point, Node) {
   const PointCoordinates = [Point.lat, Point.lng];

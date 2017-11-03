@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { CircleMarker, Popup, Circle, Tooltip, Marker } from 'react-leaflet';
 import L from 'leaflet';
 import width from 'text-width';
-// import ReactFauxDOM from 'react-faux-dom';
+
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
 import 'leaflet_marker_2x';
@@ -41,10 +41,8 @@ class HyperSpaceNode extends React.Component {
   render() {
     // const nodeColor = 'green';
     // const fillColor = 'green';
-
     const nodeColor = 'gold';
     const fillColor = 'gold';
-
     const fillOpacity = 1.0;
     const textWidth = this.props.HyperSpaceNodeObject.textWidth;
     const hyperspaceNodeLocation = [this.props.HyperSpaceNodeObject.lat, this.props.HyperSpaceNodeObject.lng];

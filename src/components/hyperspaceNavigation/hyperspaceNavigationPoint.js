@@ -5,7 +5,6 @@ import L from 'leaflet';
 import width from 'text-width';
 import uuidv4 from 'uuid/v4';
 
-// import ReactFauxDOM from 'react-faux-dom';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
 import 'leaflet_marker_2x';

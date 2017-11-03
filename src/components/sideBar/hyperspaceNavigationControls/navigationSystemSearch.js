@@ -6,6 +6,10 @@ import '../../../css/main.css';
 import {
   hyperspacePositionSearch,
 } from '../../../actions/actions.js';
+import {
+  pathStartClickToggle,
+  pathEndClickToggle
+} from '../../../actions/actionCreators.js';
 
 class NavigationSystemSearch extends React.Component {
   constructor() {
@@ -44,11 +48,24 @@ class NavigationSystemSearch extends React.Component {
     const Search = {system: this.state.system, isStartPosition: this.props.isStartPosition};
     this.props.dispatch(hyperspacePositionSearch(Search));
   }
+  clickSystem(e) {
+    if(this.props.isStartPosition) {
+      this.props.dispatch(pathStartClickToggle());
+    } else {
+      this.props.dispatch(pathEndClickToggle());
+    }
+  }
   render() {
+
+    const startClickIsOn = (this.props.isStartPosition && this.props.pathStartClick);
+    const endClickIsOn = (!this.props.isStartPosition && this.props.pathEndClick);;
+    const clickSystemClasses = (startClickIsOn || endClickIsOn)? "btn navbar-button btn-success" : "btn navbar-button btn-primary";
     return (
       <div className="pane-column">
         <input id="start-system-input" type="text" placeholder={this.props.pointName + " System"} className="search-input" value={this.state.system} onChange={(e) => this.systemChange(e)} />
         <button type="button" className="btn navbar-button btn-primary"  onClick={(e) => this.searchSystem(e)} ><i className="glyphicon glyphicon-search"></i></button>
+        <button type="button" className={clickSystemClasses}  onClick={(e) => this.clickSystem(e)} ><i className="fa fa-sun-o"></i></button>
+
       </div>
     );
   }
