@@ -61,7 +61,7 @@ class PivotPoint extends React.Component {
           <button type="button" className={pointZoom}  onClick={(e) => this.zoomToPoint(e)} ><i className={"fa fa-bullseye"}></i></button>
           <If condition={ this.state.searchSystems }>
             <Then>
-              <NavigationSystemSearch isStartPosition={this.props.isStartPosition} pointName={this.props.pointName} system={this.props.defaultSystem} />
+              <NavigationSystemSearch isStartPosition={this.props.isStartPosition} pointName={this.props.pointName} system={this.props.Point.system} />
             </Then>
             <Else>
               <If condition={ this.props.isStartPosition }>

@@ -17,7 +17,6 @@ class HyperspacePathSearch extends React.Component {
     if(this.props.hyperspacePathCollections.length > 0) {
       const FirstHyperspaceCollection = this.props.hyperspacePathCollections[0];
       hyperspacePathData = FirstHyperspaceCollection.paths;
-      // const foundPaths = getCorrectPath(this.props.hyperspaceStartNode.system, )
     }
     const startDefault = 'Kamino';
     const endDefault = 'Lok'
