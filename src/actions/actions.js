@@ -439,6 +439,7 @@ function getPathDataMany(start, end, maxJumps, limit) {
 }
 
 function getHyperspacePathData(PathSearch) {
+  console.log("PathSearch: ", PathSearch);
 	let jumpEndpoint = '/api/hyperspace-jump/';
 	jumpEndpoint += (PathSearch.shortest)? 'calc-shortest' : 'calc-many';
   return fetch(jumpEndpoint, {
