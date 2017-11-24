@@ -1,4 +1,10 @@
 
+
+.target-coursor {
+  cursor: url(../images/icons/sci-fi-generic/arrow-scope.svg), crosshair;
+}
+
+
 @font-face {
     font-family: 'Aurebesh';
     src: url('../fonts/Aurebesh.ttf') format('truetype');

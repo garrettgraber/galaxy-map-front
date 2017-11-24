@@ -39,14 +39,16 @@ class StarSystem extends React.Component {
     }
 
     onMouseOver(e) {
-      if(this.refs.star && this.refs.starText) {
+      const pathClicksOff = !this.props.pathStartClick && !this.props.pathEndClick;
+      if(this.refs.star && this.refs.starText && pathClicksOff) {
         const star = this.refs.star.leafletElement;
         star.openPopup();
       }
     }
 
     onMouseOut(e) {
-      if(this.refs.star && this.refs.starText) {
+      const pathClicksOff = !this.props.pathStartClick && !this.props.pathEndClick;
+      if(this.refs.star && this.refs.starText && pathClicksOff) {
         const star = this.refs.star.leafletElement;
         star.closePopup();
       }
@@ -88,13 +90,33 @@ class StarSystem extends React.Component {
       });
 
     	return (
-        <div>
+        <div style={ {caretColor: 'teal'} }>
           <CircleMarker center={starLocation} radius={1} color={starColor} fillColor={fillColor} fileOpacity={fileOpacity} onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)} onClick={(e) => this.onClick(e)}  ref='star' />
           <Marker key={this.props.StarObject.system} position={starLocation} icon={myIcon} zIndexOffset={-5} onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)} onClick={(e) => this.onClick(e)} ref='starText'/>
         </div>                                            
     	)
     }
 }
+
+
+
+
+function setCurrsor(start, end) {
+  console.log("set cursor has fired: ");
+  console.log("start: ", start);
+  console.log("end: ", end);
+  if(!start && !end) {
+    // $('.leaflet-container').css('cursor','');
+    $('.leaflet-interactive').css('cursor','pointer');
+  } else if((start && !end) || (!start && end)) {
+    // $('.leaflet-container').css('cursor','crosshair');
+    $('.leaflet-interactive').css('cursor','crosshair');
+    // $('.leaflet-container').attr("style","cursor:  url(../images/icons/sci-fi-generic/arrow-scope.svg), crosshair;");
+  } else {
+    console.log("Error cannot have both active");
+  }
+}
+
 
 
 const mapStateToProps = (state = {}) => {

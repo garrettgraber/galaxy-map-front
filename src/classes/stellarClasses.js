@@ -630,6 +630,8 @@ export class PathGenerator {
       end: this.SearchEndNode.system,
       startPoint: this.SearchStartPoint.system,
       endPoint: this.SearchEndPoint.system,
+      startNodeId: this.SearchStartNode.nodeId,
+      endNodeId: this.SearchEndNode.nodeId,
       shortest: shortest
     };
 	}

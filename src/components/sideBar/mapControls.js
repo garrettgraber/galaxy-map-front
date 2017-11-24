@@ -1,5 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import ReactTooltip from 'react-tooltip';
+
 import '../../css/main.css';
 import {
   setMapToZeroZero,
@@ -59,25 +61,76 @@ class MapControls extends React.Component {
     return (
       <div className="control-row nav-section">
         <span >
-          <button id="home-button-icon" type="button" className="btn btn-primary navbar-button"  onClick={e => this.goHome(e)} ><i className="glyphicon glyphicon-home"></i></button>
-            <button className="btn btn-primary navbar-button" onClick={e => this.handleLeftPanClick(e)}>
-              Left
-            </button>
-            <button className="btn btn-primary navbar-button" onClick={e => this.handleRightPanClick(e)}>
-              Right
-            </button>
-            <button className="btn btn-primary navbar-button" onClick={e => this.handleUpPanClick(e)}>
-              Up
-            </button>
-            <button className="btn btn-primary navbar-button" onClick={e => this.handleDownPanClick(e)}>
-              Down
-            </button>
-            <button className="btn btn-primary navbar-button" onClick={e => this.increaseZoom(e)}>
-              +
-            </button>
-            <button className="btn btn-primary navbar-button" onClick={e => this.decreaseZoom(e)}>
-              -
-            </button>
+          <button
+            id="home-button-icon"
+            type="button"
+            className="btn btn-primary navbar-button"
+            onClick={e => this.goHome(e)}
+            data-tip="Galaxy View"
+            data-for="galaxy-view-toggle"            
+          >
+            <i className="glyphicon glyphicon-home"></i>
+          </button>
+          <ReactTooltip id='galaxy-view-toggle' place="right">{}</ReactTooltip>
+
+          <button
+            className="btn btn-primary navbar-button"
+            onClick={e => this.handleLeftPanClick(e)}
+            data-tip="Pan Left"
+            data-for="pan-left-toggle"
+          >
+            Left
+          </button>
+          <ReactTooltip id='pan-left-toggle' place="right">{}</ReactTooltip>
+          <button
+            className="btn btn-primary navbar-button"
+            onClick={e => this.handleRightPanClick(e)}
+            data-tip="Pan Right"
+            data-for="pan-right-toggle"
+          >
+            Right
+          </button>
+          <ReactTooltip id='pan-right-toggle' place="right">{}</ReactTooltip>
+          <button
+            className="btn btn-primary navbar-button"
+            onClick={e => this.handleUpPanClick(e)}
+            data-tip="Pan Up"
+            data-for="pan-up-toggle"
+          >
+            Up
+          </button>
+          <ReactTooltip id='pan-up-toggle' place="right">{}</ReactTooltip>
+
+          <button
+            className="btn btn-primary navbar-button"
+            onClick={e => this.handleDownPanClick(e)}
+            data-tip="Pan Down"
+            data-for="pan-down-toggle"
+          >
+            Down
+          </button>
+          <ReactTooltip id='pan-down-toggle' place="right">{}</ReactTooltip>
+
+          <button
+            className="btn btn-primary navbar-button"
+            onClick={e => this.increaseZoom(e)}
+            data-tip="Zoom In"
+            data-for="zoom-in-toggle"
+          >
+            +
+          </button>
+          <ReactTooltip id='zoom-in-toggle' place="right">{}</ReactTooltip>
+
+          <button
+            className="btn btn-primary navbar-button"
+            onClick={e => this.decreaseZoom(e)}
+            data-tip="Zoom Out"
+            data-for="zoom-out-toggle"
+          >
+            -
+          </button>
+          <ReactTooltip id='zoom-out-toggle' place="right">{}</ReactTooltip>
+
         </span>
       </div>
     );

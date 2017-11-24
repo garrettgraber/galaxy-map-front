@@ -1,5 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import ReactTooltip from 'react-tooltip';
+import uuidv4 from 'uuid/v4';
 
 import LatLngDisplay from './latLngDisplay.js';
 
@@ -16,6 +18,9 @@ import {
 class StartPinPoint extends React.Component {
   constructor() {
     super();
+    this.state = {
+      componentId: uuidv4()
+    };
   }
 
   componentDidMount() { }
@@ -50,7 +55,10 @@ class StartPinPoint extends React.Component {
 
     return (
       <div className="pane-column">
-        <button id="start-path-pinpoint-icon" type="button" className={pinPointStart}  onClick={(e) => this.pinPointStartToggle(e)} ><i className={pinPointIconButtonClass}></i></button>
+        <button id="start-path-pinpoint-icon" type="button" className={pinPointStart}  onClick={(e) => this.pinPointStartToggle(e)} data-tip="Select Start Point"
+          data-for={'pin-point-hyperspace-start-' + this.state.componentId} ><i className={pinPointIconButtonClass}></i></button>
+        <ReactTooltip id={'pin-point-hyperspace-start-' + this.state.componentId} place="top">{}</ReactTooltip>
+
         <span className="display-text">&nbsp;&nbsp;{StartPoint.system}</span>
       </div>
     );

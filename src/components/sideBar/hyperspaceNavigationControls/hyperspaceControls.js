@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import distance from 'euclidean-distance';
 import Geohash from 'latlon-geohash';
+import ReactTooltip from 'react-tooltip';
+
 import '../../../css/main.css';
 import {
   calculateHyperspaceJumpOn,
@@ -90,8 +92,21 @@ class HyperspaceControls extends React.Component {
         <input id="max-jumps-input" type="number" placeholder="Max Jumps" className="search-input number-input" value={this.state.maxJumps}  onChange={(e) => this.maxJumpsChange(e)}/>
         <span className="nav-text">&nbsp;&nbsp;Limit:&nbsp;&nbsp;</span>
         <input id="limit-paths-input" type="number" placeholder="Limit" className="search-input number-input" value={this.state.limit}  onChange={(e) => this.limitChange(e)}/>
-        <button id="find-path-icon" type="button" className={buttonClass}  onClick={(e) => this.findPath(e)} ><i className={iconButtonClass}></i></button>
-        <img  id="its-a-trap" className=" navbar-button"  src={GalaxySpiralIcon} style={{width: "30px", height:"30px", padding: "2px", borderRadius: "2px", border: "1px solid #49fb35"}} onClick={(e) => this.itsATrap(e)} />
+        <button
+          id="find-path-icon"
+          type="button"
+          className={buttonClass}
+          onClick={(e) => this.findPath(e)}
+          data-tip="Calculate Hyperspace Jump"
+          data-for="calculate-hyperspace-jump-tooltip"
+        >
+          <i className={iconButtonClass}></i>
+        </button>
+        <ReactTooltip id='calculate-hyperspace-jump-tooltip' place="top">{}</ReactTooltip>
+
+        <img  id="its-a-trap" className=" navbar-button"  src={GalaxySpiralIcon} style={{width: "30px", height:"30px", padding: "2px", borderRadius: "2px", border: "1px solid #49fb35"}} onClick={(e) => this.itsATrap(e)} data-tip="It's a Trap!" data-for="a-trap-tooltip" />
+        <ReactTooltip id='a-trap-tooltip' place="top">{}</ReactTooltip>
+
       </div>
     );
   }

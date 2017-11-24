@@ -12,7 +12,8 @@ import {
   zoomChangeStatus,
   viewShouldStayTheSame,
   updateSouthWestMapHash,
-  updateNorthEastMapHash
+  updateNorthEastMapHash,
+  buildSystemNameSet
 } from '../../actions/actionCreators.js';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
@@ -34,42 +35,60 @@ class StarMap extends React.Component {
   }
 
   componentDidMount() {
-  	const that = this;
   	fetch('/api/has-location')  
-		.then(function(response) {
+		.then(response => {
 	    	return response.json();
-		}).then(function(data) {
+		}).then(data => {
       const StarData = JSON.parse(data);
       const PlanetsArray = [];
+      let systemNamesArray = [];
   		for(let i=0; i < StarData.length; i++) {
         let textWidth = width(StarData[i].system, { size: "1em" });
         textWidth +=  0.5;
         const currentStar = StarData[i];
         delete currentStar.__v;
-        const CurrentSystem = new Planet(
-          currentStar.system,
-          currentStar.sector,
-          currentStar.region,
-          currentStar.coordinates,
-          currentStar.xGalactic,
-          currentStar.yGalactic,
-          currentStar.xGalacticLong,
-          currentStar.yGalacticLong,
-          currentStar.hasLocation,
-          currentStar.LngLat,
-          currentStar.lat,
-          currentStar.lng,
-          currentStar.zoom,
-          currentStar.link,
-          textWidth
-        );
-        PlanetsArray.push(CurrentSystem);
+        if(currentStar.system !== null) {
+          const CurrentSystem = new Planet(
+            currentStar.system,
+            currentStar.sector,
+            currentStar.region,
+            currentStar.coordinates,
+            currentStar.xGalactic,
+            currentStar.yGalactic,
+            currentStar.xGalacticLong,
+            currentStar.yGalacticLong,
+            currentStar.hasLocation,
+            currentStar.LngLat,
+            currentStar.lat,
+            currentStar.lng,
+            currentStar.zoom,
+            currentStar.link,
+            textWidth
+          );
+          PlanetsArray.push(CurrentSystem);
+          systemNamesArray.push({system: currentStar.system});
+        }
   		}
-      const galacticPlanetsSet = new Set(PlanetsArray);
-      that.setState({GalacticPlanetsArray: PlanetsArray});
-      const currentMapZoom = that.props.map.getZoom();
-      const MapBoundariesHashes = getNorthEastAndSoutWestBounds(that.props.map);
-      that.createStarMapAndSetState(currentMapZoom, that.props.map, MapBoundariesHashes);
+
+      // let galacticPlanetsSet = new Set(PlanetsArray);
+      this.setState({GalacticPlanetsArray: PlanetsArray});
+      // const SystemObjectSetFronzen = Object.freeze(galacticPlanetsSet);
+      systemNamesArray.sort(function(a, b){
+        const systemA = a.system.toLowerCase();
+        const systemB = b.system.toLowerCase();
+        if(systemA < systemB) return -1;
+        if(systemA > systemB) return 1;
+        return 0;
+      });
+
+      let systemNameSetSorted = new Set(systemNamesArray);
+      console.log("Pepsi systemNameSetSorted: ", systemNameSetSorted);
+      const SystemNamesSetFrozen = Object.freeze(systemNameSetSorted);
+      this.props.dispatch(buildSystemNameSet(SystemNamesSetFrozen));
+
+      const currentMapZoom = this.props.map.getZoom();
+      const MapBoundariesHashes = getNorthEastAndSoutWestBounds(this.props.map);
+      this.createStarMapAndSetState(currentMapZoom, this.props.map, MapBoundariesHashes);
   	});
   }
 

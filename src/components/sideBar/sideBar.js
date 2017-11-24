@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import '../../css/main.css';
+import ReactTooltip from 'react-tooltip';
 
+import '../../css/main.css';
 
 import { 
     toggleSystemsSearchControls,
@@ -38,9 +39,39 @@ class SideBar extends React.Component {
     const hyperspaceNavigationClasses = (this.props.hyperspaceNavigationControlsOn)? "btn btn-success control-button" : "btn btn-danger control-button";
     return (
       <div id="side-bar" style={SideBarStyles}>
-        <button id="map-controls-toggle" type="button" className={mapClasses}  onClick={e => this.mapControlsToggle(e)} ><i className="glyphicon glyphicon-map-marker"></i></button>
-        <button id="search-systems-toggle" type="button" className={searchSystemsClasses}  onClick={e => this.searchSystemsToggle(e)} ><i className="glyphicon glyphicon-globe"></i></button>
-        <button id="hyperspace-navigation-controls-toggle" type="button" className={hyperspaceNavigationClasses}  onClick={e => this.hyperspaceNavigationControls(e)} ><i className="fa fa-rocket"></i></button>
+        <button 
+          id="map-controls-toggle"
+          type="button"
+          className={mapClasses}
+          onClick={e => this.mapControlsToggle(e)}
+          data-tip="Map Controls"
+          data-for='map-controls-toggle'
+        >
+          <ReactTooltip id='map-controls-toggle'>{}</ReactTooltip>
+          <i className="glyphicon glyphicon-map-marker"></i>
+        </button>
+        <button
+          id="search-systems-toggle"
+          type="button" 
+          className={searchSystemsClasses}
+          onClick={e => this.searchSystemsToggle(e)}
+          data-tip="Systems Search"
+          data-for="systems-search-toggle"
+        >
+          <ReactTooltip id='systems-search-toggle'>{}</ReactTooltip>
+          <i className="glyphicon glyphicon-globe"></i>
+        </button>
+        <button
+          id="hyperspace-navigation-controls-toggle"
+          type="button"
+          className={hyperspaceNavigationClasses}
+          onClick={e => this.hyperspaceNavigationControls(e)}
+          data-tip="Hyperspace Navigation Computer"
+          data-for="hyperspace-navigation-computer-toggle"
+        >
+          <ReactTooltip id='hyperspace-navigation-computer-toggle'>{}</ReactTooltip>
+          <i className="fa fa-rocket"></i>
+        </button>
       </div>
     );
   }

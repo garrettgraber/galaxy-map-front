@@ -87,7 +87,20 @@ const maxJumps = 90;
 const pathLimit = 1;
 const emptyMapHash = null;
 const nullHyperspaceHash = null;
+const emptySystemSet = new Set();
 
+
+function systemNameSet(state = emptySystemSet, action) {
+	switch (action.type) {
+		case Actions.BUILD_SYSTEM_NAME_SET:
+			const newSystemNameSet = action.payload;
+			return newSystemNameSet;
+		case Actions.EMPTY_SYSTEM_NAME_SET:
+			return emptySystemSet;
+		default:
+			return state;
+	}
+}
 
 function activeHyperspaceJump(state = nullHyperspaceHash, action) {
 	switch (action.type) {
@@ -525,6 +538,7 @@ function updateHyperspaceNavigation(state = false, action) {
 }
 
 export default combineReducers({
+	systemNameSet,
 	hyperspacePointZoomOn,
 	hyperspaceActiveStartPoint,
 	hyperspaceActiveEndPoint,

@@ -1,5 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import ReactTooltip from 'react-tooltip';
+import uuidv4 from 'uuid/v4';
+
 import '../../../css/main.css';
 import {  
   pathSearchEndOn,
@@ -13,6 +16,9 @@ import {
 class EndPinPoint extends React.Component {
   constructor() {
     super();
+    this.state = {
+      componentId: uuidv4()
+    };
   }
   pinPointEndToggle(e) {
     console.log("\nToggle end");
@@ -45,7 +51,10 @@ class EndPinPoint extends React.Component {
 
     return (
       <div className="pane-column">
-        <button id="start-path-pinpoint-icon" type="button" className={pinPointEnd}  onClick={(e) => this.pinPointEndToggle(e)} ><i className={pinPointIconButtonClass}></i></button>
+        <button id="end-path-pinpoint-icon" type="button" className={pinPointEnd}  onClick={(e) => this.pinPointEndToggle(e)} data-tip="Select End Point"
+          data-for={'pin-point-hyperspace-end-' + this.state.componentId}  ><i className={pinPointIconButtonClass}></i></button>
+        <ReactTooltip id={'pin-point-hyperspace-end-' + this.state.componentId} place="top">{}</ReactTooltip>
+
         <span className="display-text">&nbsp;&nbsp;{EndPoint.system.slice(0, 10)}</span>
       </div>
     );

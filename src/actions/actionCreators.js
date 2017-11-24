@@ -3,6 +3,19 @@
 import Actions from '../constants/actionTypesModule.js';
 
 
+export function buildSystemNameSet(nameSet) {
+	return {
+		type: Actions.BUILD_SYSTEM_NAME_SET,
+		payload: nameSet
+	}
+}
+
+export function emptySystemNameSet() {
+	return {
+		type: Actions.EMPTY_SYSTEM_NAME_SET
+	}
+}
+
 export function activeStartPosition(StartPosition) {
 	return {
 		type: Actions.SET_ACTVIE_START_POSITION,

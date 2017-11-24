@@ -2,6 +2,8 @@ import React from 'react';
 import ReactFauxDOM from 'react-faux-dom';
 import { connect } from 'react-redux';
 import urlencode from 'urlencode';
+import ReactTooltip from 'react-tooltip';
+
 import { findSystem } from '../../actions/actions.js';
 import '../../css/main.css';
 
@@ -28,7 +30,19 @@ class SearchData extends React.Component {
       <div className="control-row nav-section">
         <span>
           <input id="search-system-input" type="text" placeholder="Search For Systems" className="search-input" value={this.state.inputValue}  onChange={(e) => this.onChange(e)} />
-          <button id="search-button-icon" type="button" className={buttonClass}  onClick={(e) => this.searchData(e)} disabled={this.props.searchSystems} ><i className={iconButtonClass}></i></button>
+          <button
+            id="search-button-icon"
+            type="button"
+            className={buttonClass}
+            onClick={(e) => this.searchData(e)}
+            disabled={this.props.searchSystems}
+            data-tip="Search"
+            data-for='search-system-data-toggle'
+          >
+            <i className={iconButtonClass}></i>
+          </button>
+          <ReactTooltip id='search-system-data-toggle' place="top">{}</ReactTooltip>
+
         </span>
       </div>
     );
