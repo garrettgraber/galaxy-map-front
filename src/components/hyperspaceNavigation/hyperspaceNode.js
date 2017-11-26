@@ -43,6 +43,8 @@ class HyperSpaceNode extends React.Component {
     // const fillColor = 'green';
     const nodeColor = 'gold';
     const fillColor = 'gold';
+    // const nodeColor = 'red';
+    // const fillColor = 'red';
     const fillOpacity = 1.0;
     const textWidth = this.props.HyperSpaceNodeObject.textWidth;
     const hyperspaceNodeLocation = [this.props.HyperSpaceNodeObject.lat, this.props.HyperSpaceNodeObject.lng];

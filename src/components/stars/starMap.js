@@ -66,7 +66,7 @@ class StarMap extends React.Component {
             textWidth
           );
           PlanetsArray.push(CurrentSystem);
-          systemNamesArray.push({system: currentStar.system});
+          systemNamesArray.push({label: currentStar.system, value: currentStar.system});
         }
   		}
 
@@ -74,8 +74,8 @@ class StarMap extends React.Component {
       this.setState({GalacticPlanetsArray: PlanetsArray});
       // const SystemObjectSetFronzen = Object.freeze(galacticPlanetsSet);
       systemNamesArray.sort(function(a, b){
-        const systemA = a.system.toLowerCase();
-        const systemB = b.system.toLowerCase();
+        const systemA = a.value.toLowerCase();
+        const systemB = b.value.toLowerCase();
         if(systemA < systemB) return -1;
         if(systemA > systemB) return 1;
         return 0;

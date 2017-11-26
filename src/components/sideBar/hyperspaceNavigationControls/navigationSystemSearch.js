@@ -129,7 +129,7 @@ function setCurrsor(start, end) {
   if(!start && !end) {
     $('.leaflet-container').css('cursor','');
   } else if((start && !end) || (!start && end)) {
-      $('.leaflet-container').css('cursor','crosshair');
+      $('.leaflet-container').css('cursor','not-allowed');
       // $('.leaflet-container').attr("style","cursor:  url(../images/icons/sci-fi-generic/arrow-scope.svg), crosshair;");
   } else {
     console.log("Error cannot have both active");
