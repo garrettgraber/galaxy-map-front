@@ -45,7 +45,7 @@ class EndPinPoint extends React.Component {
 
   render() {
     const pinPointIconButtonClass = "glyphicon glyphicon-screenshot";
-    const pinPointEnd = (this.props.pinPointEnd)? "btn navbar-button btn-success" : "btn navbar-button btn-danger";
+    const pinPointEnd = (this.props.pinPointEnd)? "btn hyperspace-navigation-button btn-success" : "btn hyperspace-navigation-button btn-danger";
 
     const EndPoint = this.props.hyperspaceEndPoint;
 

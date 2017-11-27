@@ -55,16 +55,17 @@ class PivotPoint extends React.Component {
     }
   }
   render() {
-    const searchSystems = (this.state.searchSystems)? "btn navbar-button btn-success" :  "btn navbar-button btn-danger" ;
-    const pointZoom = (this.props.Point.system)? "btn navbar-button btn-success" : "btn navbar-button btn-primary";
+    const searchSystems = (this.state.searchSystems)? "btn hyperspace-navigation-button btn-success" :  "btn hyperspace-navigation-button btn-danger" ;
+    const pointZoom = (this.props.Point.system)? "btn hyperspace-navigation-button btn-success" : "btn hyperspace-navigation-button btn-primary";
+
     return (
       <div className="pane-section">
         <div className="pane-row-control">
-          <div className="nav-text" style={{width: 40, display: "inline-block"}}>{this.props.pointName.slice(0, 8)}&nbsp;</div>
-          <button id="point-jump-icon" type="button" className={searchSystems} onClick={(e) => this.switchSearchType(e)}   data-tip="Search by System" data-for={'search-by-system-' + this.state.componentId}><i className={"fa fa-globe"}></i></button>
+          <div className="nav-text" style={{width: 40, display: "inline-block", verticalAlign: "top"}}>{this.props.pointName.slice(0, 8)}&nbsp;</div>
+          <button id="point-jump-icon" type="button" className={searchSystems} style={{verticalAlign: "top"}}  onClick={(e) => this.switchSearchType(e)}   data-tip="Search by System" data-for={'search-by-system-' + this.state.componentId}><i className={"fa fa-globe"}></i></button>
           <ReactTooltip id={'search-by-system-' + this.state.componentId} place="top">{}</ReactTooltip>
 
-          <button type="button" className={pointZoom}  onClick={(e) => this.zoomToPoint(e)}   data-tip="Zoom To System" data-for={'go-to-star-system-' + this.state.componentId}><i className={"fa fa-bullseye"}  ></i></button>
+          <button type="button" className={pointZoom} style={{verticalAlign: "top"}} onClick={(e) => this.zoomToPoint(e)}   data-tip="Zoom To System" data-for={'go-to-star-system-' + this.state.componentId}><i className={"fa fa-bullseye"}  ></i></button>
           <ReactTooltip id={'go-to-star-system-' + this.state.componentId} place="top">{}</ReactTooltip>
 
           <If condition={ this.state.searchSystems }>

@@ -50,7 +50,7 @@ class StartPinPoint extends React.Component {
 
   render() {
     const pinPointIconButtonClass = "glyphicon glyphicon-screenshot";
-    const pinPointStart = (this.props.pinPointStart)? "btn navbar-button btn-success" :  "btn navbar-button btn-danger" ;
+    const pinPointStart = (this.props.pinPointStart)? "btn hyperspace-navigation-button btn-success" :  "btn hyperspace-navigation-button btn-danger" ;
     const StartPoint = this.props.hyperspaceStartPoint;
 
     return (

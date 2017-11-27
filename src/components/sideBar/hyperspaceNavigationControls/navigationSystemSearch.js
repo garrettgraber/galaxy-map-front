@@ -2,7 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import uuidv4 from 'uuid/v4';
-import Select from 'react-virtualized-select';
+import VirtualizedSelect from 'react-virtualized-select';
+import Select from 'react-select';
 import createFilterOptions from 'react-select-fast-filter-options';
 
 
@@ -70,9 +71,10 @@ class NavigationSystemSearch extends React.Component {
       this.setState({system: endSystem});
     }
   }
-  systemChange(e) {
-    const searchInput = e.target.value;
-    const Search = {system: searchInput, isStartPosition: this.props.isStartPosition};
+  systemChange(systemValue) {
+    console.log("systemValue: ", systemValue);
+    // const searchInput = e.target.value;
+    const Search = {system: systemValue.value, isStartPosition: this.props.isStartPosition};
     console.log("Search: ", Search.system);
     this.setState({system: Search.system});
     this.props.dispatch(hyperspacePositionSearch(Search));
@@ -87,26 +89,31 @@ class NavigationSystemSearch extends React.Component {
   render() {
     const startClickIsOn = (this.props.isStartPosition && this.props.pathStartClick);
     const endClickIsOn = (!this.props.isStartPosition && this.props.pathEndClick);
-    const clickSystemClasses = (startClickIsOn || endClickIsOn)? "btn navbar-button btn-success" : "btn navbar-button btn-primary";
+    const clickSystemClasses = (startClickIsOn || endClickIsOn)? "btn hyperspace-navigation-button btn-success" : "btn hyperspace-navigation-button btn-primary";
+
+    const selectOptions = [...this.props.systemNameSet];
+    const filterOptions = createFilterOptions({ options: selectOptions });
 
     return (
       <div className="pane-column">
-        <input id="start-system-input" type="text" placeholder={this.props.pointName + " System"} className="search-input" value={this.state.system} onChange={(e) => this.systemChange(e)} />
 
-        <button
-          type="button"
-          className="btn navbar-button btn-primary"
-          onClick={(e) => this.searchSystem(e)}
-          data-tip="Search"
-          data-for={'search-system-hyperspace-' + this.state.componentId}
-        >
-          <i className="glyphicon glyphicon-search"></i>
-        </button>
-        <ReactTooltip id={'search-system-hyperspace-' + this.state.componentId} place="top">{}</ReactTooltip>
+        <div style={{display: 'inline-block', width: 200, marginRight: 3, marginLeft: 3}}>
+
+          <Select
+            name="selected-system-search"
+            filterOptions={filterOptions}
+            options={selectOptions}
+            style={{height: 32}}
+            onChange={(selectValue) => this.systemChange(selectValue)}
+            value={this.state.system}
+          />
+
+        </div>
 
         <button
           type="button"
           className={clickSystemClasses}
+          style={{verticalAlign: "top"}}
           onClick={(e) => this.clickSystem(e)}
           data-tip="Click on Star System"
           data-for={'star-system-hyperspace-click' + this.state.componentId}
@@ -120,6 +127,20 @@ class NavigationSystemSearch extends React.Component {
   }
 }
 
+// <input id="start-system-input" type="text" placeholder={this.props.pointName + " System"} className="search-input" value={this.state.system} onChange={(systemValue) => this.systemChange(systemValue)} />
+
+
+// <button
+// type="button"
+// className="btn hyperspace-navigation-button btn-primary"
+// style={{verticalAlign: "top"}}
+// onClick={(e) => this.searchSystem(e)}
+// data-tip="Search"
+// data-for={'search-system-hyperspace-' + this.state.componentId}
+// >
+// <i className="glyphicon glyphicon-search"></i>
+// </button>
+// <ReactTooltip id={'search-system-hyperspace-' + this.state.componentId} place="top">{}</ReactTooltip>
 
 
 function setCurrsor(start, end) {
