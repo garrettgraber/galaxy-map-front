@@ -88,6 +88,24 @@ const pathLimit = 1;
 const emptyMapHash = null;
 const nullHyperspaceHash = null;
 const emptySystemSet = new Set();
+const emptySectorSet = new Set();
+
+
+function sectorSearchSet(state = emptySectorSet, action) {
+	switch (action.type) {
+		case Actions.ADD_SECTOR_SEARCH_SET:
+			let StateClone = _.cloneDeep(state);
+			StateClone.add(action.payload);
+			return StateClone;
+		case Actions.BUILD_SECTOR_SEARCH_SET:
+			const newSectorSearchSet = action.payload;
+			return newSectorSearchSet;
+		case Actions.EMPTY_SECTOR_SEARCH_SET:
+			return emptySectorSet;
+		default:
+			return state;
+	}
+}
 
 
 function systemNameSet(state = emptySystemSet, action) {
@@ -538,6 +556,7 @@ function updateHyperspaceNavigation(state = false, action) {
 }
 
 export default combineReducers({
+	sectorSearchSet,
 	systemNameSet,
 	hyperspacePointZoomOn,
 	hyperspaceActiveStartPoint,

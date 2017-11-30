@@ -3,6 +3,27 @@
 import Actions from '../constants/actionTypesModule.js';
 
 
+export function addSectorSearchSet(sector) {
+	return {
+		type: Actions.ADD_SECTOR_SEARCH_SET,
+		payload: sector
+	}
+}
+
+export function buildSectorSearchSet(sectorSet) {
+	return {
+		type: Actions.BUILD_SECTOR_SEARCH_SET,
+		payload: sectorSet
+	}
+}
+
+export function emptySectorSearchSet() {
+	return {
+		type: Actions.EMPTY_SECTOR_SEARCH_SET
+	}
+}
+
+
 export function buildSystemNameSet(nameSet) {
 	return {
 		type: Actions.BUILD_SYSTEM_NAME_SET,
