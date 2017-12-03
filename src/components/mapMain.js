@@ -39,6 +39,7 @@ import StarMap from './stars/starMap.js';
 import SideBarController from './sideBar/sideBarController.js';
 import SideBar from './sideBar/sideBar.js';
 import DataStream from './dataStream/dataStream.js';
+import MapNavigationControl from './mapNavigationControls/mapNavigationControl.js';
 
 import HyperspaceNavigation from './hyperspaceNavigation/hyperspaceNavigation.js';
 import 'leaflet/dist/leaflet.css';
@@ -198,6 +199,7 @@ class MapMain extends React.Component {
           <DataStream dataMessage={this.props.dataStream.currentItem}/>
           <SideBar />
           <SideBarController map={this.state.map}/>
+          <MapNavigationControl  map={this.state.map}/>
       		<Map
             ref='map'
             style={{zIndex: 5}}
@@ -247,11 +249,6 @@ class MapMain extends React.Component {
                 <StarMap map={this.state.map} />
               </Overlay>
     				  </LayersControl>
-              <Control position="topright" >
-                <button onClick={ () => console.log("Control bitch!!!") } >
-                  Reset View
-                </button>
-              </Control>
       		</Map>
         </div>
       </ScrollArea>
@@ -259,6 +256,11 @@ class MapMain extends React.Component {
   	)
   }
 }
+
+
+
+// <div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
 
 
 function  getStarData() {

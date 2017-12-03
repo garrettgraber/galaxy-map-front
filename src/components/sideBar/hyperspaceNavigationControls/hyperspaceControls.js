@@ -22,6 +22,8 @@ import {
 import AckbarIcon from '../../../images/icons/star-wars/Ackbar.ico';
 import OrbitalIcon from '../../../images/icons/sci-fi-generic/orbital.svg';
 import GalaxySpiralIcon from '../../../images/icons/sci-fi-generic/twin-shell.svg';
+import GalaxyIconOnEdge from '../../../images/icons/randomly-found/galaxy.png';
+
 
 class HyperspaceControls extends React.Component {
   constructor() {
@@ -104,7 +106,7 @@ class HyperspaceControls extends React.Component {
         </button>
         <ReactTooltip id='calculate-hyperspace-jump-tooltip' place="top">{}</ReactTooltip>
 
-        <img  id="its-a-trap" className=" navbar-button"  src={GalaxySpiralIcon} style={{width: "30px", height:"30px", padding: "2px", borderRadius: "2px", border: "1px solid #49fb35"}} onClick={(e) => this.itsATrap(e)} data-tip="It's a Trap!" data-for="a-trap-tooltip" />
+        <img  id="its-a-trap" className=" navbar-button"  src={GalaxyIconOnEdge} style={{width: "30px", height:"30px", padding: "2px", borderRadius: "2px", border: "1px solid #49fb35", backgroundColor: 'black'}} onClick={(e) => this.itsATrap(e)} data-tip="It's a Trap!" data-for="a-trap-tooltip" />
         <ReactTooltip id='a-trap-tooltip' place="top">{}</ReactTooltip>
 
       </div>
