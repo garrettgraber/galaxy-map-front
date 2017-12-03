@@ -87,7 +87,7 @@ app.use(webpackHotMiddleware(compiler));
 app.get(/^\/(?!api).*/, function response(req, res) {
   console.log("\ncall made to webpack");
 
-  console.log('==> 🌎 Listening on port. Open up http://' + ip.address() + ':' + port);
+  console.log('==> 🌎 Listening on port. Open up http://' + hostname + ':' + port);
 
   res.write(middleware.fileSystem.readFileSync(bundlePath));
   // res.end();
@@ -196,13 +196,15 @@ app.use(function(req, res, next) {
 
 
 
-app.listen(port, hostname, function onStart(err) {
+const server = app.listen(port, hostname, function onStart(err) {
   console.log("hostname: ", hostname);
   if (err) {
     console.log(err);
   }
   console.info('==> 🌎 Listening on port %s. Open up http://' + hostname + ':%s/ in your browser.', port, port);
 });
+
+server.keepAliveTimeout = 60000 * 2;
 
 
 
