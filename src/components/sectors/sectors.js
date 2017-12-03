@@ -35,8 +35,6 @@ class Sectors extends React.Component {
       const coordinates = feature.geometry.coordinates[0][0];
       const polygon = L.polygon(coordinates);
       const polygonCenter = polygon.getBounds().getCenter();
-      console.log("Sector: ", sectorName);
-      console.log("Sector Center: ", polygonCenter);
       const polygonCenterArray = [polygonCenter.lng, polygonCenter.lat];
       const SectorData = {
         label: sectorName,
@@ -55,9 +53,6 @@ class Sectors extends React.Component {
   	const zIndex = 220;
   	const sectorsStyle = {color: 'gold', weight: 1, opacity: 0.5};
 
-    console.log("\nSector map is rendering!\n");
-
-
   	return (
   		<Pane name="sectors-pane" style={{ zIndex: zIndex }}>
   			<GeoJSON data={SectorData} style={sectorsStyle} ref='sectors' onEachFeature={(feature, layer) => this.onEachFeature(feature,layer)}  pointToLayer={(feature, latlng) => this.pointToLayer(feature,latlng)}/>
@@ -71,5 +66,4 @@ const mapStateToProps = (state = {}) => {
   return Object.assign({}, state);
 };
 
-// export default Sectors;
 export default connect(mapStateToProps)(Sectors);

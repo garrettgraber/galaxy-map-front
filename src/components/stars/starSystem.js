@@ -25,7 +25,6 @@ class StarSystem extends React.Component {
     }
 
     componentDidMount() {
-      console.log("StarSystem has mounted: ", this.props);
       if(this.refs.star && this.refs.starText) {
         const star = this.refs.star.leafletElement;
         const StarObject = this.props.StarObject;
