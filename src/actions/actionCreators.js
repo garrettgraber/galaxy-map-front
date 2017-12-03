@@ -2,6 +2,18 @@
 
 import Actions from '../constants/actionTypesModule.js';
 
+export function displayMapControls() {
+	return {
+		type: Actions.DISPLAY_MAP_CONTROLS
+	}
+}
+
+export function closeMapControls() {
+	return {
+		type: Actions.HIDE_MAP_CONTROLS
+	}
+}
+
 
 export function addSectorSearchSet(sector) {
 	return {
@@ -214,21 +226,6 @@ export function deActivateSystemsSearchControls() {
 export function toggleSystemsSearchControls() {
 	return {
 		type: Actions.SYSTEMS_SEARCH_CONTROLS_TOGGLE
-	}
-}
-export function activateMapControls() {
-	return {
-		type: Actions.MAP_CONTROLS_ON
-	}
-}
-export function deActivateMapControls() {
-	return {
-		type: Actions.MAP_CONTROLS_OFF
-	}
-}
-export function toggleMapControls() {
-	return {
-		type: Actions.MAP_CONTROLS_TOGGLE
 	}
 }
 export function activateHyperspaceNavigationControls() {

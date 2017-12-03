@@ -91,6 +91,18 @@ const emptySystemSet = new Set();
 const emptySectorSet = new Set();
 
 
+function mapControlsDisplayed(state = true, action) {
+	switch (action.type) {
+		case Actions.DISPLAY_MAP_CONTROLS:
+			return true;
+		case Actions.HIDE_MAP_CONTROLS:
+			return false;
+		default:
+			return true;			
+	}
+}
+
+
 function sectorSearchSet(state = emptySectorSet, action) {
 	switch (action.type) {
 		case Actions.ADD_SECTOR_SEARCH_SET:
@@ -209,19 +221,6 @@ function systemsSearchControlsOn(state = false, action) {
 		case Actions.SYSTEMS_SEARCH_CONTROLS_OFF:
 			return false;
 		case Actions.SYSTEMS_SEARCH_CONTROLS_TOGGLE:
-			let newState = (state)? false : true;
-			return newState;
-		default:
-			return state;
-	}
-}
-function mapControlsOn(state = true, action) {
-	switch (action.type) {
-		case Actions.MAP_CONTROLS_ON:
-			return true;
-		case Actions.MAP_CONTROLS_OFF:
-			return false;
-		case Actions.MAP_CONTROLS_TOGGLE:
 			let newState = (state)? false : true;
 			return newState;
 		default:
@@ -569,7 +568,6 @@ export default combineReducers({
 	northEastMapHash,
 	dataStream,
 	systemsSearchControlsOn,
-	mapControlsOn,
 	hyperspaceNavigationControlsOn,
 	activeSystem,
 	searchSystems,
@@ -590,5 +588,6 @@ export default combineReducers({
 	pathEndClick,
 	calculateHyperspaceJump,
 	updateHyperspaceNavigation,
-	mapCenterAndZoom
+	mapCenterAndZoom,
+	mapControlsDisplayed
 });

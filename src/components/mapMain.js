@@ -65,7 +65,7 @@ const blackTileImage = imgBlack;
 // const awsTileServerUrlEastEight = 'https://s3.amazonaws.com/tiledata.sw.8.map.east/tiles-leaflet-8/{z}/{x}/{y}.png';
 const awsTileServerUrlEastMaster = 'https://s3.amazonaws.com/tiledata.sw.map.east.master/tiles-leaflet-8-master/{z}/{x}/{y}.png';
 
-const activeTileServer = tileServerUrlLevel8Master;
+const activeTileServer = awsTileServerUrlEastMaster;
 
 class MapMain extends React.Component {
   constructor(props) {

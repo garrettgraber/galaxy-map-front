@@ -6,7 +6,6 @@ import '../../css/main.css';
 
 import { 
     toggleSystemsSearchControls,
-    toggleMapControls,
     toggleHyperspaceNavigationControls,
     addItemToDataStream
 } from '../../actions/actionCreators.js';
@@ -17,9 +16,6 @@ class SideBar extends React.Component {
   }
   searchSystemsToggle(e) {
     this.props.dispatch( toggleSystemsSearchControls() );
-  }
-  mapControlsToggle(e) {
-    this.props.dispatch( toggleMapControls() );
   }
   hyperspaceNavigationControls(e) {
     this.props.dispatch( toggleHyperspaceNavigationControls() );
@@ -35,21 +31,9 @@ class SideBar extends React.Component {
       border: '1px solid #49fb35'
     };
     const searchSystemsClasses = (this.props.systemsSearchControlsOn)? "btn btn-success control-button" : "btn btn-danger control-button";
-    const mapClasses = (this.props.mapControlsOn)? "btn btn-success control-button" : "btn btn-danger control-button";
     const hyperspaceNavigationClasses = (this.props.hyperspaceNavigationControlsOn)? "btn btn-success control-button" : "btn btn-danger control-button";
     return (
       <div id="side-bar" style={SideBarStyles}>
-        <button 
-          id="map-controls-toggle"
-          type="button"
-          className={mapClasses}
-          onClick={e => this.mapControlsToggle(e)}
-          data-tip="Map Controls"
-          data-for='map-controls-toggle'
-        >
-          <ReactTooltip id='map-controls-toggle'>{}</ReactTooltip>
-          <i className="glyphicon glyphicon-map-marker"></i>
-        </button>
         <button
           id="search-systems-toggle"
           type="button" 
