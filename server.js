@@ -112,7 +112,7 @@ app.get('/api/*', function(req, res) {
 });
 app.post(/^\/(?!api).*/, function response(req, res) {
   console.log("\npost made to webpack");
-  console.log('==> 🌎 Listening on port. Open up http://' + ip.address() + ':' + port);
+  console.log('==> 🌎 Listening on port. Open up http://' + hostname + ':' + port);
   // res.end();
 });
 app.post('/api/*', function(req, res) {
@@ -197,6 +197,7 @@ app.use(function(req, res, next) {
 
 
 app.listen(port, hostname, function onStart(err) {
+  console.log("hostname: ", hostname);
   if (err) {
     console.log(err);
   }
