@@ -6,6 +6,7 @@ import uuidv4 from 'uuid/v4';
 
 import HyperspaceNode from './hyperspaceNode.js';
 import HyperspacePoint from './hyperspacePoint.js';
+import HyperspaceLocation from './hyperspaceLocation.js';
 import StartPinPoint from './startPinPoint.js';
 import EndPinPoint from './endPinPoint.js';
 import NavigationSystemSearch from './navigationSystemSearch.js';
@@ -84,8 +85,8 @@ class PivotPoint extends React.Component {
             </Else>
           </If>
         </div>
+        <HyperspaceLocation Point={this.props.Point} />
         <HyperspacePoint Point={this.props.Point} />
-        <HyperspaceNode Node={this.props.Node}/>         
       </div>
     );
   }

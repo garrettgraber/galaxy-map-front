@@ -11,11 +11,15 @@ import '../../../css/main.css';
 
 import {
   hyperspacePositionSearch,
-  systemClickToggler
+  systemClickToggler,
+  setPositionToDefault
 } from '../../../actions/actions.js';
 import {
   pathStartClickToggle,
-  pathEndClickToggle
+  pathEndClickToggle,
+  setDefaultStartPosition,
+  setDefaultEndPosition,
+  hyperspaceNavigationUpdateOn
 } from '../../../actions/actionCreators.js';
 
 class NavigationSystemSearch extends React.Component {
@@ -34,12 +38,8 @@ class NavigationSystemSearch extends React.Component {
     const pathStartClick = this.props.pathStartClick;
     const pathEndClick = this.props.pathEndClick;
     this.setSystemValue(isStartPosition, startSystem, endSystem);
-
     const startClickIsOn = (isStartPosition && pathStartClick);
     const endClickIsOn = (!isStartPosition && pathEndClick);
-
-    console.log("NavigationSystemSearch this.props: ", this.props);
-
     setCurrsor(startClickIsOn, endClickIsOn);
   }
   componentWillReceiveProps(newProps) {
@@ -49,16 +49,10 @@ class NavigationSystemSearch extends React.Component {
     const pathStartClick = newProps.pathStartClick;
     const pathEndClick = newProps.pathEndClick;
     this.setSystemValue(isStartPosition, startSystem, endSystem);
-
-
     const startClickIsOn = ( isStartPosition && pathStartClick);
     const endClickIsOn = (!isStartPosition && pathEndClick);
 
-    console.log("NavigationSystemSearch newProps: ", newProps);
-    console.log("NavigationSystemSearch this.props: ", this.props);
-
     setCurrsor(pathStartClick, pathEndClick);
-
   }
   setSystemValue(isStartPosition, startSystem, endSystem) {
     const isStartEmptySpace = startSystem.slice(0, 3) === 'ES@';
@@ -72,12 +66,24 @@ class NavigationSystemSearch extends React.Component {
     }
   }
   systemChange(systemValue) {
-    console.log("systemValue: ", systemValue);
-    // const searchInput = e.target.value;
-    const Search = {system: systemValue.value, isStartPosition: this.props.isStartPosition};
-    console.log("Search: ", Search.system);
-    this.setState({system: Search.system});
-    this.props.dispatch(hyperspacePositionSearch(Search));
+    if(systemValue === null) {
+      this.setState({system: ""});
+
+      console.log("Coordinate emptied: ", systemValue);
+
+      if(this.props.isStartPosition) {
+        this.props.dispatch(setDefaultStartPosition());
+      } else {
+        this.props.dispatch(setDefaultEndPosition());
+      }
+
+      this.props.dispatch(hyperspaceNavigationUpdateOn());
+
+    } else {
+      const Search = {system: systemValue.value, isStartPosition: this.props.isStartPosition};
+      this.setState({system: Search.system});
+      this.props.dispatch(hyperspacePositionSearch(Search));
+    }
   }
   searchSystem(e) {
     const Search = {system: this.state.system, isStartPosition: this.props.isStartPosition};
@@ -90,7 +96,6 @@ class NavigationSystemSearch extends React.Component {
     const startClickIsOn = (this.props.isStartPosition && this.props.pathStartClick);
     const endClickIsOn = (!this.props.isStartPosition && this.props.pathEndClick);
     const clickSystemClasses = (startClickIsOn || endClickIsOn)? "btn hyperspace-navigation-button btn-success" : "btn hyperspace-navigation-button btn-primary";
-
     const selectOptions = [...this.props.systemNameSet];
     const filterOptions = createFilterOptions({ options: selectOptions });
 
@@ -98,7 +103,6 @@ class NavigationSystemSearch extends React.Component {
       <div className="pane-column">
 
         <div style={{display: 'inline-block', width: 200, marginRight: 3, marginLeft: 3}}>
-
           <Select
             name="selected-system-search"
             filterOptions={filterOptions}
@@ -107,7 +111,6 @@ class NavigationSystemSearch extends React.Component {
             onChange={(selectValue) => this.systemChange(selectValue)}
             value={this.state.system}
           />
-
         </div>
 
         <button
@@ -127,31 +130,11 @@ class NavigationSystemSearch extends React.Component {
   }
 }
 
-// <input id="start-system-input" type="text" placeholder={this.props.pointName + " System"} className="search-input" value={this.state.system} onChange={(systemValue) => this.systemChange(systemValue)} />
-
-
-// <button
-// type="button"
-// className="btn hyperspace-navigation-button btn-primary"
-// style={{verticalAlign: "top"}}
-// onClick={(e) => this.searchSystem(e)}
-// data-tip="Search"
-// data-for={'search-system-hyperspace-' + this.state.componentId}
-// >
-// <i className="glyphicon glyphicon-search"></i>
-// </button>
-// <ReactTooltip id={'search-system-hyperspace-' + this.state.componentId} place="top">{}</ReactTooltip>
-
-
 function setCurrsor(start, end) {
-  console.log("set cursor has fired: ");
-  console.log("start: ", start);
-  console.log("end: ", end);
   if(!start && !end) {
     $('.leaflet-container').css('cursor','');
   } else if((start && !end) || (!start && end)) {
       $('.leaflet-container').css('cursor','not-allowed');
-      // $('.leaflet-container').attr("style","cursor:  url(../images/icons/sci-fi-generic/arrow-scope.svg), crosshair;");
   } else {
     console.log("Error cannot have both active");
   }

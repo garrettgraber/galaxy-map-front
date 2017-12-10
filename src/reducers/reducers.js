@@ -79,7 +79,7 @@ const BlankNode = {
 };
 const DefaultDataStream = {
 	deCodedIndex: 18,
-	currentItem: 'Death to Sith Fags',
+	currentItem: 'Welcome to The Galaxy',
 	streamItemArrray: []
 };
 const defaultZoom = 2;
@@ -333,6 +333,8 @@ function hyperspaceStartPoint(state = BlankPoint, action) {
 			return action.payload;
 		case Actions.SET_START_POSITION_ERROR:
 			return state;
+		case Actions.SET_DEFAULT_START_POSITION:
+			return BlankPoint;
 		default:
 			return state;	
 
@@ -344,6 +346,8 @@ function hyperspaceEndPoint(state = BlankPoint, action) {
 			return action.payload;
 		case Actions.SET_END_POSITION_ERROR:
 			return state;
+		case Actions.SET_DEFAULT_END_POSITION:
+			return BlankPoint;
 		default:
 			return state;	
 	}

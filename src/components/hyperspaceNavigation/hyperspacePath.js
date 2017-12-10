@@ -25,7 +25,6 @@ class HyperspacePath extends React.Component {
     }
   }
   componentDidMount() {
-    console.log("HyperspacePath has mounted: ", this.props);
     const Path = this.props.Path;
     const EdgeLocations = this.props.StartAndEndLocations;
     const hyperspacePathComponents = generateHyperspaceNodesAndLanes(this.props.nodes, this.props.lanes, this.props.isSinglePath);
@@ -104,10 +103,6 @@ function generateHyperspaceNodesAndLanes(nodes, lanes, isSinglePath) {
 }
 
 
-
-// function createFreespaceLane(Node, Point) {
-//   return (<HyperspaceFreeSpaceJump  key={uuidv4()} HyperSpaceNode={Node} HyperSpacePoint={Point} style={hyperspaceLanesStylePink}/>);
-// }
 
 function nodeAndPointAreEqual(point1, point2) {
   const sameName = (point1.system === point2.system)? true : false;

@@ -27,10 +27,13 @@ import {
   setEndPosition,
   setStartPositionError,
   setEndPositionError,
+  setDefaultStartPosition,
+  setDefaultEndPosition,
   setStartNode,
   setEndNode,
   setStartSystem,
   setEndSystem,
+  calculateHyperspaceJumpOn,
   calculateHyperspaceJumpOff,
   hyperspaceNavigationUpdateOn,
   hyperspaceNavigationUpdateOff,
@@ -49,7 +52,9 @@ import {
   pathEndClickOff,
   pathStartClickOff,
   pathStartClickOn,
-  pathEndClickOn
+  pathEndClickOn,
+  hyperspaceJumpStarting,
+  hyperspaceJumpCompleted
 } from './actionCreators.js';
 import {
   getGalacticYFromLatitude,
@@ -105,6 +110,22 @@ export function findSystem(systemName) {
 	}
 }
 
+
+export function setPositionToDefault(isStartPosition) {
+  return function (dispatch, getState) {
+    if(isStartPosition) {
+      dispatch(setDefaultStartPosition());
+    } else {
+      dispatch(setDefaultEndPosition());
+    }
+    console.log("After setPositionToDefault: ", getState());
+
+    dispatch(hyperspaceNavigationUpdateOn());
+
+    return null;
+  }
+}
+
 export function zoomToLocation(locationCenter, zoom) {
   return function(dispatch, getState) {
     dispatch(setMapCenterAndZoom(locationCenter, zoom));
@@ -117,6 +138,7 @@ export function plotFreeSpaceJumpToNode(HyperspacePathData) {
 
     const dataStreamMessage = "Jump calculated from " + HyperspacePathData.StartPoint.system + " to " + HyperspacePathData.EndPoint.system;
 
+    dispatch(calculateHyperspaceJumpOn());
     dispatch(addItemToDataStream(dataStreamMessage));
     dispatch(emptyHyperspacePathCollections());
     dispatch(activeStartPosition(HyperspacePathData.StartPoint));
@@ -133,6 +155,9 @@ export function plotFreeSpaceJumpToNode(HyperspacePathData) {
 
 export function getHyperspacePathCollection(HyperspacePathSearch, HyperspacePathData) {
 	return function(dispatch, getState) {
+
+    dispatch(calculateHyperspaceJumpOn());
+
     getHyperspacePathData(HyperspacePathSearch).then(response => {
       return response.json();
     }).then(data => {
@@ -148,6 +173,8 @@ export function getHyperspacePathCollection(HyperspacePathSearch, HyperspacePath
       dispatch(updateHyperspacePaths());
       dispatch(calculateHyperspaceJumpOff());
       dispatch(hyperspaceNavigationUpdateOn());
+
+      console.log("Hyperspace Jump Successful: ", getState());
 
     }).catch(err => {
 

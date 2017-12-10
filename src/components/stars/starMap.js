@@ -70,9 +70,7 @@ class StarMap extends React.Component {
         }
   		}
 
-      // let galacticPlanetsSet = new Set(PlanetsArray);
       this.setState({GalacticPlanetsArray: PlanetsArray});
-      // const SystemObjectSetFronzen = Object.freeze(galacticPlanetsSet);
       systemNamesArray.sort(function(a, b){
         const systemA = a.value.toLowerCase();
         const systemB = b.value.toLowerCase();
@@ -82,7 +80,6 @@ class StarMap extends React.Component {
       });
 
       let systemNameSetSorted = new Set(systemNamesArray);
-      console.log("Pepsi systemNameSetSorted: ", systemNameSetSorted);
       const SystemNamesSetFrozen = Object.freeze(systemNameSetSorted);
       this.props.dispatch(buildSystemNameSet(SystemNamesSetFrozen));
 
@@ -190,7 +187,7 @@ class StarMap extends React.Component {
   render() {
   	const zIndex = 270;
     const StarMapComponentsToRender = renderComponentsOrNull(this.state.StarMapComponents);
-    console.log("Total Star Components Rendering: ", (this.state.StarMapComponents)? this.state.StarMapComponents.length : null);
+    // console.log("Total Star Components Rendering: ", (this.state.StarMapComponents)? this.state.StarMapComponents.length : null);
 
   	return (
   		<Pane name="star-pane" style={{zIndex: zIndex}}>
@@ -298,32 +295,32 @@ function generateIntersectionMap(currentZoom, currentMap, galacticPlanetsArray) 
 
   const MapBoundaries = getMapBoundaries(currentZoom, currentMap);
   let starsCurrentlyInView = _.filter(galacticPlanetsArray, e => { 
-      return e.starInMapView(
-        MapBoundaries.mapWidth,
-        MapBoundaries.mapHeight,
-        MapBoundaries,
-        currentZoom
-      ) === true; 
-    });
-    let starsCurrentlyVisible = _.filter(galacticPlanetsArray, e => { 
-      // console.log("Star is currently in view: ", e);
-      // console.log("starVisible: ", starVisible);
-      return e.starIsVisible(currentZoom) === true; 
-    });
-    const starsInViewSet = new Set(starsCurrentlyInView);
-    const starsVisible = new Set(starsCurrentlyVisible);
-    // const union = new Set([...starsInViewSet, ...starsVisible]);
-    const intersectionMap = (currentZoom > 3)? new Set([...starsInViewSet].filter(x => starsVisible.has(x))) : new Set([...starsVisible]);
-    // console.log("starsCurrentlyInView: ", starsCurrentlyInView);
-    // console.log("starsAtZoomLevel: ", starsAtZoomLevel);
-    // console.log("starsCurrentlyVisible: ", starsCurrentlyVisible);
-    // console.log("starsInViewSet: ", starsInViewSet);
-    // console.log("starsVisible: ", starsVisible);
-    // console.log("union: ", union);
-    // console.log("intersectionMap: ", intersectionMap);
-    // console.log("intersectionMapDuo: ", intersectionMapDuo);
-    // console.log("previousIntersectionMap: ", this.state.previousIntersectionMap);
-    return intersectionMap;
+    return e.starInMapView(
+      MapBoundaries.mapWidth,
+      MapBoundaries.mapHeight,
+      MapBoundaries,
+      currentZoom
+    ) === true; 
+  });
+  let starsCurrentlyVisible = _.filter(galacticPlanetsArray, e => { 
+    // console.log("Star is currently in view: ", e);
+    // console.log("starVisible: ", starVisible);
+    return e.starIsVisible(currentZoom) === true; 
+  });
+  const starsInViewSet = new Set(starsCurrentlyInView);
+  const starsVisible = new Set(starsCurrentlyVisible);
+  // const union = new Set([...starsInViewSet, ...starsVisible]);
+  const intersectionMap = (currentZoom > 3)? new Set([...starsInViewSet].filter(x => starsVisible.has(x))) : new Set([...starsVisible]);
+  // console.log("starsCurrentlyInView: ", starsCurrentlyInView);
+  // console.log("starsAtZoomLevel: ", starsAtZoomLevel);
+  // console.log("starsCurrentlyVisible: ", starsCurrentlyVisible);
+  // console.log("starsInViewSet: ", starsInViewSet);
+  // console.log("starsVisible: ", starsVisible);
+  // console.log("union: ", union);
+  // console.log("intersectionMap: ", intersectionMap);
+  // console.log("intersectionMapDuo: ", intersectionMapDuo);
+  // console.log("previousIntersectionMap: ", this.state.previousIntersectionMap);
+  return intersectionMap;
 }
 
 function renderComponentsOrNull(currentComponents) {

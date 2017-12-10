@@ -372,8 +372,6 @@ export class HyperSpacePathCollection {
 	}
 
 	generateHyperspacePaths() {
-
-		console.log("generateHyperspacePaths has fired...", this.paths);
 		const hyperspacePaths = [];
 
 		for(let path of this.paths) {
@@ -398,7 +396,6 @@ export class HyperSpacePathCollection {
 
 	validateHyperspacePaths() {
 
-		console.log("validateHyperspacePaths has fired...");
 		const invalidJumps = [];
 
 		for(let path of this.paths) {

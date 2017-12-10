@@ -136,6 +136,13 @@ class MapMain extends React.Component {
 
   onMove(e) { }
 
+  onMouseMove(e) {
+    // console.log("Mouse has moved, bitch: ", e);
+
+    const GalacticCoordinates = getGalacticFromLatLng(e.latlng);
+    // console.log("Galactic Coordinates: ", GalacticCoordinates);
+  }
+
   onClickHyperspaceNavigation(e) {
     if(this.props.pathSearchEnd || this.props.pathSearchStart) {
       const isStartNode = (this.props.pathSearchStart)? true : false;
@@ -213,6 +220,7 @@ class MapMain extends React.Component {
             onDragend={e => this.onDragend(e)}
             onDragstart={e => this.onDragstart(e)}
             onMove={e => this.onMove(e)}
+            onMouseMove={e => this.onMouseMove(e)}
             onClick={(e) => this.onClickHyperspaceNavigation(e)}
             onViewportChange={e => this.onViewportChange(e)}
             onViewportChanged={e => this.onViewportChanged(e)}
@@ -284,6 +292,24 @@ function getNorthEastAndSoutWestBounds(mapInstance) {
       NorthEastBounds: NorthEastBounds,
       SouthWestBounds: SouthWestBounds
     }
+}
+
+
+
+function getGalacticYFromLatitude(latitude) {
+  return  (-3.07e-19*(latitude**12)) + (-1.823e-18*(latitude**11)) + (4.871543e-15*(latitude**10)) + (4.1565807e-14*(latitude**9)) + (-2.900986202e-11 * (latitude**8)) + (-1.40444283864e-10*(latitude**7)) + (7.9614373223054e-8*(latitude**6)) + (7.32976568692443e-7*(latitude**5)) + (-0.00009825374539548058*(latitude**4)) + (0.005511093818675318*(latitude**3)) + (0.04346753629461727 * (latitude**2)) + (111.30155374684914 * latitude);
+}
+
+
+function getGalacticXFromLongitude(longitude) {
+  return (111.3194866138503 * longitude);
+}
+
+function getGalacticFromLatLng(LatLng) {
+  return {
+    yGalactic: getGalacticYFromLatitude(LatLng.lat),
+    xGalactic: getGalacticXFromLongitude(LatLng.lng)
+  };
 }
 
 

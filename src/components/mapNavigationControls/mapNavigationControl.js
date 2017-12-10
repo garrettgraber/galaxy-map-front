@@ -65,11 +65,8 @@ class MapNavigationControl extends React.Component {
   }
   mapControlsToggle(e) {
     console.log("Closing map controls");
-
     const mapControlsOn = this.state.mapControlsOn;
-
     this.setState({mapControlsOn: !mapControlsOn});
-
     console.log("Map Controls toggle: ", this.state.mapControlsOn);
 
   }
@@ -83,7 +80,7 @@ class MapNavigationControl extends React.Component {
     return (
       <div>
 
-        <div style={{position: "fixed", bottom: 75, right: mapControlsButtonPositionRight, width: 40, height: 40, zIndex: 12, border: '1px solid green'}}>
+        <div style={{position: "fixed", bottom: 75, right: mapControlsButtonPositionRight, width: 40, height: 40, zIndex: 12}}>
 
           <button
             type="button"
@@ -102,10 +99,10 @@ class MapNavigationControl extends React.Component {
 
         <If condition={ this.state.mapControlsOn }>
             <Then>
-              <div style={{bottom: 10, right: 10, height: 220, width: 160, zIndex: 11, position: 'fixed', border: '1px solid gold'}}>
+              <div style={{bottom: 10, right: 10, height: 220, width: 160, zIndex: 11, position: 'fixed'}}>
 
                 <div style={{height: 40}}>
-                  <div  style={{height: '100%', width: '50%', display: 'inline-block', border: '1px solid red'}}>
+                  <div  style={{height: '100%', width: '50%', display: 'inline-block'}}>
                     <button
                       type="button"
                       className="btn btn-primary"
@@ -120,7 +117,7 @@ class MapNavigationControl extends React.Component {
 
 
                   </div>
-                  <div  style={{height: '100%', width: '50%', display: 'inline-block', border: '1px solid red'}}>
+                  <div  style={{height: '100%', width: '50%', display: 'inline-block'}}>
                     <button
                       type="button"
                       className="btn btn-primary"
@@ -137,7 +134,7 @@ class MapNavigationControl extends React.Component {
                   </div>          
                 </div>
 
-                <div style={{height: 160, border: '1px solid purple', position: 'fixed', bottom: 15}}>
+                <div style={{height: 160, position: 'fixed', bottom: 15}}>
 
                   <div id="circle" className="rotate-circle">
                     

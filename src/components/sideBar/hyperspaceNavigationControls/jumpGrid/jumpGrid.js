@@ -18,7 +18,7 @@ class JumpGrid extends React.Component {
     super(props);
   }
   componentDidMount() {
-    console.log("JumpGrid has mounted");
+    // console.log("JumpGrid has mounted");
   }
   getJumpPaths() {
     let hyperspacePathData = [];
@@ -30,7 +30,7 @@ class JumpGrid extends React.Component {
     return hyperspacePathData;
   }
   onMouseLeave() {
-    console.log("onMouseLeave jump grid!");
+    // console.log("onMouseLeave jump grid!");
     this.props.dispatch(noSetSelectedHyperspaceRoute());
   }
   render() {
@@ -64,9 +64,9 @@ class JumpGrid extends React.Component {
     return (
       <div >
         <div className="pane-row-control" style={JumpGridControllerStyle}>
-          <span className="nav-text" >{activeStartSystem}&nbsp;&mdash;&mdash;&raquo;&nbsp;</span>
-          <span className="nav-text" >{acttveEndSystem}&nbsp;</span>
-          <span className="nav-text">&nbsp;&nbsp;Total Jumps:&nbsp;&nbsp;{jumpPaths.length}</span>
+          <span className="nav-text" >{emptySpaceCheck(activeStartSystem)}&nbsp;&mdash;&mdash;&raquo;&nbsp;</span>
+          <span className="nav-text" >{emptySpaceCheck(acttveEndSystem)}&nbsp;</span>
+          <span className="nav-text">&nbsp;&nbsp;Total Paths:&nbsp;&nbsp;{jumpPaths.length}</span>
         </div>
         <div id="div1" style={containerDiv1Styles}>
           <div id="div2" style={containerDiv2Styles} >
@@ -88,6 +88,20 @@ function generateGridRowPaths(pathsArray) {
   }
   return masterJumpPlotsArray;
 }
+
+
+
+function emptySpaceCheck(system) {
+  if(system.includes('@')) {
+    const splitSystem = system.split('@');
+    const emptySpaceHash = splitSystem[1];
+    const emptySpaceName = "ES " + emptySpaceHash.slice(0, 10);
+    return emptySpaceName;
+  } else {
+    return system;
+  }
+}
+
 
 const mapStateToProps = (state = {}) => {
     return Object.assign({}, state);

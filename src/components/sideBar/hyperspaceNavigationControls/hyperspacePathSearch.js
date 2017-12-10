@@ -23,7 +23,14 @@ class HyperspacePathSearch extends React.Component {
     return (
       <div id="hyperspace-navigation-pane" className="control-row">
         <HyperspaceShipDetails />
-        <HyperspaceControls />
+        <HyperspaceControls
+          StartPoint={this.props.hyperspaceStartPoint}
+          EndPoint={this.props.hyperspaceEndPoint}
+          ActiveStartPoint={this.props.hyperspaceActiveStartPoint}
+          ActiveEndPoint={this.props.hyperspaceActiveEndPoint}
+          jumpIsCalculating={this.props.calculateHyperspaceJump}
+          hyperspacePathHasChanged={this.props.hyperspacePathChange}
+        />
         <PivotPoint Point={this.props.hyperspaceStartPoint} Node={this.props.hyperspaceStartNode} isStartPosition={true} pointName={'Start'} defaultSystem={startDefault} />
         <PivotPoint Point={this.props.hyperspaceEndPoint} Node={this.props.hyperspaceEndNode} isStartPosition={false} pointName={'End'} defaultSystem={endDefault} />
         <If condition={ hyperspacePathData.length > 0 }>

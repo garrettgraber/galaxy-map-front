@@ -25,7 +25,6 @@ class HyperSpaceFreeSpaceJump extends React.Component {
     super(props);
   }
   componentDidMount() {
-    console.log("HyperSpaceFreeSpaceJump has mounted");
     // console.log("lane ref in componet: ", this.refs.lane);
 
     if(this.refs.lane) {

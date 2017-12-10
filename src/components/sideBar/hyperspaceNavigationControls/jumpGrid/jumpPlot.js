@@ -23,7 +23,7 @@ class JumpPlot extends React.Component {
   }
 
   componentDidMount() {
-    console.log("this.props.PathObject: ", this.props.PathObject);
+
   }
 
   onClick(e) {
@@ -91,8 +91,8 @@ class JumpPlot extends React.Component {
         onMouseLeave={(e) => this.onMouseLeave(e)} >
         <div style={{width: '100%'}} >
 
-          <span className="nav-text" >{activeStartSystem}&nbsp;&mdash;&mdash;&raquo;&nbsp;</span>
-          <span className="nav-text" >{acttveEndSystem}&nbsp;</span>
+          <span className="nav-text" >{emptySpaceCheck(activeStartSystem)}&nbsp;&mdash;&mdash;&raquo;&nbsp;</span>
+          <span className="nav-text" >{emptySpaceCheck(acttveEndSystem)}&nbsp;</span>
 
         </div>
 
@@ -107,6 +107,22 @@ class JumpPlot extends React.Component {
     );
   }
 }
+
+
+
+
+function emptySpaceCheck(system) {
+  if(system.includes('@')) {
+    const splitSystem = system.split('@');
+    const emptySpaceHash = splitSystem[1];
+    const emptySpaceName = "ES " + emptySpaceHash.slice(0, 10);
+    return emptySpaceName;
+  } else {
+    return system;
+  }
+}
+
+
 
 
 const mapStateToProps = (state = {}) => {

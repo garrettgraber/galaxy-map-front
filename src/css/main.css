@@ -334,3 +334,76 @@
     /*border-radius: 10px;*/
     /*overflow-y: scroll;*/
 }
+
+
+
+.pulsating-button {
+    animation: pulse-red 0.5s infinite;
+}
+
+.pulsating-button-calculating {
+    animation: pulse-teal 0.5s infinite;
+}
+
+.pulsating-button-success {
+    animation: pulse-green 0.5s infinite;
+}
+
+.pulsating-button-ready {
+    animation: pulse-teal 0.5s infinite;
+}
+
+.pulsating-button-off {
+    animation: none;
+    border: 3px solid red;
+}
+
+.button-border-red {
+    border: 3px solid red;
+}
+
+.button-border-green {
+    border: 3px solid #49fb35;
+}
+
+.button-border-teal {
+    border: 3px solid teal;
+}
+
+
+@keyframes pulse-gold {
+  0% {
+    border: 3px solid black;
+  }
+  100% {
+    border: 3px solid gold;
+  }
+}
+
+@keyframes pulse-green {
+  0% {
+    border: 3px solid black;
+  }
+  100% {
+    border: 3px solid #49fb35;
+  }
+}
+
+@keyframes pulse-teal {
+  0% {
+    border: 3px solid black;
+  }
+  100% {
+    border: 3px solid teal;
+  }
+}
+
+@keyframes pulse-red {
+  0% {
+    border: 3px solid black;
+  }
+  100% {
+    border: 3px solid red;
+  }
+}
+

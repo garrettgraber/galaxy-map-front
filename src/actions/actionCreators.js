@@ -7,48 +7,39 @@ export function displayMapControls() {
 		type: Actions.DISPLAY_MAP_CONTROLS
 	}
 }
-
 export function closeMapControls() {
 	return {
 		type: Actions.HIDE_MAP_CONTROLS
 	}
 }
-
-
 export function addSectorSearchSet(sector) {
 	return {
 		type: Actions.ADD_SECTOR_SEARCH_SET,
 		payload: sector
 	}
 }
-
 export function buildSectorSearchSet(sectorSet) {
 	return {
 		type: Actions.BUILD_SECTOR_SEARCH_SET,
 		payload: sectorSet
 	}
 }
-
 export function emptySectorSearchSet() {
 	return {
 		type: Actions.EMPTY_SECTOR_SEARCH_SET
 	}
 }
-
-
 export function buildSystemNameSet(nameSet) {
 	return {
 		type: Actions.BUILD_SYSTEM_NAME_SET,
 		payload: nameSet
 	}
 }
-
 export function emptySystemNameSet() {
 	return {
 		type: Actions.EMPTY_SYSTEM_NAME_SET
 	}
 }
-
 export function activeStartPosition(StartPosition) {
 	return {
 		type: Actions.SET_ACTVIE_START_POSITION,
@@ -71,7 +62,6 @@ export function activeEndPositionDefault() {
 		type: Actions.SET_ACTVIE_END_POSITION_DEFAULT
 	}
 }
-
 export function pathStartClickOn() {
 	return {
 		type: Actions.PATH_START_CLICK_ON
@@ -102,7 +92,6 @@ export function pathEndClickToggle() {
 		type: Actions.PATH_END_CLICK_TOGGLE
 	}
 }
-
 export function activeStartNode(StartNode) {
 	return {
 		type: Actions.SET_ACTVIE_START_NODE,
@@ -125,11 +114,6 @@ export function activeEndNodeDefault() {
 		type: Actions.SET_ACTVIE_END_NODE_DEFAULT
 	}
 }
-
-
-
-
-
 export function activeHyperspaceJump(hyperspaceHash) {
 	return {
 		type: Actions.SET_ACTIVE_HYPERSPACE_JUMP,
@@ -350,6 +334,16 @@ export function setEndPositionError(error) {
 	return {
 		type: Actions.SET_END_POSITION_ERROR,
 		payload: error
+	}
+}
+export function setDefaultStartPosition() {
+	return {
+		type: Actions.SET_DEFAULT_START_POSITION
+	}
+}
+export function setDefaultEndPosition() {
+	return {
+		type: Actions.SET_DEFAULT_END_POSITION
 	}
 }
 export function setStartNode(StartNode) {
