@@ -91,6 +91,7 @@ const emptySystemSet = new Set();
 const emptySectorSet = new Set();
 
 
+
 function mapControlsDisplayed(state = true, action) {
 	switch (action.type) {
 		case Actions.DISPLAY_MAP_CONTROLS:
@@ -481,6 +482,7 @@ function pinPointStart(state = false, action) {
 			return false;
 		case Actions.PIN_POINT_START_TOGGLE:
 			return (state)? false : true;
+
 		default:
 			return state;
 	}	
@@ -493,6 +495,7 @@ function pinPointEnd(state = false, action) {
 			return false;
 		case Actions.PIN_POINT_END_TOGGLE:
 			return (state)? false : true;
+
 		default:
 			return state;
 	}	
@@ -517,6 +520,7 @@ function pathEndClick(state = false, action) {
 			return false;
 		case Actions.PATH_END_CLICK_TOGGLE:
 			return (state)? false : true;
+
 		default:
 			return state;
 	}

@@ -144,6 +144,9 @@ class MapMain extends React.Component {
   }
 
   onClickHyperspaceNavigation(e) {
+    console.log("onClickHyperspaceNavigation pathSearchStart: ", this.props.pathSearchStart);
+    console.log("onClickHyperspaceNavigation pathSearchEnd: ", this.props.pathSearchEnd);
+
     if(this.props.pathSearchEnd || this.props.pathSearchStart) {
       const isStartNode = (this.props.pathSearchStart)? true : false;
       const HyperspaceNodeSearch = {
@@ -167,7 +170,6 @@ class MapMain extends React.Component {
     // }
 
     const mapBounds = this.refs.map.leafletElement.getBounds();
-    // console.log('Map Bounds after viewport has changed: ', mapBounds);
 
     this.props.dispatch(setMapCenterAndZoom(
       ViewportValues.center,
@@ -267,11 +269,8 @@ class MapMain extends React.Component {
 
 
 
-// <div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 
-
-
-function  getStarData() {
+function getStarData() {
 	fetch('/api/has-location')  
 	.then(function(response) {
   	return response.json();

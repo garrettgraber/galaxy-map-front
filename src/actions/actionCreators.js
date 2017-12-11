@@ -1,6 +1,6 @@
-// import * as Actions from '../constants/actionTypes.js';
 
 import Actions from '../constants/actionTypesModule.js';
+
 
 export function displayMapControls() {
 	return {

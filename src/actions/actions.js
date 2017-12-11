@@ -53,6 +53,12 @@ import {
   pathStartClickOff,
   pathStartClickOn,
   pathEndClickOn,
+
+  pinPointStartOn,
+  pinPointStartOff,
+  pinPointEndOn,
+  pinPointEndOff,
+
   hyperspaceJumpStarting,
   hyperspaceJumpCompleted
 } from './actionCreators.js';
@@ -109,7 +115,6 @@ export function findSystem(systemName) {
 		return null; 
 	}
 }
-
 
 export function setPositionToDefault(isStartPosition) {
   return function (dispatch, getState) {
@@ -203,38 +208,6 @@ export function noSetSelectedHyperspaceRoute() {
     dispatch(setNullHyperspaceHash());
     dispatch(updateHyperspacePaths());
     dispatch(hyperspaceNavigationUpdateOn());
-    return null;
-  }
-}
-
-export function systemClickToggler(isStartPosition) {
-  return function(dispatch, getState) {
-    const stateBeforeSwitch = getState();
-    const startOnClickStatus = stateBeforeSwitch.pathStartClick;
-    const endOnClickStatus = stateBeforeSwitch.pathEndClick;
-
-    const activeStartClick = isStartPosition && startOnClickStatus;
-    const inActiveStartClick = isStartPosition && !startOnClickStatus;
-    const startClickAndEndIsActive = isStartPosition && endOnClickStatus;
-    const activeEndClick = !isStartPosition && endOnClickStatus;
-    const inActiveEndClick = !isStartPosition && !endOnClickStatus;
-    const endClickAndStartIsActive = !isStartPosition && startOnClickStatus;
-
-    if(activeStartClick) {
-      dispatch(pathStartClickOff());
-    } else if(activeEndClick) {
-      dispatch(pathEndClickOff());
-    } else if(startClickAndEndIsActive) {
-      dispatch(pathStartClickOn());
-      dispatch(pathEndClickOff());
-    } else if(endClickAndStartIsActive) {
-      dispatch(pathEndClickOn());
-      dispatch(pathStartClickOff());
-    } else if(inActiveStartClick) {
-      dispatch(pathStartClickOn());
-    } else if(inActiveEndClick) {
-      dispatch(pathEndClickOn());
-    }
     return null;
   }
 }
@@ -370,7 +343,6 @@ export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
     return null;
   }
 }
-
 
 function setDataStreamItemThenClear(dataStreamItem) {
   return function(dispatch, getState) {

@@ -11,7 +11,6 @@ import '../../../css/main.css';
 
 import {
   hyperspacePositionSearch,
-  systemClickToggler,
   setPositionToDefault
 } from '../../../actions/actions.js';
 import {
@@ -19,7 +18,19 @@ import {
   pathEndClickToggle,
   setDefaultStartPosition,
   setDefaultEndPosition,
-  hyperspaceNavigationUpdateOn
+  hyperspaceNavigationUpdateOn,
+
+
+  pinPointStartOn,
+  pinPointStartOff,
+  pinPointEndOn,
+  pinPointEndOff,
+
+  pathStartClickOn,
+  pathStartClickOff,
+  pathEndClickOn,
+  pathEndClickOff
+
 } from '../../../actions/actionCreators.js';
 
 class NavigationSystemSearch extends React.Component {
@@ -35,24 +46,17 @@ class NavigationSystemSearch extends React.Component {
     const startSystem = this.props.hyperspaceStartPoint.system;
     const endSystem = this.props.hyperspaceEndPoint.system;
     const isStartPosition = this.props.isStartPosition;
-    const pathStartClick = this.props.pathStartClick;
-    const pathEndClick = this.props.pathEndClick;
     this.setSystemValue(isStartPosition, startSystem, endSystem);
-    const startClickIsOn = (isStartPosition && pathStartClick);
-    const endClickIsOn = (!isStartPosition && pathEndClick);
-    setCurrsor(startClickIsOn, endClickIsOn);
+
+    setCurrsorAsNotAllowed(this.props.clickSystem);
   }
   componentWillReceiveProps(newProps) {
     const startSystem = newProps.hyperspaceStartPoint.system;
     const endSystem = newProps.hyperspaceEndPoint.system;
     const isStartPosition = newProps.isStartPosition;
-    const pathStartClick = newProps.pathStartClick;
-    const pathEndClick = newProps.pathEndClick;
     this.setSystemValue(isStartPosition, startSystem, endSystem);
-    const startClickIsOn = ( isStartPosition && pathStartClick);
-    const endClickIsOn = (!isStartPosition && pathEndClick);
 
-    setCurrsor(pathStartClick, pathEndClick);
+    setCurrsorAsNotAllowed(newProps.clickSystem);
   }
   setSystemValue(isStartPosition, startSystem, endSystem) {
     const isStartEmptySpace = startSystem.slice(0, 3) === 'ES@';
@@ -65,33 +69,49 @@ class NavigationSystemSearch extends React.Component {
       this.setState({system: endSystem});
     }
   }
+
+
   systemChange(systemValue) {
     if(systemValue === null) {
       this.setState({system: ""});
-
-      console.log("Coordinate emptied: ", systemValue);
-
       if(this.props.isStartPosition) {
         this.props.dispatch(setDefaultStartPosition());
       } else {
         this.props.dispatch(setDefaultEndPosition());
       }
-
       this.props.dispatch(hyperspaceNavigationUpdateOn());
-
     } else {
       const Search = {system: systemValue.value, isStartPosition: this.props.isStartPosition};
       this.setState({system: Search.system});
       this.props.dispatch(hyperspacePositionSearch(Search));
     }
   }
-  searchSystem(e) {
-    const Search = {system: this.state.system, isStartPosition: this.props.isStartPosition};
-    this.props.dispatch(hyperspacePositionSearch(Search));
+
+  clickSystemsToggle(e) {
+
+    if(!this.props.clickSystem) {
+      if(this.props.isStartPosition) {
+        this.props.dispatch(pathEndClickOff());
+        this.props.dispatch(pinPointEndOff());
+        this.props.dispatch(pinPointStartOff());
+        this.props.dispatch(pathStartClickOn());    
+      } else {
+        this.props.dispatch(pathStartClickOff());
+        this.props.dispatch(pinPointStartOff());
+        this.props.dispatch(pinPointEndOn());
+        this.props.dispatch(pathEndClickOn());
+      }
+    } else {
+      setCurrsorAsDefault();
+      if(this.props.isStartPosition) {
+        this.props.dispatch(pathStartClickOff());
+      } else {
+        this.props.dispatch(pathEndClickOff());
+      }
+    }
   }
-  clickSystem(e) {
-    this.props.dispatch(systemClickToggler(this.props.isStartPosition));
-  }
+
+
   render() {
     const startClickIsOn = (this.props.isStartPosition && this.props.pathStartClick);
     const endClickIsOn = (!this.props.isStartPosition && this.props.pathEndClick);
@@ -117,7 +137,7 @@ class NavigationSystemSearch extends React.Component {
           type="button"
           className={clickSystemClasses}
           style={{verticalAlign: "top"}}
-          onClick={(e) => this.clickSystem(e)}
+          onClick={(e) => this.clickSystemsToggle(e)}
           data-tip="Click on Star System"
           data-for={'star-system-hyperspace-click' + this.state.componentId}
         >
@@ -130,14 +150,16 @@ class NavigationSystemSearch extends React.Component {
   }
 }
 
-function setCurrsor(start, end) {
-  if(!start && !end) {
-    $('.leaflet-container').css('cursor','');
-  } else if((start && !end) || (!start && end)) {
-      $('.leaflet-container').css('cursor','not-allowed');
-  } else {
-    console.log("Error cannot have both active");
+
+function setCurrsorAsNotAllowed(systemClickIsOn) {
+  if(systemClickIsOn) {
+    $('.leaflet-container').css('cursor','not-allowed');
   }
+}
+
+
+function setCurrsorAsDefault() {
+  $('.leaflet-container').css('cursor','');
 }
 
 

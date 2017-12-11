@@ -7,18 +7,25 @@ import uuidv4 from 'uuid/v4';
 import HyperspaceNode from './hyperspaceNode.js';
 import HyperspacePoint from './hyperspacePoint.js';
 import HyperspaceLocation from './hyperspaceLocation.js';
-import StartPinPoint from './startPinPoint.js';
-import EndPinPoint from './endPinPoint.js';
+import PinPoint from './pinPoint.js';
+
+
+
 import NavigationSystemSearch from './navigationSystemSearch.js';
 import '../../../css/main.css';
 import {
   setMapCenterAndZoom,
   pinPointStartOff,
-  pinPointEndOff
+  pinPointEndOff,
+
+  pathStartClickOff,
+  pathEndClickOff
+
 } from '../../../actions/actionCreators.js';
 import {
   zoomToLocation
 } from '../../../actions/actions.js';
+
 
 class PivotPoint extends React.Component {
   constructor() {
@@ -33,28 +40,39 @@ class PivotPoint extends React.Component {
     if(!_.isEmpty(this.props.Point)) {
       const Point = this.props.Point;
       const spaceCoordinates = [Point.lat, Point.lng];
-      // this.props.dispatch(setMapCenterAndZoom(spaceCoordinates, 8));
       this.props.dispatch(zoomToLocation(spaceCoordinates, 8));
     }    
   }
   switchSearchType() {
     const searchSystemsNewValue = !this.state.searchSystems;
     this.setState({searchSystems: searchSystemsNewValue});
+
+    // console.log("\nsearchSystemsNewValue: ", searchSystemsNewValue);
+    // console.log("isStartPosition: ", this.props.isStartPosition);
+    // console.log("pinPoint: ", this.props.pinPoint);
+    // console.log("pinPointAlternate: ", this.props.pinPointAlternate);
+    // console.log("clickSystem: ", this.props.clickSystem);
+    // console.log("clickSystem Alternate: ", this.props.clickSystemAlternate);
+
+    if(this.props.isStartPosition) {
+      this.props.dispatch(pinPointStartOff());
+      this.props.dispatch(pathStartClickOff());
+    } else {
+      this.props.dispatch(pinPointEndOff());
+      this.props.dispatch(pathEndClickOff());
+    }
+
     if(searchSystemsNewValue) {
-      if(this.props.pinPointStart && this.props.isStartPosition) {
-        if(!this.props.pinPointEnd) {
-          $('.leaflet-container').css('cursor','');
-        }
-        this.props.dispatch(pinPointStartOff());
+      if(this.props.pinPoint && !this.props.pinPointAlternate) {
+        $('.leaflet-container').css('cursor','');
       }
-      if(this.props.pinPointEnd && !this.props.isStartPosition) {
-        if(!this.props.pinPointStart) {
-          $('.leaflet-container').css('cursor','');
-        }
-        this.props.dispatch(pinPointEndOff());
+    } else {
+      if(this.props.clickSystem && !this.props.clickSystemAlternate) {
+        $('.leaflet-container').css('cursor','');
       }
     }
   }
+
   render() {
     const searchSystems = (this.state.searchSystems)? "btn hyperspace-navigation-button btn-success" :  "btn hyperspace-navigation-button btn-danger" ;
     const pointZoom = (this.props.Point.system)? "btn hyperspace-navigation-button btn-success" : "btn hyperspace-navigation-button btn-primary";
@@ -71,17 +89,10 @@ class PivotPoint extends React.Component {
 
           <If condition={ this.state.searchSystems }>
             <Then>
-              <NavigationSystemSearch isStartPosition={this.props.isStartPosition} pointName={this.props.pointName} system={this.props.Point.system} />
+              <NavigationSystemSearch isStartPosition={this.props.isStartPosition} pointName={this.props.pointName} system={this.props.Point.system} clickSystem={this.props.clickSystem}  />
             </Then>
             <Else>
-              <If condition={ this.props.isStartPosition }>
-                <Then>
-                  <StartPinPoint/>
-                </Then>
-                <Else>
-                  <EndPinPoint/>
-                </Else>
-              </If>
+              <PinPoint isStartPosition={this.props.isStartPosition} Point={this.props.Point} pinPoint={this.props.pinPoint} />
             </Else>
           </If>
         </div>
@@ -91,6 +102,7 @@ class PivotPoint extends React.Component {
     );
   }
 }
+
 
 const mapStateToProps = (state = {}) => {
     return Object.assign({}, state);

@@ -31,8 +31,8 @@ class HyperspacePathSearch extends React.Component {
           jumpIsCalculating={this.props.calculateHyperspaceJump}
           hyperspacePathHasChanged={this.props.hyperspacePathChange}
         />
-        <PivotPoint Point={this.props.hyperspaceStartPoint} Node={this.props.hyperspaceStartNode} isStartPosition={true} pointName={'Start'} defaultSystem={startDefault} />
-        <PivotPoint Point={this.props.hyperspaceEndPoint} Node={this.props.hyperspaceEndNode} isStartPosition={false} pointName={'End'} defaultSystem={endDefault} />
+        <PivotPoint Point={this.props.hyperspaceStartPoint} Node={this.props.hyperspaceStartNode} isStartPosition={true} pointName={'Start'} defaultSystem={startDefault} pinPoint={this.props.pinPointStart} pinPointAlternate={this.props.pinPointEnd} clickSystem={this.props.pathStartClick}  clickSystemAlternate={this.props.pathEndClick} />
+        <PivotPoint Point={this.props.hyperspaceEndPoint} Node={this.props.hyperspaceEndNode} isStartPosition={false} pointName={'End'} defaultSystem={endDefault} pinPoint={this.props.pinPointEnd} pinPointAlternate={this.props.pinPointStart} clickSystem={this.props.pathEndClick} clickSystemAlternate={this.props.pathStartClick}   />
         <If condition={ hyperspacePathData.length > 0 }>
           <Then>
             <JumpGrid />
