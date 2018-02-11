@@ -135,7 +135,7 @@ app.post('/api/*', function(req, res) {
       console.log("error getting data from api: ", error);
       res.sendStatus(500);
     } else {
-      console.log("Found hyperspace jump, loading to front end!!: ", body);
+      console.log("Found hyperspace jump, loading to front end!!");
       res.json(body);
     }
 

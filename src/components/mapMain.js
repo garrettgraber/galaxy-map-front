@@ -11,6 +11,8 @@ import ScrollArea from 'react-scrollbar';
 
 
 
+
+
 import { 
     searchSystemsFinish,
     renderMapOn,
@@ -55,17 +57,17 @@ import 'react-virtualized-select/styles.css';
 import imgBlack from '../images/black-tile.png';
 import DatabaseLinks from 'docker-links';
 
-const tileServerUrlLevel8Master = 'http://172.17.0.6:8110/tiles-leaflet-8-master/{z}/{x}/{y}.png';
+const tileServerUrlLevel8Master = 'http://172.17.0.5:8110/tiles-leaflet-8/{z}/{x}/{y}.png';
 // const tileServerUrlLevel7 = 'http://172.17.0.6:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
 
-const blackTileUrl = 'http://172.17.0.6:8110/tiles-black/black-tile.png';
+const blackTileUrl = 'http://172.17.0.5:8110/tiles-black/black-tile.png';
 const blackTileImage = imgBlack;
 // const awsTileServerUrl = 'https://s3-us-west-2.amazonaws.com/tiledata.sw.map/tiles-leaflet-7/{z}/{x}/{y}.png';
 // const awsTileServerUrlEast = 'https://s3.amazonaws.com/tiledata.sw.map.east/tiles-leaflet-7/{z}/{x}/{y}.png'
 // const awsTileServerUrlEastEight = 'https://s3.amazonaws.com/tiledata.sw.8.map.east/tiles-leaflet-8/{z}/{x}/{y}.png';
 const awsTileServerUrlEastMaster = 'https://s3.amazonaws.com/tiledata.sw.map.east.master/tiles-leaflet-8-master/{z}/{x}/{y}.png';
 
-const activeTileServer = awsTileServerUrlEastMaster;
+const activeTileServer = tileServerUrlLevel8Master;
 
 class MapMain extends React.Component {
   constructor(props) {
@@ -168,7 +170,7 @@ class MapMain extends React.Component {
     // } else {
     //   console.log("map center has changed: ", ViewportValues.center);
     // }
-
+    
     const mapBounds = this.refs.map.leafletElement.getBounds();
 
     this.props.dispatch(setMapCenterAndZoom(
@@ -177,7 +179,6 @@ class MapMain extends React.Component {
     ));
     
   }
-
 
   render() {
   	const minZoom = 2;

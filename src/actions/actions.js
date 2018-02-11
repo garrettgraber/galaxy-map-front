@@ -71,15 +71,11 @@ import * as ActionCreators from '../constants/actionTypes.js';
 export function findSystem(systemName) {
 	return function(dispatch, getState) {
     dispatch( searchSystemsStart() );
-
     fetch('api/search/?system=' + urlencode(systemName)).then(response => {
     	return response.json();
     }).then(json => {
     	let SystemObject = JSON.parse(json);
-    	SystemObject = SystemObject[0];
-
     	if(SystemObject.hasLocation) {
-
         const dataStreamMessage = "Zoomed to " + SystemObject.system + ' ...';
         dispatch( addItemToDataStream(dataStreamMessage) );
 				const LngLat = SystemObject.LngLat;
@@ -218,75 +214,71 @@ export function hyperspacePositionSearch(SystemSearch) {
     findPlanet(SystemSearchSent).then(response => {
       return response.json();
     }).then(data => {
-      const PlanetDataArray = JSON.parse(data);
-      if(PlanetDataArray.length > 0) {
-        const PlanetDataArray = JSON.parse(data);
-        const PlanetData = PlanetDataArray[0];
-        const NodeSearch = {system: PlanetData.system};
-        findHyperspaceNode(NodeSearch).then(responseNode => {
-          return responseNode.json();
-        }).then(dataNode => {
-          const NodeDataArray = JSON.parse(dataNode);
-          if(NodeDataArray.length > 0) {
-            const NodeData = NodeDataArray[0];
-            const NewPositionState = createPositionFromNode(NodeData);
-            const NewNodeState = createNodeState(NodeData);
+      const PlanetData = JSON.parse(data);
+      const NodeSearch = {system: PlanetData.system};
+      findHyperspaceNode(NodeSearch).then(responseNode => {
+        return responseNode.json();
+      }).then(dataNode => {
+        const NodeDataArray = JSON.parse(dataNode);
+        if(NodeDataArray.length > 0) {
+          const NodeData = NodeDataArray[0];
+          const NewPositionState = createPositionFromNode(NodeData);
+          const NewNodeState = createNodeState(NodeData);
 
-            if(SystemSearch.isStartPosition) {
-              
-              dispatch(setStartPosition(NewPositionState));
-              dispatch(setStartNode(NewNodeState));
-              dispatch(setStartSystem(SystemSearch.system));
-              dispatch(hyperspaceNavigationUpdateOn());
-
-            } else {
-
-              dispatch(setEndPosition(NewPositionState));
-              dispatch(setEndNode(NewNodeState));
-              dispatch(setEndSystem(SystemSearch.system));
-              dispatch(hyperspaceNavigationUpdateOn());
-
-            }
-          } else {
+          if(SystemSearch.isStartPosition) {
             
-            const PlanetLocation = {
-              lat: PlanetData.lat,
-              lng: PlanetData.lng
-            };
-            findNearestNode(PlanetLocation).then(response => {
-              return response.json();
-            }).then(data => {
-              const NodeDataArrayNearest = JSON.parse(data);
+            dispatch(setStartPosition(NewPositionState));
+            dispatch(setStartNode(NewNodeState));
+            dispatch(setStartSystem(SystemSearch.system));
+            dispatch(hyperspaceNavigationUpdateOn());
 
-              if(NodeDataArrayNearest.length > 0) {
-                const NodeDataNearest = NodeDataArrayNearest[0];
-                const NewPositionStateFound = createPositionFromPlanet(PlanetData);
-                const NewNodeStateNearest = createNodeState(NodeDataNearest);
+          } else {
 
-                if(SystemSearch.isStartPosition) {
+            dispatch(setEndPosition(NewPositionState));
+            dispatch(setEndNode(NewNodeState));
+            dispatch(setEndSystem(SystemSearch.system));
+            dispatch(hyperspaceNavigationUpdateOn());
 
-                  dispatch(setStartNode(NewNodeStateNearest));
-                  dispatch(setStartPosition(NewPositionStateFound));
-                  dispatch(setStartSystem(SystemSearch.system));
-                  dispatch(hyperspaceNavigationUpdateOn());
-
-                } else {
-
-                  dispatch(setEndNode(NewNodeStateNearest));
-                  dispatch(setEndPosition(NewPositionStateFound));
-                  dispatch(setEndSystem(SystemSearch.system));
-                  dispatch(hyperspaceNavigationUpdateOn());
-                }
-
-              }        
-            }).catch(errNearestNode => {
-              console.log("node nearest data error: ", errNearestNode);
-            });
           }
-        }).catch(errNode => {
-          console.log("node data error: ", errNode);
-        });
-      }
+        } else {
+          
+          const PlanetLocation = {
+            lat: PlanetData.lat,
+            lng: PlanetData.lng
+          };
+          findNearestNode(PlanetLocation).then(response => {
+            return response.json();
+          }).then(data => {
+            const NodeDataArrayNearest = JSON.parse(data);
+
+            if(NodeDataArrayNearest.length > 0) {
+              const NodeDataNearest = NodeDataArrayNearest[0];
+              const NewPositionStateFound = createPositionFromPlanet(PlanetData);
+              const NewNodeStateNearest = createNodeState(NodeDataNearest);
+
+              if(SystemSearch.isStartPosition) {
+
+                dispatch(setStartNode(NewNodeStateNearest));
+                dispatch(setStartPosition(NewPositionStateFound));
+                dispatch(setStartSystem(SystemSearch.system));
+                dispatch(hyperspaceNavigationUpdateOn());
+
+              } else {
+
+                dispatch(setEndNode(NewNodeStateNearest));
+                dispatch(setEndPosition(NewPositionStateFound));
+                dispatch(setEndSystem(SystemSearch.system));
+                dispatch(hyperspaceNavigationUpdateOn());
+              }
+
+            }        
+          }).catch(errNearestNode => {
+            console.log("node nearest data error: ", errNearestNode);
+          });
+        }
+      }).catch(errNode => {
+        console.log("node data error: ", errNode);
+      });
     }).catch(err => {
       console.log("err: ", err);
       if(SystemSearch.isStartPosition) {
