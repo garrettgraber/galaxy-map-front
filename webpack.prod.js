@@ -7,6 +7,7 @@ module.exports = merge(common, {
 		new UglifyJSPlugin({
 	    test: /\.js($|\?)/i,
       sourceMap: false,
+      parallel: true,
       uglifyOptions: {
 	      mangle: false
       }
