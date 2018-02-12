@@ -5,7 +5,9 @@ const common = require('./webpack.config.js');
 module.exports = merge(common, {
 	plugins: [
 		new UglifyJSPlugin({
-	    test: /\.js($|\?)/i
+	    test: /\.js($|\?)/i,
+      sourceMap: false,
+      mangle: false
 	  })
 	]
 });
