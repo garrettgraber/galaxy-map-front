@@ -8,6 +8,7 @@ module.exports = merge(common, {
 	    test: /\.js($|\?)/i,
       sourceMap: false,
       parallel: true,
+      exclude: /\/images/,
       uglifyOptions: {
 	      mangle: false
       }
