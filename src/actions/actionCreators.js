@@ -2,6 +2,22 @@
 import Actions from '../constants/actionTypesModule.js';
 
 
+export function newGalacticXandY(newPosition) {
+	return {
+		type: Actions.MOUSE_MOVE,
+		payload: newPosition
+	}
+}
+export function cursorMovesOffMap() {
+	return {
+		type: Actions.MOUSE_MOVE_OFF_MAP
+	}
+}
+export function cursorMovesOntoMap() {
+	return {
+		type: Actions.MOUSE_MOVE_ONTO_MAP
+	}
+}
 export function displayMapControls() {
 	return {
 		type: Actions.DISPLAY_MAP_CONTROLS

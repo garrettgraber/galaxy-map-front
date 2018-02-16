@@ -73,6 +73,8 @@ class MapNavigationControl extends React.Component {
   
 	render() {
 
+    const bottomBase = 40;
+
     const mapControlsButtonPositionRight = (this.state.mapControlsOn)? 170 : 0;
     const mapControlsButtonClasses = (this.state.mapControlsOn)? "btn btn-success" : "btn btn-danger";
     const mapControlsButtonMessage = (this.state.mapControlsOn)? "Close Map Tools" : "Open Map Tools";
@@ -80,7 +82,7 @@ class MapNavigationControl extends React.Component {
     return (
       <div>
 
-        <div style={{position: "fixed", bottom: 75, right: mapControlsButtonPositionRight, width: 40, height: 40, zIndex: 12}}>
+        <div style={{position: "fixed", bottom: bottomBase + 65, right: mapControlsButtonPositionRight, width: 40, height: 40, zIndex: 12}}>
 
           <button
             type="button"
@@ -99,7 +101,7 @@ class MapNavigationControl extends React.Component {
 
         <If condition={ this.state.mapControlsOn }>
             <Then>
-              <div style={{bottom: 10, right: 10, height: 220, width: 160, zIndex: 11, position: 'fixed'}}>
+              <div style={{bottom: bottomBase, right: 10, height: 220, width: 160, zIndex: 11, position: 'fixed'}}>
 
                 <div style={{height: 40}}>
                   <div  style={{height: '100%', width: '50%', display: 'inline-block'}}>
@@ -134,7 +136,7 @@ class MapNavigationControl extends React.Component {
                   </div>          
                 </div>
 
-                <div style={{height: 160, position: 'fixed', bottom: 15}}>
+                <div style={{height: 160, position: 'fixed', bottom: bottomBase + 5}}>
 
                   <div id="circle" className="rotate-circle">
                     
@@ -151,7 +153,7 @@ class MapNavigationControl extends React.Component {
                   </div>
                 </div>
 
-                <div style={{height: 50, width: 50, borderRadius: 25, position: 'fixed', bottom: 70, right: 63, zIndex: 12}}>
+                <div style={{height: 50, width: 50, borderRadius: 25, position: 'fixed', bottom: bottomBase + 60, right: 63, zIndex: 12}}>
 
                   <button
                     style={{ width: 50, height: 50, fontSize: 18, lineHeight: 1.33, borderRadius: 25, backgroundColor: 'black', verticalAlign: 'middle', display: 'block',  margin: '0 auto', position: 'relative'}}

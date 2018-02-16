@@ -10,9 +10,6 @@ import { chain } from 'redux-chain';
 import ScrollArea from 'react-scrollbar';
 
 
-
-
-
 import { 
     searchSystemsFinish,
     renderMapOn,
@@ -26,7 +23,8 @@ import {
     setMapZoom,
     addItemToDataStream,
     updateNorthEastMapHash,
-    updateSouthWestMapHash
+    updateSouthWestMapHash,
+    newGalacticXandY
 } from '../actions/actionCreators.js';
 import { findAndSetNearsetHyperspaceNode } from '../actions/actions.js';
 
@@ -67,7 +65,7 @@ const blackTileImage = imgBlack;
 // const awsTileServerUrlEastEight = 'https://s3.amazonaws.com/tiledata.sw.8.map.east/tiles-leaflet-8/{z}/{x}/{y}.png';
 const awsTileServerUrlEastMaster = 'https://s3.amazonaws.com/tiledata.sw.map.east.master/tiles-leaflet-8-master/{z}/{x}/{y}.png';
 
-const activeTileServer = awsTileServerUrlEastMaster;
+const activeTileServer = tileServerUrlLevel8Master;
 
 class MapMain extends React.Component {
   constructor(props) {
@@ -97,6 +95,7 @@ class MapMain extends React.Component {
   }
 
   onZoomend(e) {
+    console.log("Zoom End has fired");
     const mapBounds = this.refs.map.leafletElement.getBounds();
     const currentZoom = this.refs.map.leafletElement.getZoom();
     if(!(currentZoom === 2 && this.props.mapCenterAndZoom.zoom === 3)) {
@@ -105,7 +104,7 @@ class MapMain extends React.Component {
   }
 
   onZoomstart(e) {
-
+    console.log("Zoom Start has fired: ", e);
     // console.log("onZoomstart has fired: ", e);
 
   }
@@ -143,6 +142,7 @@ class MapMain extends React.Component {
 
     const GalacticCoordinates = getGalacticFromLatLng(e.latlng);
     // console.log("Galactic Coordinates: ", GalacticCoordinates);
+    this.props.dispatch(newGalacticXandY(GalacticCoordinates));
   }
 
   onClickHyperspaceNavigation(e) {

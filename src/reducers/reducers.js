@@ -82,6 +82,13 @@ const DefaultDataStream = {
 	currentItem: 'Welcome to The Galaxy',
 	streamItemArrray: []
 };
+const BlankGalacticXandY = {
+	xGalactic: null,
+	yGalactic: null
+};
+
+
+
 const defaultZoom = 2;
 const maxJumps = 90;
 const pathLimit = 1;
@@ -91,7 +98,24 @@ const emptySystemSet = new Set();
 const emptySectorSet = new Set();
 
 
-
+function cursorOnMap(state = false, action) {
+	switch (action.type) {
+		case Actions.MOUSE_MOVE_OFF_MAP:
+			return false;
+		case Actions.MOUSE_MOVE_ONTO_MAP:
+			return true;
+		default:
+			return state;			
+	}
+}
+function galacticXandY(state = BlankGalacticXandY, action) {
+	switch (action.type) {
+		case Actions.MOUSE_MOVE:
+			return action.payload;
+		default:
+			return state;			
+	}
+}
 function mapControlsDisplayed(state = true, action) {
 	switch (action.type) {
 		case Actions.DISPLAY_MAP_CONTROLS:
@@ -102,8 +126,6 @@ function mapControlsDisplayed(state = true, action) {
 			return true;			
 	}
 }
-
-
 function sectorSearchSet(state = emptySectorSet, action) {
 	switch (action.type) {
 		case Actions.ADD_SECTOR_SEARCH_SET:
@@ -119,8 +141,6 @@ function sectorSearchSet(state = emptySectorSet, action) {
 			return state;
 	}
 }
-
-
 function systemNameSet(state = emptySystemSet, action) {
 	switch (action.type) {
 		case Actions.BUILD_SYSTEM_NAME_SET:
@@ -132,7 +152,6 @@ function systemNameSet(state = emptySystemSet, action) {
 			return state;
 	}
 }
-
 function activeHyperspaceJump(state = nullHyperspaceHash, action) {
 	switch (action.type) {
 		case Actions.SET_ACTIVE_HYPERSPACE_JUMP:
@@ -563,6 +582,8 @@ function updateHyperspaceNavigation(state = false, action) {
 }
 
 export default combineReducers({
+	cursorOnMap,
+	galacticXandY,
 	sectorSearchSet,
 	systemNameSet,
 	hyperspacePointZoomOn,

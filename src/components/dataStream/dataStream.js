@@ -98,53 +98,15 @@ class DataStream extends React.Component {
       width: 560,
       zIndex: 40,
       color: '#ff0101',
-      // color: '#FF0066',
       backgroundColor: 'rgba(255,255,255,.5)',
-      // backgroundColor: 'white',
       opacity: 1.0,
       left: 70,
       fontSize: '1.2em',
       display: 'table',
-      // overflow: 'hidden',
-      // whiteSpace: 'nowrap',
       clip: 'rect(0, auto, auto, 0)'
-      // textShadow: '#FF0066 0 0 10px'
-
-      // webkitfilter: blur(2px),
-      // filter: blur(2px)
-    };
-
-    const ZoomStyle = {
-      position: 'fixed',
-      top: 0,
-      height: 40,
-      width: 80,
-      zIndex: 40,
-      color: '#ff0101',
-      backgroundColor: 'rgba(255,255,255,.5)',
-      opacity: 1.0,
-      left: 630,
-      fontSize: '1.2em',
-      display: 'table'
-    };
-
-    const MapBoundsStyle = {
-      position: 'fixed',
-      top: 0,
-      height: 40,
-      width: 200,
-      zIndex: 40,
-      color: '#ff0101',
-      backgroundColor: 'rgba(255,255,255,.5)',
-      opacity: 1.0,
-      left: 710,
-      fontSize: '1.2em',
-      display: 'table'
     };
 
     const MessageStyle = {
-      // paddingTop: 10.5,
-      // paddingBottom: 10.5,
       display: "table-cell",
       verticalAlign: "middle",
       opacity: 1.0,
@@ -165,21 +127,44 @@ class DataStream extends React.Component {
       marginBottom: 5,
       marginTop: 5,
       width: 50
-      // display: "table-cell",
-      // verticalAlign: "middle"
-      // paddingBottom: 5,
-      // paddingTop: 5
     };
 
     const EnCodedeMessageStyle = {
       fontSize: '1.0em',
       textOverflow: 'ellipsis',
-
-  /* Required for text-overflow to do anything */
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       height: 40
     };
+
+    const ZoomStyle = {
+      position: 'fixed',
+      top: 0,
+      height: 40,
+      width: 80,
+      zIndex: 40,
+      color: '#ff0101',
+      backgroundColor: 'rgba(255,255,255,.5)',
+      opacity: 1.0,
+      left: 630,
+      fontSize: '1.2em',
+      display: 'table'
+    };
+
+    const GalacticXandYStyle = {
+      position: 'fixed',
+      bottom: 0,
+      height: 40,
+      width: 400,
+      zIndex: 40,
+      color: '#ff0101',
+      backgroundColor: 'rgba(255,255,255,.5)',
+      opacity: 1.0,
+      right: 0,
+      fontSize: '1.2em',
+      display: 'table'
+    };
+
 
     let buttonClasses = "btn btn-sm btn-danger ";
     const buttonClassesFont = (this.state.dataMessageInEnglish)? "" : "aurebesh-font";
@@ -189,18 +174,6 @@ class DataStream extends React.Component {
     const deCodedIndex = this.state.deCodedIndex;
     const deCodedMessage = currentMessage.slice(0, deCodedIndex);
     const enCodedMessage = currentMessage.slice(deCodedIndex, currentMessage.length);
-    const northEastMapHash = this.props.northEastMapHash;
-    const southWestMapHash = this.props.southWestMapHash;
-    const northEastPoint = (northEastMapHash)? Geohash.decode(northEastMapHash) : null;
-    const southWestPoint = (southWestMapHash)? Geohash.decode(southWestMapHash) : null;
-    const northEastPointLat = (northEastPoint)? (northEastPoint.lat).toFixed(2) : '';
-    const northEastPointLng = (northEastPoint)? (northEastPoint.lon).toFixed(2) : '';
-    const southWestPointLat = (southWestPoint)? (southWestPoint.lat).toFixed(2) : '';
-    const southWestPointLng = (southWestPoint)? (southWestPoint.lon).toFixed(2) : '';
-    const northEastPointGalacticY = (northEastPointLat)? getGalacticYFromLatitude(northEastPoint.lat).toFixed(2) : '';
-    const northEastPointGalacticX = (northEastPointLng)? getGalacticXFromLongitude(northEastPoint.lon).toFixed(2) : '';
-    const southWestPointGalacticY = (southWestPointLat)? getGalacticYFromLatitude(southWestPoint.lat).toFixed(2) : '';
-    const southWestPointGalacticX = (southWestPointLng)? getGalacticXFromLongitude(southWestPoint.lon).toFixed(2) : '';
 
     return (
       <div id="data-stream" >
@@ -217,31 +190,10 @@ class DataStream extends React.Component {
         <div style={ZoomStyle}>
           <span style={MessageStyle} >Zoom:&nbsp;{this.props.mapCenterAndZoom.zoom - 1}</span>
         </div>
-        
-
-
-        <If condition={false}>
-          <Then>
-            <div style={MapBoundsStyle}>
-              <span style={MessageStyle} >
-                SW:&nbsp;Lat&nbsp;{southWestPointLat}&nbsp;Lng&nbsp;{southWestPointLng}
-              </span>
-              <span style={MessageStyle} >
-                &nbsp;&nbsp;NE:&nbsp;Lat&nbsp;{northEastPointLat}&nbsp;Lng&nbsp;{northEastPointLng}
-              </span>
-            </div>
-          </Then>
-          <Else>
-            <div style={MapBoundsStyle}>
-              <span style={MessageStyle} >
-                SW&nbsp;&nbsp;Y:&nbsp;{southWestPointGalacticY}&nbsp;X:&nbsp;{southWestPointGalacticX}
-              </span>
-              <span style={MessageStyle} >
-                &nbsp;&nbsp;NE&nbsp;&nbsp;Y:&nbsp;{northEastPointGalacticY}&nbsp;X:&nbsp;{northEastPointGalacticX}
-              </span>
-            </div>
-          </Else>
-        </If>
+        <div style={GalacticXandYStyle}>
+          &nbsp;<span style={MessageStyle} >X:&nbsp;{this.props.galacticXandY.xGalactic}</span>&nbsp;&nbsp;
+          <span style={MessageStyle} >Y:&nbsp;{this.props.galacticXandY.yGalactic}</span>
+        </div>
       </div>
     );
   }

@@ -4,18 +4,17 @@ import uuidv1 from 'uuid/v1';
 import uuidv4 from 'uuid/v4';
 import hash from 'string-hash';
 import distance from 'euclidean-distance';
+import width from 'text-width';
 
 import HyperspacePathCollection from '../components/hyperspaceNavigation/hyperspacePathCollection.js';
 import HyperspaceNavigationPoint from '../components/hyperspaceNavigation/hyperspaceNavigationPoint.js';
+import StarSystem from '../components/stars/starSystem.js';
+
 
 import {
 	nodeAndPointAreEqual,
 	createFreespaceLane
 } from '../components/hyperspaceNavigation/hyperspaceMethods.js'
-
-
-// '../../components/hyperspaceNavigation/hyperspacePathCollection.js';
-
 
 
 export class Planet {
@@ -314,7 +313,6 @@ export class HyperSpacePath {
 			return false;
 		}
 	}
-
 };
 
 export class HyperSpacePathCollection {
@@ -427,7 +425,6 @@ export class HyperSpacePathCollection {
 		return invalidJumps;
 	}
 };
-
 
 export class Point {
   constructor(
@@ -703,7 +700,118 @@ export class PathGenerator {
 	    this.navComponentsRendered.push(<HyperspaceNavigationPoint key={uuidv4()} HyperSpacePoint={Point} isStart={isStart} isActive={isActive} />);
 	  }
 	}
+};
 
+export class StarMapGenerator {
+	constructor(StarMapOptions) {
+		this.zoom = StarMapOptions.zoom;
+		this.MapBoundaries = getMapBoundaries(this.zoom, StarMapOptions.Map);
+	}
+
+	generateIntersectionMap(galacticPlanetsArray) {
+	  let starsCurrentlyInView = _.filter(galacticPlanetsArray, e => { 
+	    return e.starInMapView(
+	      this.MapBoundaries.mapWidth,
+	      this.MapBoundaries.mapHeight,
+	      this.MapBoundaries,
+	      this.zoom
+	    ) === true; 
+	  });
+	  let starsCurrentlyVisible = _.filter(galacticPlanetsArray, e => { 
+	    return e.starIsVisible(this.zoom) === true; 
+	  });
+	  const starsInViewSet = new Set(starsCurrentlyInView);
+	  const starsVisible = new Set(starsCurrentlyVisible);
+	  const intersectionMap = (this.zoom > 3)? new Set([...starsInViewSet].filter(x => starsVisible.has(x))) : new Set([...starsVisible]);
+	  return intersectionMap;
+	}
+
+	generateStellarArrays(currentMap, galacticPlanetsArray, previousIntersectionMap, currentStarMapComponents) {
+	  const zoom = this.zoom;
+	  let starComponents = [];
+		const intersectionMap = this.generateIntersectionMap(galacticPlanetsArray);
+	  const starMapsEqual = eqSet(intersectionMap, previousIntersectionMap);
+	  if( !starMapsEqual || (previousIntersectionMap.size === 0 ) ) {
+	    intersectionMap.forEach(function(PlanetarySystem) {
+	      if(!PlanetarySystem.hasOwnProperty('latLng')) {
+	        if(PlanetarySystem.lat === null && PlanetarySystem.lng === null) {
+	          PlanetarySystem.latLng = [PlanetarySystem.lat, PlanetarySystem.lng];
+	          const starLngLat = PlanetarySystem.LngLat;
+	          const currentLatLng = L.latLng(starLngLat[1], starLngLat[0]);
+	          PlanetarySystem['lat'] = currentLatLng[1];
+	          PlanetarySystem['lng'] = currentLatLng[0];
+	          PlanetarySystem[i].latLng = currentLatLng;
+	        } else {
+	          const currentLatLng = L.latLng(PlanetarySystem.lat, PlanetarySystem.lng);
+	          PlanetarySystem.latLng = currentLatLng;
+	        }
+	      }
+	      const StarPoints = currentMap.latLngToLayerPoint(PlanetarySystem.latLng);
+	      starComponents.push( <StarSystem key={PlanetarySystem.system} StarObject={PlanetarySystem} zoom={zoom} map={currentMap} labels={true} StarPoints={StarPoints} /> );
+	    });  
+	  } else {
+	    starComponents = currentStarMapComponents;
+	  }
+	  return {
+	    intersectionMap,
+	    starComponents
+	  };
+	}
+};
+
+export class GalaxyDataGenerator {
+	constructor(StarData) {
+		console.time("Planet Array Build Time");
+		this.PlanetsArray = this.buildPlanetArray(StarData);
+		console.timeEnd("Planet Array Build Time");
+		console.log("PlanetsArray length: ", this.PlanetsArray.length);
+		this.systemNameSet = this.buildSystemNamesSet(this.PlanetsArray);
+	}
+
+	buildSystemNamesSet(PlanetsArray) {
+		console.time("System Names Set Build Time");
+	  let systemNamesArray = _.map(PlanetsArray, CurrentStar => {
+      return { label: CurrentStar.system, value: CurrentStar.system };
+	  }).sort(function(a, b){
+	    const systemA = a.value.toLowerCase();
+	    const systemB = b.value.toLowerCase();
+	    if(systemA < systemB) return -1;
+	    if(systemA > systemB) return 1;
+	    return 0;
+	  });
+	  const frozenSystemNamesSet = Object.freeze(new Set(systemNamesArray));
+		console.timeEnd("System Names Set Build Time");
+		return frozenSystemNamesSet;
+	}
+
+	buildPlanetArray(StarData) {
+	  const PlanetsArray = _.map(StarData, CurrentStar => {
+	    let textWidth = width(CurrentStar.system, { size: "1em" }) + 0.5;
+	    if(CurrentStar.system !== null) {
+	      return new Planet(
+	        CurrentStar.system,
+	        CurrentStar.sector,
+	        CurrentStar.region,
+	        CurrentStar.coordinates,
+	        CurrentStar.xGalactic,
+	        CurrentStar.yGalactic,
+	        CurrentStar.xGalacticLong,
+	        CurrentStar.yGalacticLong,
+	        CurrentStar.hasLocation,
+	        CurrentStar.LngLat,
+	        CurrentStar.lat,
+	        CurrentStar.lng,
+	        CurrentStar.zoom,
+	        CurrentStar.link,
+	        textWidth
+	      );
+	    } else {
+	      console.log("Null system found: ", CurrentStar);
+	      return {};
+	    }
+	  });
+	  return _.filter(PlanetsArray, el => { return !_.isEmpty(el) });
+	}
 };
 
 
@@ -718,4 +826,50 @@ function distanceBetweenPointsGalactic(Point1, Point2) {
 
 function pointArrayGalactic(PointTemp) {
   return [PointTemp.xGalacticLong, PointTemp.yGalacticLong];
+}
+
+function eqSet(as, bs) {
+  return as.size === bs.size && all(isIn(bs), as);
+}
+
+function all(pred, as) {
+  for (var a of as) if (!pred(a)) return false;
+    return true;
+}
+
+function isIn(as) {
+  return function (a) {
+    return as.has(a);
+  };
+}
+
+function getMapBoundaries(currentZoom, currentMap) {
+  const CurrentMapBoundaries = currentMap.getBounds();
+  const mapWidth = CurrentMapBoundaries._northEast.lng - CurrentMapBoundaries._southWest.lng;
+  const mapHeight = CurrentMapBoundaries._northEast.lat - CurrentMapBoundaries._southWest.lat;
+  let mapPaddingHeight = 0;
+  let mapPaddingWidth = 0;
+  if (currentZoom <= 2) {
+    // console.log("Leaving Bounds!");
+  } else if (currentZoom === 3){
+    mapPaddingWidth = 50;
+    mapPaddingHeight = 25;
+  } else if (currentZoom == 4) {
+    mapPaddingWidth = 10;
+    mapPaddingHeight = 5;
+  }
+  const mapOffSetLat = mapPaddingHeight;
+  const mapOffSetLng = mapPaddingWidth;
+  const southernBoundary = CurrentMapBoundaries._southWest.lat - mapOffSetLat;
+  const northernBoundary = CurrentMapBoundaries._northEast.lat + mapOffSetLat
+  const westernBoundary = CurrentMapBoundaries._southWest.lng - mapOffSetLng;
+  const easternBoundary = CurrentMapBoundaries._northEast.lng + mapOffSetLng;
+	return {
+    north: northernBoundary,
+    south: southernBoundary,
+    east: easternBoundary,
+    west: westernBoundary,
+    mapWidth: mapWidth,
+    mapHeight: mapHeight
+  };
 }
