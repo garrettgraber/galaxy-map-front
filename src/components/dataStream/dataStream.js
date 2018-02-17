@@ -1,14 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { If, Then, Else } from 'react-if';
-import Geohash from 'latlon-geohash';
 import Clock from 'react-live-clock';
 
 import {
   getGalacticYFromLatitude,
   getGalacticXFromLongitude
 } from '../hyperspaceNavigation/hyperspaceMethods.js';
-
 
 import '../../css/main.css';
 
@@ -155,7 +152,7 @@ class DataStream extends React.Component {
       position: 'fixed',
       bottom: 0,
       height: 40,
-      width: 400,
+      width: 250,
       zIndex: 40,
       color: '#ff0101',
       backgroundColor: 'rgba(255,255,255,.5)',
@@ -174,6 +171,10 @@ class DataStream extends React.Component {
     const deCodedIndex = this.state.deCodedIndex;
     const deCodedMessage = currentMessage.slice(0, deCodedIndex);
     const enCodedMessage = currentMessage.slice(deCodedIndex, currentMessage.length);
+    const xGalactic = this.props.galacticXandY.xGalactic;
+    const yGalactic = this.props.galacticXandY.yGalactic;
+    const xGalacticDisplayed = (xGalactic)? parseFloat(xGalactic).toFixed(4): xGalactic;
+    const yGalacticDisplayed = (yGalactic)? parseFloat(yGalactic).toFixed(4): yGalactic;
 
     return (
       <div id="data-stream" >
@@ -191,8 +192,8 @@ class DataStream extends React.Component {
           <span style={MessageStyle} >Zoom:&nbsp;{this.props.mapCenterAndZoom.zoom - 1}</span>
         </div>
         <div style={GalacticXandYStyle}>
-          &nbsp;<span style={MessageStyle} >X:&nbsp;{this.props.galacticXandY.xGalactic}</span>&nbsp;&nbsp;
-          <span style={MessageStyle} >Y:&nbsp;{this.props.galacticXandY.yGalactic}</span>
+          &nbsp;<span style={MessageStyle} >X:&nbsp;{xGalacticDisplayed}</span>&nbsp;&nbsp;
+          <span style={MessageStyle} >Y:&nbsp;{yGalacticDisplayed}</span>
         </div>
       </div>
     );

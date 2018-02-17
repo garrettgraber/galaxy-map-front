@@ -3,31 +3,18 @@ import { connect } from 'react-redux';
 import Control from 'react-leaflet-control';
 import { Map, TileLayer, LayersControl, Pane } from 'react-leaflet';
 import L from 'leaflet';
-import 'whatwg-fetch';
-import uuidv4 from 'uuid/v4';
 import Geohash from 'latlon-geohash';
-import { chain } from 'redux-chain';
 import ScrollArea from 'react-scrollbar';
 
-
 import { 
-    searchSystemsFinish,
-    renderMapOn,
-    renderMapOff,
-    renderMapStatus,
-    zoomChangeStatus,
-    zoomChangeOn,
     generateNewMapHash,
-    viewHasChangedAndRender,
     setMapCenterAndZoom,
-    setMapZoom,
-    addItemToDataStream,
     updateNorthEastMapHash,
     updateSouthWestMapHash,
-    newGalacticXandY
+    newGalacticXandY,
+    setMapZoom
 } from '../actions/actionCreators.js';
 import { findAndSetNearsetHyperspaceNode } from '../actions/actions.js';
-
 
 const { BaseLayer, Overlay } = LayersControl;
 
@@ -46,25 +33,16 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
 import 'leaflet_marker_2x';
 import 'leaflet_marker_shadow';
-
-
 import 'react-select/dist/react-select.css';
 import 'react-virtualized/styles.css';
 import 'react-virtualized-select/styles.css';
 
 import imgBlack from '../images/black-tile.png';
-import DatabaseLinks from 'docker-links';
 
 const tileServerUrlLevel8Master = 'http://172.17.0.5:8110/tiles-leaflet-8/{z}/{x}/{y}.png';
-// const tileServerUrlLevel7 = 'http://172.17.0.6:8110/tiles-leaflet-7/{z}/{x}/{y}.png';
-
 const blackTileUrl = 'http://172.17.0.5:8110/tiles-black/black-tile.png';
 const blackTileImage = imgBlack;
-// const awsTileServerUrl = 'https://s3-us-west-2.amazonaws.com/tiledata.sw.map/tiles-leaflet-7/{z}/{x}/{y}.png';
-// const awsTileServerUrlEast = 'https://s3.amazonaws.com/tiledata.sw.map.east/tiles-leaflet-7/{z}/{x}/{y}.png'
-// const awsTileServerUrlEastEight = 'https://s3.amazonaws.com/tiledata.sw.8.map.east/tiles-leaflet-8/{z}/{x}/{y}.png';
 const awsTileServerUrlEastMaster = 'https://s3.amazonaws.com/tiledata.sw.map.east.master/tiles-leaflet-8-master/{z}/{x}/{y}.png';
-
 const activeTileServer = tileServerUrlLevel8Master;
 
 class MapMain extends React.Component {
@@ -75,7 +53,6 @@ class MapMain extends React.Component {
     	lng: 0,
     	zoom: 2,
     	map: null,
-      
     }
   }
 
@@ -86,49 +63,45 @@ class MapMain extends React.Component {
   	if(this.refs.map) {
   		this.setState({map: this.refs.map.leafletElement});
   	}
-      // this.props.dispatch( renderMapOn() );
     this.props.dispatch(setMapZoom(currentZoom));
   }
 
-  componentWillReceiveProps(newProps) {
-  	// console.log("Props update MapMain: ", newProps);
-  }
+  componentWillReceiveProps(newProps) {}
 
   onZoomend(e) {
-    console.log("Zoom End has fired");
+    console.log("Zoom End has fired", e.target._zoom);
     const mapBounds = this.refs.map.leafletElement.getBounds();
     const currentZoom = this.refs.map.leafletElement.getZoom();
+    console.log("currentZoom: ", currentZoom);
+    console.log("mapCenter Zoom", this.props.mapCenterAndZoom.zoom);
     if(!(currentZoom === 2 && this.props.mapCenterAndZoom.zoom === 3)) {
       this.props.dispatch(setMapZoom(currentZoom));
     }
   }
 
   onZoomstart(e) {
-    console.log("Zoom Start has fired: ", e);
-    // console.log("onZoomstart has fired: ", e);
-
+    console.log("\nZoom Start has fired: ", e.target._zoom);
+    const mapBounds = this.refs.map.leafletElement.getBounds();
+    const currentZoom = this.refs.map.leafletElement.getZoom();
+    console.log("currentZoom: ", currentZoom);
+    console.log("mapCenter Zoom", this.props.mapCenterAndZoom.zoom);
   }
 
   onMovestart(e) {
-      const mapInstance = this.refs.map.leafletElement;
-      const MapBounds = getNorthEastAndSoutWestBounds(mapInstance);
+    const mapInstance = this.refs.map.leafletElement;
+    const MapBounds = getNorthEastAndSoutWestBounds(mapInstance);
   }
 
   onMoveend(e) {
+    const mapInstance = this.refs.map.leafletElement;
+    const MapBounds = getNorthEastAndSoutWestBounds(mapInstance);
+    const northEastMapBoundsDifferent = MapBounds.northEast !== this.props.northEastMapHash;
+    const southWestMapBoundsDifferent = MapBounds.southWest !== this.props.southWestMapHash;
 
-      const mapInstance = this.refs.map.leafletElement;
-      const mapState = this.state.map;
-      const MapBounds = getNorthEastAndSoutWestBounds(mapInstance);
-
-      const MapStateBounds = getNorthEastAndSoutWestBounds(mapInstance);
-
-      if(MapStateBounds.northEast !== this.props.northEastMapHash || MapStateBounds.southWest !== this.props.southWestMapHash) {
-
-        this.props.dispatch(updateNorthEastMapHash(MapStateBounds.northEast));
-        this.props.dispatch(updateSouthWestMapHash(MapStateBounds.southWest));
-
-      }
-
+    if(northEastMapBoundsDifferent || southWestMapBoundsDifferent) {
+      this.props.dispatch(updateNorthEastMapHash(MapBounds.northEast));
+      this.props.dispatch(updateSouthWestMapHash(MapBounds.southWest));
+    }
   }
 
   onDragend(e) { }
@@ -138,8 +111,6 @@ class MapMain extends React.Component {
   onMove(e) { }
 
   onMouseMove(e) {
-    // console.log("Mouse has moved, bitch: ", e);
-
     const GalacticCoordinates = getGalacticFromLatLng(e.latlng);
     // console.log("Galactic Coordinates: ", GalacticCoordinates);
     this.props.dispatch(newGalacticXandY(GalacticCoordinates));
@@ -164,31 +135,19 @@ class MapMain extends React.Component {
   onViewportChange(ViewportValues) { }
 
   onViewportChanged(ViewportValues) {
-    
-    // if(this.props.mapCenterAndZoom.zoom !== ViewportValues.zoom) {
-    //   console.log("map zoom has changed: ", ViewportValues.zoom);
-    // } else {
-    //   console.log("map center has changed: ", ViewportValues.center);
-    // }
-    
     const mapBounds = this.refs.map.leafletElement.getBounds();
-
     this.props.dispatch(setMapCenterAndZoom(
       ViewportValues.center,
       ViewportValues.zoom
     ));
-    
   }
 
   render() {
   	const minZoom = 2;
   	const maxZoom = 8;
-  	// const height = 1000;
-  	// const width = 1000;
   	const zIndexGalaxy = 210;
     const zIndexBlack = 205;
   	const zIndexGrid = 220;
-
     const NavigationStyles = {
       position: 'fixed',
       top: 80,
@@ -198,7 +157,6 @@ class MapMain extends React.Component {
       backgroundColor: 'black',
       border: '1px solid #49fb35'
     };
-
     const adjustedHeight = (this.props.mapCenterAndZoom.zoom > 2)? '100%' : 1000;
 
   	return (
@@ -248,14 +206,12 @@ class MapMain extends React.Component {
               <Overlay name="Grid" checked={false}>
                 <Grid />
               </Overlay>
-    					
               <Overlay name="Hyperspace Lanes" checked={false}>
                 <HyperspaceLanesData />
               </Overlay>
               <Overlay name="Hyperspace Navigation" checked={true}>
                 <HyperspaceNavigation update={this.props.updateHyperspaceNavigation}/>
               </Overlay>
-              
               <Overlay name="Star Systems" checked={true}  ref="layerContainer" >
                 <StarMap map={this.state.map} />
               </Overlay>
@@ -263,19 +219,8 @@ class MapMain extends React.Component {
       		</Map>
         </div>
       </ScrollArea>
-
   	)
   }
-}
-
-
-
-
-function getStarData() {
-	fetch('/api/has-location')  
-	.then(function(response) {
-  	return response.json();
-	});
 }
 
 
@@ -285,21 +230,17 @@ function getNorthEastAndSoutWestBounds(mapInstance) {
   const SouthWestBounds = CurrentMapBoundaries._southWest;
   const northEastGeoHash = Geohash.encode(NorthEastBounds.lat, NorthEastBounds.lng, 20);
   const southWestGeoHash = Geohash.encode(SouthWestBounds.lat, SouthWestBounds.lng, 20);   
-
-    return {
-      northEast: northEastGeoHash,
-      southWest: southWestGeoHash,
-      NorthEastBounds: NorthEastBounds,
-      SouthWestBounds: SouthWestBounds
-    }
+  return {
+    northEast: northEastGeoHash,
+    southWest: southWestGeoHash,
+    NorthEastBounds: NorthEastBounds,
+    SouthWestBounds: SouthWestBounds
+  };
 }
-
-
 
 function getGalacticYFromLatitude(latitude) {
   return  (-3.07e-19*(latitude**12)) + (-1.823e-18*(latitude**11)) + (4.871543e-15*(latitude**10)) + (4.1565807e-14*(latitude**9)) + (-2.900986202e-11 * (latitude**8)) + (-1.40444283864e-10*(latitude**7)) + (7.9614373223054e-8*(latitude**6)) + (7.32976568692443e-7*(latitude**5)) + (-0.00009825374539548058*(latitude**4)) + (0.005511093818675318*(latitude**3)) + (0.04346753629461727 * (latitude**2)) + (111.30155374684914 * latitude);
 }
-
 
 function getGalacticXFromLongitude(longitude) {
   return (111.3194866138503 * longitude);
@@ -311,7 +252,6 @@ function getGalacticFromLatLng(LatLng) {
     xGalactic: getGalacticXFromLongitude(LatLng.lng)
   };
 }
-
 
 const mapStateToProps = (state = {}) => {
   return Object.assign({}, state);

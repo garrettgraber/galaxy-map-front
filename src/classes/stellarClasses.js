@@ -151,24 +151,11 @@ class HyperSpaceLane {
 	}
 
 	reverseCoordinatesLatLng() {
-		// const latBefore = this.coordinates[0][0];
-		// _.forEach(this.coordinates, function(el) {
-		//   el.reverse();
-		// });
-		// const latAfter = this.coordinates[0][0];
-		// console.log("Before and after the same: ", (latBefore === latAfter)? true : false);
-
 		const coordinatesCopy = _.map(this.coordinates, _.clone);
-		// console.log("coordinatesCopy equals this.coordinates: ", coordinatesCopy == this.coordinates);
 		_.forEach(coordinatesCopy, function(el) {
 		  el.reverse();
 		});
-		// console.log("coordinatesCopy equals this.coordinates after reverse: ", coordinatesCopy == this.coordinates);
-		// console.log("coordinatesCopy: ", coordinatesCopy);
-		// console.log("this.coordinates: ", this.coordinates);
 		this.coordinates = coordinatesCopy;
-		// console.log("this.coordinates after: ", this.coordinates);
-
 	}
 };
 
@@ -216,10 +203,8 @@ export class HyperSpacePath {
 		const hyperspaceLanesArray = [];
 		for(let id of this.jumps) {
 			const foundLaneData = _.find(totalLanesInCollection, {_id : id});
-			// console.log("foundLaneData: ", foundLaneData);
-
 			if(foundLaneData === undefined) {
-				// console.log("totalLanesInCollection: ", totalLanesInCollection);
+				// console.log("foundLaneData is undefined: ", totalLanesInCollection);
 			}
 			const Lane = new HyperSpaceLane(
 				foundLaneData.name,
@@ -371,13 +356,7 @@ export class HyperSpacePathCollection {
 
 	generateHyperspacePaths() {
 		const hyperspacePaths = [];
-
 		for(let path of this.paths) {
-
-			// console.log("path.hashValue: ", path.hashValue);
-			// console.log("path.start: ", path.start);
-			// console.log("path.end: ", path.end);
-
 			let Path = new HyperSpacePath(
 				path.start,
 				path.end,
@@ -393,15 +372,8 @@ export class HyperSpacePathCollection {
 	}
 
 	validateHyperspacePaths() {
-
 		const invalidJumps = [];
-
 		for(let path of this.paths) {
-
-			// console.log("path.hashValue: ", path.hashValue);
-			// console.log("path.start: ", path.start);
-			// console.log("path.end: ", path.end);
-
 			const Path = new HyperSpacePath(
 				path.start,
 				path.end,
@@ -411,16 +383,10 @@ export class HyperSpacePathCollection {
 				path.hashValue,
 				path.numberOfJumps
 			);
-
 			const jumpHash = Path.generateHashNumber(this.lanes);
-
-			// console.log("jumpHash: ", jumpHash);
-			// console.log("Path.hashValue: ", Path.hashValue);
-
 			if(jumpHash !== Path.hashValue) {
 				invalidJumps.push(jumpHash);
 			}
-
 		}
 		return invalidJumps;
 	}
@@ -442,13 +408,12 @@ export class Point {
   }
 
   coordinatesNormalized() {
-  	// console.log("coordinates has fired!");
   	const normalizedCoordinates = [this.lat, this.normalizeLng()];
     return normalizedCoordinates;
   }
   coordinates() {
-	const coordinatesLatLng = [this.lat, this.lng];
-	return coordinatesLatLng;
+		const coordinatesLatLng = [this.lat, this.lng];
+		return coordinatesLatLng;
   }
 };
 
@@ -647,7 +612,7 @@ export class PathGenerator {
 	}
 
 	generateNavigationComponents() {
-   if(this.hyperspacePathChange) {
+		if(this.hyperspacePathChange) {
       if(this.hyperspaceJumpsInArray()) {
         this.createCollectionsComponents(this.hyperspacePathCollections);
       } else if(this.needsFreeSpaceJumpsToNodes()) {
@@ -655,7 +620,7 @@ export class PathGenerator {
         this.addEndPointToNodeFreeSpaceLane();
       } else if(this.closeEnoughForFreespaceJump()) {
         this.addFreeSpaceLane(this.StartPoint, this.EndPoint, false);
-      }  else {
+      } else {
         this.clonePreviousHSpaceComponents();
       }
     } else if(this.hyperspaceJumpsInArray()) {
@@ -810,7 +775,7 @@ export class GalaxyDataGenerator {
 	      return {};
 	    }
 	  });
-	  return _.filter(PlanetsArray, el => { return !_.isEmpty(el) });
+	  return _.filter(PlanetsArray, el => { return !(_.isEmpty(el)) });
 	}
 };
 

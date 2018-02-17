@@ -17,7 +17,6 @@ import {
   setMapCenter,
   zoomPointOn,
   zoomPointOff,
-  viewHasChangedAndRender,
 	addHyperspacePathToCollection,
   loadHyperspacePathCollections,
   emptyHyperspacePathCollections,
@@ -53,12 +52,10 @@ import {
   pathStartClickOff,
   pathStartClickOn,
   pathEndClickOn,
-
   pinPointStartOn,
   pinPointStartOff,
   pinPointEndOn,
   pinPointEndOff,
-
   hyperspaceJumpStarting,
   hyperspaceJumpCompleted
 } from './actionCreators.js';

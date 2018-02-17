@@ -2,20 +2,15 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Pane, FeatureGroup, Circle } from 'react-leaflet';
 import L from 'leaflet';
-import width from 'text-width';
 import _ from 'lodash';
 import Geohash from 'latlon-geohash';
 
 import {
-  Planet,
-  HyperSpaceLane,
   StarMapGenerator,
   GalaxyDataGenerator
 } from '../../classes/stellarClasses.js';
 import StarSystem from './starSystem.js';
-import { 
-  zoomChangeStatus,
-  viewShouldStayTheSame,
+import {
   updateSouthWestMapHash,
   updateNorthEastMapHash,
   buildSystemNameSet
