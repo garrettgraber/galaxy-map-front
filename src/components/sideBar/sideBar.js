@@ -24,11 +24,12 @@ class SideBar extends React.Component {
     const SideBarStyles = {
       position: 'fixed',
       top: 50,
-      height: 500,
+      height: 120,
       width: 60,
       zIndex: 30,
       backgroundColor: 'black',
-      border: '1px solid #49fb35'
+      border: '1px solid #49fb35',
+      borderRadius: 4
     };
     const searchSystemsClasses = (this.props.systemsSearchControlsOn)? "btn btn-success control-button" : "btn btn-danger control-button";
     const hyperspaceNavigationClasses = (this.props.hyperspaceNavigationControlsOn)? "btn btn-success control-button" : "btn btn-danger control-button";

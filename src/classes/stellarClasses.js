@@ -9,13 +9,10 @@ import width from 'text-width';
 import HyperspacePathCollection from '../components/hyperspaceNavigation/hyperspacePathCollection.js';
 import HyperspaceNavigationPoint from '../components/hyperspaceNavigation/hyperspaceNavigationPoint.js';
 import StarSystem from '../components/stars/starSystem.js';
-
-
 import {
 	nodeAndPointAreEqual,
 	createFreespaceLane
-} from '../components/hyperspaceNavigation/hyperspaceMethods.js'
-
+} from '../components/hyperspaceNavigation/hyperspaceMethods.js';
 
 export class Planet {
 	constructor(

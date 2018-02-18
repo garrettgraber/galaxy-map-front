@@ -11,10 +11,10 @@ import store from './stores/store.js';
 ReactDOM.render(
 	<AppContainer>
 		<Provider store={store}>
-		    <App />
+	    <App />
 		</Provider>
 	</AppContainer>,
-    document.getElementById('mount-container')
+	document.getElementById('mount-container')
 );
 
 // Enable Webpack hot module replacement for Component

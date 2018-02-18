@@ -148,21 +148,6 @@ class DataStream extends React.Component {
       display: 'table'
     };
 
-    const GalacticXandYStyle = {
-      position: 'fixed',
-      bottom: 0,
-      height: 40,
-      width: 250,
-      zIndex: 40,
-      color: '#ff0101',
-      backgroundColor: 'rgba(255,255,255,.5)',
-      opacity: 1.0,
-      right: 0,
-      fontSize: '1.2em',
-      display: 'table'
-    };
-
-
     let buttonClasses = "btn btn-sm btn-danger ";
     const buttonClassesFont = (this.state.dataMessageInEnglish)? "" : "aurebesh-font";
     buttonClasses += buttonClassesFont;
@@ -171,10 +156,6 @@ class DataStream extends React.Component {
     const deCodedIndex = this.state.deCodedIndex;
     const deCodedMessage = currentMessage.slice(0, deCodedIndex);
     const enCodedMessage = currentMessage.slice(deCodedIndex, currentMessage.length);
-    const xGalactic = this.props.galacticXandY.xGalactic;
-    const yGalactic = this.props.galacticXandY.yGalactic;
-    const xGalacticDisplayed = (xGalactic)? parseFloat(xGalactic).toFixed(4): xGalactic;
-    const yGalacticDisplayed = (yGalactic)? parseFloat(yGalactic).toFixed(4): yGalactic;
 
     return (
       <div id="data-stream" >
@@ -190,10 +171,6 @@ class DataStream extends React.Component {
         </div>
         <div style={ZoomStyle}>
           <span style={MessageStyle} >Zoom:&nbsp;{this.props.mapCenterAndZoom.zoom - 1}</span>
-        </div>
-        <div style={GalacticXandYStyle}>
-          &nbsp;<span style={MessageStyle} >X:&nbsp;{xGalacticDisplayed}</span>&nbsp;&nbsp;
-          <span style={MessageStyle} >Y:&nbsp;{yGalacticDisplayed}</span>
         </div>
       </div>
     );

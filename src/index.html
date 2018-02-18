@@ -1,84 +1,47 @@
 <!DOCTYPE html>
-
 <html>
 <head>
-
-    <title>Galaxy Map</title>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.2/fetch.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-
-    <!-- <link rel="shortcut icon" type="image/png" href="/static/favicon.png"/> -->
-    
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css" /> -->
-
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.js"></script>
-
-    <script src="https://d3js.org/d3-path.v1.min.js"></script>
-    <script src="https://d3js.org/d3-shape.v1.min.js"></script>
-
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script> -->
-
+  <title>Galaxy Map</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.2/fetch.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-
-    <style type="text/css">
-        
-        .label {
-            color: "red";
-        }
-
-        .gridClass {
-            /*color: #49fb35; */
-            color: #FF69B4;
-        }
-
-        .gridClassHover {
-            color: #ffa500;
-        }
-
-        .regionClass {
-            color: purple;
-        }
-
-        .systemLabel {
-            color: #49fb35;
-
-            /*font-size: 0.85em;*/
-
-            font-size: 1.00em;
-        }
-
-        .hyperspaceNodeLabel {
-            color: green;
-            font-size: 1.00em;
-            opacity: 0.0;
-        }
-
-        .leaflet-container {
-            height: 100%;
-            min-height: 1000px;
-            width: 100%;
-            /*width: 1000px;*/
-        }
-
-    </style>
-    
-        <div id="mount-container" >
-        </div>
-
-
-    <script src="bundle.js"></script>
-
+  <style type="text/css">
+    .label {
+      color: "red";
+    }
+    .gridClass {
+      color: #FF69B4;
+    }
+    .gridClassHover {
+      color: #ffa500;
+    }
+    .regionClass {
+      color: purple;
+    }
+    .systemLabel {
+      color: #49fb35;
+      /*font-size: 0.85em;*/
+      font-size: 1.00em;
+    }
+    .hyperspaceNodeLabel {
+      color: green;
+      font-size: 1.00em;
+      opacity: 0.0;
+    }
+    .leaflet-container {
+      height: 100%;
+      min-height: 1000px;
+      width: 100%;
+      /*width: 1000px;*/
+    }
+  </style>
+  <div id="mount-container" >
+  </div>
+  <script src="bundle.js"></script>
 </body>
 </html>

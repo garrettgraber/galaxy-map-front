@@ -1,20 +1,20 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
+const jsonfile = require('jsonfile');
 
-console.log("__dirname: ", __dirname);
+const environmentSetup = require('./environment-setup.js');
 
 const javascriptEntryPath = path.resolve(__dirname, 'src', 'index.js');
 const htmlEntryPath = path.resolve(__dirname, 'src', 'index.html');
 const buildPath = path.resolve(__dirname, 'public', 'build');
 const srcPath = path.resolve(__dirname, 'src');
 
-
 console.log("javascriptEntryPath: ", javascriptEntryPath);
 console.log("htmlEntryPath: ", htmlEntryPath);
 console.log("buildPath:", buildPath);
 console.log("srcPath: ", srcPath);
-
 
 module.exports = {
   devtool: 'source-map',
@@ -115,6 +115,9 @@ module.exports = {
         ]
       },
     ],
+  },
+  externals: {
+    'Config': JSON.stringify(environmentSetup(process.env.NODE_ENV))
   },
   plugins: [ 
     new webpack.optimize.OccurrenceOrderPlugin(),

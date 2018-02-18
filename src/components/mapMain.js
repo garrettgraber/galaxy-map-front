@@ -6,6 +6,11 @@ import L from 'leaflet';
 import Geohash from 'latlon-geohash';
 import ScrollArea from 'react-scrollbar';
 
+import Config from 'Config';
+const activeTileServer = Config.tileServerUrl;
+
+console.log("Config: ", Config);
+
 import { 
     generateNewMapHash,
     setMapCenterAndZoom,
@@ -38,20 +43,12 @@ import 'react-virtualized/styles.css';
 import 'react-virtualized-select/styles.css';
 
 import imgBlack from '../images/black-tile.png';
-
-const tileServerUrlLevel8Master = 'http://172.17.0.5:8110/tiles-leaflet-8/{z}/{x}/{y}.png';
-const blackTileUrl = 'http://172.17.0.5:8110/tiles-black/black-tile.png';
 const blackTileImage = imgBlack;
-const awsTileServerUrlEastMaster = 'https://s3.amazonaws.com/tiledata.sw.map.east.master/tiles-leaflet-8-master/{z}/{x}/{y}.png';
-const activeTileServer = tileServerUrlLevel8Master;
 
 class MapMain extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-    	lat: 0,
-    	lng: 0,
-    	zoom: 2,
     	map: null,
     }
   }
@@ -111,9 +108,9 @@ class MapMain extends React.Component {
   onMove(e) { }
 
   onMouseMove(e) {
-    const GalacticCoordinates = getGalacticFromLatLng(e.latlng);
+    // const GalacticCoordinates = getGalacticFromLatLng(e.latlng);
     // console.log("Galactic Coordinates: ", GalacticCoordinates);
-    this.props.dispatch(newGalacticXandY(GalacticCoordinates));
+    // this.props.dispatch(newGalacticXandY(GalacticCoordinates));
   }
 
   onClickHyperspaceNavigation(e) {
