@@ -49,7 +49,7 @@ class MapMain extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-    	map: null,
+    	map: null
     }
   }
 
@@ -77,7 +77,7 @@ class MapMain extends React.Component {
   }
 
   onZoomstart(e) {
-    console.log("\nZoom Start has fired: ", e.target._zoom);
+    console.log("\nZoom Start has fired: ", e.target._animateToZoom);
     const mapBounds = this.refs.map.leafletElement.getBounds();
     const currentZoom = this.refs.map.leafletElement.getZoom();
     console.log("currentZoom: ", currentZoom);
@@ -171,9 +171,10 @@ class MapMain extends React.Component {
             center={this.props.mapCenterAndZoom.center}
             zoom={this.props.mapCenterAndZoom.zoom}
             zoomControl={false}
+            animate={true}
             onZoomend={e => this.onZoomend(e)}
             onZoomstart={e => this.onZoomstart(e)}
-            onMoveend={e => this.onMoveend(e)}F
+            onMoveend={e => this.onMoveend(e)}
             onMovestart={e => this.onMovestart(e)}
             onDragend={e => this.onDragend(e)}
             onDragstart={e => this.onDragstart(e)}
@@ -210,7 +211,7 @@ class MapMain extends React.Component {
                 <HyperspaceNavigation update={this.props.updateHyperspaceNavigation}/>
               </Overlay>
               <Overlay name="Star Systems" checked={true}  ref="layerContainer" >
-                <StarMap map={this.state.map} />
+                <StarMap map={this.state.map}/>
               </Overlay>
     				  </LayersControl>
       		</Map>
