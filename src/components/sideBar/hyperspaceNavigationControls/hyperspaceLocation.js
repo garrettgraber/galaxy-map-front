@@ -1,8 +1,6 @@
 import React from 'react';
 import { If, Then, Else } from 'react-if';
 
-import LatLngDisplay from './latLngDisplay.js';
-
 import '../../../css/main.css';
 
 class HyperspaceLocation extends React.Component {
@@ -16,7 +14,6 @@ class HyperspaceLocation extends React.Component {
 }
 
 function systemLocationDisplay(Location) {
-
   return (
     <div className="pane-row-text">
       <If condition={validHyperspacePoints(Location.system)}>
@@ -29,7 +26,6 @@ function systemLocationDisplay(Location) {
       </If>
     </div>
   );
-
 }
 
 function emptySpaceCheck(system) {
@@ -43,17 +39,8 @@ function emptySpaceCheck(system) {
   }
 }
 
-
-
 function validHyperspacePoints(systemName) {
-  if(systemName === '') {
-    return false;
-  } else {
-    return true;
-  }
+  return (systemName === '')? false : true;
 }
-
-
-
 
 export default HyperspaceLocation;

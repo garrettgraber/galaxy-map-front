@@ -12,7 +12,7 @@ class SearchData extends React.Component {
     this.state = {
       selectedSearchValue: {
         value: '',
-        label: ''
+        label: 'Search For...'
       }
     };
   }
@@ -21,7 +21,7 @@ class SearchData extends React.Component {
       this.setState({
         selectedSearchValue: {
           value: '',
-          label: ''
+          label: 'Search For...'
         }
       });
     } else {
@@ -31,7 +31,7 @@ class SearchData extends React.Component {
   render() {
     const { selectedSearchValue } = this.state;
     return (
-      <div className="control-row nav-section">
+      <div id="search-data" className="control-row nav-section">
         <div style={{display: 'inline-block', width: 180, marginLeft: 10}}>
           <Select
             name="search-selection-type"

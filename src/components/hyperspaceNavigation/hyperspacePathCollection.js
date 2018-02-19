@@ -3,17 +3,16 @@ import { connect } from 'react-redux';
 import { Pane, GeoJSON, FeatureGroup } from 'react-leaflet';
 import L from 'leaflet';
 import _ from 'lodash';
-// import ReactFauxDOM from 'react-faux-dom';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
 import 'leaflet_marker_2x';
 import 'leaflet_marker_shadow';
-import HyperspaceData from 'json-loader!../../data/hyperspace.geojson';
-import { HyperSpacePathCollection, Point } from '../../classes/stellarClasses.js';
+
+import HyperSpacePathCollection from '../../classes/hyperspacePathCollection.js';
+import Point from '../../classes/point.js';
 import { createHyperspacePathsComponents } from './hyperspaceMethods.js'
 
 import HyperspacePath from './hyperspacePath.js';
-
 
 class HyperspacePathCollection extends React.Component {
   constructor(props) {

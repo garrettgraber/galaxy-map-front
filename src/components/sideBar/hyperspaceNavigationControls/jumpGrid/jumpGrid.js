@@ -2,37 +2,32 @@ import React from 'react';
 import { connect } from 'react-redux';
 import JumpPlot from './jumpPlot.js';
 import '../../../../css/main.css';
-import {
-  calculateHyperspaceJumpOn,
-  activeHyperspaceJump
-} from '../../../../actions/actionCreators.js';
+
 import {
   noSetSelectedHyperspaceRoute
 } from '../../../../actions/actions.js';
-import AckbarIcon from '../../../../images/icons/star-wars/Ackbar.ico';
-import OrbitalIcon from '../../../../images/icons/sci-fi-generic/orbital.svg';
-import GalaxySpiralIcon from '../../../../images/icons/sci-fi-generic/twin-shell.svg';
+
 
 class JumpGrid extends React.Component {
   constructor(props) {
     super(props);
   }
-  componentDidMount() {
-    // console.log("JumpGrid has mounted");
-  }
+
+  componentDidMount() { }
+
   getJumpPaths() {
     let hyperspacePathData = [];
     if(this.props.hyperspacePathCollections.length > 0) {
       const FirstHyperspaceCollection = this.props.hyperspacePathCollections[0];
       hyperspacePathData = FirstHyperspaceCollection.paths;
-      // const foundPaths = getCorrectPath(this.props.hyperspaceStartNode.system, )
     }
     return hyperspacePathData;
   }
+
   onMouseLeave() {
-    // console.log("onMouseLeave jump grid!");
     this.props.dispatch(noSetSelectedHyperspaceRoute());
   }
+
   render() {
     const jumpPlotHeight = 50;
     const jumpPaths = this.getJumpPaths();
@@ -64,7 +59,7 @@ class JumpGrid extends React.Component {
     return (
       <div >
         <div className="pane-row-control" style={JumpGridControllerStyle}>
-          <span className="nav-text" >{emptySpaceCheck(activeStartSystem)}&nbsp;&mdash;&mdash;&raquo;&nbsp;</span>
+          <span className="nav-text" >&nbsp;{emptySpaceCheck(activeStartSystem)}&nbsp;&mdash;&mdash;&raquo;&nbsp;</span>
           <span className="nav-text" >{emptySpaceCheck(acttveEndSystem)}&nbsp;</span>
           <span className="nav-text">&nbsp;&nbsp;Total Paths:&nbsp;&nbsp;{jumpPaths.length}</span>
         </div>
@@ -89,8 +84,6 @@ function generateGridRowPaths(pathsArray) {
   return masterJumpPlotsArray;
 }
 
-
-
 function emptySpaceCheck(system) {
   if(system.includes('@')) {
     const splitSystem = system.split('@');
@@ -101,7 +94,6 @@ function emptySpaceCheck(system) {
     return system;
   }
 }
-
 
 const mapStateToProps = (state = {}) => {
     return Object.assign({}, state);

@@ -2,35 +2,26 @@ import React from 'react';
 import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import uuidv4 from 'uuid/v4';
-import VirtualizedSelect from 'react-virtualized-select';
 import Select from 'react-select';
 import createFilterOptions from 'react-select-fast-filter-options';
-
 
 import '../../../css/main.css';
 
 import {
   hyperspacePositionSearch,
-  setPositionToDefault
 } from '../../../actions/actions.js';
 import {
-  pathStartClickToggle,
-  pathEndClickToggle,
   setDefaultStartPosition,
   setDefaultEndPosition,
   hyperspaceNavigationUpdateOn,
-
-
   pinPointStartOn,
   pinPointStartOff,
   pinPointEndOn,
   pinPointEndOff,
-
   pathStartClickOn,
   pathStartClickOff,
   pathEndClickOn,
   pathEndClickOff
-
 } from '../../../actions/actionCreators.js';
 
 class NavigationSystemSearch extends React.Component {

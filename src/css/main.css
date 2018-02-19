@@ -112,6 +112,11 @@
     height: 520px;
     width: 400px;
     overflow: hidden;
+    border-radius: 4px;
+}
+
+#search-data {
+    border-radius: 4px;
 }
 
 .pane-row {

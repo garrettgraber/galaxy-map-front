@@ -7,17 +7,13 @@ class HyperspaceNode extends React.Component {
     super();
   }
 
-  componentDidMount() {
-
-  } 
+  componentDidMount() {}
 
   render() {
     const Node = this.props.Node;
     return LocationGalacticDisplay(Node);
   }
 }
-
-
 
 function LocationGalacticDisplay(Node) {
   const xGalacticLongIsNotSet = isNaN(Node.xGalacticLong);
@@ -54,42 +50,5 @@ function LocationGalacticDisplay(Node) {
     </div>
   );
 }
-
-
-function LocationDisplay(Node) {
-
-  return (
-    <div className="pane-row-text">
-      <If condition={Node.lat === null && Node.lng === null}>
-        <Then>
-          <span className="display-text">Node:&nbsp;&nbsp;None</span>
-        </Then>
-        <Else>
-          <span className="display-text">Node:&nbsp;&nbsp;{Node.system.slice(0, 10)}</span>
-        </Else>
-      </If>
-
-      <If condition={Node.lat === null}>
-        <Then>
-          <span className="display-text">&nbsp;&nbsp;Lat:&nbsp;&nbsp;</span>
-        </Then>
-        <Else>
-          <span className="nav-text">&nbsp;&nbsp;Lat:&nbsp;&nbsp;{parseFloat(Node.lat).toFixed(6)}</span>
-        </Else>
-      </If>
-
-      <If condition={Node.lng === null}>
-        <Then>
-          <span className="display-text">&nbsp;&nbsp;Lng:&nbsp;&nbsp;</span>
-        </Then>
-        <Else>
-          <span className="nav-text">&nbsp;&nbsp;Lng:&nbsp;&nbsp;{parseFloat(Node.lng).toFixed(6)}</span>
-        </Else>
-      </If>
-    </div>
-  );
-}
-
-
 
 export default HyperspaceNode;

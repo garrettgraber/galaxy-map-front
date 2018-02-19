@@ -35,9 +35,7 @@ import {
   createFreespaceLane,
   nodeAndPointAreEqual
 } from './hyperspaceMethods.js';
-import {
-  PathGenerator
-} from '../../classes/stellarClasses.js';
+import PathGenerator from '../../classes/pathGenerator.js';
 import {
   addHyperspacePathToCollection,
   updateHyperspacePaths,

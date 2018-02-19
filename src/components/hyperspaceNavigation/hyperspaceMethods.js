@@ -2,7 +2,8 @@ import React from 'react';
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 
-import { HyperSpacePathCollection, Point } from '../../classes/stellarClasses.js';
+import HyperSpacePathCollection from '../../classes/hyperspacePathCollection.js';
+import Point from '../../classes/point.js';
 import HyperspacePath from './hyperspacePath.js';
 import HyperspaceFreeSpaceJump from './hyperspaceFreeSpaceJump.js';
 

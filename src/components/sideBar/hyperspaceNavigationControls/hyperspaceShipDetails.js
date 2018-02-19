@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import distance from 'euclidean-distance';
 import Geohash from 'latlon-geohash';
 
-import LatLngDisplay from './latLngDisplay.js';
 import '../../../css/main.css';
 
 import AckbarIcon from '../../../images/icons/star-wars/Ackbar.ico';

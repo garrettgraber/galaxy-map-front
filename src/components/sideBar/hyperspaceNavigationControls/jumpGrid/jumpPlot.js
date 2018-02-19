@@ -2,16 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import '../../../../css/main.css';
 import {
-  calculateHyperspaceJumpOn,
   nullActiveHyperspaceJump,
   activeHyperspaceJump
 } from '../../../../actions/actionCreators.js';
 import {
   setSelectedHyperspaceRoute
 } from '../../../../actions/actions.js';
-import AckbarIcon from '../../../../images/icons/star-wars/Ackbar.ico';
-import OrbitalIcon from '../../../../images/icons/sci-fi-generic/orbital.svg';
-import GalaxySpiralIcon from '../../../../images/icons/sci-fi-generic/twin-shell.svg';
 
 class JumpPlot extends React.Component {
   constructor(props) {
@@ -22,9 +18,7 @@ class JumpPlot extends React.Component {
     };
   }
 
-  componentDidMount() {
-
-  }
+  componentDidMount() { }
 
   onClick(e) {
     const selectedAndNoActiveJump = this.state.selected && this.props.activeHyperspaceJump === null;
@@ -90,26 +84,18 @@ class JumpPlot extends React.Component {
         onMouseOver={(e) => this.onMouseOver(e)}
         onMouseLeave={(e) => this.onMouseLeave(e)} >
         <div style={{width: '100%'}} >
-
-          <span className="nav-text" >{emptySpaceCheck(activeStartSystem)}&nbsp;&mdash;&mdash;&raquo;&nbsp;</span>
+          <span className="nav-text" >&nbsp;{emptySpaceCheck(activeStartSystem)}&nbsp;&mdash;&mdash;&raquo;&nbsp;</span>
           <span className="nav-text" >{emptySpaceCheck(acttveEndSystem)}&nbsp;</span>
-
         </div>
 
         <div style={{width: '100%'}} >
-
-          <span className="nav-text" >Length:&nbsp;{this.props.PathObject.length.toFixed(2)}</span>
+          <span className="nav-text" >&nbsp;Length:&nbsp;{this.props.PathObject.length.toFixed(2)}</span>
           <span className="nav-text" >&nbsp;&nbsp;Jumps:&nbsp;{this.props.PathObject.numberOfJumps}</span>
-
         </div>
-
       </div>
     );
   }
 }
-
-
-
 
 function emptySpaceCheck(system) {
   if(system.includes('@')) {
@@ -121,9 +107,6 @@ function emptySpaceCheck(system) {
     return system;
   }
 }
-
-
-
 
 const mapStateToProps = (state = {}) => {
     return Object.assign({}, state);

@@ -6,10 +6,10 @@ import width from 'text-width';
 import _ from 'lodash';
 import Geohash from 'latlon-geohash';
 
-import { Planet, HyperSpaceLane } from '../../classes/stellarClasses.js';
-// import StarSystem from './starSystem.js';
-import { 
- 
+import HyperSpaceLane from '../../classes/hyperspaceLane.js';
+import Planet from '../../classes/planet.js';
+
+import {  
   updateNorthEastMapHash
 } from '../../actions/actionCreators.js';
 import 'leaflet/dist/leaflet.css';

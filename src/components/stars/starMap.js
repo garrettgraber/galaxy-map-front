@@ -5,10 +5,9 @@ import L from 'leaflet';
 import _ from 'lodash';
 import Geohash from 'latlon-geohash';
 
-import {
-  StarMapGenerator,
-  GalaxyDataGenerator
-} from '../../classes/stellarClasses.js';
+import StarMapGenerator from '../../classes/starMapGenerator.js';
+import GalaxyDataGenerator from '../../classes/galaxyDataGenerator.js';
+
 import StarSystem from './starSystem.js';
 import {
   updateSouthWestMapHash,
