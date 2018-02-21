@@ -57,13 +57,23 @@ import {
   pinPointEndOn,
   pinPointEndOff,
   hyperspaceJumpStarting,
-  hyperspaceJumpCompleted
+  hyperspaceJumpCompleted,
+  defaultCursor
 } from './actionCreators.js';
 import {
   getGalacticYFromLatitude,
   getGalacticXFromLongitude
 } from '../components/hyperspaceNavigation/hyperspaceMethods.js';
 import * as ActionCreators from '../constants/actionTypes.js';
+
+
+export function setCursorValue() {
+  return function(dispatch, getState) {
+    const currentCursor = getState().cursorValue;
+    $('.leaflet-container').css('cursor', currentCursor);
+    return null; 
+  }
+}
 
 export function findSystem(systemName) {
 	return function(dispatch, getState) {
@@ -162,7 +172,6 @@ export function getHyperspacePathCollection(HyperspacePathSearch, HyperspacePath
       const dataStreamMessage = "Jump calculated from " + HyperspacePathSearch.startPoint + " to " + HyperspacePathSearch.endPoint;
 
       dispatch(addItemToDataStream(dataStreamMessage));
-      // dispatch(addHyperspacePathToCollection(data));
       dispatch(loadHyperspacePathCollections(data));
       dispatch(activeStartPosition(HyperspacePathData.StartPoint));
       dispatch(activeEndPosition(HyperspacePathData.EndPoint));
@@ -207,6 +216,7 @@ export function noSetSelectedHyperspaceRoute() {
 
 export function hyperspacePositionSearch(SystemSearch) {
   return function(dispatch, getState) {
+    console.log("hyperspacePositionSearch has fired...");
     const SystemSearchSent = omit(SystemSearch, ['isStartPosition']);
     findPlanet(SystemSearchSent).then(response => {
       return response.json();
@@ -237,6 +247,18 @@ export function hyperspacePositionSearch(SystemSearch) {
             dispatch(hyperspaceNavigationUpdateOn());
 
           }
+
+          const state = getState();
+
+          if(state.pathStartClick) {
+            dispatch(pathStartClickOff());
+            dispatch(defaultCursor());
+          }
+          if(state.pathEndClick) {
+            dispatch(pathEndClickOff());
+            dispatch(defaultCursor());          
+          }
+
         } else {
           
           const PlanetLocation = {
@@ -268,6 +290,17 @@ export function hyperspacePositionSearch(SystemSearch) {
                 dispatch(hyperspaceNavigationUpdateOn());
               }
 
+              const state = getState();
+
+              if(state.pathStartClick) {
+                dispatch(pathStartClickOff());
+                dispatch(defaultCursor());
+              }
+              if(state.pathEndClick) {
+                dispatch(pathEndClickOff());
+                dispatch(defaultCursor());          
+              }
+
             }        
           }).catch(errNearestNode => {
             console.log("node nearest data error: ", errNearestNode);
@@ -290,6 +323,7 @@ export function hyperspacePositionSearch(SystemSearch) {
 
 export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
   return function(dispatch, getState) {
+    console.log("find and set nearest hyperspace node");
     findNearestNode(LngLatSearch.LatLng).then(response => {
       return response.json();
     }).then(data => {
@@ -321,6 +355,19 @@ export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
         dispatch(setEndSystem(NewPositionState.system));
         dispatch(hyperspaceNavigationUpdateOn());
       }
+
+      const state = getState();
+
+      if(state.pathSearchStart) {
+        dispatch(pinPointStartOff());
+      }
+
+      if(state.pathSearchEnd) {
+        dispatch(pinPointEndOff());
+      }
+      
+      dispatch(defaultCursor());
+
     }).catch(err => {
       console.log("err: ", err);
       if(LngLatSearch.isStartNode) {

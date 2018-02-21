@@ -17,9 +17,12 @@ import {
     updateNorthEastMapHash,
     updateSouthWestMapHash,
     newGalacticXandY,
-    setMapZoom
+    setMapZoom,
+    pinPointStartOff,
+    pinPointEndOff,
+    defaultCursor
 } from '../actions/actionCreators.js';
-import { findAndSetNearsetHyperspaceNode } from '../actions/actions.js';
+import { findAndSetNearsetHyperspaceNode, setCursorValue } from '../actions/actions.js';
 
 const { BaseLayer, Overlay } = LayersControl;
 
@@ -61,9 +64,12 @@ class MapMain extends React.Component {
   		this.setState({map: this.refs.map.leafletElement});
   	}
     this.props.dispatch(setMapZoom(currentZoom));
+    this.props.dispatch(setCursorValue());
   }
 
-  componentWillReceiveProps(newProps) {}
+  componentWillReceiveProps(newProps) {
+    this.props.dispatch(setCursorValue());
+  }
 
   onZoomend(e) {
     console.log("Zoom End has fired", e.target._zoom);

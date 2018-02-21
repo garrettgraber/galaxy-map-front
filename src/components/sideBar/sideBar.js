@@ -7,7 +7,12 @@ import '../../css/main.css';
 import { 
     toggleSystemsSearchControls,
     toggleHyperspaceNavigationControls,
-    addItemToDataStream
+    addItemToDataStream,
+    pathStartClickOff,
+    pathEndClickOff,
+    pinPointStartOff,
+    pinPointEndOff,
+    defaultCursor
 } from '../../actions/actionCreators.js';
 
 class SideBar extends React.Component {
@@ -18,6 +23,13 @@ class SideBar extends React.Component {
     this.props.dispatch( toggleSystemsSearchControls() );
   }
   hyperspaceNavigationControls(e) {
+    if(this.props.hyperspaceNavigationControlsOn) {
+      this.props.dispatch(defaultCursor());
+      this.props.dispatch(pathStartClickOff());
+      this.props.dispatch(pathEndClickOff());
+      this.props.dispatch(pinPointEndOff());
+      this.props.dispatch(pinPointStartOff());
+    }
     this.props.dispatch( toggleHyperspaceNavigationControls() );
   }
 	render() {

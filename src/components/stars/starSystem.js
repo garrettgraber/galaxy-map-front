@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { CircleMarker, Popup, Circle, Tooltip, Marker } from 'react-leaflet';
 import L from 'leaflet';
 import width from 'text-width';
-// import ReactFauxDOM from 'react-faux-dom';
+
 import { 
   hyperspacePositionSearch
 } from '../../actions/actions.js';
@@ -33,9 +33,7 @@ class StarSystem extends React.Component {
       }
     }
 
-    componentWillReceiveProps(newProps) {
-      // console.log("Props update Star System: ", newProps);
-    }
+    componentWillReceiveProps(newProps) {}
 
     onMouseOver(e) {
       const pathClicksOff = !this.props.pathStartClick && !this.props.pathEndClick;
@@ -55,7 +53,6 @@ class StarSystem extends React.Component {
 
     onClick(e) {
       console.log("star click");
-
       if(this.props.pathStartClick || this.props.pathEndClick) {
         const isStartPosition = (this.props.pathStartClick && !this.props.pathEndClick)? true : false;
         const Search = {system: this.props.StarObject.system, isStartPosition: isStartPosition};
@@ -84,7 +81,6 @@ class StarSystem extends React.Component {
         className: "systemLabel",
         iconSize: new L.Point(this.props.StarObject.textWidth + 30, 24),
         iconAnchor: new L.Point(textWidth / 3.0, 18),
-        // iconAnchor: new L.Point(0, 0),
         html: this.props.StarObject.system
       });
 
@@ -97,31 +93,8 @@ class StarSystem extends React.Component {
     }
 }
 
-
-
-
-function setCurrsor(start, end) {
-  console.log("set cursor has fired: ");
-  console.log("start: ", start);
-  console.log("end: ", end);
-  if(!start && !end) {
-    // $('.leaflet-container').css('cursor','');
-    $('.leaflet-interactive').css('cursor','pointer');
-  } else if((start && !end) || (!start && end)) {
-    // $('.leaflet-container').css('cursor','crosshair');
-    $('.leaflet-interactive').css('cursor','crosshair');
-    // $('.leaflet-container').attr("style","cursor:  url(../images/icons/sci-fi-generic/arrow-scope.svg), crosshair;");
-  } else {
-    console.log("Error cannot have both active");
-  }
-}
-
-
-
 const mapStateToProps = (state = {}) => {
   return Object.assign({}, state);
 };
 
 export default connect(mapStateToProps)(StarSystem);
-
-// export default StarSystem;

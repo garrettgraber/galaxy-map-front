@@ -21,7 +21,9 @@ import {
   pathStartClickOn,
   pathStartClickOff,
   pathEndClickOn,
-  pathEndClickOff
+  pathEndClickOff,
+  defaultCursor,
+  notAllowedCursor
 } from '../../../actions/actionCreators.js';
 
 class NavigationSystemSearch extends React.Component {
@@ -33,26 +35,30 @@ class NavigationSystemSearch extends React.Component {
 
     };
   }
+
   componentDidMount() {
     const startSystem = this.props.hyperspaceStartPoint.system;
     const endSystem = this.props.hyperspaceEndPoint.system;
     const isStartPosition = this.props.isStartPosition;
     this.setSystemValue(isStartPosition, startSystem, endSystem);
-
-    setCurrsorAsNotAllowed(this.props.clickSystem);
+    if(this.props.clickSystem) {
+      this.props.dispatch(notAllowedCursor());
+    }
   }
+
   componentWillReceiveProps(newProps) {
     const startSystem = newProps.hyperspaceStartPoint.system;
     const endSystem = newProps.hyperspaceEndPoint.system;
     const isStartPosition = newProps.isStartPosition;
     this.setSystemValue(isStartPosition, startSystem, endSystem);
-
-    setCurrsorAsNotAllowed(newProps.clickSystem);
+    if(newProps.clickSystem) {
+      this.props.dispatch(notAllowedCursor());
+    }
   }
+
   setSystemValue(isStartPosition, startSystem, endSystem) {
     const isStartEmptySpace = startSystem.slice(0, 3) === 'ES@';
     const isEndEmptySpace = endSystem.slice(0, 3) === 'ES@';
-
     if(startSystem && !isStartEmptySpace && isStartPosition) {
       this.setState({system: startSystem});
     }
@@ -60,7 +66,6 @@ class NavigationSystemSearch extends React.Component {
       this.setState({system: endSystem});
     }
   }
-
 
   systemChange(systemValue) {
     if(systemValue === null) {
@@ -79,7 +84,6 @@ class NavigationSystemSearch extends React.Component {
   }
 
   clickSystemsToggle(e) {
-
     if(!this.props.clickSystem) {
       if(this.props.isStartPosition) {
         this.props.dispatch(pathEndClickOff());
@@ -93,15 +97,14 @@ class NavigationSystemSearch extends React.Component {
         this.props.dispatch(pathEndClickOn());
       }
     } else {
-      setCurrsorAsDefault();
       if(this.props.isStartPosition) {
         this.props.dispatch(pathStartClickOff());
       } else {
         this.props.dispatch(pathEndClickOff());
       }
+      this.props.dispatch(defaultCursor());
     }
   }
-
 
   render() {
     const startClickIsOn = (this.props.isStartPosition && this.props.pathStartClick);
@@ -112,7 +115,6 @@ class NavigationSystemSearch extends React.Component {
 
     return (
       <div className="pane-column">
-
         <div style={{display: 'inline-block', width: 200, marginRight: 3, marginLeft: 3}}>
           <Select
             name="selected-system-search"
@@ -123,7 +125,6 @@ class NavigationSystemSearch extends React.Component {
             value={this.state.system}
           />
         </div>
-
         <button
           type="button"
           className={clickSystemClasses}
@@ -135,22 +136,9 @@ class NavigationSystemSearch extends React.Component {
           <i className="fa fa-sun-o"></i>
         </button>
         <ReactTooltip id={'star-system-hyperspace-click' + this.state.componentId} place="top">{}</ReactTooltip>
-
       </div>
     );
   }
-}
-
-
-function setCurrsorAsNotAllowed(systemClickIsOn) {
-  if(systemClickIsOn) {
-    $('.leaflet-container').css('cursor','not-allowed');
-  }
-}
-
-
-function setCurrsorAsDefault() {
-  $('.leaflet-container').css('cursor','');
 }
 
 

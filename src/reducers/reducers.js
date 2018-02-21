@@ -98,6 +98,20 @@ const emptySystemSet = new Set();
 const emptySectorSet = new Set();
 
 
+function cursorValue(state = '', action) {
+	switch (action.type) {
+		case Actions.CURSOR_DEFAULT:
+			return '';
+		case Actions.CURSOR_CROSSHAIR:
+			return 'crosshair';
+		case Actions.CURSOR_NOT_ALLOWED:
+			return 'not-allowed';
+		case Actions.CURSOR_POINTER:
+			return 'pointer';
+		default:
+			return state;
+	}
+}
 function cursorOnMap(state = false, action) {
 	switch (action.type) {
 		case Actions.MOUSE_MOVE_OFF_MAP:
@@ -129,9 +143,9 @@ function mapControlsDisplayed(state = true, action) {
 function sectorSearchSet(state = emptySectorSet, action) {
 	switch (action.type) {
 		case Actions.ADD_SECTOR_SEARCH_SET:
-			let StateClone = _.cloneDeep(state);
-			StateClone.add(action.payload);
-			return StateClone;
+			let SetClone = new Set(state);
+			SetClone.add(action.payload);
+			return SetClone;
 		case Actions.BUILD_SECTOR_SEARCH_SET:
 			const newSectorSearchSet = action.payload;
 			return newSectorSearchSet;
@@ -582,6 +596,7 @@ function updateHyperspaceNavigation(state = false, action) {
 }
 
 export default combineReducers({
+	cursorValue,
 	cursorOnMap,
 	galacticXandY,
 	sectorSearchSet,

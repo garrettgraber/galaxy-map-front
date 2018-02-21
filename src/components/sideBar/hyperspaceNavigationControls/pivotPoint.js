@@ -14,7 +14,8 @@ import {
   pinPointStartOff,
   pinPointEndOff,
   pathStartClickOff,
-  pathEndClickOff
+  pathEndClickOff,
+  defaultCursor,
 } from '../../../actions/actionCreators.js';
 import {
   zoomToLocation
@@ -49,11 +50,11 @@ class PivotPoint extends React.Component {
     }
     if(searchSystemsNewValue) {
       if(this.props.pinPoint && !this.props.pinPointAlternate) {
-        $('.leaflet-container').css('cursor','');
+        this.props.dispatch(defaultCursor());
       }
     } else {
       if(this.props.clickSystem && !this.props.clickSystemAlternate) {
-        $('.leaflet-container').css('cursor','');
+        this.props.dispatch(defaultCursor());
       }
     }
   }

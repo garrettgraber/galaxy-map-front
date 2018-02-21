@@ -1,7 +1,25 @@
-
 import Actions from '../constants/actionTypesModule.js';
 
-
+export function defaultCursor() {
+	return {
+		type: Actions.CURSOR_DEFAULT
+	}
+}
+export function notAllowedCursor() {
+	return {
+		type: Actions.CURSOR_NOT_ALLOWED
+	}
+}
+export function pointerCursor() {
+	return {
+		type: Actions.CURSOR_POINTER
+	}
+}
+export function crosshairCursor() {
+	return {
+		type: Actions.CURSOR_CROSSHAIR
+	}
+}
 export function newGalacticXandY(newPosition) {
 	return {
 		type: Actions.MOUSE_MOVE,

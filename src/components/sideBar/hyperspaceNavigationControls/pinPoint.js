@@ -14,8 +14,13 @@ import {
   pinPointEndOn,
   pinPointEndOff,
   pathStartClickOff,
-  pathEndClickOff
+  pathEndClickOff,
+  defaultCursor,
+  crosshairCursor,
 } from '../../../actions/actionCreators.js';
+import {
+  setCursorValue
+} from '../../../actions/actions.js';
 
 class PinPoint extends React.Component {
   constructor() {
@@ -26,11 +31,17 @@ class PinPoint extends React.Component {
   }
 
   componentDidMount() {
-    setCurrsorAsCrosshairs(this.props.pinPoint);
+    this.setCurrsorAsCrosshairs(this.props.pinPoint);
   }
 
   componentWillReceiveProps(newProps) {
-    setCurrsorAsCrosshairs(newProps.pinPoint);
+    this.setCurrsorAsCrosshairs(newProps.pinPoint);
+  }
+
+  setCurrsorAsCrosshairs(crosshairStatus) {
+    if(crosshairStatus) {
+      this.props.dispatch(crosshairCursor());
+    }
   }
 
   pinPointToggle(e) {
@@ -51,7 +62,6 @@ class PinPoint extends React.Component {
         this.props.dispatch(pinPointEndOn());
       }
     } else {
-      setCurrsorAsDefault();
       if(this.props.isStartPosition) {
         this.props.dispatch(pinPointStartOff());
         this.props.dispatch(pathSearchStartOff());
@@ -59,6 +69,7 @@ class PinPoint extends React.Component {
         this.props.dispatch(pinPointEndOff());
         this.props.dispatch(pathSearchEndOff());
       }
+      this.props.dispatch(defaultCursor());
     }
   }
 
@@ -85,15 +96,6 @@ class PinPoint extends React.Component {
   }
 }
 
-function setCurrsorAsCrosshairs(crosshairStatus) {
-  if(crosshairStatus) {
-    $('.leaflet-container').css('cursor','crosshair');
-  }
-}
-
-function setCurrsorAsDefault() {
-  $('.leaflet-container').css('cursor','');
-}
 
 const mapStateToProps = (state = {}) => {
     return Object.assign({}, state);
