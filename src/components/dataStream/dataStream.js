@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Clock from 'react-live-clock';
+import width from 'text-width';
 
 import {
   getGalacticYFromLatitude,
@@ -9,7 +10,7 @@ import {
 
 import '../../css/main.css';
 
-const decodeTimeInMilliseconds = 400;
+const decodeTimeInMilliseconds = 200;
 
 class DataStream extends React.Component {
   constructor(props) {
@@ -92,7 +93,8 @@ class DataStream extends React.Component {
       position: 'fixed',
       top: 0,
       height: 40,
-      width: 560,
+      // width: 560,
+      width: 700,
       zIndex: 40,
       color: '#ff0101',
       backgroundColor: 'rgba(255,255,255,.5)',
@@ -100,7 +102,8 @@ class DataStream extends React.Component {
       left: 70,
       fontSize: '1.2em',
       display: 'table',
-      clip: 'rect(0, auto, auto, 0)'
+      clip: 'rect(0, auto, auto, 0)',
+      overflow: 'hidden'
     };
 
     const MessageStyle = {
@@ -114,7 +117,8 @@ class DataStream extends React.Component {
       display: "table-cell",
       verticalAlign: "middle",
       opacity: 1.0,
-      width: 550,
+      // width: 550,
+      width: 690,
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       wordBreak:' break-all'
@@ -136,14 +140,15 @@ class DataStream extends React.Component {
 
     const ZoomStyle = {
       position: 'fixed',
-      top: 0,
+      bottom: 0,
+      right: 0,
       height: 40,
-      width: 80,
+      width: 200,
       zIndex: 40,
       color: '#ff0101',
       backgroundColor: 'rgba(255,255,255,.5)',
       opacity: 1.0,
-      left: 630,
+      // left: 630,
       fontSize: '1.2em',
       display: 'table'
     };
@@ -156,6 +161,10 @@ class DataStream extends React.Component {
     const deCodedIndex = this.state.deCodedIndex;
     const deCodedMessage = currentMessage.slice(0, deCodedIndex);
     const enCodedMessage = currentMessage.slice(deCodedIndex, currentMessage.length);
+
+    // const totalTextWidth = width(deCodedMessage + enCodedMessage, { size: "1em" });
+
+    // console.log("Text width: ", totalTextWidth);
 
     return (
       <div id="data-stream" >
@@ -170,7 +179,7 @@ class DataStream extends React.Component {
           </div>
         </div>
         <div style={ZoomStyle}>
-          <span style={MessageStyle} >Zoom:&nbsp;{this.props.mapCenterAndZoom.zoom - 1}</span>
+          <span style={MessageStyle} >&nbsp;&nbsp;&nbsp;Zoom:&nbsp;&nbsp;{this.props.mapCenterAndZoom.zoom - 1}</span>
         </div>
       </div>
     );

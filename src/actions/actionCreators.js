@@ -1,5 +1,16 @@
 import Actions from '../constants/actionTypesModule.js';
 
+
+export function loadingIconOn() {
+	return {
+		type: Actions.LOADING_ICON_ON
+	}
+}
+export function loadingIconOff() {
+	return {
+		type: Actions.LOADING_ICON_OFF
+	}
+}
 export function defaultCursor() {
 	return {
 		type: Actions.CURSOR_DEFAULT

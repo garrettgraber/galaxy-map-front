@@ -10,7 +10,10 @@ import {
   emptyHyperspacePathCollections,
   hyperspaceNavigationUpdateOn,
   activeStartPositionDefault,
-  activeEndPositionDefault
+  activeEndPositionDefault,
+  loadingIconOff,
+  loadingIconOn,
+  addItemToDataStream
 } from '../../../actions/actionCreators.js';
 import {
   getHyperspacePathCollection,
@@ -68,6 +71,7 @@ class HyperspaceControls extends React.Component {
     const startSystemExists = this.props.hyperspaceStartSystem.length > 0;
     const endSystemExists = this.props.hyperspaceEndSystem.length > 0;
     if(startSystemExists && endSystemExists) {
+
       this.setState({ jumpButtonClasses: "navbar-button button-border-teal" });
       const CurentPathGenerator = new PathGenerator(
         this.props.hyperspaceActiveStartPoint,
@@ -119,7 +123,8 @@ class HyperspaceControls extends React.Component {
       height: 30,
       padding: 2,
       borderRadius: 2,
-      backgroundColor: 'black'
+      backgroundColor: 'black',
+      cursor: 'pointer'
     };
    const EraseButtonStyle = {
       width: 60,

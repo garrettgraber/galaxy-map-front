@@ -1,11 +1,5 @@
-import 'whatwg-fetch';
-import urlencode from 'urlencode';
-import queryString from 'query-string';
 import omit from 'object.omit';
-import hash from 'string-hash';
 import Geohash from 'latlon-geohash';
-import { batchActions } from 'redux-batched-actions';
-import { chain } from 'redux-chain';
 
 import {
 	setActiveSystem,
@@ -13,11 +7,6 @@ import {
 	searchSystemsStart,
 	searchSystemsFinish,
   setMapCenterAndZoom,
-  setMapZoom,
-  setMapCenter,
-  zoomPointOn,
-  zoomPointOff,
-	addHyperspacePathToCollection,
   loadHyperspacePathCollections,
   emptyHyperspacePathCollections,
   updateHyperspacePaths,
@@ -35,13 +24,9 @@ import {
   calculateHyperspaceJumpOn,
   calculateHyperspaceJumpOff,
   hyperspaceNavigationUpdateOn,
-  hyperspaceNavigationUpdateOff,
-  setStartData,
   addItemToDataStream,
   mostRecentDataStreamItem,
   setCurrentDataStreamItemToBlank,
-  deCodeAdditionalCurrentItemLetter,
-  zeroDecodedCurrentItemLetters,
   setNullHyperspaceHash,
   setSelectedHyperspaceHash,
   activeStartPosition,
@@ -50,22 +35,16 @@ import {
   activeEndNode,
   pathEndClickOff,
   pathStartClickOff,
-  pathStartClickOn,
-  pathEndClickOn,
-  pinPointStartOn,
   pinPointStartOff,
-  pinPointEndOn,
   pinPointEndOff,
-  hyperspaceJumpStarting,
-  hyperspaceJumpCompleted,
-  defaultCursor
+  defaultCursor,
+  loadingIconOff
 } from './actionCreators.js';
 import {
   getGalacticYFromLatitude,
   getGalacticXFromLongitude
 } from '../components/hyperspaceNavigation/hyperspaceMethods.js';
-import * as ActionCreators from '../constants/actionTypes.js';
-
+import ApiService from '../remoteServices/apiService.js';
 
 export function setCursorValue() {
   return function(dispatch, getState) {
@@ -78,9 +57,7 @@ export function setCursorValue() {
 export function findSystem(systemName) {
 	return function(dispatch, getState) {
     dispatch( searchSystemsStart() );
-    fetch('api/search/?system=' + urlencode(systemName)).then(response => {
-    	return response.json();
-    }).then(json => {
+    ApiService.findSystemByName(systemName).then(json => {
     	let SystemObject = JSON.parse(json);
     	if(SystemObject.hasLocation) {
         const dataStreamMessage = "Zoomed to " + SystemObject.system + ' ...';
@@ -89,18 +66,15 @@ export function findSystem(systemName) {
         const CurrentState = getState();
         const activeSystemZoom = CurrentState.activeSystem.zoom;
         let newZoom = 6;
-
         if(activeSystemZoom > 2) {
           newZoom = activeSystemZoom;
         }
-
 				const SystemData = {
 					lat: LngLat[1],
 					lng: LngLat[0],
 					system: SystemObject.system,
           zoom: newZoom
 				};
-
         const stateBeforeDispatches = getState();
 				dispatch(setActiveSystem(SystemData));
         const systemCenter = [SystemData.lat, SystemData.lng];
@@ -127,9 +101,7 @@ export function setPositionToDefault(isStartPosition) {
       dispatch(setDefaultEndPosition());
     }
     console.log("After setPositionToDefault: ", getState());
-
     dispatch(hyperspaceNavigationUpdateOn());
-
     return null;
   }
 }
@@ -143,9 +115,7 @@ export function zoomToLocation(locationCenter, zoom) {
 
 export function plotFreeSpaceJumpToNode(HyperspacePathData) {
   return function(dispatch, getState) {
-
     const dataStreamMessage = "Jump calculated from " + HyperspacePathData.StartPoint.system + " to " + HyperspacePathData.EndPoint.system;
-
     dispatch(calculateHyperspaceJumpOn());
     dispatch(addItemToDataStream(dataStreamMessage));
     dispatch(emptyHyperspacePathCollections());
@@ -154,23 +124,22 @@ export function plotFreeSpaceJumpToNode(HyperspacePathData) {
     dispatch(activeStartNode(HyperspacePathData.StartNode));
     dispatch(activeEndNode(HyperspacePathData.EndNode));
     dispatch(updateHyperspacePaths());
+
+    // dispatch(loadingIconOff());
+
     dispatch(calculateHyperspaceJumpOff());
     dispatch(hyperspaceNavigationUpdateOn());
-
     return null;
   }
 }
 
 export function getHyperspacePathCollection(HyperspacePathSearch, HyperspacePathData) {
 	return function(dispatch, getState) {
-
     dispatch(calculateHyperspaceJumpOn());
-
-    getHyperspacePathData(HyperspacePathSearch).then(response => {
+    ApiService.getHyperspacePathData(HyperspacePathSearch).then(response => {
       return response.json();
     }).then(data => {
       const dataStreamMessage = "Jump calculated from " + HyperspacePathSearch.startPoint + " to " + HyperspacePathSearch.endPoint;
-
       dispatch(addItemToDataStream(dataStreamMessage));
       dispatch(loadHyperspacePathCollections(data));
       dispatch(activeStartPosition(HyperspacePathData.StartPoint));
@@ -180,17 +149,16 @@ export function getHyperspacePathCollection(HyperspacePathSearch, HyperspacePath
       dispatch(updateHyperspacePaths());
       dispatch(calculateHyperspaceJumpOff());
       dispatch(hyperspaceNavigationUpdateOn());
-
       console.log("Hyperspace Jump Successful: ", getState());
-
     }).catch(err => {
-
       const dataStreamMessage = "Error calculating from " + HyperspacePathSearch.startPoint + " to " + HyperspacePathSearch.endPoint;
       console.log("err: ", err);
       dispatch(addItemToDataStream(dataStreamMessage));
       dispatch(errorHyperspacePath(err));
-      dispatch(calculateHyperspaceJumpOff());
 
+      // dispatch(loadingIconOff());
+      
+      dispatch(calculateHyperspaceJumpOff());
     });
     return null;
 	}
@@ -218,12 +186,12 @@ export function hyperspacePositionSearch(SystemSearch) {
   return function(dispatch, getState) {
     console.log("hyperspacePositionSearch has fired...");
     const SystemSearchSent = omit(SystemSearch, ['isStartPosition']);
-    findPlanet(SystemSearchSent).then(response => {
+    ApiService.findPlanet(SystemSearchSent).then(response => {
       return response.json();
     }).then(data => {
       const PlanetData = JSON.parse(data);
       const NodeSearch = {system: PlanetData.system};
-      findHyperspaceNode(NodeSearch).then(responseNode => {
+      ApiService.findHyperspaceNode(NodeSearch).then(responseNode => {
         return responseNode.json();
       }).then(dataNode => {
         const NodeDataArray = JSON.parse(dataNode);
@@ -231,25 +199,18 @@ export function hyperspacePositionSearch(SystemSearch) {
           const NodeData = NodeDataArray[0];
           const NewPositionState = createPositionFromNode(NodeData);
           const NewNodeState = createNodeState(NodeData);
-
           if(SystemSearch.isStartPosition) {
-            
             dispatch(setStartPosition(NewPositionState));
             dispatch(setStartNode(NewNodeState));
             dispatch(setStartSystem(SystemSearch.system));
             dispatch(hyperspaceNavigationUpdateOn());
-
           } else {
-
             dispatch(setEndPosition(NewPositionState));
             dispatch(setEndNode(NewNodeState));
             dispatch(setEndSystem(SystemSearch.system));
             dispatch(hyperspaceNavigationUpdateOn());
-
           }
-
           const state = getState();
-
           if(state.pathStartClick) {
             dispatch(pathStartClickOff());
             dispatch(defaultCursor());
@@ -260,12 +221,11 @@ export function hyperspacePositionSearch(SystemSearch) {
           }
 
         } else {
-          
           const PlanetLocation = {
             lat: PlanetData.lat,
             lng: PlanetData.lng
           };
-          findNearestNode(PlanetLocation).then(response => {
+          ApiService.findNearestNode(PlanetLocation).then(response => {
             return response.json();
           }).then(data => {
             const NodeDataArrayNearest = JSON.parse(data);
@@ -274,24 +234,18 @@ export function hyperspacePositionSearch(SystemSearch) {
               const NodeDataNearest = NodeDataArrayNearest[0];
               const NewPositionStateFound = createPositionFromPlanet(PlanetData);
               const NewNodeStateNearest = createNodeState(NodeDataNearest);
-
               if(SystemSearch.isStartPosition) {
-
                 dispatch(setStartNode(NewNodeStateNearest));
                 dispatch(setStartPosition(NewPositionStateFound));
                 dispatch(setStartSystem(SystemSearch.system));
                 dispatch(hyperspaceNavigationUpdateOn());
-
               } else {
-
                 dispatch(setEndNode(NewNodeStateNearest));
                 dispatch(setEndPosition(NewPositionStateFound));
                 dispatch(setEndSystem(SystemSearch.system));
                 dispatch(hyperspaceNavigationUpdateOn());
               }
-
               const state = getState();
-
               if(state.pathStartClick) {
                 dispatch(pathStartClickOff());
                 dispatch(defaultCursor());
@@ -300,7 +254,6 @@ export function hyperspacePositionSearch(SystemSearch) {
                 dispatch(pathEndClickOff());
                 dispatch(defaultCursor());          
               }
-
             }        
           }).catch(errNearestNode => {
             console.log("node nearest data error: ", errNearestNode);
@@ -324,10 +277,9 @@ export function hyperspacePositionSearch(SystemSearch) {
 export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
   return function(dispatch, getState) {
     console.log("find and set nearest hyperspace node");
-    findNearestNode(LngLatSearch.LatLng).then(response => {
+    ApiService.findNearestNode(LngLatSearch.LatLng).then(response => {
       return response.json();
     }).then(data => {
-
       const NodeDataArray = JSON.parse(data);
       const NodeState = NodeDataArray[0]
       const NewNodeState = omit(NodeState, ['_id', '__v']);
@@ -355,19 +307,14 @@ export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
         dispatch(setEndSystem(NewPositionState.system));
         dispatch(hyperspaceNavigationUpdateOn());
       }
-
       const state = getState();
-
       if(state.pathSearchStart) {
         dispatch(pinPointStartOff());
       }
-
       if(state.pathSearchEnd) {
         dispatch(pinPointEndOff());
       }
-      
       dispatch(defaultCursor());
-
     }).catch(err => {
       console.log("err: ", err);
       if(LngLatSearch.isStartNode) {
@@ -411,86 +358,3 @@ function createPositionFromPlanet(PlanetData) {
 }
 
 function createNodeState(NodeData) { return omit(NodeData, ['_id', '__v', 'loc']) }
-
-function findPlanet(systemSearch) {
-  const planetQuery = 'api/search/?' + queryString.stringify(systemSearch);
-  return fetch(planetQuery, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-  });
-}
-
-function findHyperspaceNode(nodeSearch) {
-  const nodeQuery = '/api/hyperspacenode/search?' + queryString.stringify(nodeSearch);
-  return fetch(nodeQuery, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-  });
-}
-
-function findNearestNode(LngLatSearch) {
-  const nodeQuery = '/api/hyperspacenode/closet?' + queryString.stringify(LngLatSearch);
-  return fetch(nodeQuery, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-  });
-}
-
-// Un-used
-function getPathDataShortest(start, end, maxJumps) {
-  return fetch('/api/hyperspace-jump/calc-shortest', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      start: start,
-      end: end,
-      maxJumps: maxJumps
-    })
-  });
-}
-
-// Un-used
-function getPathDataMany(start, end, maxJumps, limit) {
-  return fetch('/api/hyperspace-jump/calc-many', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      start: start,
-      end: end,
-      maxJumps: maxJumps,
-      limit: limit
-    })
-  });
-}
-
-function getHyperspacePathData(PathSearch) {
-  console.log("PathSearch: ", PathSearch);
-	let jumpEndpoint = '/api/hyperspace-jump/';
-	jumpEndpoint += (PathSearch.shortest)? 'calc-shortest' : 'calc-many';
-  return fetch(jumpEndpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(PathSearch)
-  });
-}
-
-function createId() {
-  let text = "";
-  const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  for (var i = 0; i < 10; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-  return text;
-}

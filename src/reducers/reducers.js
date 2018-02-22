@@ -1,12 +1,7 @@
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
-import multi from 'redux-multi';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-// import * as Actions from '../constants/actionTypes.js';
-
+import { createStore, combineReducers } from 'redux';
 import Actions from '../constants/actionTypesModule.js';
-
-// applyMiddleware(multi)(createStore);
 
 /**
  * This is a reducer, a pure function with (state, action) => state signature.
@@ -88,7 +83,6 @@ const BlankGalacticXandY = {
 };
 
 
-
 const defaultZoom = 2;
 const maxJumps = 90;
 const pathLimit = 1;
@@ -98,6 +92,16 @@ const emptySystemSet = new Set();
 const emptySectorSet = new Set();
 
 
+function loadingIconOn(state = false, action) {
+	switch (action.type) {
+		case Actions.LOADING_ICON_ON:
+			return true;
+		case Actions.LOADING_ICON_OFF:
+			return false;
+		default:
+			return state;
+	}
+}
 function cursorValue(state = '', action) {
 	switch (action.type) {
 		case Actions.CURSOR_DEFAULT:
@@ -596,6 +600,7 @@ function updateHyperspaceNavigation(state = false, action) {
 }
 
 export default combineReducers({
+	loadingIconOn,
 	cursorValue,
 	cursorOnMap,
 	galacticXandY,

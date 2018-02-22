@@ -138,17 +138,17 @@ class MapNavigationControl extends React.Component {
 
                 <div style={{height: 160, position: 'fixed', bottom: bottomBase + 5}}>
 
-                  <div id="circle" className="rotate-circle">
+                  <div id="circle" className="rotate-circle" style={{cursor: 'pointer'}}>
                     
-                    <div id="q1" className="quarter map-navigation-pan" onClick={e => this.handleUpPanClick(e)}>
+                    <div id="q1" className="quarter map-navigation-pan " onClick={e => this.handleUpPanClick(e)}>
                       <i className="fa fa-angle-double-left"   style={{ position: 'relative', top: '30%', left: '40%', transform: 'rotate(45deg)', fontSize: '28pt' }} ></i>
                     </div>
-                    <div id="q2" className="quarter map-navigation-pan" onClick={e => this.handleRightPanClick(e)}  data-tip="Pan Right" data-for="pan-right-navigation-toggle" ><i className="fa fa-angle-double-up"  style={{ position: 'relative', top: '30%', left: '30%', transform: 'rotate(45deg)', fontSize: '28pt' }}></i>
+                    <div id="q2" className="quarter map-navigation-pan " onClick={e => this.handleRightPanClick(e)}  data-tip="Pan Right" data-for="pan-right-navigation-toggle" ><i className="fa fa-angle-double-up"  style={{ position: 'relative', top: '30%', left: '30%', transform: 'rotate(45deg)', fontSize: '28pt' }}></i>
                     </div>
-                    <div id="q3" className="quarter map-navigation-pan" onClick={e => this.handleLeftPanClick(e)} data-tip="Pan Left" data-for="pan-left-navigation-toggle" ><i className="fa fa-angle-double-down"   style={{ position: 'relative', top: '20%', left: '40%', transform: 'rotate(45deg)', fontSize: '28pt' }}></i>
+                    <div id="q3" className="quarter map-navigation-pan " onClick={e => this.handleLeftPanClick(e)} data-tip="Pan Left" data-for="pan-left-navigation-toggle" ><i className="fa fa-angle-double-down"   style={{ position: 'relative', top: '20%', left: '40%', transform: 'rotate(45deg)', fontSize: '28pt' }}></i>
                     </div>
 
-                    <div id="q4" className="quarter map-navigation-pan" onClick={e => this.handleDownPanClick(e)}><i className="fa fa-angle-double-right"   style={{ position: 'relative', top: '18%', left: '30%', transform: 'rotate(45deg)', fontSize: '28pt' }}></i>
+                    <div id="q4" className="quarter map-navigation-pan " onClick={e => this.handleDownPanClick(e)}><i className="fa fa-angle-double-right"   style={{ position: 'relative', top: '18%', left: '30%', transform: 'rotate(45deg)', fontSize: '28pt' }}></i>
                     </div>
                   </div>
                 </div>

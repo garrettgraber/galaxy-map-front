@@ -1,7 +1,5 @@
 
 
-
-
 #circle {
   display: block;
   padding: 0;
@@ -12,7 +10,6 @@
   overflow: hidden;
 }
 .quarter {
-  /*display: inline-block;*/
   display:table-cell;
   float: left;
   margin: 0;
@@ -31,38 +28,31 @@
 }
 
 .map-navigation-pan {
-    background-color: blue; 
+    /*background-color: #708090;*/
+    /*background-color: #428bca;*/
+    background-color: #337AB7;
 }
 
 #q1 {
-  /*background-color: #f00;*/
-
     color: white;
-    background-color: black;
 }
 
 #q2 {
     color: white;
-    background-color: black;
-
-  /*background-color: #0f0;*/
 }
 
 #q3 {
-  /*background-color: #00f;*/
-
     color: white;
-    background-color: black;
 }
 
 #q4 {
-  /*background-color: #0ff;*/
-
     color: white;
-    background-color: black;
 }
 
 
+.gripping-hand {
+    cursor:pointer;
+}
 
 
 .target-coursor {
@@ -140,9 +130,6 @@
 .pane-row-list {
     padding-top: 4px;
     padding-bottom: 4px;
-   /* min-height: 400px;
-    overflow-y: auto;*/
-    /*overflow: hidden;*/
 }
 
 .pane-row-text {
@@ -166,19 +153,14 @@
 
 .nav-text {
     font-size: 1.1em;
-    /*margin-left: 4px;*/
     color:  #49fb35;
-    /*height: 32px;*/
 }
 
 .display-text {
     font-size: 1.0em;
-    /*margin-left: 4px;*/
     color:  #49fb35;
     height: 28px;  
 }
-
-
 
 .pulse {
     animation: pulsate 1s ease-out;
@@ -218,8 +200,6 @@
     margin-left: 3px;
     border-radius: 5px;
     padding-left: 5px;
-    /*border: solid 1px #dcdcdc;*/
-    /*transition: box-shadow 0.3s, border 0.3s;*/
 }
 
 .hyperspace-node-input {
@@ -232,16 +212,7 @@
 }
 
 
-
-/*.search-input.focus,
-.search-input:focus {
-    border: solid 1px #707070;
-    box-shadow: 0 0 5px 1px #969696;
-}*/
-
-
 .gridClass {
-    /*color: #49fb35; */
     color: #FF69B4;
 }
 
@@ -256,7 +227,6 @@
 
 .gridClassHover {
     color: #ffa500;
-    /*color: red;*/
 }
 
 
@@ -264,11 +234,7 @@
     position: static;
     display: block;
     padding: 5px;
-   /* border-bottom: 1px solid #49fb35;
-    border-right: 1px solid #49fb35;
-    border-top: 1px solid #49fb35;*/
     border: 1px solid #49fb35;
-
     background-color: black;
     margin-bottom: 10px;
 }
@@ -311,13 +277,11 @@
     background-color: black;
     opacity: 1.0;
     height: 520px;
-    /*padding: 5px;*/
     position: fixed;
     margin-left: 6px;
     margin-top: 20px;
     margin-bottom: 6px;
     border: 2px solid white;
-    /*border-radius: 10px;*/
     width: 300px;
     overflow-y: scroll;
 }
@@ -330,14 +294,11 @@
     opacity: 1.0;
     height: 520px;
     width: 620px;
-    /*padding: 5px;*/
     position: fixed;
     margin-left: 6px;
     margin-top: 20px;
     margin-bottom: 6px;
     border: 2px solid white;
-    /*border-radius: 10px;*/
-    /*overflow-y: scroll;*/
 }
 
 
@@ -411,4 +372,3 @@
     border: 3px solid red;
   }
 }
-

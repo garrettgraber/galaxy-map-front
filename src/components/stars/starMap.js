@@ -12,7 +12,8 @@ import StarSystem from './starSystem.js';
 import {
   updateSouthWestMapHash,
   updateNorthEastMapHash,
-  buildSystemNameSet
+  buildSystemNameSet,
+  loadingIconOff
 } from '../../actions/actionCreators.js';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
@@ -66,7 +67,8 @@ class StarMap extends React.Component {
     this.setState({StarMapComponents: StarMapData.starComponents});
     this.setState({northEast: MapHashes.northEast});
     this.setState({southWest: MapHashes.southWest});
-    this.setState({previousIntersectionMap: StarMapData.intersectionMap})
+    this.setState({previousIntersectionMap: StarMapData.intersectionMap});
+    this.props.dispatch(loadingIconOff());
     this.props.dispatch(updateNorthEastMapHash(MapHashes.northEast));
     this.props.dispatch(updateSouthWestMapHash(MapHashes.southWest));
   }

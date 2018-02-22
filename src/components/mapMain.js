@@ -11,16 +11,14 @@ const activeTileServer = Config.tileServerUrl;
 
 console.log("Config: ", Config);
 
-import { 
-    generateNewMapHash,
+import {
     setMapCenterAndZoom,
     updateNorthEastMapHash,
     updateSouthWestMapHash,
     newGalacticXandY,
     setMapZoom,
-    pinPointStartOff,
-    pinPointEndOff,
-    defaultCursor
+    loadingIconOn,
+    loadingIconOff
 } from '../actions/actionCreators.js';
 import { findAndSetNearsetHyperspaceNode, setCursorValue } from '../actions/actions.js';
 
@@ -35,6 +33,7 @@ import SideBarController from './sideBar/sideBarController.js';
 import SideBar from './sideBar/sideBar.js';
 import DataStream from './dataStream/dataStream.js';
 import MapNavigationControl from './mapNavigationControls/mapNavigationControl.js';
+import LoadingSpinner from './loading/loadingSpinner.js';
 
 import HyperspaceNavigation from './hyperspaceNavigation/hyperspaceNavigation.js';
 import 'leaflet/dist/leaflet.css';
@@ -72,11 +71,11 @@ class MapMain extends React.Component {
   }
 
   onZoomend(e) {
-    console.log("Zoom End has fired", e.target._zoom);
+    // console.log("Zoom End has fired", e.target._zoom);
     const mapBounds = this.refs.map.leafletElement.getBounds();
     const currentZoom = this.refs.map.leafletElement.getZoom();
-    console.log("currentZoom: ", currentZoom);
-    console.log("mapCenter Zoom", this.props.mapCenterAndZoom.zoom);
+    // console.log("currentZoom: ", currentZoom);
+    // console.log("mapCenter Zoom", this.props.mapCenterAndZoom.zoom);
     if(!(currentZoom === 2 && this.props.mapCenterAndZoom.zoom === 3)) {
       this.props.dispatch(setMapZoom(currentZoom));
     }
@@ -84,15 +83,18 @@ class MapMain extends React.Component {
 
   onZoomstart(e) {
     console.log("\nZoom Start has fired: ", e.target._animateToZoom);
-    const mapBounds = this.refs.map.leafletElement.getBounds();
-    const currentZoom = this.refs.map.leafletElement.getZoom();
-    console.log("currentZoom: ", currentZoom);
-    console.log("mapCenter Zoom", this.props.mapCenterAndZoom.zoom);
+    // const mapBounds = this.refs.map.leafletElement.getBounds();
+    // const currentZoom = this.refs.map.leafletElement.getZoom();
+    // console.log("currentZoom: ", currentZoom);
+    // console.log("mapCenter Zoom", this.props.mapCenterAndZoom.zoom);
   }
 
   onMovestart(e) {
-    const mapInstance = this.refs.map.leafletElement;
-    const MapBounds = getNorthEastAndSoutWestBounds(mapInstance);
+    // const mapInstance = this.refs.map.leafletElement;
+    // const MapBounds = getNorthEastAndSoutWestBounds(mapInstance);
+    // console.log("Map Move Start");
+    this.props.dispatch(loadingIconOn());
+
   }
 
   onMoveend(e) {
@@ -105,6 +107,8 @@ class MapMain extends React.Component {
       this.props.dispatch(updateNorthEastMapHash(MapBounds.northEast));
       this.props.dispatch(updateSouthWestMapHash(MapBounds.southWest));
     }
+    console.log("Map Move End");
+    this.props.dispatch(loadingIconOff());
   }
 
   onDragend(e) { }
@@ -150,23 +154,13 @@ class MapMain extends React.Component {
   	const maxZoom = 8;
   	const zIndexGalaxy = 210;
     const zIndexBlack = 205;
-  	const zIndexGrid = 220;
-    const NavigationStyles = {
-      position: 'fixed',
-      top: 80,
-      height: 500,
-      width: 60,
-      zIndex: 30,
-      backgroundColor: 'black',
-      border: '1px solid #49fb35'
-    };
-    const adjustedHeight = (this.props.mapCenterAndZoom.zoom > 2)? '100%' : 1000;
 
   	return (
       <ScrollArea
         onScroll={(value) => { }}
       >
         <div id="container" >
+          <LoadingSpinner/>
           <DataStream dataMessage={this.props.dataStream.currentItem}/>
           <SideBar />
           <SideBarController map={this.state.map}/>
