@@ -2,12 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { CircleMarker, Popup, Circle, Tooltip, Marker, Polyline } from 'react-leaflet';
 import L from 'leaflet';
-import width from 'text-width';
 import AntPath from "react-leaflet-ant-path";
 import { If, Then, Else } from 'react-if';
 
-
-// import ReactFauxDOM from 'react-faux-dom';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
@@ -25,38 +22,14 @@ class HyperSpaceFreeSpaceJump extends React.Component {
     super(props);
   }
   componentDidMount() {
-    // console.log("lane ref in componet: ", this.refs.lane);
-
     if(this.refs.lane) {
       const lane = this.refs.lane.leafletElement;
-      // const HyperSpaceNode = this.props.HyperSpaceNode;
-      // const HyperSpacePoint = this.props.HyperSpacePoint;
-      // _.forEach(HyperSpaceLaneObject.coordinates, function(el) {
-      //   el.reverse();
-      // });
-      // HyperSpaceLaneObject.reverseCoordinatesLatLng();
-      // const starPoints = this.props.map.latLngToLayerPoint(StarObject.latLng);
-
-      // console.log("lane: ", lane);
-      // lane.bindPopup(HyperSpaceLaneObject.name + "<br/>" + "<span>start: " + HyperSpaceLaneObject.start + "</span><br/><span>end: " + HyperSpaceLaneObject.end + "</span><br /><span>Length: " + HyperSpaceLaneObject.length +  "</span><br/><span>Link :" + HyperSpaceLaneObject.link + "</span>")
-      // .on('click', function (e) {
-      //     this.openPopup();
-      // });
     }
   }
-  componentWillReceiveProps(newProps) {
-    // console.log("Props update Star System: ", newProps);
-    // const HyperSpaceNode = this.props.HyperSpaceNode;
-    // const HyperSpacePoint = this.props.HyperSpacePoint;
-    // console.log("HyperSpacePoint: ", HyperSpacePoint);
-    // console.log("HyperSpaceNode: ", HyperSpaceNode);
-  }
+  componentWillReceiveProps(newProps) {}
   onMouseOver(e) {
-
-    // console.log("lane mouse over!");
     if(this.refs.lane) {
       const lane = this.refs.lane.leafletElement;
-      // lane.openPopup();
     } else {
       console.log("no this.refs.lane");
     }
@@ -64,7 +37,6 @@ class HyperSpaceFreeSpaceJump extends React.Component {
   onMouseOut(e) {
     if(this.refs.lane) {
       const lane = this.refs.lane.leafletElement;
-      // lane.closePopup();
     } else {
       console.log("no this.refs.lane");
     }
@@ -82,8 +54,6 @@ class HyperSpaceFreeSpaceJump extends React.Component {
     const hyperspacePointLocation = [HyperSpacePoint.lat, HyperSpacePoint.lng];
     let jumpCoordinates = freeSpaceJumpCoordinates(HyperSpacePoint, HyperSpaceNode);
 
-    // console.log("jumpCoordinates: ", jumpCoordinates);
-
     if(this.props.isStart) {
       jumpCoordinates.reverse();
     }
@@ -94,7 +64,6 @@ class HyperSpaceFreeSpaceJump extends React.Component {
           <Then>{() => null }</Then>
           <Else>
             <div>
-              
               <AntPath
                 positions={jumpCoordinates}
                 options={
@@ -109,14 +78,12 @@ class HyperSpaceFreeSpaceJump extends React.Component {
                 onMouseOver={e => this.onMouseOver(e)}
                 onMouseOut={e => this.onMouseOut(e)}
               />
-
               <CircleMarker center={hyperspaceNodeLocation} radius={1} color={nodeColor} ref='nodeHyperSpace' />
             </div>
           </Else>
         </If>
         <div>
           <CircleMarker center={hyperspacePointLocation} radius={1} color={'red'}  ref='starPoint' />
-          
         </div>
       </div>                         
   	)
@@ -131,7 +98,6 @@ function freeSpaceJumpCoordinates(Point, Node) {
   return jumpCoordinates;
 }
 
-
 function nodeAndPointAreEqual(point1, point2) {
   const sameName = (point1.system === point2.system)? true : false;
   const sameLatitude = (point1.lat === point2.lat)? true : false;
@@ -142,6 +108,5 @@ function nodeAndPointAreEqual(point1, point2) {
     return false;
   }
 }
-
 
 export default HyperSpaceFreeSpaceJump;
