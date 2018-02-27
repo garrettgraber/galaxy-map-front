@@ -52,11 +52,11 @@ class SideBar extends React.Component {
           type="button" 
           className={searchSystemsClasses}
           onClick={e => this.searchSystemsToggle(e)}
-          data-tip="Systems Search"
+          data-tip="Search"
           data-for="systems-search-toggle"
         >
           <ReactTooltip id='systems-search-toggle'>{}</ReactTooltip>
-          <i className="glyphicon glyphicon-globe"></i>
+          <i className="glyphicon glyphicon-search"></i>
         </button>
         <button
           id="hyperspace-navigation-controls-toggle"

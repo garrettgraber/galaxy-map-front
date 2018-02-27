@@ -1,6 +1,3 @@
-
-
-
 export default class Planet {
 	constructor(
 		systemValue,
@@ -37,13 +34,13 @@ export default class Planet {
 	}
 
 	starInMapView(mapWidth, mapHeight, MapBoundaries, currentZoom) {
-	    const mapOffSetLng = 0;
-	    const mapOffSetLat = 0;
-	    
-	    const inNorthSouthRange = (MapBoundaries.south < this.lat && this.lat < MapBoundaries.north) ? true : false;
-	    const inEastWestRange = (MapBoundaries.west< this.lng && this.lng < MapBoundaries.east) ? true : false;
-	    const objectInvView = (inNorthSouthRange && inEastWestRange) ? true : false;
-	    return objectInvView;
+    const mapOffSetLng = 0;
+    const mapOffSetLat = 0;
+    
+    const inNorthSouthRange = (MapBoundaries.south < this.lat && this.lat < MapBoundaries.north) ? true : false;
+    const inEastWestRange = (MapBoundaries.west< this.lng && this.lng < MapBoundaries.east) ? true : false;
+    const objectInvView = (inNorthSouthRange && inEastWestRange) ? true : false;
+    return objectInvView;
 	}
 
 	starIsVisible(currentZoom) {

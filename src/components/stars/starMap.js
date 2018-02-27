@@ -51,11 +51,11 @@ class StarMap extends React.Component {
   createStarMap(currentZoom, currentMap) {
     console.log("\n****StarMap creation!****");
     console.time('Star Map Generation Time');
-    const StarMap = new StarMapGenerator({
+    const CurrentStarMap = new StarMapGenerator({
       zoom: currentZoom,
       Map: currentMap
     });
-    const StellarData = StarMap.generateStellarArrays(currentMap, this.state.GalacticPlanetsArray, this.state.previousIntersectionMap, this.state.StarMapComponents);
+    const StellarData = CurrentStarMap.generateStellarArrays(currentMap, this.state.GalacticPlanetsArray, this.state.previousIntersectionMap, this.state.StarMapComponents);
     console.log("Systems Generated for Star Map: ", StellarData.starComponents.length);
     console.timeEnd('Star Map Generation Time');
     console.log("****StarMap finished!****\n");
