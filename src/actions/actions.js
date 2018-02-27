@@ -38,7 +38,8 @@ import {
   pinPointStartOff,
   pinPointEndOff,
   defaultCursor,
-  loadingIconOff
+  loadingIconOff,
+  loadingIconOn
 } from './actionCreators.js';
 import {
   getGalacticYFromLatitude,
@@ -136,6 +137,7 @@ export function plotFreeSpaceJumpToNode(HyperspacePathData) {
 export function getHyperspacePathCollection(HyperspacePathSearch, HyperspacePathData) {
 	return function(dispatch, getState) {
     dispatch(calculateHyperspaceJumpOn());
+    dispatch(loadingIconOn());
     ApiService.getHyperspacePathData(HyperspacePathSearch).then(response => {
       return response.json();
     }).then(data => {
@@ -149,6 +151,7 @@ export function getHyperspacePathCollection(HyperspacePathSearch, HyperspacePath
       dispatch(updateHyperspacePaths());
       dispatch(calculateHyperspaceJumpOff());
       dispatch(hyperspaceNavigationUpdateOn());
+      dispatch(loadingIconOff());
       console.log("Hyperspace Jump Successful: ", getState());
     }).catch(err => {
       const dataStreamMessage = "Error calculating from " + HyperspacePathSearch.startPoint + " to " + HyperspacePathSearch.endPoint;

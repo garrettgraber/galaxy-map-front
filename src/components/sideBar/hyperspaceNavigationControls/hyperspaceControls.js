@@ -101,12 +101,24 @@ class HyperspaceControls extends React.Component {
 
   maxJumpsChange(e) {
     const maxJumps = parseInt(e.target.value);
-    this.setState({maxJumps: maxJumps});
+    if(this.state.limit > 1 && maxJumps > 35) {
+      console.log("Multiple Paths cannot be calculated for distances over 35 jumps away");
+      const maxJumpsMessage = "Multi-path jumps can't be calculated over 35 jumps away";
+      this.props.dispatch(addItemToDataStream(maxJumpsMessage));
+    } else {
+      this.setState({maxJumps: maxJumps});
+    }
   }
 
   limitChange(e) {
     const pathNumber = parseInt(e.target.value);
-    this.setState({limit: pathNumber});
+    if(pathNumber > 10) {
+      console.log("Maximum of 10 paths");
+      const maxPathsMessage = "Maximum of 10 paths";
+      this.props.dispatch(addItemToDataStream(maxPathsMessage));
+    } else {
+      this.setState({limit: pathNumber});
+    }
   }
 
   clearCurrentHyperspaceJump(e) {
@@ -139,7 +151,7 @@ class HyperspaceControls extends React.Component {
       <div className="pane-row-control pane-section">
         <span className="nav-text">Jumps:&nbsp;&nbsp;</span>
         <input id="max-jumps-input" type="number" min={1} placeholder="Max Jumps" className="search-input number-input" value={this.state.maxJumps}  onChange={(e) => this.maxJumpsChange(e)}/>
-        <span className="nav-text">&nbsp;&nbsp;Limit:&nbsp;&nbsp;</span>
+        <span className="nav-text">&nbsp;&nbsp;Paths:&nbsp;&nbsp;</span>
         <input id="limit-paths-input" type="number" min={1} placeholder="Limit" className="search-input number-input" value={this.state.limit}  onChange={(e) => this.limitChange(e)}/>
         <img  id="calculate-hyperspace-jump" src={EnterHyperspaceIcon} className={this.state.jumpButtonClasses}  style={JumpButtonStyle} onClick={(e) => this.findHyperspacePath(e)} data-tip="Calculate Hyperspace Jump" data-for="calculate-hyperspace-jump-tooltip" />
         <ReactTooltip id='calculate-hyperspace-jump-tooltip' place="top">{}</ReactTooltip>

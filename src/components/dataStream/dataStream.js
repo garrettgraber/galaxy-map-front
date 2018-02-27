@@ -10,7 +10,7 @@ import {
 
 import '../../css/main.css';
 
-const decodeTimeInMilliseconds = 200;
+const decodeTimeInMilliseconds = 100;
 
 class DataStream extends React.Component {
   constructor(props) {

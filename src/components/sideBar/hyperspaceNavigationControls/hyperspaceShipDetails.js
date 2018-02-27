@@ -16,7 +16,7 @@ class HyperspaceShipDetails extends React.Component {
   render() {
     return (
       <div className="pane-row-control pane-section">
-        <span className="nav-text">Ship Name:&nbsp;&nbsp;Temp Ship Name </span>
+        <span className="nav-text">Calculate Hyperspace Jump</span>
       </div>
     );
   }
