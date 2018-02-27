@@ -6,6 +6,9 @@ import distance from 'euclidean-distance';
 
 import HyperspacePathCollection from '../components/hyperspaceNavigation/hyperspacePathCollection.js';
 import HyperspaceNavigationPoint from '../components/hyperspaceNavigation/hyperspaceNavigationPoint.js';
+import HyperSpaceLaneOverlay from '../components/hyperspaceNavigation/hyperspaceLaneOverlay.js';
+
+
 
 import {
 	nodeAndPointAreEqual,
@@ -48,6 +51,7 @@ export default class PathGenerator {
     }
     this.hyperspaceHashSelected = hyperspaceHashSelected;
     this.navComponentsRendered = [];
+    this.antPathComponents = [];
     this.HyperspaceCollectionsComponents = HyperspaceCollectionsComponents;
     this.hyperspacePathCollections = hyperspacePathCollections;
     this.hyperspacePathChange = hyperspacePathChange;
@@ -207,6 +211,30 @@ export default class PathGenerator {
 	  this.navComponentsRendered.push(PathCollectionsComponentsArray);
 	}
 
+
+  generateAntPath() {
+    const hyperspaceLanesStylePink = {color: '#FF69B4', weight: 3};
+
+    console.log("First PathCollection: ", this.hyperspacePathCollections[0]);
+    const FirstPathCollection = this.hyperspacePathCollections[0];
+    if(FirstPathCollection) {
+      const isSinglePath = (this.hyperspacePathCollections.length > 1)? false : true;
+      const lanes = FirstPathCollection.lanes;
+      let lanePathCoordinates = [];
+      for(let Lane of lanes) {
+        lanePathCoordinates = lanePathCoordinates.concat(Lane.coordinates);
+      }
+      console.log("Total coordinates: ", lanePathCoordinates.length);
+      const startPoint = lanePathCoordinates[ 0 ];
+      const endPoint = lanePathCoordinates[ lanePathCoordinates.length - 1 ];
+      const hyperspaceHash = uuidv4();
+      this.antPathComponents.push(<HyperSpaceLaneOverlay key={hyperspaceHash}  pathCoordinates={lanePathCoordinates} style={hyperspaceLanesStylePink} isSinglePath={isSinglePath} />);
+    }
+
+
+  }
+
+ 
 	generateNavigationComponents() {
 		if(this.hyperspacePathChange) {
       if(this.hyperspaceJumpsInArray()) {

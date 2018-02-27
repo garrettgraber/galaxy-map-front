@@ -7,10 +7,10 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
 import 'leaflet_marker_2x';
 import 'leaflet_marker_shadow';
-import HyperspaceData from 'json-loader!../../data/hyperspace.geojson';
-import HyperspaceNode from './hyperspaceNode.js';
-import HyperspaceLane from './hyperspaceLane.js';
-import HyperspaceFreeSpaceJump from './hyperspaceFreeSpaceJump.js';
+
+import HyperSpaceNode from './hyperspaceNode.js';
+import HyperSpaceLane from './hyperspaceLane.js';
+import HyperSpaceLaneOverlay from './hyperspaceLaneOverlay.js';
 import { createFreespaceLane } from './hyperspaceMethods.js';
 import uuidv1 from 'uuid/v1';
 import uuidv4 from 'uuid/v4';
@@ -72,17 +72,32 @@ function renderComponentsOrNull(currentComponents) {
 
 function createLanesComponents(lanes, isSinglePath) {
   const laneComponents = [];
+  let lanePathCoordinates = [];
   for(let Lane of lanes) {
-    laneComponents.push(<HyperspaceLane key={Lane.hyperspaceHash}  HyperSpaceLaneObject={Lane} style={hyperspaceLanesStylePink} isSinglePath={isSinglePath} />);
+    laneComponents.push(<HyperSpaceLane key={Lane.hyperspaceHash}  HyperSpaceLaneObject={Lane} style={hyperspaceLanesStylePink} isSinglePath={isSinglePath} />);
+    lanePathCoordinates = lanePathCoordinates.concat(Lane.coordinates);
   }
+  console.log("Total coordinates: ", lanePathCoordinates.length);
   return laneComponents;
+}
+
+function createVisibleToplane(lanes, isSinglePath) {
+  let lanePathCoordinates = [];
+  for(let Lane of lanes) {
+    lanePathCoordinates = lanePathCoordinates.concat(Lane.coordinates);
+  }
+  console.log("Total coordinates: ", lanePathCoordinates.length);
+  const startPoint = lanePathCoordinates[ 0 ];
+  const endPoint = lanePathCoordinates[ lanePathCoordinates.length - 1 ];
+  const hyperspaceHash = uuidv4();
+  return [<HyperSpaceLaneOverlay key={hyperspaceHash}  pathCoordinates={lanePathCoordinates} style={hyperspaceLanesStylePink} isSinglePath={isSinglePath} />];
 }
 
 
 function createNodesComponents(nodes) {
   const nodesComponents = [];
   for(let Node of nodes) {
-    nodesComponents.push(<HyperspaceNode key={"PathId:" + uuidv4()} HyperSpaceNodeObject={Node} style={{color: 'gold'}}/>);
+    nodesComponents.push(<HyperSpaceNode key={"PathId:" + uuidv4()} HyperSpaceNodeObject={Node} style={{color: 'gold'}}/>);
   }
   return nodesComponents;
 }
@@ -90,11 +105,17 @@ function createNodesComponents(nodes) {
 function generateHyperspaceNodesAndLanes(nodes, lanes, isSinglePath) {
   const hyperspaceNodes = createNodesComponents(nodes);
   const hyperspaceLanes = createLanesComponents(lanes, isSinglePath);
+  const hyperspaceTopLane = createVisibleToplane(lanes, isSinglePath);
   const nodeAndLaneComponents = [];
+
+  nodeAndLaneComponents.push(hyperspaceTopLane[0]);
+
   for(let i=0; i < hyperspaceLanes.length; i++) {
     let Lane = hyperspaceLanes[i];
     nodeAndLaneComponents.push(Lane);
   }
+
+
   for(let i=0; i < hyperspaceNodes.length; i++) {
     let Node = hyperspaceNodes[i];
     nodeAndLaneComponents.push(Node);

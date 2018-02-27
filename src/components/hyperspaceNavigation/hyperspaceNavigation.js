@@ -8,7 +8,8 @@ import {
   Circle,
   Tooltip,
   Marker,
-  FeatureGroup
+  FeatureGroup,
+  LayerGroup
 } from 'react-leaflet';
 import L from 'leaflet';
 import width from 'text-width';
@@ -53,7 +54,7 @@ class HyperspaceNavigation extends React.Component {
     super(props);
     this.state = {
       HyperspaceCollectionsComponents: [],
-      HSpaceComponentsMaster: []
+      HSpaceComponentsMaster: [],
     };
   }
   componentDidMount() { }
@@ -101,14 +102,20 @@ class HyperspaceNavigation extends React.Component {
     const hyperspaceLanesStylePink = {color: '#FF69B4', weight: 3};
     const hyperspaceLanesStyleCarolina = {color: '#99badd ', weight: 3};
   	const zIndex = 260;
+    const zIndexAntPath = 259;
     const navComponents = renderComponentsOrNull(this.state.HSpaceComponentsMaster);
 
   	return (
-  		<Pane name="hyperspace-navigation-pane" style={{ zIndex: zIndex }}>
-        <FeatureGroup> 
-          { navComponents }
-        </FeatureGroup>
-  		</Pane>
+
+      <LayerGroup>
+        <Pane name="hyperspace-navigation-pane" style={{ zIndex: zIndex }}>
+          <FeatureGroup> 
+            { navComponents }
+          </FeatureGroup>
+        </Pane>
+      </LayerGroup>
+
+
   	)
   }
 }
@@ -122,35 +129,6 @@ function renderComponentsOrNull(currentComponents) {
   } else {
     return null;
   }
-}
-
-function getPathDataShortest(start, end, maxJumps) {
-  return fetch('/api/hyperspace-jump/calc-shortest', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      start: start,
-      end: end,
-      maxJumps: maxJumps
-    })
-  });
-}
-
-function getPathDataMany(start, end, maxJumps, limit) {
-  return fetch('/api/hyperspace-jump/calc-many', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      start: start,
-      end: end,
-      maxJumps: maxJumps,
-      limit: limit
-    })
-  });
 }
 
 

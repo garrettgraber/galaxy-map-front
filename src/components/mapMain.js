@@ -34,8 +34,8 @@ import SideBar from './sideBar/sideBar.js';
 import DataStream from './dataStream/dataStream.js';
 import MapNavigationControl from './mapNavigationControls/mapNavigationControl.js';
 import LoadingSpinner from './loading/loadingSpinner.js';
-
 import HyperspaceNavigation from './hyperspaceNavigation/hyperspaceNavigation.js';
+
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
 import 'leaflet_marker_2x';

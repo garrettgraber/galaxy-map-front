@@ -17,7 +17,8 @@ class HyperSpaceLane extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        open: true
+        open: true,
+        hoverOver: false
     };
   }
   componentDidMount() {
@@ -35,42 +36,51 @@ class HyperSpaceLane extends React.Component {
     // console.log("Props update Star System: ", newProps);
   }
   onMouseOver(e) {
-
-    // console.log("lane mouse over!");
+      this.setState({hoverOver: true});
+    console.log("lane mouse over!", this.refs.lane);
     if(this.refs.lane) {
       const lane = this.refs.lane.leafletElement;
-      // lane.openPopup();
+      lane.openPopup();
     } else {
       console.log("no this.refs.lane");
     }
   }
   onMouseOut(e) {
-    // console.log("lane mouse over!");
-
+    console.log("lane mouse out!", this.refs.lane);
+    this.setState({hoverOver: false});
     if(this.refs.lane) {
       const lane = this.refs.lane.leafletElement;
-      // lane.closePopup();
+
+      lane.closePopup();
     } else {
       console.log("no this.refs.lane");
     }
+  }
+  onClick(e) {
+    
   }
   render() {
     const laneColorGold = 'gold';
     const laneColorPink =  '#FF69B4';
     const laneColorLightGreen = '#90EE90';
+    const laneColorOrange = '#FD5F00';
 
     // console.log("Coke, lanes is isSinglePath: ", this.props.isSinglePath);
 
     const opacityOfPath = (this.props.isSinglePath)? 0.4 : 0.25;
+    const LaneOptions = (this.state.hoverOver)? {opacity: 1.0, interactive: false, fillOpacity: 1.0,fillColor: laneColorOrange} : {opacity: 0.0, interactive: true};
+
     
   	return (
       <div>
-        <AntPath
+        <Polyline
           positions={this.props.HyperSpaceLaneObject.coordinates}
-          options={{color: laneColorPink, opacity: opacityOfPath, interactive: false}}
+          options={LaneOptions}
           ref="lane"
           onMouseOver={e => this.onMouseOver(e)}
           onMouseOut={e => this.onMouseOut(e)}
+          onClick={(e) => this.onClick(e)}
+
         />
       </div>                         
   	)
