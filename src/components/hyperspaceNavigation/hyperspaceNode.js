@@ -20,7 +20,7 @@ class HyperSpaceNode extends React.Component {
     if(this.refs.nodeHyperSpace && this.refs.nodeText) {
       const nodeHyperSpace = this.refs.nodeHyperSpace.leafletElement;
       const HyperSpaceNodeObject = this.props.HyperSpaceNodeObject;
-      nodeHyperSpace.bindPopup(HyperSpaceNodeObject.system + "</span><br/><span>Node Id: " + HyperSpaceNodeObject.nodeId + "<br/>" + "<span>lat:" + HyperSpaceNodeObject.lat + "</span><br/><span>lng: " + HyperSpaceNodeObject.lng + "</span></br><span>Hyperspace Lanes:" + HyperSpaceNodeObject.hyperspaceLanes.join(", ") + "</span>");
+      // nodeHyperSpace.bindPopup(HyperSpaceNodeObject.system + "</span><br/><span>Node Id: " + HyperSpaceNodeObject.nodeId + "<br/>" + "<span>lat:" + HyperSpaceNodeObject.lat + "</span><br/><span>lng: " + HyperSpaceNodeObject.lng + "</span></br><span>Hyperspace Lanes:" + HyperSpaceNodeObject.hyperspaceLanes.join(", ") + "</span>");
     }
   }
   componentWillReceiveProps(newProps) {
@@ -29,13 +29,13 @@ class HyperSpaceNode extends React.Component {
   onMouseOver(e) {
     if(this.refs.nodeHyperSpace && this.refs.nodeText) {
       const nodeHyperSpace = this.refs.nodeHyperSpace.leafletElement;
-      nodeHyperSpace.openPopup();
+      // nodeHyperSpace.openPopup();
     }
   }
   onMouseOut(e) {
     if(this.refs.nodeHyperSpace && this.refs.nodeText) {
       const nodeHyperSpace = this.refs.nodeHyperSpace.leafletElement;
-      nodeHyperSpace.closePopup();
+      // nodeHyperSpace.closePopup();
     }
   }
   render() {

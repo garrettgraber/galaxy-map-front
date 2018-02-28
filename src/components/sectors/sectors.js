@@ -2,24 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Pane, GeoJSON } from 'react-leaflet';
 import L from 'leaflet';
-// import ReactFauxDOM from 'react-faux-dom';
-
-
-
-
-import { 
-  addSectorSearchSet
-} from '../../actions/actionCreators.js';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
 import 'leaflet_marker_2x';
 import 'leaflet_marker_shadow';
 
-
+import { 
+  addSectorSearchSet
+} from '../../actions/actionCreators.js';
 import SectorData from 'json-loader!../../data/sector.geojson';
-
-
 
 class Sectors extends React.Component {
   constructor(props) {
@@ -31,28 +23,27 @@ class Sectors extends React.Component {
   onEachFeature(feature, layer) {
 	  if(feature.properties.sector) {
       const sectorName = feature.properties.sector;
-      layer.bindPopup(sectorName + " Sector");
+      const link = feature.properties.link;
+      const sectorNameString = '<span style="font-weight: bold;">' + sectorName + ' Sector' + '</span><br/>';
+      const secotrLinkString = '<a href=' + link + ' rel="external" target="_blank">Wookieepedia Link</a>';
+      const sectorPopupString = sectorNameString + secotrLinkString;
+      layer.bindPopup(sectorPopupString);
       const coordinates = feature.geometry.coordinates[0][0];
       const polygon = L.polygon(coordinates);
       const polygonCenter = polygon.getBounds().getCenter();
       const polygonCenterArray = [polygonCenter.lng, polygonCenter.lat];
-      const SectorData = {
+      this.props.dispatch(addSectorSearchSet({
         label: sectorName,
         value: polygonCenterArray
-      };
-
-      this.props.dispatch(addSectorSearchSet(SectorData));
+      }));
     }
   }
 
-  pointToLayer(feature, latlng) {
-  }
+  pointToLayer(feature, latlng) {}
 
   render() {
-
   	const zIndex = 220;
   	const sectorsStyle = {color: 'gold', weight: 1, opacity: 0.5};
-
   	return (
   		<Pane name="sectors-pane" style={{ zIndex: zIndex }}>
   			<GeoJSON data={SectorData} style={sectorsStyle} ref='sectors' onEachFeature={(feature, layer) => this.onEachFeature(feature,layer)}  pointToLayer={(feature, latlng) => this.pointToLayer(feature,latlng)}/>
@@ -60,7 +51,6 @@ class Sectors extends React.Component {
   	)
   }
 }
-
 
 const mapStateToProps = (state = {}) => {
   return Object.assign({}, state);
