@@ -157,7 +157,7 @@ class DataStream extends React.Component {
     const buttonClassesFont = (this.state.dataMessageInEnglish)? "" : "aurebesh-font";
     buttonClasses += buttonClassesFont;
     let currentMessage = this.props.dataMessage;
-    currentMessage = currentMessage.slice(0, 60);
+    currentMessage = currentMessage.slice(0, 80);
     const deCodedIndex = this.state.deCodedIndex;
     const deCodedMessage = currentMessage.slice(0, deCodedIndex);
     const enCodedMessage = currentMessage.slice(deCodedIndex, currentMessage.length);

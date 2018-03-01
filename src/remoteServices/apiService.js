@@ -54,6 +54,16 @@ class ApiService {
 	    body: JSON.stringify(PathSearch)
 	  });
 	}
+
+	systemsConnected(Systems) {
+	  const systemsConnectedEndpoint = this.API_ENDPOINT + 'hyperspacenode/systems-connected-query?' + queryString.stringify(Systems);
+	  return fetch(systemsConnectedEndpoint, {
+	    method: 'GET',
+	    headers: {
+	      'Content-Type': 'application/json'
+	    },
+	  });
+	}
 }
 
 export default new ApiService();

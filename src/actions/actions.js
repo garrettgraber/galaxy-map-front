@@ -185,6 +185,12 @@ export function noSetSelectedHyperspaceRoute() {
   }
 }
 
+
+
+
+
+
+
 export function hyperspacePositionSearch(SystemSearch) {
   return function(dispatch, getState) {
     console.log("hyperspacePositionSearch has fired...");
@@ -202,27 +208,12 @@ export function hyperspacePositionSearch(SystemSearch) {
           const NodeData = NodeDataArray[0];
           const NewPositionState = createPositionFromNode(NodeData);
           const NewNodeState = createNodeState(NodeData);
-          if(SystemSearch.isStartPosition) {
-            dispatch(setStartPosition(NewPositionState));
-            dispatch(setStartNode(NewNodeState));
-            dispatch(setStartSystem(SystemSearch.system));
-            dispatch(hyperspaceNavigationUpdateOn());
-          } else {
-            dispatch(setEndPosition(NewPositionState));
-            dispatch(setEndNode(NewNodeState));
-            dispatch(setEndSystem(SystemSearch.system));
-            dispatch(hyperspaceNavigationUpdateOn());
-          }
-          const state = getState();
-          if(state.pathStartClick) {
-            dispatch(pathStartClickOff());
-            dispatch(defaultCursor());
-          }
-          if(state.pathEndClick) {
-            dispatch(pathEndClickOff());
-            dispatch(defaultCursor());          
-          }
-
+          dispatch(checkNodesAndUpdate({
+            isStartPosition: SystemSearch.isStartPosition,
+            NewNodeState: NewNodeState,
+            NewPositionState: NewPositionState,
+            system: SystemSearch.system
+          }));
         } else {
           const PlanetLocation = {
             lat: PlanetData.lat,
@@ -231,32 +222,17 @@ export function hyperspacePositionSearch(SystemSearch) {
           ApiService.findNearestNode(PlanetLocation).then(response => {
             return response.json();
           }).then(data => {
-            const NodeDataArrayNearest = JSON.parse(data);
-
-            if(NodeDataArrayNearest.length > 0) {
-              const NodeDataNearest = NodeDataArrayNearest[0];
-              const NewPositionStateFound = createPositionFromPlanet(PlanetData);
-              const NewNodeStateNearest = createNodeState(NodeDataNearest);
-              if(SystemSearch.isStartPosition) {
-                dispatch(setStartNode(NewNodeStateNearest));
-                dispatch(setStartPosition(NewPositionStateFound));
-                dispatch(setStartSystem(SystemSearch.system));
-                dispatch(hyperspaceNavigationUpdateOn());
-              } else {
-                dispatch(setEndNode(NewNodeStateNearest));
-                dispatch(setEndPosition(NewPositionStateFound));
-                dispatch(setEndSystem(SystemSearch.system));
-                dispatch(hyperspaceNavigationUpdateOn());
-              }
-              const state = getState();
-              if(state.pathStartClick) {
-                dispatch(pathStartClickOff());
-                dispatch(defaultCursor());
-              }
-              if(state.pathEndClick) {
-                dispatch(pathEndClickOff());
-                dispatch(defaultCursor());          
-              }
+            const NodeDataArray = JSON.parse(data);
+            if(NodeDataArray.length > 0) {
+              const NodeData = NodeDataArray[0];
+              const NewPositionState = createPositionFromPlanet(PlanetData);
+              const NewNodeState = createNodeState(NodeData);
+              dispatch(checkNodesAndUpdate({
+                isStartPosition: SystemSearch.isStartPosition,
+                NewNodeState: NewNodeState,
+                NewPositionState: NewPositionState,
+                system: SystemSearch.system
+              }));
             }        
           }).catch(errNearestNode => {
             console.log("node nearest data error: ", errNearestNode);
@@ -276,6 +252,126 @@ export function hyperspacePositionSearch(SystemSearch) {
     return null;
   }
 }
+
+function setHyperspaceState(Options) {
+  return function (dispatch, getState) {
+    dispatch(setNavigationPoints(Options));
+    dispatch(hyperspaceNavigationUpdateOn());
+    dispatch(setPathClickState());
+    return null;
+  }
+}
+
+function setNavigationPoints(Options) {
+  return function (dispatch, getState) {
+    if(Options.isStartPosition) {
+      dispatch(setStartNode(Options.NewNodeState));
+      dispatch(setStartPosition(Options.NewPositionState));
+      dispatch(setStartSystem(Options.system));
+    } else {
+      dispatch(setEndNode(Options.NewNodeState));
+      dispatch(setEndPosition(Options.NewPositionState));
+      dispatch(setEndSystem(Options.system));
+    }
+    return null;
+  };
+}
+
+function setPathClickState() {
+  return function (dispatch, getState) {
+    const state = getState();
+    if(state.pathStartClick) {
+      dispatch(pathStartClickOff());
+      dispatch(defaultCursor());
+    }
+    if(state.pathEndClick) {
+      dispatch(pathEndClickOff());
+      dispatch(defaultCursor());          
+    }
+    return null;
+  };
+}
+
+
+const BlankNode = {
+  system: '',
+  lat: null,
+  lng: null,
+  hyperspaceLanes: [],
+  nodeId: null,
+  xGalactic: null,
+  yGalactic: null
+};
+
+const BlankPoint = {
+  system: '',
+  lat: null,
+  lng: null,
+  xGalactic: null,
+  yGalactic: null
+};
+
+function checkNodesAndUpdate(Options) {
+  return function (dispatch, getState) {
+    const CurrentState = getState();
+    const currentStartNode = CurrentState.hyperspaceStartNode.system;
+    const currentEndNode = CurrentState.hyperspaceEndNode.system;
+    const checkConnectionToStartNode = (currentStartNode && !Options.isStartPosition)? true : false;
+    const checkConnectionToEndNode = (currentEndNode && Options.isStartPosition)? true : false;
+    if(checkConnectionToStartNode || checkConnectionToEndNode) {
+      checkIfNodesAreConnected({
+        startNodeSystem: currentStartNode,
+        endNodeSystem: currentEndNode,
+        system: Options.system,
+        isStartPosition: Options.isStartPosition
+      }).then(data => {
+        const parsedData = JSON.parse(data);
+
+        dispatch(setHyperspaceState(Options));
+
+        // if(parsedData.connected) {
+        //   console.log("Nodes are connected by hyperspace lane");
+        //   dispatch(setHyperspaceState(Options));
+        // } else {
+        //   console.log("Nodes are not connected");
+        //   dispatch(addItemToDataStream('Cannot calculate jumps between The Unknown Regions and the rest of the Galaxy'));
+        //   setHyperspaceState({
+        //     isStartPosition: Options.isStartPosition,
+        //     NewNodeState: BlankNode,
+        //     NewPositionState: BlankPoint,
+        //     system: ''
+        //   });
+        // }
+
+
+      }).catch(error => {
+        console.log("systems connected error: ", error);
+      });
+    } else {
+      dispatch(setHyperspaceState(Options));
+    }
+    return null;
+  };
+}
+
+async function checkIfNodesAreConnected(Options) {
+  try {
+    const oppositeNodeOfSearch = (Options.isStartPosition)? Options.endNodeSystem : Options.startNodeSystem;
+    const SearchData = {
+      systems: [oppositeNodeOfSearch, Options.system]
+    };
+    const response = await ApiService.systemsConnected(SearchData);
+    const systemsConnected = response.json();
+    return systemsConnected;
+  } catch(err) {
+    console.log("Error checking if nodes are connected: ", err);
+  }
+}
+
+
+
+
+
 
 export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
   return function(dispatch, getState) {
@@ -361,3 +457,13 @@ function createPositionFromPlanet(PlanetData) {
 }
 
 function createNodeState(NodeData) { return omit(NodeData, ['_id', '__v', 'loc']) }
+
+
+function isJson(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
