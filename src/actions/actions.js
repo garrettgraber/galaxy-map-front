@@ -101,7 +101,6 @@ export function setPositionToDefault(isStartPosition) {
     } else {
       dispatch(setDefaultEndPosition());
     }
-    console.log("After setPositionToDefault: ", getState());
     dispatch(hyperspaceNavigationUpdateOn());
     return null;
   }
@@ -125,9 +124,6 @@ export function plotFreeSpaceJumpToNode(HyperspacePathData) {
     dispatch(activeStartNode(HyperspacePathData.StartNode));
     dispatch(activeEndNode(HyperspacePathData.EndNode));
     dispatch(updateHyperspacePaths());
-
-    // dispatch(loadingIconOff());
-
     dispatch(calculateHyperspaceJumpOff());
     dispatch(hyperspaceNavigationUpdateOn());
     return null;
@@ -152,15 +148,11 @@ export function getHyperspacePathCollection(HyperspacePathSearch, HyperspacePath
       dispatch(calculateHyperspaceJumpOff());
       dispatch(hyperspaceNavigationUpdateOn());
       dispatch(loadingIconOff());
-      console.log("Hyperspace Jump Successful: ", getState());
     }).catch(err => {
       const dataStreamMessage = "Error calculating from " + HyperspacePathSearch.startPoint + " to " + HyperspacePathSearch.endPoint;
       console.log("err: ", err);
       dispatch(addItemToDataStream(dataStreamMessage));
-      dispatch(errorHyperspacePath(err));
-
-      // dispatch(loadingIconOff());
-      
+      dispatch(errorHyperspacePath(err));      
       dispatch(calculateHyperspaceJumpOff());
     });
     return null;
@@ -193,7 +185,6 @@ export function noSetSelectedHyperspaceRoute() {
 
 export function hyperspacePositionSearch(SystemSearch) {
   return function(dispatch, getState) {
-    console.log("hyperspacePositionSearch has fired...");
     const SystemSearchSent = omit(SystemSearch, ['isStartPosition']);
     ApiService.findPlanet(SystemSearchSent).then(response => {
       return response.json();
@@ -422,7 +413,6 @@ async function nodeIsConnectedToCsilla(Options) {
 
 export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
   return function(dispatch, getState) {
-    console.log("find and set nearest hyperspace node");
     ApiService.findNearestNode(LngLatSearch.LatLng).then(response => {
       return response.json();
     }).then(data => {

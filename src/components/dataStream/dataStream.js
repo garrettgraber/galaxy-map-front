@@ -163,7 +163,6 @@ class DataStream extends React.Component {
     const enCodedMessage = currentMessage.slice(deCodedIndex, currentMessage.length);
 
     // const totalTextWidth = width(deCodedMessage + enCodedMessage, { size: "1em" });
-
     // console.log("Text width: ", totalTextWidth);
 
     return (

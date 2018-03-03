@@ -82,7 +82,7 @@ class MapMain extends React.Component {
   }
 
   onZoomstart(e) {
-    console.log("\nZoom Start has fired: ", e.target._animateToZoom);
+    // console.log("\nZoom Start has fired: ", e.target._animateToZoom);
     // const mapBounds = this.refs.map.leafletElement.getBounds();
     // const currentZoom = this.refs.map.leafletElement.getZoom();
     // console.log("currentZoom: ", currentZoom);
@@ -107,7 +107,7 @@ class MapMain extends React.Component {
       this.props.dispatch(updateNorthEastMapHash(MapBounds.northEast));
       this.props.dispatch(updateSouthWestMapHash(MapBounds.southWest));
     }
-    console.log("Map Move End");
+    // console.log("Map Move End");
     this.props.dispatch(loadingIconOff());
   }
 
@@ -124,8 +124,8 @@ class MapMain extends React.Component {
   }
 
   onClickHyperspaceNavigation(e) {
-    console.log("onClickHyperspaceNavigation pathSearchStart: ", this.props.pathSearchStart);
-    console.log("onClickHyperspaceNavigation pathSearchEnd: ", this.props.pathSearchEnd);
+    // console.log("onClickHyperspaceNavigation pathSearchStart: ", this.props.pathSearchStart);
+    // console.log("onClickHyperspaceNavigation pathSearchEnd: ", this.props.pathSearchEnd);
 
     if(this.props.pathSearchEnd || this.props.pathSearchStart) {
       const isStartNode = (this.props.pathSearchStart)? true : false;

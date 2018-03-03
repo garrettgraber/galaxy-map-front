@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Pane, GeoJSON } from 'react-leaflet';
 import L from 'leaflet';
-// import ReactFauxDOM from 'react-faux-dom';
+
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
 import 'leaflet_marker_2x';
@@ -54,9 +54,7 @@ class HyperspacePath extends React.Component {
   }
 }
 
-
 export default HyperspacePath;
-
 
 function renderComponentsOrNull(currentComponents) {
   if(currentComponents && currentComponents.length > 1) {
@@ -68,8 +66,6 @@ function renderComponentsOrNull(currentComponents) {
   }
 }
 
-
-
 function createLanesComponents(lanes, isSinglePath) {
   const laneComponents = [];
   let lanePathCoordinates = [];
@@ -77,7 +73,6 @@ function createLanesComponents(lanes, isSinglePath) {
     laneComponents.push(<HyperSpaceLane key={Lane.hyperspaceHash}  HyperSpaceLaneObject={Lane} style={hyperspaceLanesStylePink} isSinglePath={isSinglePath} />);
     lanePathCoordinates = lanePathCoordinates.concat(Lane.coordinates);
   }
-  console.log("Total coordinates: ", lanePathCoordinates.length);
   return laneComponents;
 }
 
@@ -107,23 +102,17 @@ function generateHyperspaceNodesAndLanes(nodes, lanes, isSinglePath) {
   const hyperspaceLanes = createLanesComponents(lanes, isSinglePath);
   const hyperspaceTopLane = createVisibleToplane(lanes, isSinglePath);
   const nodeAndLaneComponents = [];
-
   nodeAndLaneComponents.push(hyperspaceTopLane[0]);
-
   for(let i=0; i < hyperspaceLanes.length; i++) {
     let Lane = hyperspaceLanes[i];
     nodeAndLaneComponents.push(Lane);
   }
-
-
   for(let i=0; i < hyperspaceNodes.length; i++) {
     let Node = hyperspaceNodes[i];
     nodeAndLaneComponents.push(Node);
   }
   return nodeAndLaneComponents;
 }
-
-
 
 function nodeAndPointAreEqual(point1, point2) {
   const sameName = (point1.system === point2.system)? true : false;
