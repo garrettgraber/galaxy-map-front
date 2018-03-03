@@ -13,6 +13,8 @@ import {
 import {
   setDefaultStartPosition,
   setDefaultEndPosition,
+  setDefaultStartNode,
+  setDefaultEndNode,
   hyperspaceNavigationUpdateOn,
   pinPointStartOn,
   pinPointStartOff,
@@ -72,8 +74,10 @@ class NavigationSystemSearch extends React.Component {
       this.setState({system: ""});
       if(this.props.isStartPosition) {
         this.props.dispatch(setDefaultStartPosition());
+        this.props.dispatch(setDefaultStartNode());
       } else {
         this.props.dispatch(setDefaultEndPosition());
+        this.props.dispatch(setDefaultEndNode());
       }
       this.props.dispatch(hyperspaceNavigationUpdateOn());
     } else {

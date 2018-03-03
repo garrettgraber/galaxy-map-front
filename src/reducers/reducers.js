@@ -396,6 +396,8 @@ function hyperspaceStartNode(state = BlankNode, action) {
 			return action.payload;
 		case Actions.SET_START_NODE_ERROR:
 			return state;
+		case Actions.SET_DEFAULT_START_NODE:
+			return BlankNode;
 		default:
 			return state;	
 
@@ -407,6 +409,8 @@ function hyperspaceEndNode(state = BlankNode, action) {
 			return action.payload;
 		case Actions.SET_END_NODE_ERROR:
 			return state;
+		case Actions.SET_DEFAULT_END_NODE:
+			return BlankNode;
 		default:
 			return state;	
 	}

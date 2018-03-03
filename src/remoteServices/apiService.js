@@ -64,6 +64,26 @@ class ApiService {
 	    },
 	  });
 	}
+
+	systemConnectedToCoruscant(CurrentSystem) {
+	  const endpointUrl = this.API_ENDPOINT + 'hyperspacenode/connected-to-coruscant?' + queryString.stringify(CurrentSystem);
+	  return fetch(endpointUrl, {
+	    method: 'GET',
+	    headers: {
+	      'Content-Type': 'application/json'
+	    },
+	  });
+	}
+
+	systemConnectedToCsilla(CurrentSystem) {
+	  const endpointUrl = this.API_ENDPOINT + 'hyperspacenode/connected-to-csilla?' + queryString.stringify(CurrentSystem);
+	  return fetch(endpointUrl, {
+	    method: 'GET',
+	    headers: {
+	      'Content-Type': 'application/json'
+	    },
+	  });
+	}
 }
 
 export default new ApiService();

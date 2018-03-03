@@ -292,58 +292,41 @@ function setPathClickState() {
   };
 }
 
-
-const BlankNode = {
-  system: '',
-  lat: null,
-  lng: null,
-  hyperspaceLanes: [],
-  nodeId: null,
-  xGalactic: null,
-  yGalactic: null
-};
-
-const BlankPoint = {
-  system: '',
-  lat: null,
-  lng: null,
-  xGalactic: null,
-  yGalactic: null
-};
-
 function checkNodesAndUpdate(Options) {
   return function (dispatch, getState) {
+    const unknownRegionsEdgeNode = 'The Redoubt';
+    const widerGalaxyEdgeNode = 'Utegetu Nebula';
     const CurrentState = getState();
     const currentStartNode = CurrentState.hyperspaceStartNode.system;
     const currentEndNode = CurrentState.hyperspaceEndNode.system;
     const checkConnectionToStartNode = (currentStartNode && !Options.isStartPosition)? true : false;
     const checkConnectionToEndNode = (currentEndNode && Options.isStartPosition)? true : false;
     if(checkConnectionToStartNode || checkConnectionToEndNode) {
-      checkIfNodesAreConnected({
+      getNodeConnectionData({
         startNodeSystem: currentStartNode,
         endNodeSystem: currentEndNode,
         system: Options.system,
         isStartPosition: Options.isStartPosition
       }).then(data => {
-        const parsedData = JSON.parse(data);
-
-        dispatch(setHyperspaceState(Options));
-
-        // if(parsedData.connected) {
-        //   console.log("Nodes are connected by hyperspace lane");
-        //   dispatch(setHyperspaceState(Options));
-        // } else {
-        //   console.log("Nodes are not connected");
-        //   dispatch(addItemToDataStream('Cannot calculate jumps between The Unknown Regions and the rest of the Galaxy'));
-        //   setHyperspaceState({
-        //     isStartPosition: Options.isStartPosition,
-        //     NewNodeState: BlankNode,
-        //     NewPositionState: BlankPoint,
-        //     system: ''
-        //   });
-        // }
-
-
+        if(data.connected) {
+          dispatch(setHyperspaceState(Options));
+        } else {
+          const connectedToCoruscantButNotCsilla = data.connectionToCoruscant && !data.connectionToCsilla;
+          const searchIsStartName = (connectedToCoruscantButNotCsilla)? widerGalaxyEdgeNode : unknownRegionsEdgeNode;
+          const searchIsEndName = (connectedToCoruscantButNotCsilla)? unknownRegionsEdgeNode : widerGalaxyEdgeNode;
+          const newEndNodeName = (Options.isStartPosition)? searchIsStartName : searchIsEndName;
+          dispatch(setEndNodeAndPoint({
+            isStartPosition: false,
+            system: newEndNodeName
+          }));
+          dispatch(addItemToDataStream('Jumping to ' + newEndNodeName + ' instead'));
+          if(Options.isStartPosition) {
+            dispatch(setHyperspaceState(Options));
+          } else {
+            dispatch(hyperspaceNavigationUpdateOn());
+            dispatch(setPathClickState());
+          }
+        }
       }).catch(error => {
         console.log("systems connected error: ", error);
       });
@@ -352,6 +335,47 @@ function checkNodesAndUpdate(Options) {
     }
     return null;
   };
+}
+
+function setEndNodeAndPoint(Options) {
+  return function (dispatch, getState) {
+    ApiService.findHyperspaceNode({system: Options.system}).then(nodeResponse => {
+      return nodeResponse.json();
+    }).then(NodeDataJson => {
+      const NodeData = JSON.parse(NodeDataJson);
+      const NewPositionStateData = createPositionFromNode(NodeData);
+      const NewNodeStateData = createNodeState(NodeData);
+      const NewPositionState = NewPositionStateData[0];
+      const NewNodeState = NewNodeStateData[0];
+      dispatch(setHyperspaceState({
+        isStartPosition: Options.isStartPosition,
+        NewNodeState: NewNodeState,
+        NewPositionState: NewPositionState,
+        system: Options.system
+      }));
+    }).catch(NodeDataError => {
+      console.log("Error finding hyperspace node: ", NodeDataError);
+    });
+    return null;
+  };
+}
+
+async function getNodeConnectionData(Options) {
+  try {
+    const responseCoruscant = await nodeIsConnectedToCoruscant({system: Options.system});
+    const CoruscantConnection = JSON.parse(responseCoruscant);
+    const responseCsilla = await nodeIsConnectedToCsilla({system: Options.system});
+    const CsillaConnection = JSON.parse(responseCsilla);
+    const NodeConnectionStatus = await checkIfNodesAreConnected(Options);
+    const NodeConnectionData = JSON.parse(NodeConnectionStatus);
+    return {
+      connected: NodeConnectionData.connected,
+      connectionToCoruscant: CoruscantConnection,
+      connectionToCsilla: CsillaConnection
+    };
+  } catch(err) {
+    console.log("Error checking if nodes are connected: ", err);
+  }
 }
 
 async function checkIfNodesAreConnected(Options) {
@@ -367,6 +391,29 @@ async function checkIfNodesAreConnected(Options) {
     console.log("Error checking if nodes are connected: ", err);
   }
 }
+
+async function nodeIsConnectedToCoruscant(Options) {
+  try {
+    const response = await ApiService.systemConnectedToCoruscant({system: Options.system});
+    const systemConnectedStatus = response.json();
+    return systemConnectedStatus;
+  } catch(err) {
+    console.log("Error checking if nodes are connected: ", err);
+  }
+}
+
+async function nodeIsConnectedToCsilla(Options) {
+  try {
+    const response = await ApiService.systemConnectedToCsilla({system: Options.system});
+    const systemConnectedStatus = response.json();
+    return systemConnectedStatus;
+  } catch(err) {
+    console.log("Error checking if nodes are connected: ", err);
+  }
+}
+
+
+
 
 
 

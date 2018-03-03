@@ -415,6 +415,16 @@ export function setEndNodeError(error) {
 		payload: error
 	}
 }
+export function setDefaultStartNode() {
+	return {
+		type: Actions.SET_DEFAULT_START_NODE
+	}
+}
+export function setDefaultEndNode() {
+	return {
+		type: Actions.SET_DEFAULT_END_NODE
+	}
+}
 export function searchSystemsStart() {
 	return {
 		type: Actions.SEARCH_SYSTEMS_ON
