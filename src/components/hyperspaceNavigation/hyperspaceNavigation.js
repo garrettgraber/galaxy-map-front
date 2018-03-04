@@ -55,10 +55,20 @@ class HyperspaceNavigation extends React.Component {
     this.state = {
       HyperspaceCollectionsComponents: [],
       HSpaceComponentsMaster: [],
+      // zoom: null
     };
   }
-  componentDidMount() { }
+  componentDidMount() {
+    // this.setState({zoom: this.props.newZoom});
+  }
   componentWillReceiveProps(newProps) {
+
+    // console.log("newProps.newZoom: ", newProps.newZoom);
+
+    // if(newProps.newZoom !== this.state.zoom) {
+    //   console.log("Zoom change!");
+    //   this.setState({zoom: newProps.newZoom});
+    // }
 
     if(newProps.update) {
 

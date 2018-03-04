@@ -61,7 +61,9 @@ const BlankPoint = {
 	lat: null,
 	lng: null,
 	xGalactic: null,
-	yGalactic: null
+	yGalactic: null,
+	zoom: null,
+	emptySpace: null
 };
 const BlankNode = {
 	system: '',
@@ -70,7 +72,9 @@ const BlankNode = {
 	hyperspaceLanes: [],
 	nodeId: null,
 	xGalactic: null,
-	yGalactic: null
+	yGalactic: null,
+	zoom: null,
+	emptySpace: null
 };
 const DefaultDataStream = {
 	deCodedIndex: 18,
@@ -91,6 +95,18 @@ const nullHyperspaceHash = null;
 const emptySystemSet = new Set();
 const emptySectorSet = new Set();
 
+
+
+function starMapOverlayStatus(state = true, action) {
+	switch (action.type) {
+		case Actions.STAR_MAP_ON:
+			return true;
+		case Actions.STAR_MAP_OFF:
+			return false;
+		default:
+			return state;
+	}
+}
 
 function loadingIconOn(state = false, action) {
 	switch (action.type) {
@@ -141,7 +157,7 @@ function mapControlsDisplayed(state = true, action) {
 		case Actions.HIDE_MAP_CONTROLS:
 			return false;
 		default:
-			return true;			
+			return state;			
 	}
 }
 function sectorSearchSet(state = emptySectorSet, action) {
@@ -604,6 +620,7 @@ function updateHyperspaceNavigation(state = false, action) {
 }
 
 export default combineReducers({
+	starMapOverlayStatus,
 	loadingIconOn,
 	cursorValue,
 	cursorOnMap,

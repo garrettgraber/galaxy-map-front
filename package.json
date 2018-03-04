@@ -52,6 +52,7 @@
     "leaflet": "^1.2.0",
     "leaflet-ant-path": "^0.6.4",
     "leaflet-draw": "^0.4.12",
+    "leaflet-pulse-icon": "^0.1.0",
     "leaflet-virtual-grid": "^1.0.4",
     "leaflet.ajax": "^1.1.0",
     "lodash": "^4.17.4",

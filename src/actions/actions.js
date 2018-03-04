@@ -198,6 +198,7 @@ export function hyperspacePositionSearch(SystemSearch) {
         if(NodeDataArray.length > 0) {
           const NodeData = NodeDataArray[0];
           const NewPositionState = createPositionFromNode(NodeData);
+          console.log("NodeData: ", NodeData);
           const NewNodeState = createNodeState(NodeData);
           dispatch(checkNodesAndUpdate({
             isStartPosition: SystemSearch.isStartPosition,
@@ -216,7 +217,8 @@ export function hyperspacePositionSearch(SystemSearch) {
             const NodeDataArray = JSON.parse(data);
             if(NodeDataArray.length > 0) {
               const NodeData = NodeDataArray[0];
-              const NewPositionState = createPositionFromPlanet(PlanetData);
+              const NewPositionState = createPositionFromPlanetEmptySpace(PlanetData);
+              console.log("NodeData: ", NodeData);
               const NewNodeState = createNodeState(NodeData);
               dispatch(checkNodesAndUpdate({
                 isStartPosition: SystemSearch.isStartPosition,
@@ -483,13 +485,15 @@ function createPositionFromNode(NodeData) {
   ]);
 }
 
-function createPositionFromPlanet(PlanetData) {
+function createPositionFromPlanetEmptySpace(PlanetData) {
   return {
     system: PlanetData.system,
     lat: PlanetData.lat,
     lng: PlanetData.lng,
     xGalacticLong: PlanetData.xGalacticLong,
-    yGalacticLong: PlanetData.yGalacticLong
+    yGalacticLong: PlanetData.yGalacticLong,
+    zoom: PlanetData.zoom,
+    emptySpace: true
   }
 }
 

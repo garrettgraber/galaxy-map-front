@@ -18,7 +18,9 @@ import {
     newGalacticXandY,
     setMapZoom,
     loadingIconOn,
-    loadingIconOff
+    loadingIconOff,
+    starMapIsOn,
+    starMapIsOff
 } from '../actions/actionCreators.js';
 import { findAndSetNearsetHyperspaceNode, setCursorValue } from '../actions/actions.js';
 
@@ -149,6 +151,24 @@ class MapMain extends React.Component {
     ));
   }
 
+  onClickStarMapOverlay(e) {
+    console.log("onClickStarMapOverlay has fired...");
+  }
+
+  onOverlayadd(e) {
+    console.log("Adding layer: ", e.name);
+    if(e.name === 'Star Systems') {
+      this.props.dispatch(starMapIsOn());
+    }
+  }
+
+  onOverlayremove(e) {
+    console.log("Removing layer: ", e.name);
+    if(e.name === 'Star Systems') {
+      this.props.dispatch(starMapIsOff());
+    }
+  }
+
   render() {
   	const minZoom = 2;
   	const maxZoom = 8;
@@ -183,6 +203,8 @@ class MapMain extends React.Component {
             onClick={(e) => this.onClickHyperspaceNavigation(e)}
             onViewportChange={e => this.onViewportChange(e)}
             onViewportChanged={e => this.onViewportChanged(e)}
+            onOverlayadd={e => this.onOverlayadd(e)}
+            onOverlayremove={e => this.onOverlayremove(e)}
           >
       			<LayersControl>
       				<BaseLayer name="Galaxy" checked={true}>
@@ -208,12 +230,12 @@ class MapMain extends React.Component {
                 <HyperspaceLanesData />
               </Overlay>
               <Overlay name="Hyperspace Navigation" checked={true}>
-                <HyperspaceNavigation update={this.props.updateHyperspaceNavigation}/>
+                <HyperspaceNavigation update={this.props.updateHyperspaceNavigation} newZoom={this.props.mapCenterAndZoom.zoom} starMapOn={this.props.starMapOverlayStatus}/>
               </Overlay>
-              <Overlay name="Star Systems" checked={true}  ref="layerContainer" >
+              <Overlay name="Star Systems" checked={true} ref="layerContainer" >
                 <StarMap map={this.state.map}/>
               </Overlay>
-    				  </LayersControl>
+  				  </LayersControl>
       		</Map>
         </div>
       </ScrollArea>

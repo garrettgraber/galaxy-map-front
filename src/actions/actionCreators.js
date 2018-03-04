@@ -1,6 +1,16 @@
 import Actions from '../constants/actionTypesModule.js';
 
 
+export function starMapIsOff() {
+	return {
+		type: Actions.STAR_MAP_OFF
+	}
+}
+export function starMapIsOn() {
+	return {
+		type: Actions.STAR_MAP_ON
+	}
+}
 export function loadingIconOn() {
 	return {
 		type: Actions.LOADING_ICON_ON

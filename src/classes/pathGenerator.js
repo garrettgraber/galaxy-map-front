@@ -214,7 +214,6 @@ export default class PathGenerator {
 
   generateAntPath() {
     const hyperspaceLanesStylePink = {color: '#FF69B4', weight: 3};
-
     console.log("First PathCollection: ", this.hyperspacePathCollections[0]);
     const FirstPathCollection = this.hyperspacePathCollections[0];
     if(FirstPathCollection) {
@@ -230,10 +229,7 @@ export default class PathGenerator {
       const hyperspaceHash = uuidv4();
       this.antPathComponents.push(<HyperSpaceLaneOverlay key={hyperspaceHash}  pathCoordinates={lanePathCoordinates} style={hyperspaceLanesStylePink} isSinglePath={isSinglePath} />);
     }
-
-
   }
-
  
 	generateNavigationComponents() {
 		if(this.hyperspacePathChange) {
