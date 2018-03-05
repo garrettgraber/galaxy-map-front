@@ -6,6 +6,9 @@ import L from 'leaflet';
 import width from 'text-width';
 import uuidv4 from 'uuid/v4';
 
+import ApiService from '../../remoteServices/apiService.js';
+
+
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
 import 'leaflet_marker_2x';
@@ -17,12 +20,26 @@ class HyperspaceNavigationPoint extends React.Component {
     super(props);
     this.state = {
       zoom: null,
-      starMapState: true
+      starMapState: true,
+      link: ''
     };
   }
   componentDidMount() {
     this.setState({zoom: this.props.mapCenterAndZoom.zoom});
     this.setState({starMapState: this.props.starMapOverlayStatus});
+
+
+    if(!this.props.HyperSpacePoint.emptySpace) {
+      ApiService.systemLink({system: this.props.HyperSpacePoint.system}).then(response => {
+        return response.json();
+      }).then(data => {
+       // console.log("data: ", isJson(data));
+
+        const DataParsed = JSON.parse(data);
+        console.log("Data: ", DataParsed.link);
+        this.setState({link: DataParsed.link});
+      });
+    }
 
     // if(this.refs.nodeHyperSpace && this.refs.nodeText) {
     //   const nodeHyperSpace = this.refs.nodeHyperSpace.leafletElement;
@@ -47,6 +64,7 @@ class HyperspaceNavigationPoint extends React.Component {
 
 
   navigationTextIsVisible() {
+    // console.log("emptySpace: ", emptySpace);
     if(this.props.HyperSpacePoint.emptySpace) { return true; }
     const pointZoom = this.props.HyperSpacePoint.zoom;
     let textIsVisible = false;
@@ -84,33 +102,6 @@ class HyperspaceNavigationPoint extends React.Component {
     const pointColor = 'red';
     // const pointColor = 'teal';
     const HyperspacePointCurrent = this.props.HyperSpacePoint;
-    const textWidth = width(HyperspacePointCurrent.system,  { size: "1em" });
-
-    let textPadding = 0;
-    if(textWidth >= 75) {
-      textPadding = 30;
-    } else if(textWidth < 75 && textWidth > 40) {
-      textPadding = 20;
-    } else {
-      textPadding = 10;
-    }
-
-
-    // let myIcon = L.divIcon({
-    //   className: "hyperspaceNodeLabel",
-    //   iconSize: new L.Point(textWidth + textPadding + 6, 30),
-    //   iconAnchor: new L.Point(textWidth / 3.0, 18),
-    //   // iconAnchor: new L.Point(0, 0),
-    //   html: HyperspacePointCurrent.system
-    // });
-
-
-    let myIcon = L.divIcon({
-      className: "hyperspaceNodeLabel",
-      iconSize: new L.Point(textWidth + textPadding, 24),
-      iconAnchor: new L.Point(textWidth / 3.0, 18),
-      html: HyperspacePointCurrent.system
-    });
 
     const hyperspacePointLocation = [HyperspacePointCurrent.lat, HyperspacePointCurrent.lng];
     const LocationColorCyan = '#87CEFA';
@@ -139,8 +130,29 @@ class HyperspaceNavigationPoint extends React.Component {
     }
     console.log("\n");
 
+    const currentSystem = HyperspacePointCurrent.system;
+    const pointIsEmptySpace = HyperspacePointCurrent.emptySpace;
+    const displayedSystem = (pointIsEmptySpace)? emptySpaceDisplayText(currentSystem) : currentSystem;
+    const textWidth = width(displayedSystem,  { size: "1em" });
+
+    let textPadding = 0;
+    if(textWidth >= 75) {
+      textPadding = 30;
+    } else if(textWidth < 75 && textWidth > 40) {
+      textPadding = 20;
+    } else {
+      textPadding = 10;
+    }
+
+    let myIcon = L.divIcon({
+      className: "hyperspaceNodeLabel",
+      iconSize: new L.Point(textWidth + textPadding, 24),
+      iconAnchor: new L.Point(textWidth / 3.0, 18),
+      html: displayedSystem
+    });
+
   	return (
-      <div key={this.props.HyperSpacePoint.system + ":" + uuidv4()}>
+      <div key={HyperspacePointCurrent.system + ":" + uuidv4()}>
         
         
         <CircleMarker key={uuidv4()}  className="expand-ring-pulse-counter" center={hyperspacePointLocation} radius={6} color={LocationColor} weight={2}  onClick={(e) => this.onClick(e)} />
@@ -164,6 +176,17 @@ class HyperspaceNavigationPoint extends React.Component {
   }
 }
 
+
+function emptySpaceDisplayText(locationName) {
+  if(locationName.indexOf('@') > -1) {
+    const splitNameArray = locationName.split('@');
+    let emptySpaceHash = splitNameArray[1];
+    const emptySpaceSmallHash = emptySpaceHash.slice(0,7);
+    return 'Empty Space ' + emptySpaceSmallHash;
+  } else {
+    return locationName;
+  }
+}
 
 
 // export default HyperspaceNavigationPoint;

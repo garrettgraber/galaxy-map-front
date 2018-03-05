@@ -84,6 +84,67 @@ class ApiService {
 	    },
 	  });
 	}
+
+	systemLink(CurrentSystem) {
+
+		// return systemLinkAsync(CurrentSystem, this.API_ENDPOINT);
+
+	  const planetQuery = this.API_ENDPOINT + 'search/?' + queryString.stringify(CurrentSystem);
+	  return fetch(planetQuery, {
+	    method: 'GET',
+	    headers: {
+	      'Content-Type': 'application/json'
+	    },
+	  });
+
+	}
 }
 
 export default new ApiService();
+
+
+
+// async function systemLinkAsync(CurrentSystem, apiEndPoint) {
+// 	try {
+
+// 	  const planetQuery = apiEndPoint + 'search/?' + queryString.stringify(CurrentSystem);
+// 	  const response = await fetch(planetQuery, {
+// 	    method: 'GET',
+// 	    headers: {
+// 	      'Content-Type': 'application/json'
+// 	    },
+// 	  });
+// 	  const data = response.json();
+// 	  console.log("data: ", data);
+// 	  const DataParsed = JSON.parse(data);
+//   	console.log("Data: ", DataParsed.link);
+//   	return DataParsed.link;
+
+
+
+// 	  // .then(response => {
+// 	  // 	return response.json();
+// 	  // }).then(data => {
+// 	  // 	// console.log("data: ", isJson(data));
+
+// 	  // 	const DataParsed = JSON.parse(data);
+// 	  // 	console.log("Data: ", DataParsed.link);
+// 	  // });
+
+
+
+// 	} catch(err) {
+// 		console.log("Error getting system link: ", err);
+// 	}
+// }
+
+
+
+function isJson(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}

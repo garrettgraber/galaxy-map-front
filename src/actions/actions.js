@@ -423,7 +423,9 @@ export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
       const NewNodeState = omit(NodeState, ['_id', '__v']);
       const lat = LngLatSearch.LatLng.lat;
       const lng = LngLatSearch.LatLng.lng;
-      const NameHash = "ES@" + Geohash.encode(lat, lng, 22);
+      let emptySpaceGeoHash = Geohash.encode(lat, lng, 22);
+      const upperCaseGeoHash = emptySpaceGeoHash.toUpperCase();
+      const NameHash = "ES@" + upperCaseGeoHash;
       const xGalacticLong = getGalacticXFromLongitude(lng);
       const yGalacticLong = getGalacticYFromLatitude(lat);
       const NewPositionState = {
@@ -431,7 +433,9 @@ export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
         lat: lat,
         lng: lng,
         xGalacticLong: xGalacticLong,
-        yGalacticLong: yGalacticLong
+        yGalacticLong: yGalacticLong,
+        zoom: 10,
+        emptySpace: true
       };
 
       if(LngLatSearch.isStartNode) {
@@ -498,13 +502,3 @@ function createPositionFromPlanetEmptySpace(PlanetData) {
 }
 
 function createNodeState(NodeData) { return omit(NodeData, ['_id', '__v', 'loc']) }
-
-
-function isJson(str) {
-  try {
-    JSON.parse(str);
-  } catch (e) {
-    return false;
-  }
-  return true;
-}
