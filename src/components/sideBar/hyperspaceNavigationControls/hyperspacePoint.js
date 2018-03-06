@@ -13,30 +13,26 @@ class HyperspacePoint extends React.Component {
   }
 }
 
-
 function LocationGalacticDisplay(Point) {
-  const xGalacticLongIsNotSet = isNaN(Point.xGalacticLong);
-  const yGalacticLongIsNotSet = isNaN(Point.yGalacticLong);
-
+  const xGalacticIsNotSet = (Point.xGalactic === null)? true : false;
+  const yGalacticIsNotSet = (Point.yGalactic === null)? true : false;
   return (
     <div className="pane-row-text">
       <span className="display-text">Position:&nbsp;</span>
-
-      <If condition={xGalacticLongIsNotSet}>
+      <If condition={xGalacticIsNotSet}>
         <Then>
           <span className="display-text">&nbsp;&nbsp;X:&nbsp;&nbsp;</span>
         </Then>
         <Else>
-          <span className="nav-text">&nbsp;&nbsp;X:&nbsp;&nbsp;{parseFloat(Point.xGalacticLong).toFixed(6)}</span>
+          <span className="nav-text">&nbsp;&nbsp;X:&nbsp;&nbsp;{parseFloat(Point.xGalactic).toFixed(2)}</span>
         </Else>
       </If>
-
-      <If condition={yGalacticLongIsNotSet}>
+      <If condition={yGalacticIsNotSet}>
         <Then>
           <span className="display-text">&nbsp;&nbsp;Y:&nbsp;&nbsp;</span>
         </Then>
         <Else>
-          <span className="nav-text">&nbsp;&nbsp;Y:&nbsp;&nbsp;{parseFloat(Point.yGalacticLong).toFixed(6)}</span>
+          <span className="nav-text">&nbsp;&nbsp;Y:&nbsp;&nbsp;{parseFloat(Point.yGalactic).toFixed(2)}</span>
         </Else>
       </If>
     </div>

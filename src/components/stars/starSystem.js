@@ -73,7 +73,23 @@ class StarSystem extends React.Component {
 
   	return (
       <div style={ {caretColor: 'teal'} }>
-        <CircleMarker center={starLocation} radius={1} color={starColor} fillColor={fillColor} fillOpacity={fillOpacity} onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)} onClick={(e) => this.onClick(e)}  ref='star' />
+        <CircleMarker center={starLocation} radius={1} color={starColor} fillColor={fillColor} fillOpacity={fillOpacity} onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)} onClick={(e) => this.onClick(e)}  ref='star'>
+          <If condition={this.props.pathStartClick || this.props.pathEndClick}>
+            <Then>
+              <If condition={this.props.pathStartClick}>
+                <Then>
+                  <StarSystemNavigationPopup isStart={true} starLocation={starLocation}/>
+                </Then>
+                <Else>
+                  <StarSystemNavigationPopup isStart={false} starLocation={starLocation}/>
+                </Else>
+              </If>
+            </Then>
+            <Else>
+              <StarSystemPopup StarObject={StarObject}/>
+            </Else>
+          </If>
+        </CircleMarker>
         <Marker key={StarObject.system} position={starLocation} zIndexOffset={-5} icon={myIcon}  onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)}  onClick={(e) => this.onClick(e)} ref='starText'>
           <If condition={this.props.pathStartClick || this.props.pathEndClick}>
             <Then>

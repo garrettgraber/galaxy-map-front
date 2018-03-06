@@ -63,7 +63,10 @@ const BlankPoint = {
 	xGalactic: null,
 	yGalactic: null,
 	zoom: null,
-	emptySpace: null
+	emptySpace: null,
+	coordinates: '',
+	sector: '',
+	link: ''
 };
 const BlankNode = {
 	system: '',
@@ -451,22 +454,22 @@ function hyperspaceActiveEndPoint(state = BlankPoint, action) {
 			return state;	
 	}
 }
-function hyperspaceActiveStartNode(state = BlankPoint, action) {
+function hyperspaceActiveStartNode(state = BlankNode, action) {
 	switch (action.type) {
 		case Actions.SET_ACTVIE_START_NODE:
 			return action.payload;
 		case Actions.SET_ACTVIE_START_NODE_DEFAULT:
-			return BlankPoint;
+			return BlankNode;
 		default:
 			return state;
 	}
 }
-function hyperspaceActiveEndNode(state = BlankPoint, action) {
+function hyperspaceActiveEndNode(state = BlankNode, action) {
 	switch (action.type) {
 		case Actions.SET_ACTVIE_END_NODE:
 			return action.payload;
 		case Actions.SET_ACTVIE_END_NODE_DEFAULT:
-			return BlankPoint;
+			return BlankNode;
 		default:
 			return state;
 	}

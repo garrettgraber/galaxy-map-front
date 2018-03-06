@@ -183,7 +183,15 @@ export function noSetSelectedHyperspaceRoute() {
 
 
 
+
+
+
+
+
+
+
 export function hyperspacePositionSearch(SystemSearch) {
+  console.log("hyperspacePositionSearch has fired..");
   return function(dispatch, getState) {
     const SystemSearchSent = omit(SystemSearch, ['isStartPosition']);
     ApiService.findPlanet(SystemSearchSent).then(response => {
@@ -198,12 +206,13 @@ export function hyperspacePositionSearch(SystemSearch) {
         if(NodeDataArray.length > 0) {
           const NodeData = NodeDataArray[0];
           const NewPositionState = createPositionFromNode(NodeData);
+          const NewPositionPlanetState = createPositionFromPlanet(PlanetData);
           console.log("NodeData: ", NodeData);
           const NewNodeState = createNodeState(NodeData);
           dispatch(checkNodesAndUpdate({
             isStartPosition: SystemSearch.isStartPosition,
             NewNodeState: NewNodeState,
-            NewPositionState: NewPositionState,
+            NewPositionState: NewPositionPlanetState,
             system: SystemSearch.system
           }));
         } else {
@@ -217,7 +226,7 @@ export function hyperspacePositionSearch(SystemSearch) {
             const NodeDataArray = JSON.parse(data);
             if(NodeDataArray.length > 0) {
               const NodeData = NodeDataArray[0];
-              const NewPositionState = createPositionFromPlanetEmptySpace(PlanetData);
+              const NewPositionState = createPositionFromPlanet(PlanetData);
               console.log("NodeData: ", NodeData);
               const NewNodeState = createNodeState(NodeData);
               dispatch(checkNodesAndUpdate({
@@ -413,6 +422,27 @@ async function nodeIsConnectedToCsilla(Options) {
 
 
 
+
+
+
+
+
+
+function emptySpaceDisplayText(locationName) {
+  if(locationName.indexOf('@') > -1) {
+    const splitNameArray = locationName.split('@');
+    let emptySpaceHash = splitNameArray[1];
+    const emptySpaceSmallHash = emptySpaceHash.slice(0,7);
+    return 'Empty Space ' + emptySpaceSmallHash;
+  } else {
+    return locationName;
+  }
+}
+
+
+
+
+
 export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
   return function(dispatch, getState) {
     ApiService.findNearestNode(LngLatSearch.LatLng).then(response => {
@@ -424,18 +454,23 @@ export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
       const lat = LngLatSearch.LatLng.lat;
       const lng = LngLatSearch.LatLng.lng;
       let emptySpaceGeoHash = Geohash.encode(lat, lng, 22);
-      const upperCaseGeoHash = emptySpaceGeoHash.toUpperCase();
-      const NameHash = "ES@" + upperCaseGeoHash;
+      const upperCaseGeoHashShort = emptySpaceGeoHash.toUpperCase().slice(0,7);
+      const NameHash = 'Empty Space ' + upperCaseGeoHashShort;
       const xGalacticLong = getGalacticXFromLongitude(lng);
       const yGalacticLong = getGalacticYFromLatitude(lat);
+      const xGalactic = xGalacticLong.toFixed(2);
+      const yGalactic = yGalacticLong.toFixed(2);
       const NewPositionState = {
         system: NameHash,
         lat: lat,
         lng: lng,
-        xGalacticLong: xGalacticLong,
-        yGalacticLong: yGalacticLong,
+        xGalactic: xGalactic,
+        yGalactic: yGalactic,
         zoom: 10,
-        emptySpace: true
+        emptySpace: true,
+        link: null,
+        sector: [null],
+        coordinates: 'Unknown'
       };
 
       if(LngLatSearch.isStartNode) {
@@ -490,14 +525,39 @@ function createPositionFromNode(NodeData) {
 }
 
 function createPositionFromPlanetEmptySpace(PlanetData) {
+  console.log("PlanetData: ", PlanetData);
   return {
     system: PlanetData.system,
     lat: PlanetData.lat,
     lng: PlanetData.lng,
-    xGalacticLong: PlanetData.xGalacticLong,
-    yGalacticLong: PlanetData.yGalacticLong,
+    xGalactic: PlanetData.xGalacticLong,
+    yGalactic: PlanetData.yGalacticLong,
     zoom: PlanetData.zoom,
-    emptySpace: true
+    emptySpace: true,
+    coordinates: '',
+    sector: '',
+    link: null
+  }
+}
+
+
+function createPositionFromPlanet(PlanetData) {
+
+  // const sector = StarObject.sector[0] || 'Unknown';
+
+  // const displayedSector = (PlanetData.sector[0])? PlanetData.sector[0] : 'Unknown';
+  // console.log("PlanetData: ", PlanetData);
+  return {
+    system: PlanetData.system,
+    lat: PlanetData.lat,
+    lng: PlanetData.lng,
+    xGalactic: PlanetData.xGalactic,
+    yGalactic: PlanetData.yGalactic,
+    zoom: PlanetData.zoom,
+    emptySpace: false,
+    coordinates: PlanetData.coordinates,
+    sector: PlanetData.sector,
+    link: PlanetData.link
   }
 }
 

@@ -103,7 +103,9 @@ class StarMap extends React.Component {
   componentWillReceiveProps(newProps) {
     const zoomInStore = newProps.mapCenterAndZoom.zoom;
     const mapInstance = newProps.map;
-    this.starMapGeneratorController(zoomInStore, mapInstance);
+    if(newProps.starMapOn) {
+      this.starMapGeneratorController(zoomInStore, mapInstance);
+    }
   }    
 
   render() {

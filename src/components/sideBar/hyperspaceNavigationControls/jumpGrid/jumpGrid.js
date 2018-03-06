@@ -59,8 +59,6 @@ class JumpGrid extends React.Component {
     return (
       <div >
         <div className="pane-row-control" style={JumpGridControllerStyle}>
-          <span className="nav-text" >&nbsp;{emptySpaceCheck(activeStartSystem)}&nbsp;&mdash;&mdash;&raquo;&nbsp;</span>
-          <span className="nav-text" >{emptySpaceCheck(acttveEndSystem)}&nbsp;</span>
           <span className="nav-text">&nbsp;&nbsp;Total Paths:&nbsp;&nbsp;{jumpPaths.length}</span>
         </div>
         <div id="div1" style={containerDiv1Styles}>

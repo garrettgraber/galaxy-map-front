@@ -9,7 +9,8 @@ import {
   setMapToZeroZero,
   addItemToDataStream,
   increaseMapZoom,
-  decreaseMapZoom
+  decreaseMapZoom,
+  loadingIconOff
 } from '../../actions/actionCreators.js';
 
 import GalaxyIconOnEdge from '../../images/icons/randomly-found/galaxy.png';
@@ -28,6 +29,7 @@ class MapNavigationControl extends React.Component {
     if(this.props.mapCenterAndZoom.zoom > 2) {
       this.props.dispatch(addItemToDataStream('Moved to Galaxy View...'));
       this.props.dispatch(setMapToZeroZero());
+      this.props.dispatch(loadingIconOff());
     }
   }
   handleUpPanClick() {

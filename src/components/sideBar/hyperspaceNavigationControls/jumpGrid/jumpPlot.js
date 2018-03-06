@@ -83,10 +83,6 @@ class JumpPlot extends React.Component {
         onMouseEnter={(e) => this.onMouseEnter(e)}
         onMouseOver={(e) => this.onMouseOver(e)}
         onMouseLeave={(e) => this.onMouseLeave(e)} >
-        <div style={{width: '100%'}} >
-          <span className="nav-text" >&nbsp;{emptySpaceCheck(activeStartSystem)}&nbsp;&mdash;&mdash;&raquo;&nbsp;</span>
-          <span className="nav-text" >{emptySpaceCheck(acttveEndSystem)}&nbsp;</span>
-        </div>
 
         <div style={{width: '100%'}} >
           <span className="nav-text" >&nbsp;Length:&nbsp;{this.props.PathObject.length.toFixed(2)}</span>

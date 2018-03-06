@@ -175,6 +175,10 @@ class MapMain extends React.Component {
   	const zIndexGalaxy = 210;
     const zIndexBlack = 205;
 
+    if(!this.props.starMapOverlayStatus) {
+      this.props.dispatch(loadingIconOff());
+    }
+
   	return (
       <ScrollArea
         onScroll={(value) => { }}
@@ -233,7 +237,7 @@ class MapMain extends React.Component {
                 <HyperspaceNavigation update={this.props.updateHyperspaceNavigation} newZoom={this.props.mapCenterAndZoom.zoom} starMapOn={this.props.starMapOverlayStatus}/>
               </Overlay>
               <Overlay name="Star Systems" checked={true} ref="layerContainer" >
-                <StarMap map={this.state.map}/>
+                <StarMap map={this.state.map} starMapOn={this.props.starMapOverlayStatus} />
               </Overlay>
   				  </LayersControl>
       		</Map>
