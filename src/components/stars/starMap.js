@@ -7,6 +7,7 @@ import Geohash from 'latlon-geohash';
 
 import StarMapGenerator from '../../classes/starMapGenerator.js';
 import GalaxyDataGenerator from '../../classes/galaxyDataGenerator.js';
+import NavigationPoints from '../../classes/navigationPoints.js';
 
 import StarSystem from './starSystem.js';
 import {
@@ -43,19 +44,23 @@ class StarMap extends React.Component {
       this.setState({GalacticPlanetsArray: GalaxyData.PlanetsArray});
       const currentMapZoom = this.props.map.getZoom();
       const MapBoundariesHashes = getNorthEastAndSoutWestBounds(this.props.map);
-      this.createStarMapAndSetState(currentMapZoom, this.props.map, MapBoundariesHashes);
+      const CurrentNavigationPoints = new NavigationPoints({changeInPoints: false});
+      this.createStarMapAndSetState(currentMapZoom, this.props.map, MapBoundariesHashes, CurrentNavigationPoints);
       this.props.dispatch(buildSystemNameSet(GalaxyData.systemNameSet));
   	});
   }
 
-  createStarMap(currentZoom, currentMap) {
+  createStarMap(currentZoom, currentMap, NavPoints) {
     console.log("\n****StarMap creation!****");
     console.time('Star Map Generation Time');
+    console.log("GalacticPlanetsArray: ", this.state.GalacticPlanetsArray.length);
+    const filteredGalacticPlanetsArray = NavPoints.filteredPlanetsArray(this.state.GalacticPlanetsArray);
+    console.log("filteredGalacticPlanetsArray: ", filteredGalacticPlanetsArray.length);
     const CurrentStarMap = new StarMapGenerator({
       zoom: currentZoom,
       Map: currentMap
     });
-    const StellarData = CurrentStarMap.generateStellarArrays(currentMap, this.state.GalacticPlanetsArray, this.state.previousIntersectionMap, this.state.StarMapComponents);
+    const StellarData = CurrentStarMap.generateStellarArrays(currentMap, filteredGalacticPlanetsArray, this.state.previousIntersectionMap, this.state.StarMapComponents);
     console.log("Systems Generated for Star Map: ", StellarData.starComponents.length);
     console.timeEnd('Star Map Generation Time');
     console.log("****StarMap finished!****\n");
@@ -73,12 +78,12 @@ class StarMap extends React.Component {
     this.props.dispatch(updateSouthWestMapHash(MapHashes.southWest));
   }
 
-  createStarMapAndSetState(zoomInStore, mapInstance, MapHashes) {
-    const StarMapData = this.createStarMap(zoomInStore, mapInstance);
+  createStarMapAndSetState(zoomInStore, mapInstance, MapHashes, NavPoints) {
+    const StarMapData = this.createStarMap(zoomInStore, mapInstance, NavPoints);
     this.setStarMapState(StarMapData, zoomInStore, MapHashes);    
   }
 
-  starMapGeneratorController(zoomInStore, mapInstance) {
+  starMapGeneratorController(zoomInStore, mapInstance, NavPoints) {
     const MapHashes = getNorthEastAndSoutWestBounds(mapInstance);
     const differentNorthEastPoint = MapHashes.northEast !== this.state.northEast;
     const differentSouthWestPoint = MapHashes.southWest !== this.state.southWest;
@@ -92,19 +97,36 @@ class StarMap extends React.Component {
     const galaxyLevelBounds = (galaxyLatitudeView && galaxyLongitudeView);
 
     if(zoomInStore === 2 && galaxyLevelBounds && this.state.zoom !== 2) {
-      this.createStarMapAndSetState(zoomInStore, mapInstance, MapHashes);
+      this.createStarMapAndSetState(zoomInStore, mapInstance, MapHashes, NavPoints);
     } else if(this.state.zoom !== zoomInStore && mapBoundsHaveChanged) {
-      this.createStarMapAndSetState(zoomInStore, mapInstance, MapHashes);
+      this.createStarMapAndSetState(zoomInStore, mapInstance, MapHashes, NavPoints);
     } else if(zoomInStore !== 2 && this.state.zoom !== 3 && mapBoundsHaveChanged) {
-      this.createStarMapAndSetState(zoomInStore, mapInstance, MapHashes);
+      this.createStarMapAndSetState(zoomInStore, mapInstance, MapHashes, NavPoints);
+    } else if(NavPoints.changeInPoints) {
+      this.createStarMapAndSetState(zoomInStore, mapInstance, MapHashes, NavPoints);
     }
   }
 
   componentWillReceiveProps(newProps) {
-    const zoomInStore = newProps.mapCenterAndZoom.zoom;
-    const mapInstance = newProps.map;
-    if(newProps.starMapOn) {
-      this.starMapGeneratorController(zoomInStore, mapInstance);
+    const startPointDifferent = (newProps.StartPoint.system !== this.props.StartPoint.system)? true : false;
+    const endPointDifferent = (newProps.EndPoint.system !== this.props.EndPoint.system)? true : false;
+    const activeStartPointDifferent = (newProps.ActiveStartPoint.system !== this.props.ActiveStartPoint.system)? true : false;
+    const activeEndPointDifferent = (newProps.ActiveEndPoint.system !== this.props.ActiveEndPoint.system)? true : false;
+    const changeInSearchPoints = (startPointDifferent || endPointDifferent)? true : false;
+    const changeInActivePoints = (activeStartPointDifferent || activeEndPointDifferent)? true : false;
+    const changeInPoints = (changeInSearchPoints || changeInActivePoints)? true : false;
+
+    if((changeInPoints && newProps.starMapOn) || newProps.starMapOn) {
+      const zoomInStore = newProps.mapCenterAndZoom.zoom;
+      const mapInstance = newProps.map;
+      const CurrentNavigationPoints = new NavigationPoints({
+        StartPoint: newProps.StartPoint,
+        EndPoint: newProps.EndPoint,
+        ActiveStartPoint: newProps.ActiveStartPoint,
+        ActiveEndPoint: newProps.ActiveEndPoint,
+        changeInPoints: changeInPoints
+      });
+      this.starMapGeneratorController(zoomInStore, mapInstance, CurrentNavigationPoints);
     }
   }    
 

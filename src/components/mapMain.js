@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Control from 'react-leaflet-control';
-import { Map, TileLayer, LayersControl, Pane } from 'react-leaflet';
+import { Map, TileLayer, LayersControl, Pane, LayerGroup, FeatureGroup } from 'react-leaflet';
 import L from 'leaflet';
 import Geohash from 'latlon-geohash';
 import ScrollArea from 'react-scrollbar';
@@ -37,6 +37,7 @@ import DataStream from './dataStream/dataStream.js';
 import MapNavigationControl from './mapNavigationControls/mapNavigationControl.js';
 import LoadingSpinner from './loading/loadingSpinner.js';
 import HyperspaceNavigation from './hyperspaceNavigation/hyperspaceNavigation.js';
+import Search from './search/search.js';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
@@ -175,9 +176,9 @@ class MapMain extends React.Component {
   	const zIndexGalaxy = 210;
     const zIndexBlack = 205;
 
-    if(!this.props.starMapOverlayStatus) {
-      this.props.dispatch(loadingIconOff());
-    }
+    // if(!this.props.starMapOverlayStatus) {
+    //   this.props.dispatch(loadingIconOff());
+    // }
 
   	return (
       <ScrollArea
@@ -233,11 +234,21 @@ class MapMain extends React.Component {
               <Overlay name="Hyperspace Lanes" checked={false}>
                 <HyperspaceLanesData />
               </Overlay>
+              <Overlay name="Search Layer" checked={false}>
+                <Search />
+              </Overlay>
               <Overlay name="Hyperspace Navigation" checked={true}>
                 <HyperspaceNavigation update={this.props.updateHyperspaceNavigation} newZoom={this.props.mapCenterAndZoom.zoom} starMapOn={this.props.starMapOverlayStatus}/>
               </Overlay>
               <Overlay name="Star Systems" checked={true} ref="layerContainer" >
-                <StarMap map={this.state.map} starMapOn={this.props.starMapOverlayStatus} />
+                <StarMap
+                  map={this.state.map}
+                  starMapOn={this.props.starMapOverlayStatus}
+                  StartPoint={this.props.hyperspaceStartPoint}
+                  EndPoint={this.props.hyperspaceEndPoint}
+                  ActiveStartPoint={this.props.hyperspaceActiveStartPoint}
+                  ActiveEndPoint={this.props.hyperspaceActiveEndPoint}
+                />
               </Overlay>
   				  </LayersControl>
       		</Map>

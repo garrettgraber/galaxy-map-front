@@ -31,7 +31,6 @@ import '../../css/main.css';
 
 import HyperspaceData from 'json-loader!../../data/hyperspace.geojson';
 import HyperspacePathCollection from './hyperspacePathCollection.js';
-import HyperspaceNavigationPoint from './hyperspaceNavigationPoint.js';
 import {
   createFreespaceLane,
   nodeAndPointAreEqual
