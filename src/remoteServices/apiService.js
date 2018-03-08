@@ -98,6 +98,18 @@ class ApiService {
 	  });
 
 	}
+
+	findSector(Sector) {
+	  const sectorQuery = this.API_ENDPOINT + 'sector/?' + queryString.stringify(Sector);
+	  return fetch(sectorQuery, {
+	    method: 'GET',
+	    headers: {
+	      'Content-Type': 'application/json'
+	    },
+	  }).then(response => {
+    	return response.json();
+    });
+	}
 }
 
 export default new ApiService();

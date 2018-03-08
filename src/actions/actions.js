@@ -39,7 +39,11 @@ import {
   pinPointEndOff,
   defaultCursor,
   loadingIconOff,
-  loadingIconOn
+  loadingIconOn,
+  starMapIsOn,
+  sectorMapIsOn,
+  newSystemsLocation,
+  newSectorData
 } from './actionCreators.js';
 import {
   getGalacticYFromLatitude,
@@ -78,7 +82,14 @@ export function findSystem(systemName) {
 				};
         const stateBeforeDispatches = getState();
 				dispatch(setActiveSystem(SystemData));
+
+        dispatch(newSystemsLocation({
+          lat: SystemData.lat,
+          lng: SystemData.lng
+        }));
+
         const systemCenter = [SystemData.lat, SystemData.lng];
+        dispatch(starMapIsOn());
         dispatch(setMapCenterAndZoom(systemCenter, newZoom));
         dispatch(searchSystemsFinish());
         const stateAfterDispatches = getState();
@@ -112,6 +123,36 @@ export function zoomToLocation(locationCenter, zoom) {
     return null;
   }
 }
+
+export function zoomToSector(SectorSearch, zoom) {
+  return function(dispatch, getState) {
+
+    ApiService.findSector({name: SectorSearch.label}).then(sectorFoundJson => {
+
+      const sectorFoundResults = JSON.parse(sectorFoundJson);
+
+      const SectorFound = sectorFoundResults[0];
+
+      dispatch(newSectorData(createSectorData(SectorFound)));
+
+      // dispatch(sectorMapIsOn());
+      dispatch(setMapCenterAndZoom(SectorSearch.value, zoom));
+
+    }).catch(sectorFoundError => {
+
+    });
+
+    return null;
+  }
+}
+
+function createSectorData(CurrentSector) {
+  return omit(CurrentSector, [
+    '_id',
+    '__v',
+  ]);
+}
+
 
 export function plotFreeSpaceJumpToNode(HyperspacePathData) {
   return function(dispatch, getState) {
@@ -424,25 +465,6 @@ async function nodeIsConnectedToCsilla(Options) {
 
 
 
-
-
-
-
-function emptySpaceDisplayText(locationName) {
-  if(locationName.indexOf('@') > -1) {
-    const splitNameArray = locationName.split('@');
-    let emptySpaceHash = splitNameArray[1];
-    const emptySpaceSmallHash = emptySpaceHash.slice(0,7);
-    return 'Empty Space ' + emptySpaceSmallHash;
-  } else {
-    return locationName;
-  }
-}
-
-
-
-
-
 export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
   return function(dispatch, getState) {
     ApiService.findNearestNode(LngLatSearch.LatLng).then(response => {
@@ -540,13 +562,7 @@ function createPositionFromPlanetEmptySpace(PlanetData) {
   }
 }
 
-
 function createPositionFromPlanet(PlanetData) {
-
-  // const sector = StarObject.sector[0] || 'Unknown';
-
-  // const displayedSector = (PlanetData.sector[0])? PlanetData.sector[0] : 'Unknown';
-  // console.log("PlanetData: ", PlanetData);
   return {
     system: PlanetData.system,
     lat: PlanetData.lat,

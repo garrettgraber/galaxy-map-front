@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import Select from 'react-select';
 import createFilterOptions from 'react-select-fast-filter-options';
 
-import { zoomToLocation } from '../../../actions/actions.js';
+import { zoomToLocation, zoomToSector } from '../../../actions/actions.js';
+import { noSectorData } from '../../../actions/actionCreators.js';
 import '../../../css/main.css';
 
 class SearchSectors extends React.Component {
@@ -16,9 +17,10 @@ class SearchSectors extends React.Component {
   onChange(sectorValue) {  
     if(sectorValue === null) {
       this.setState({sectorValue: undefined});
+      this.props.dispatch(noSectorData());
     } else {
       this.setState({ sectorValue });
-      this.props.dispatch(zoomToLocation(sectorValue.value, 6));
+      this.props.dispatch(zoomToSector(sectorValue, 6));
     }
   }
   render() {

@@ -20,7 +20,9 @@ import {
     loadingIconOn,
     loadingIconOff,
     starMapIsOn,
-    starMapIsOff
+    starMapIsOff,
+    sectorMapIsOn,
+    sectorMapIsOff
 } from '../actions/actionCreators.js';
 import { findAndSetNearsetHyperspaceNode, setCursorValue } from '../actions/actions.js';
 
@@ -160,6 +162,8 @@ class MapMain extends React.Component {
     console.log("Adding layer: ", e.name);
     if(e.name === 'Star Systems') {
       this.props.dispatch(starMapIsOn());
+    } else if(e.name === 'Sectors') {
+      this.props.dispatch(sectorMapIsOn());
     }
   }
 
@@ -167,6 +171,8 @@ class MapMain extends React.Component {
     console.log("Removing layer: ", e.name);
     if(e.name === 'Star Systems') {
       this.props.dispatch(starMapIsOff());
+    } else if(e.name === 'Sectors') {
+      this.props.dispatch(sectorMapIsOff());
     }
   }
 
@@ -222,7 +228,7 @@ class MapMain extends React.Component {
                   <TileLayer url={blackTileImage} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} />
                 </Pane>
               </BaseLayer>
-              <Overlay name="Sectors" checked={false}>
+              <Overlay name="Sectors" checked={this.props.sectorMapOverlayStatus}>
                 <Sectors />
               </Overlay>
   			    	<Overlay name="Regions" checked={false}>
@@ -234,13 +240,13 @@ class MapMain extends React.Component {
               <Overlay name="Hyperspace Lanes" checked={false}>
                 <HyperspaceLanesData />
               </Overlay>
-              <Overlay name="Search Layer" checked={false}>
-                <Search />
+              <Overlay name="Search Layer" checked={true}>
+                <Search/>
               </Overlay>
               <Overlay name="Hyperspace Navigation" checked={true}>
                 <HyperspaceNavigation update={this.props.updateHyperspaceNavigation} newZoom={this.props.mapCenterAndZoom.zoom} starMapOn={this.props.starMapOverlayStatus}/>
               </Overlay>
-              <Overlay name="Star Systems" checked={true} ref="layerContainer" >
+              <Overlay name="Star Systems" checked={this.props.starMapOverlayStatus} ref="layerContainer" >
                 <StarMap
                   map={this.state.map}
                   starMapOn={this.props.starMapOverlayStatus}

@@ -88,6 +88,15 @@ const BlankGalacticXandY = {
 	xGalactic: null,
 	yGalactic: null
 };
+const BlankLocation = {
+	lat: null,
+	lng: null
+};
+const BlankSector = {
+	coordinates: [],
+	name: null,
+	link: ''
+};
 
 
 const defaultZoom = 2;
@@ -99,6 +108,39 @@ const emptySystemSet = new Set();
 const emptySectorSet = new Set();
 
 
+
+function sectorSearchData(state = BlankSector, action) {
+	switch (action.type) {
+		case Actions.NEW_SECTOR_DATA:
+			return action.payload;
+		case Actions.NO_SECTOR_DATA:
+			return BlankSector;
+		default:
+			return state;
+	}
+}
+
+function systemsSearchLocation(state = BlankLocation, action) {
+	switch (action.type) {
+		case Actions.NEW_SYSTEMS_SEARCH_LOCATION:
+			return action.payload;
+		case Actions.NO_SYSTEMS_SEARCH_LOCATION:
+			return BlankLocation;
+		default:
+			return state;
+	}
+}
+
+function sectorMapOverlayStatus(state = false, action) {
+	switch (action.type) {
+		case Actions.SECTOR_MAP_ON:
+			return true;
+		case Actions.SECTOR_MAP_OFF:
+			return false;
+		default:
+			return state;
+	}
+}
 
 function starMapOverlayStatus(state = true, action) {
 	switch (action.type) {
@@ -623,6 +665,9 @@ function updateHyperspaceNavigation(state = false, action) {
 }
 
 export default combineReducers({
+	sectorSearchData,
+	systemsSearchLocation,
+	sectorMapOverlayStatus,
 	starMapOverlayStatus,
 	loadingIconOn,
 	cursorValue,

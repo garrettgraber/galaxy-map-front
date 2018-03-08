@@ -4,6 +4,9 @@ import Select from 'react-select';
 import createFilterOptions from 'react-select-fast-filter-options';
 
 import { findSystem } from '../../../actions/actions.js';
+import { noSystemsLocation } from '../../../actions/actionCreators.js';
+
+
 import '../../../css/main.css';
 
 class SearchSystems extends React.Component {
@@ -16,6 +19,7 @@ class SearchSystems extends React.Component {
   onChange(selectValue) {
     if(selectValue === null) {
       this.setState({selectValue: undefined});
+      this.props.dispatch(noSystemsLocation());
     } else {
       this.setState({ selectValue });
       this.props.dispatch(findSystem(selectValue.value));

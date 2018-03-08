@@ -9,9 +9,11 @@ import {
   Tooltip,
   Marker,
   FeatureGroup,
-  LayerGroup
+  LayerGroup,
+  Polygon
 } from 'react-leaflet';
 import L from 'leaflet';
+import { If, Then, Else } from 'react-if';
 import width from 'text-width';
 import 'whatwg-fetch';
 import _ from 'lodash';
@@ -38,6 +40,7 @@ class Search extends React.Component {
 
   componentDidMount() {
     // this.setState({zoom: this.props.newZoom});
+
   }
 
   componentWillReceiveProps(newProps) {
@@ -47,13 +50,68 @@ class Search extends React.Component {
   render() {
 
   	const zIndex = 255;
-    const navComponents = renderComponentsOrNull(this.state.SearchComponents);
+    const searchComponents = renderComponentsOrNull(this.state.SearchComponents);
+
+    // console.log("systemsSearchLocation: ", this.props.systemsSearchLocation);
+
+    const systemsSearchLat = this.props.systemsSearchLocation.lat;
+    const systemsSearchLng = this.props.systemsSearchLocation.lng;
+    const systemsSearchColor = '#c32aff';
+
+    const sectorSearchName = this.props.sectorSearchData.name;
+
+    // console.log("sectorSearchName: ", this.props.sectorSearchData);
+
+    const SectorOptions = {
+      fill: true,
+      fillColor: 'red',
+      fillOpacity: 0.5,
+      color: 'red'
+    };
+
+    const SectorNameStyle = {
+      fontWeight: 'bold'
+    };
+
+    const starColor = 'red';
+    const fillColor = '#f03';
+    const fillOpacity = 0.5;
 
   	return (
       <LayerGroup>
-        <Pane name="hyperspace-navigation-pane" style={{ zIndex: zIndex }}>
-          <FeatureGroup> 
-            { navComponents }
+        <Pane name="search-pane" style={{ zIndex: zIndex }}>
+          <FeatureGroup>
+            <If condition={systemsSearchLat !== null && systemsSearchLng !== null}>
+              <Then>
+                <div>
+                  <CircleMarker  key={uuidv4()}  center={[systemsSearchLat, systemsSearchLng]} radius={1} color={starColor} fillColor={fillColor} fillOpacity={fillOpacity} />
+                  <CircleMarker key={uuidv4()}  className="gps_ring" center={[systemsSearchLat, systemsSearchLng]} radius={8} color={systemsSearchColor} weight={3} />
+                </div>
+              </Then>
+              <Else>
+                {() => null}
+              </Else>
+            </If>
+            <If condition={sectorSearchName !== null}>
+              <Then>
+                <Polygon
+                  className="search-sector"
+                  positions={this.props.sectorSearchData.coordinates}
+                  options={SectorOptions}
+                  ref="sectorSearch"
+                >
+                  <Popup key={uuidv4()} className="search-sector-popup"  minWidth={90} autoPan={false}>
+                    <div>
+                      <span style={SectorNameStyle} >{sectorSearchName + ' Sector'}</span><br/>
+                      <a href={this.props.sectorSearchData.link} rel="external" target="_blank">Wookieepedia Link</a>
+                    </div>
+                  </Popup>
+                </Polygon>
+              </Then>
+              <Else>
+                {() => null}
+              </Else>
+            </If>
           </FeatureGroup>
         </Pane>
       </LayerGroup>

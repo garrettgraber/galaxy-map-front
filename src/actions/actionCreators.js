@@ -1,6 +1,38 @@
 import Actions from '../constants/actionTypesModule.js';
 
 
+export function newSectorData(SectorData) {
+	return {
+		type: Actions.NEW_SECTOR_DATA,
+		payload: SectorData
+	}
+}
+export function noSectorData() {
+	return {
+		type: Actions.NO_SECTOR_DATA
+	}
+}
+export function newSystemsLocation(Location) {
+	return {
+		type: Actions.NEW_SYSTEMS_SEARCH_LOCATION,
+		payload: Location
+	}
+}
+export function noSystemsLocation() {
+	return {
+		type: Actions.NO_SYSTEMS_SEARCH_LOCATION
+	}
+}
+export function sectorMapIsOff() {
+	return {
+		type: Actions.SECTOR_MAP_OFF
+	}
+}
+export function sectorMapIsOn() {
+	return {
+		type: Actions.SECTOR_MAP_ON
+	}
+}
 export function starMapIsOff() {
 	return {
 		type: Actions.STAR_MAP_OFF

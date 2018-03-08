@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import Select from 'react-select';
 import { If, Then, Else } from 'react-if';
 
+import { noSectorData, noSystemsLocation } from '../../../actions/actionCreators.js';
+
 import SearchSystems from './searchSystems.js';
 import SearchSectors from './searchSectors.js';
 
@@ -24,6 +26,8 @@ class SearchData extends React.Component {
           label: 'Search For...'
         }
       });
+      this.props.dispatch(noSectorData());
+      this.props.dispatch(noSystemsLocation());
     } else {
       this.setState({ selectedSearchValue });
     }
