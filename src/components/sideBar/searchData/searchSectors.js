@@ -2,16 +2,19 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import createFilterOptions from 'react-select-fast-filter-options';
+import ReactTooltip from 'react-tooltip';
+import uuidv4 from 'uuid/v4';
 
 import { zoomToLocation, zoomToSector } from '../../../actions/actions.js';
-import { noSectorData } from '../../../actions/actionCreators.js';
+import { noSectorData, addItemToDataStream, setMapCenterAndZoom } from '../../../actions/actionCreators.js';
 import '../../../css/main.css';
 
 class SearchSectors extends React.Component {
   constructor() {
     super();
     this.state = {
-      sectorValue: undefined
+      sectorValue: undefined,
+      componentId: uuidv4()
     };
   }
   onChange(sectorValue) {  
@@ -21,6 +24,14 @@ class SearchSectors extends React.Component {
     } else {
       this.setState({ sectorValue });
       this.props.dispatch(zoomToSector(sectorValue, 6));
+    }
+  }
+  zoomToPoint(e) {
+    if(this.state.sectorValue) {
+      const newZoom = 6;
+      const dataStreamMessage = "Zoomed to " + this.state.sectorValue.label + ' Sector ...';
+      this.props.dispatch( addItemToDataStream(dataStreamMessage) );
+      this.props.dispatch(setMapCenterAndZoom(this.state.sectorValue.value, newZoom));
     }
   }
   render() {
@@ -33,17 +44,27 @@ class SearchSectors extends React.Component {
       return 0;
     });
     const filterSectorOptions = createFilterOptions({ options: sectorSearchArray });
+    const tooltipZoomText = (this.state.sectorValue)? 'Zoom to the ' + this.state.sectorValue.label + ' Sector' : 'No Sector selected';
+    const pointZoom = (this.state.sectorValue)? 'btn hyperspace-navigation-button btn-success' : 'btn hyperspace-navigation-button btn-danger';
 
     return (
-      <div style={{display: 'inline-block', width: 180, marginLeft: 10}}>
-        <Select
-          name="selected-sector-search"
-          filterOptions={filterSectorOptions}
-          options={sectorSearchArray}
-          onChange={(sectorValue) => this.onChange(sectorValue)}
-          value={this.state.sectorValue}
-          placeholder="Go To Sector..."
-        />
+      <div style={{display: 'inline-block'}}>
+        <div style={{display: 'inline-block', width: 180, marginLeft: 10}}>
+          <Select
+            name="selected-sector-search"
+            filterOptions={filterSectorOptions}
+            options={sectorSearchArray}
+            onChange={(sectorValue) => this.onChange(sectorValue)}
+            value={this.state.sectorValue}
+            placeholder="Go To Sector..."
+          />
+        </div>
+        <span>
+          <button type="button" className={pointZoom} style={{verticalAlign: "top", marginLeft: 10}} onClick={(e) => this.zoomToPoint(e)}   data-tip={tooltipZoomText}  data-for={'go-to-sector-from-search' + this.state.componentId}>
+            <i className={"fa fa-bullseye"} ></i>
+          </button>
+          <ReactTooltip id={'go-to-sector-from-search' + this.state.componentId} place="right">{}</ReactTooltip>
+        </span>
       </div>
     );
   }

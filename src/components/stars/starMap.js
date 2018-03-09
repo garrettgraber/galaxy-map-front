@@ -53,9 +53,7 @@ class StarMap extends React.Component {
   createStarMap(currentZoom, currentMap, NavPoints) {
     console.log("\n****StarMap creation!****");
     console.time('Star Map Generation Time');
-    console.log("GalacticPlanetsArray: ", this.state.GalacticPlanetsArray.length);
     const filteredGalacticPlanetsArray = NavPoints.filteredPlanetsArray(this.state.GalacticPlanetsArray);
-    console.log("filteredGalacticPlanetsArray: ", filteredGalacticPlanetsArray.length);
     const CurrentStarMap = new StarMapGenerator({
       zoom: currentZoom,
       Map: currentMap
@@ -114,7 +112,8 @@ class StarMap extends React.Component {
     const activeEndPointDifferent = (newProps.ActiveEndPoint.system !== this.props.ActiveEndPoint.system)? true : false;
     const changeInSearchPoints = (startPointDifferent || endPointDifferent)? true : false;
     const changeInActivePoints = (activeStartPointDifferent || activeEndPointDifferent)? true : false;
-    const changeInPoints = (changeInSearchPoints || changeInActivePoints)? true : false;
+    const changeInActiveSystem = (newProps.ActiveSystem.system !== this.props.ActiveSystem.system)? true : false;
+    const changeInPoints = (changeInSearchPoints || changeInActivePoints || changeInActiveSystem)? true : false;
 
     if((changeInPoints && newProps.starMapOn) || newProps.starMapOn) {
       const zoomInStore = newProps.mapCenterAndZoom.zoom;
@@ -124,6 +123,7 @@ class StarMap extends React.Component {
         EndPoint: newProps.EndPoint,
         ActiveStartPoint: newProps.ActiveStartPoint,
         ActiveEndPoint: newProps.ActiveEndPoint,
+        ActiveSystem: newProps.ActiveSystem,
         changeInPoints: changeInPoints
       });
       this.starMapGeneratorController(zoomInStore, mapInstance, CurrentNavigationPoints);

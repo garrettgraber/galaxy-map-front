@@ -14,6 +14,7 @@ export default class NavigationPoints {
     this.ActiveStartPoint = Options.ActiveStartPoint || new BlankPoint();
     this.ActiveEndPoint = Options.ActiveEndPoint || new BlankPoint();
     this.changeInPoints = Options.changeInPoints;
+    this.ActiveSystem = Options.ActiveSystem || new BlankPoint();
   }
 
   filteredPlanetsArray(GalacticPlanetsArray) {
@@ -21,12 +22,13 @@ export default class NavigationPoints {
     const endPointSystem = this.EndPoint.system;
     const activeStartPointSystem = this.ActiveStartPoint.system;
     const activeEndPointSystem = this.ActiveEndPoint.system;
-    let navigationPoints = [startPointSystem, endPointSystem, activeStartPointSystem, activeEndPointSystem];
+    const currentActiveSystem = this.ActiveSystem.system;
+    let navigationPoints = [startPointSystem, endPointSystem, activeStartPointSystem, activeEndPointSystem, currentActiveSystem];
     navigationPoints = _.uniq(navigationPoints);
     let navigationPointsFilteredEmptyString = navigationPoints.filter(e => e != "");
     const navigationPointsFiltered  = navigationPointsFilteredEmptyString.filter(e => e.slice(0, 11) !== 'Empty Space');
     if(navigationPointsFiltered.length > 0) {
-      const filteredGalacticPlanetsArray = _.filter(GalacticPlanetsArray, (v) => !_.includes(navigationPoints, v.system));
+      const filteredGalacticPlanetsArray = _.filter(GalacticPlanetsArray, (v) => !_.includes(navigationPointsFiltered, v.system));
       return filteredGalacticPlanetsArray;
     } else {
       return GalacticPlanetsArray;

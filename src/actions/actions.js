@@ -65,7 +65,7 @@ export function findSystem(systemName) {
     ApiService.findSystemByName(systemName).then(json => {
     	let SystemObject = JSON.parse(json);
     	if(SystemObject.hasLocation) {
-        const dataStreamMessage = "Zoomed to " + SystemObject.system + ' ...';
+        const dataStreamMessage = "Found " + SystemObject.system + ' ...';
         dispatch( addItemToDataStream(dataStreamMessage) );
 				const LngLat = SystemObject.LngLat;
         const CurrentState = getState();
@@ -78,21 +78,20 @@ export function findSystem(systemName) {
 					lat: LngLat[1],
 					lng: LngLat[0],
 					system: SystemObject.system,
-          zoom: newZoom
+          zoom: newZoom,
+          xGalactic: SystemObject.xGalactic,
+          yGalactic: SystemObject.yGalactic,
+          emptySpace: false,
+          coordinates: SystemObject.coordinates,
+          sector: SystemObject.sector,
+          link: SystemObject.link
 				};
-        const stateBeforeDispatches = getState();
 				dispatch(setActiveSystem(SystemData));
-
         dispatch(newSystemsLocation({
           lat: SystemData.lat,
           lng: SystemData.lng
         }));
-
-        const systemCenter = [SystemData.lat, SystemData.lng];
-        dispatch(starMapIsOn());
-        dispatch(setMapCenterAndZoom(systemCenter, newZoom));
         dispatch(searchSystemsFinish());
-        const stateAfterDispatches = getState();
     	}
     }).catch(err => {
       console.log("err in findPlanet: ", err);
@@ -126,22 +125,15 @@ export function zoomToLocation(locationCenter, zoom) {
 
 export function zoomToSector(SectorSearch, zoom) {
   return function(dispatch, getState) {
-
     ApiService.findSector({name: SectorSearch.label}).then(sectorFoundJson => {
-
       const sectorFoundResults = JSON.parse(sectorFoundJson);
-
       const SectorFound = sectorFoundResults[0];
-
+      const dataStreamMessage = "Found the " + SectorFound.name + ' Sector...';
+      dispatch( addItemToDataStream(dataStreamMessage) );
       dispatch(newSectorData(createSectorData(SectorFound)));
-
-      // dispatch(sectorMapIsOn());
-      dispatch(setMapCenterAndZoom(SectorSearch.value, zoom));
-
     }).catch(sectorFoundError => {
-
+      console.log("error finding sector: ", sectorFoundError);
     });
-
     return null;
   }
 }

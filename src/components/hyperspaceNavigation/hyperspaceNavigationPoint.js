@@ -18,18 +18,6 @@ class HyperspaceNavigationPoint extends React.Component {
     super(props);
   }
 
-  componentDidMount() { }
-
-  componentWillReceiveProps(newProps) { }
-
-  onMouseOver(e) { }
-
-  onMouseOut(e) { }
-
-  onClick(e) {
-    console.log("Clicked navigation point: ", this.props.HyperSpacePoint);
-  }
-
   render() {
     const pointColor = 'red';
     const HyperspacePointCurrent = this.props.HyperSpacePoint;
@@ -37,38 +25,21 @@ class HyperspaceNavigationPoint extends React.Component {
     const LocationStartColorGreen = '#49fb35';
     const LocationEndColorRed = '#ff0101';
     const LocationColor = (this.props.isStart)? LocationStartColorGreen : LocationEndColorRed;
-
     const currentSystem = HyperspacePointCurrent.system;
-    const textWidth = width(currentSystem,  { size: "1em" });
-    let textPadding = 0;
-    if(textWidth >= 75) {
-      textPadding = 30;
-    } else if(textWidth < 75 && textWidth > 40) {
-      textPadding = 20;
-    } else {
-      textPadding = 10;
-    }
-    let myIcon = L.divIcon({
-      className: "hyperspaceNodeLabel",
-      iconSize: new L.Point(textWidth + textPadding, 24),
-      iconAnchor: new L.Point(textWidth / 3.0, 18),
-      html: currentSystem
-    });
-
-    console.log("isActive: ", this.props.isActive);
+    const myIcon = textIconGenerator(currentSystem);
 
   	return (
       <div key={HyperspacePointCurrent.system + ":" + uuidv4()}>
-        <CircleMarker key={uuidv4()}  className="expand-ring-pulse-counter" center={hyperspacePointLocation} radius={6} color={LocationColor} weight={2}  onClick={(e) => this.onClick(e)} >
+        <CircleMarker key={uuidv4()}  className="expand-ring-pulse-counter" center={hyperspacePointLocation} radius={6} color={LocationColor} weight={2} >
           <NavigationPointPopup StarObject={HyperspacePointCurrent} />
         </CircleMarker>
-        <CircleMarker key={uuidv4()}  className="expand-ring-pulse" center={hyperspacePointLocation} radius={10} color={LocationColor} weight={2}  onClick={(e) => this.onClick(e)} >
+        <CircleMarker key={uuidv4()}  className="expand-ring-pulse" center={hyperspacePointLocation} radius={10} color={LocationColor} weight={2}>
           <NavigationPointPopup StarObject={HyperspacePointCurrent} />
         </CircleMarker>
-        <CircleMarker  key={uuidv4()} center={hyperspacePointLocation} radius={1} color={pointColor}  onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)}  onClick={(e) => this.onClick(e)} >
+        <CircleMarker  key={uuidv4()} center={hyperspacePointLocation} radius={1} color={pointColor}>
           <NavigationPointPopup StarObject={HyperspacePointCurrent} />
         </CircleMarker>
-        <Marker key={uuidv4()} position={hyperspacePointLocation}  icon={myIcon}  onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)}  zIndexOffset={5}  onClick={(e) => this.onClick(e)} ref='navPointText'>
+        <Marker key={uuidv4()} position={hyperspacePointLocation}  icon={myIcon} zIndexOffset={5}>
           <NavigationPointPopup StarObject={HyperspacePointCurrent} />
         </Marker>
       </div>                  
@@ -76,10 +47,23 @@ class HyperspaceNavigationPoint extends React.Component {
   }
 }
 
-// const mapStateToProps = (state = {}) => {
-//   return Object.assign({}, state);
-// };
+function textIconGenerator(systemName) {
+  const textWidth = width(systemName, {size: "1em"});
+  let textPadding = 0;
+  if(textWidth >= 75) {
+    textPadding = 30;
+  } else if(textWidth < 75 && textWidth > 40) {
+    textPadding = 20;
+  } else {
+    textPadding = 10;
+  }
 
-// export default connect(mapStateToProps)(HyperspaceNavigationPoint);
+  return L.divIcon({
+    className: "hyperspaceNodeLabel",
+    iconSize: new L.Point(textWidth + textPadding, 24),
+    iconAnchor: new L.Point(textWidth / 2.0, 18),
+    html: systemName
+  });
+}
 
 export default HyperspaceNavigationPoint;

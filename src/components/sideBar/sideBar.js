@@ -12,7 +12,9 @@ import {
     pathEndClickOff,
     pinPointStartOff,
     pinPointEndOff,
-    defaultCursor
+    defaultCursor,
+    noSectorData,
+    setDefaultActiveSystem
 } from '../../actions/actionCreators.js';
 
 class SideBar extends React.Component {
@@ -20,7 +22,11 @@ class SideBar extends React.Component {
     super();
   }
   searchSystemsToggle(e) {
-    this.props.dispatch( toggleSystemsSearchControls() );
+    if(this.props.systemsSearchControlsOn) {
+      this.props.dispatch(setDefaultActiveSystem());
+      this.props.dispatch(noSectorData());
+    }
+    this.props.dispatch(toggleSystemsSearchControls());
   }
   hyperspaceNavigationControls(e) {
     if(this.props.hyperspaceNavigationControlsOn) {

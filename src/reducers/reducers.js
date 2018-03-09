@@ -54,7 +54,13 @@ const CoruscantSystem = {
 	lat: 0,
 	lng: 0,
 	zoom: 2,
-	system: 'Coruscant'
+	system: 'Coruscant',
+	xGalactic: 0,
+	yGalactic: 0,
+	emptySpace: null,
+	coordinates: 'L9',
+	sector: 'Unknown',
+	link: ''
 };
 const BlankPoint = {
 	system: '',
@@ -108,7 +114,6 @@ const emptySystemSet = new Set();
 const emptySectorSet = new Set();
 
 
-
 function sectorSearchData(state = BlankSector, action) {
 	switch (action.type) {
 		case Actions.NEW_SECTOR_DATA:
@@ -119,7 +124,6 @@ function sectorSearchData(state = BlankSector, action) {
 			return state;
 	}
 }
-
 function systemsSearchLocation(state = BlankLocation, action) {
 	switch (action.type) {
 		case Actions.NEW_SYSTEMS_SEARCH_LOCATION:
@@ -130,7 +134,6 @@ function systemsSearchLocation(state = BlankLocation, action) {
 			return state;
 	}
 }
-
 function sectorMapOverlayStatus(state = false, action) {
 	switch (action.type) {
 		case Actions.SECTOR_MAP_ON:
@@ -141,7 +144,6 @@ function sectorMapOverlayStatus(state = false, action) {
 			return state;
 	}
 }
-
 function starMapOverlayStatus(state = true, action) {
 	switch (action.type) {
 		case Actions.STAR_MAP_ON:
@@ -152,7 +154,6 @@ function starMapOverlayStatus(state = true, action) {
 			return state;
 	}
 }
-
 function loadingIconOn(state = false, action) {
 	switch (action.type) {
 		case Actions.LOADING_ICON_ON:
@@ -339,7 +340,7 @@ function hyperspaceNavigationControlsOn(state = false, action) {
 			return state;
 	}
 }
-function activeSystem(state = CoruscantSystem, action) {
+function activeSystem(state = BlankPoint, action) {
 	let StateClone = _.cloneDeep(state);
 	switch (action.type) {
 		case Actions.SET_SYSTEM:
@@ -365,6 +366,8 @@ function activeSystem(state = CoruscantSystem, action) {
 			return state;
 		case Actions.SET_SYSTEM_TO_CORUSCANT:
 			return CoruscantSystem;
+		case Actions.SET_DEFAULT_SYSYTEM:
+			return BlankPoint;
 		default:
 			return state;
 	}

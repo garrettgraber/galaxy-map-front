@@ -320,6 +320,11 @@ export function setActiveSystem(newActiveSystem) {
 		payload: newActiveSystem
 	}
 }
+export function setDefaultActiveSystem() {
+	return {
+		type: Actions.SET_DEFAULT_SYSYTEM
+	}
+}
 export function setActiveSystemToCourscant() {
 	return {
 		type: Actions.SET_SYSTEM_TO_CORUSCANT

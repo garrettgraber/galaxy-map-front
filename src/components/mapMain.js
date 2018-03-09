@@ -254,6 +254,7 @@ class MapMain extends React.Component {
                   EndPoint={this.props.hyperspaceEndPoint}
                   ActiveStartPoint={this.props.hyperspaceActiveStartPoint}
                   ActiveEndPoint={this.props.hyperspaceActiveEndPoint}
+                  ActiveSystem={this.props.activeSystem}
                 />
               </Overlay>
   				  </LayersControl>

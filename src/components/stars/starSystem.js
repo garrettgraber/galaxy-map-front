@@ -23,14 +23,6 @@ class StarSystem extends React.Component {
     this.state = {};
   }
 
-  componentDidMount() {}
-
-  componentWillReceiveProps(newProps) {}
-
-  onMouseOver(e) {}
-
-  onMouseOut(e) {}
-
   onClick(e) {
     if(this.props.pathStartClick || this.props.pathEndClick) {
       const isStartPosition = (this.props.pathStartClick && !this.props.pathEndClick)? true : false;
@@ -48,23 +40,8 @@ class StarSystem extends React.Component {
     const fillOpacity = 0.5;
     const textWidth = StarObject.textWidth;
     const starLocation = [ StarObject.lat, StarObject.lng ];
-    let textPadding = 0;
-    if(textWidth >= 75) {
-      textPadding = 30;
-    } else if(textWidth < 75 && textWidth > 40) {
-      textPadding = 20;
-    } else {
-      textPadding = 10;
-    }
-
-    let myIcon = L.divIcon({
-      className: "systemLabel",
-      iconSize: new L.Point(textWidth + textPadding, 24),
-      iconAnchor: new L.Point(textWidth / 3.0, 18),
-      html: StarObject.system
-    });
-
-    let toolTipIcon = L.divIcon({
+    const myIcon = textIconGenerator(StarObject.system);
+    const toolTipIcon = L.divIcon({
       className: "systemTooltip",
       iconSize: new L.Point(StarObject.textWidth + 30, 24),
       iconAnchor: new L.Point(textWidth / 3.0, 36),
@@ -73,7 +50,7 @@ class StarSystem extends React.Component {
 
   	return (
       <div style={ {caretColor: 'teal'} }>
-        <CircleMarker center={starLocation} radius={1} color={starColor} fillColor={fillColor} fillOpacity={fillOpacity} onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)} onClick={(e) => this.onClick(e)}  ref='star'>
+        <CircleMarker center={starLocation} radius={1} color={starColor} fillColor={fillColor} fillOpacity={fillOpacity} onClick={(e) => this.onClick(e)}>
           <If condition={this.props.pathStartClick || this.props.pathEndClick}>
             <Then>
               <If condition={this.props.pathStartClick}>
@@ -90,7 +67,7 @@ class StarSystem extends React.Component {
             </Else>
           </If>
         </CircleMarker>
-        <Marker key={StarObject.system} position={starLocation} zIndexOffset={-5} icon={myIcon}  onMouseOver={(e) => this.onMouseOver(e)} onMouseOut={(e) => this.onMouseOut(e)}  onClick={(e) => this.onClick(e)} ref='starText'>
+        <Marker key={StarObject.system} position={starLocation} zIndexOffset={-5} icon={myIcon} onClick={(e) => this.onClick(e)}>
           <If condition={this.props.pathStartClick || this.props.pathEndClick}>
             <Then>
               <If condition={this.props.pathStartClick}>
@@ -110,6 +87,26 @@ class StarSystem extends React.Component {
       </div>                                          
   	)
   }
+}
+
+
+function textIconGenerator(systemName) {
+  const textWidth = width(systemName, {size: "1em"});
+  let textPadding = 0;
+  if(textWidth >= 75) {
+    textPadding = 30;
+  } else if(textWidth < 75 && textWidth > 40) {
+    textPadding = 20;
+  } else {
+    textPadding = 10;
+  }
+
+  return L.divIcon({
+    className: "systemLabel",
+    iconSize: new L.Point(textWidth + textPadding, 24),
+    iconAnchor: new L.Point(textWidth / 2.0, 18),
+    html: systemName
+  });
 }
 
 const mapStateToProps = (state = {}) => {
