@@ -13,6 +13,7 @@ import {
 
 import SearchSystems from './searchSystems.js';
 import SearchSectors from './searchSectors.js';
+import SearchHyperspaceLanes from './searchHyperspaceLanes.js';
 
 class SearchData extends React.Component {
   constructor() {
@@ -35,6 +36,9 @@ class SearchData extends React.Component {
     if(this.state.selectedSearchValue.value === 'sectors') {
       this.props.dispatch(noSectorData());
     }
+    if(this.state.selectedSearchValue.value === 'lanes') {
+
+    }
     if(selectedSearchValue === null) {
       this.setState({
         selectedSearchValue: {
@@ -51,6 +55,8 @@ class SearchData extends React.Component {
     const { selectedSearchValue } = this.state;
     const searchingSystems = selectedSearchValue && selectedSearchValue.value === 'systems';
     const searchingSectors = selectedSearchValue && selectedSearchValue.value === 'sectors';
+    const searchingLanes = selectedSearchValue && selectedSearchValue.value === 'lanes';
+
 
     return (
       <div id="search-data" className="control-row nav-section">
@@ -62,6 +68,7 @@ class SearchData extends React.Component {
             options={[
               { value: 'systems', label: 'Systems' },
               { value: 'sectors', label: 'Sectors' },
+              { value: 'lanes', label: 'Hyperspace Lanes'}
             ]}
           />
         </div>
@@ -76,7 +83,13 @@ class SearchData extends React.Component {
             <SearchSectors/>
           </Then>
           <Else>{() => null}</Else>
-        </If>      
+        </If>
+        <If condition={ searchingLanes }>
+          <Then>
+            <SearchHyperspaceLanes/>
+          </Then>
+          <Else>{() => null}</Else>
+        </If>  
       </div>
     );
   }

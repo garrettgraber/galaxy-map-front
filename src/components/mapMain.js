@@ -24,7 +24,11 @@ import {
     sectorMapIsOn,
     sectorMapIsOff
 } from '../actions/actionCreators.js';
-import { findAndSetNearsetHyperspaceNode, setCursorValue } from '../actions/actions.js';
+import {
+  findAndSetNearsetHyperspaceNode,
+  setCursorValue,
+  buildHyperspaceLaneNamesSet
+} from '../actions/actions.js';
 
 const { BaseLayer, Overlay } = LayersControl;
 
@@ -69,6 +73,9 @@ class MapMain extends React.Component {
   	}
     this.props.dispatch(setMapZoom(currentZoom));
     this.props.dispatch(setCursorValue());
+
+    this.props.dispatch(buildHyperspaceLaneNamesSet());
+
   }
 
   componentWillReceiveProps(newProps) {

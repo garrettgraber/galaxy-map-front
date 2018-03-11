@@ -103,17 +103,32 @@ const BlankSector = {
 	name: null,
 	link: ''
 };
+const BlankHyperspaceRoute = {
+	lanes: [],
+	name: null,
+	link: ''
+};
 
 
-const defaultZoom = 2;
+
 const maxJumps = 90;
 const pathLimit = 1;
 const emptyMapHash = null;
 const nullHyperspaceHash = null;
-const emptySystemSet = new Set();
-const emptySectorSet = new Set();
+const emptyNameSet = new Set();
 
 
+
+function hyperspaceRouteSearchData(state = BlankHyperspaceRoute, action) {
+	switch (action.type) {
+		case Actions.NEW_HYPERSPACE_ROUTE_DATA:
+			return action.payload;
+		case Actions.NO_HYPERSPACE_ROUTE_DATA:
+			return BlankHyperspaceRoute;
+		default:
+			return state;
+	}
+}
 function sectorSearchData(state = BlankSector, action) {
 	switch (action.type) {
 		case Actions.NEW_SECTOR_DATA:
@@ -206,7 +221,7 @@ function mapControlsDisplayed(state = true, action) {
 			return state;			
 	}
 }
-function sectorSearchSet(state = emptySectorSet, action) {
+function sectorSearchSet(state = emptyNameSet, action) {
 	switch (action.type) {
 		case Actions.ADD_SECTOR_SEARCH_SET:
 			let SetClone = new Set(state);
@@ -216,18 +231,29 @@ function sectorSearchSet(state = emptySectorSet, action) {
 			const newSectorSearchSet = action.payload;
 			return newSectorSearchSet;
 		case Actions.EMPTY_SECTOR_SEARCH_SET:
-			return emptySectorSet;
+			return emptyNameSet;
 		default:
 			return state;
 	}
 }
-function systemNameSet(state = emptySystemSet, action) {
+function systemNameSet(state = emptyNameSet, action) {
 	switch (action.type) {
 		case Actions.BUILD_SYSTEM_NAME_SET:
 			const newSystemNameSet = action.payload;
 			return newSystemNameSet;
 		case Actions.EMPTY_SYSTEM_NAME_SET:
-			return emptySystemSet;
+			return emptyNameSet;
+		default:
+			return state;
+	}
+}
+function hyperspaceRouteNameSet(state = emptyNameSet, action) {
+	switch (action.type) {
+		case Actions.BUILD_HYPERSPACE_ROUTE_NAME_SET:
+			const newHyperspaceRouteNameSet = action.payload;
+			return newHyperspaceRouteNameSet;
+		case Actions.EMPTY_HYPERSPACE_ROUTE_NAME_SET:
+			return emptyNameSet;
 		default:
 			return state;
 	}
@@ -668,6 +694,7 @@ function updateHyperspaceNavigation(state = false, action) {
 }
 
 export default combineReducers({
+	hyperspaceRouteSearchData,
 	sectorSearchData,
 	systemsSearchLocation,
 	sectorMapOverlayStatus,
@@ -678,6 +705,7 @@ export default combineReducers({
 	galacticXandY,
 	sectorSearchSet,
 	systemNameSet,
+	hyperspaceRouteNameSet,
 	hyperspacePointZoomOn,
 	hyperspaceActiveStartPoint,
 	hyperspaceActiveEndPoint,

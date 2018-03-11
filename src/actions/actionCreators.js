@@ -1,6 +1,17 @@
 import Actions from '../constants/actionTypesModule.js';
 
 
+export function newHyperspaceRoute(RouteData) {
+	return {
+		type: Actions.NEW_HYPERSPACE_ROUTE_DATA,
+		payload: RouteData
+	}
+}
+export function noHyperspaceRoute(RouteData) {
+	return {
+		type: Actions.NO_HYPERSPACE_ROUTE_DATA
+	}
+}
 export function newSectorData(SectorData) {
 	return {
 		type: Actions.NEW_SECTOR_DATA,
@@ -125,6 +136,17 @@ export function buildSystemNameSet(nameSet) {
 export function emptySystemNameSet() {
 	return {
 		type: Actions.EMPTY_SYSTEM_NAME_SET
+	}
+}
+export function buildHyperspaceRouteNameSet(nameSet) {
+	return {
+		type: Actions.BUILD_HYPERSPACE_ROUTE_NAME_SET,
+		payload: nameSet
+	}
+}
+export function emptyHyperspaceRouteNameSet() {
+	return {
+		type: Actions.EMPTY_HYPERSPACE_ROUTE_NAME_SET
 	}
 }
 export function activeStartPosition(StartPosition) {

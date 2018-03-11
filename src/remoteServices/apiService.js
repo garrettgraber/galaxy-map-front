@@ -110,6 +110,20 @@ class ApiService {
     	return response.json();
     });
 	}
+
+	allHyperspaceLaneNames() {
+	  const hyperspaceLaneNamesEndpoint = this.API_ENDPOINT + 'hyperspacelane/names';
+	  return fetch(hyperspaceLaneNamesEndpoint, {
+	    method: 'GET',
+	    headers: {
+	      'Content-Type': 'application/json'
+	    },
+	  }).then(response => {
+    	return response.json();
+    });
+
+	}
+
 }
 
 export default new ApiService();

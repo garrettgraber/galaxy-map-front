@@ -43,13 +43,28 @@ import {
   starMapIsOn,
   sectorMapIsOn,
   newSystemsLocation,
-  newSectorData
+  newSectorData,
+  buildHyperspaceRouteNameSet
 } from './actionCreators.js';
 import {
   getGalacticYFromLatitude,
   getGalacticXFromLongitude
 } from '../components/hyperspaceNavigation/hyperspaceMethods.js';
 import ApiService from '../remoteServices/apiService.js';
+
+
+
+
+export function buildHyperspaceLaneNamesSet() {
+  return function(dispatch, getState) {
+    ApiService.allHyperspaceLaneNames().then(data => {
+      const dataParsed = JSON.parse(data);
+      const laneNamesSet = new Set(dataParsed);
+      dispatch(buildHyperspaceRouteNameSet(laneNamesSet));
+    });
+    return null; 
+  }
+}
 
 export function setCursorValue() {
   return function(dispatch, getState) {
