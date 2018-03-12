@@ -23,7 +23,16 @@ class SearchSystems extends React.Component {
       componentId: uuidv4()
     };
   }
-  componentDidMount() { }
+  componentDidMount() {
+    if(this.props.activeSystem.system !== "") {
+      this.setState({
+        selectValue: {
+          value: this.props.activeSystem.system,
+          label: this.props.activeSystem.system
+        }
+      });
+    }
+  }
   onChange(selectValue) {
     if(selectValue === null) {
       this.setState({selectValue: undefined});
@@ -36,7 +45,6 @@ class SearchSystems extends React.Component {
   }
   zoomToPoint(e) {
     if(this.state.selectValue !== null) {
-      console.log("Zooming here...", this.props.activeSystem);
       const lat = this.props.activeSystem.lat;
       const lng = this.props.activeSystem.lng;
       const systemCenter = [lat, lng];

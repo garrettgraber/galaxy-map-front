@@ -7,14 +7,11 @@ import '../../css/main.css';
 import { 
     toggleSystemsSearchControls,
     toggleHyperspaceNavigationControls,
-    addItemToDataStream,
     pathStartClickOff,
     pathEndClickOff,
     pinPointStartOff,
     pinPointEndOff,
     defaultCursor,
-    noSectorData,
-    setDefaultActiveSystem
 } from '../../actions/actionCreators.js';
 
 class SideBar extends React.Component {
@@ -22,10 +19,6 @@ class SideBar extends React.Component {
     super();
   }
   searchSystemsToggle(e) {
-    if(this.props.systemsSearchControlsOn) {
-      this.props.dispatch(setDefaultActiveSystem());
-      this.props.dispatch(noSectorData());
-    }
     this.props.dispatch(toggleSystemsSearchControls());
   }
   hyperspaceNavigationControls(e) {

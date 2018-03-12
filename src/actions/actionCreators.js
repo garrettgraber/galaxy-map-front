@@ -1,13 +1,45 @@
 import Actions from '../constants/actionTypesModule.js';
 
 
+
+export function setSearchValueToSystems() {
+	return {
+		type: Actions.CURRENT_SEARCH_VALUE_IS_SYSTEMS
+	}
+}
+export function setSearchValueToSectors() {
+	return {
+		type: Actions.CURRENT_SEARCH_VALUE_IS_SECTORS
+	}
+}
+export function setSearchValueToLanes() {
+	return {
+		type: Actions.CURRENT_SEARCH_VALUE_IS_LANES
+	}
+}
+export function setSearchValueToNothing() {
+	return {
+		type: Actions.NO_CURRENT_SEARCH_VALUE
+	}
+}
+export function newSearchObjectBoundaries(BoundaryData) {
+	return {
+		type: Actions.NEW_SEARCH_OBJECT_BOUNDARIES,
+		payload: BoundaryData
+	}
+}
+export function noSearchObjectBoundaries() {
+	return {
+		type: Actions.NO_SEARCH_OBJECT_BOUNDARIES
+	}
+}
 export function newHyperspaceRoute(RouteData) {
 	return {
 		type: Actions.NEW_HYPERSPACE_ROUTE_DATA,
 		payload: RouteData
 	}
 }
-export function noHyperspaceRoute(RouteData) {
+export function noHyperspaceRoute() {
 	return {
 		type: Actions.NO_HYPERSPACE_ROUTE_DATA
 	}

@@ -248,7 +248,7 @@ class MapMain extends React.Component {
                 <HyperspaceLanesData />
               </Overlay>
               <Overlay name="Search Layer" checked={true}>
-                <Search/>
+                <Search  map={this.state.map}/>
               </Overlay>
               <Overlay name="Hyperspace Navigation" checked={true}>
                 <HyperspaceNavigation update={this.props.updateHyperspaceNavigation} newZoom={this.props.mapCenterAndZoom.zoom} starMapOn={this.props.starMapOverlayStatus}/>

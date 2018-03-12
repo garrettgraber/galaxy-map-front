@@ -5,8 +5,13 @@ import createFilterOptions from 'react-select-fast-filter-options';
 import ReactTooltip from 'react-tooltip';
 import uuidv4 from 'uuid/v4';
 
-import { zoomToLocation, zoomToSector } from '../../../actions/actions.js';
-import { noSectorData, addItemToDataStream, setMapCenterAndZoom } from '../../../actions/actionCreators.js';
+import {
+  findHyperspaceRoute
+} from '../../../actions/actions.js';
+import {
+  addItemToDataStream,
+  noHyperspaceRoute
+} from '../../../actions/actionCreators.js';
 import '../../../css/main.css';
 
 class SearchHyperspaceLanes extends React.Component {
@@ -14,24 +19,34 @@ class SearchHyperspaceLanes extends React.Component {
     super();
     this.state = {
       laneValue: undefined,
-      componentId: uuidv4()
+      componentId: uuidv4(),
     };
+  }
+  componentDidMount() {
+    if(this.props.hyperspaceRouteSearchData.name !== null) {
+      this.setState({
+        laneValue: {
+          value: this.props.hyperspaceRouteSearchData.name,
+          label: this.props.hyperspaceRouteSearchData.name
+        }
+      });
+    }
   }
   onChange(laneValue) {  
     if(laneValue === null) {
       this.setState({laneValue: undefined});
-      // this.props.dispatch(noSectorData());
+      this.props.dispatch(noHyperspaceRoute());
     } else {
       this.setState({ laneValue });
-      // this.props.dispatch(zoomToSector(laneValue, 6));
+      this.props.dispatch(findHyperspaceRoute(laneValue.value));
     }
   }
   zoomToPoint(e) {
     if(this.state.laneValue) {
-      const newZoom = 6;
-      const dataStreamMessage = "Zoomed to " + this.state.laneValue.label + ' Sector ...';
-      // this.props.dispatch( addItemToDataStream(dataStreamMessage) );
-      // this.props.dispatch(setMapCenterAndZoom(this.state.laneValue.value, newZoom));
+      const dataStreamMessage = "Zoomed to the " + this.props.hyperspaceRouteSearchData.name;
+      const map = this.props.map;
+      map.fitBounds(this.props.SearchBoundaries);
+      this.props.dispatch(addItemToDataStream(dataStreamMessage));
     }
   }
   render() {

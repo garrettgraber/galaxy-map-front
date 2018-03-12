@@ -8,7 +8,12 @@ import uuidv4 from 'uuid/v4';
 import {
   noSectorData,
   noSystemsLocation,
-  setDefaultActiveSystem
+  setDefaultActiveSystem,
+  noHyperspaceRoute,
+  setSearchValueToSystems,
+  setSearchValueToSectors,
+  setSearchValueToLanes,
+  setSearchValueToNothing
 } from '../../../actions/actionCreators.js';
 
 import SearchSystems from './searchSystems.js';
@@ -27,9 +32,44 @@ class SearchData extends React.Component {
     };
   }
 
-  componentDidMount() { }
+  componentDidMount() {
+    if(this.props.currentSeachValue === 'systems') {
+      this.setState({
+        selectedSearchValue: {
+          value: 'systems',
+          label: 'Systems'
+        }
+      });
+    }
+    if(this.props.currentSeachValue === 'sectors') {
+      this.setState({
+        selectedSearchValue: {
+          value: 'sectors',
+          label: 'Sectors'
+        }
+      });
+    }
+    if(this.props.currentSeachValue === 'lanes') {
+      this.setState({
+        selectedSearchValue: {
+          value: 'lanes',
+          label: 'Hyperspace Lanes'
+        }
+      });
+    }
+  }
 
   onChange(selectedSearchValue) {
+
+    if(selectedSearchValue && selectedSearchValue.value === 'systems') {
+      this.props.dispatch(setSearchValueToSystems());
+    }
+    if(selectedSearchValue && selectedSearchValue.value === 'sectors') {
+      this.props.dispatch(setSearchValueToSectors());
+    }
+    if(selectedSearchValue && selectedSearchValue.value === 'lanes') {
+      this.props.dispatch(setSearchValueToLanes());
+    }
     if(this.state.selectedSearchValue.value === 'systems') {
       this.props.dispatch(setDefaultActiveSystem());
     }
@@ -37,8 +77,9 @@ class SearchData extends React.Component {
       this.props.dispatch(noSectorData());
     }
     if(this.state.selectedSearchValue.value === 'lanes') {
-
+      this.props.dispatch(noHyperspaceRoute());
     }
+
     if(selectedSearchValue === null) {
       this.setState({
         selectedSearchValue: {
@@ -47,6 +88,10 @@ class SearchData extends React.Component {
         }
       });
       this.props.dispatch(noSystemsLocation());
+      this.props.dispatch(setDefaultActiveSystem());
+      this.props.dispatch(noSectorData());
+      this.props.dispatch(noHyperspaceRoute());
+      this.props.dispatch(setSearchValueToNothing());
     } else {
       this.setState({ selectedSearchValue });
     }
@@ -56,7 +101,6 @@ class SearchData extends React.Component {
     const searchingSystems = selectedSearchValue && selectedSearchValue.value === 'systems';
     const searchingSectors = selectedSearchValue && selectedSearchValue.value === 'sectors';
     const searchingLanes = selectedSearchValue && selectedSearchValue.value === 'lanes';
-
 
     return (
       <div id="search-data" className="control-row nav-section">
@@ -74,19 +118,19 @@ class SearchData extends React.Component {
         </div>
         <If condition={ searchingSystems }>
           <Then>
-            <SearchSystems/>
+            <SearchSystems />
           </Then>
           <Else>{() => null}</Else>
         </If>
         <If condition={ searchingSectors }>
           <Then>
-            <SearchSectors/>
+            <SearchSectors map={this.props.map} SearchBoundaries={this.props.searchObjectBoundaries}/>
           </Then>
           <Else>{() => null}</Else>
         </If>
         <If condition={ searchingLanes }>
           <Then>
-            <SearchHyperspaceLanes/>
+            <SearchHyperspaceLanes map={this.props.map} SearchBoundaries={this.props.searchObjectBoundaries}/>
           </Then>
           <Else>{() => null}</Else>
         </If>  

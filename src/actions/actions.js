@@ -44,7 +44,8 @@ import {
   sectorMapIsOn,
   newSystemsLocation,
   newSectorData,
-  buildHyperspaceRouteNameSet
+  buildHyperspaceRouteNameSet,
+  newHyperspaceRoute
 } from './actionCreators.js';
 import {
   getGalacticYFromLatitude,
@@ -54,6 +55,16 @@ import ApiService from '../remoteServices/apiService.js';
 
 
 
+export function findHyperspaceRoute(routeName) {
+  return function(dispatch, getState) {
+    ApiService.searchForHyperspaceRoute({name: routeName}).then(data => {
+      const dataParsed = JSON.parse(data);
+      dispatch(addItemToDataStream('Found the ' + dataParsed.name));
+      dispatch(newHyperspaceRoute(dataParsed));
+    });
+    return null;
+  }  
+}
 
 export function buildHyperspaceLaneNamesSet() {
   return function(dispatch, getState) {

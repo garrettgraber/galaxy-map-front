@@ -5,8 +5,13 @@ import createFilterOptions from 'react-select-fast-filter-options';
 import ReactTooltip from 'react-tooltip';
 import uuidv4 from 'uuid/v4';
 
-import { zoomToLocation, zoomToSector } from '../../../actions/actions.js';
-import { noSectorData, addItemToDataStream, setMapCenterAndZoom } from '../../../actions/actionCreators.js';
+import {
+  zoomToSector
+} from '../../../actions/actions.js';
+import {
+  noSectorData,
+  addItemToDataStream
+} from '../../../actions/actionCreators.js';
 import '../../../css/main.css';
 
 class SearchSectors extends React.Component {
@@ -16,6 +21,13 @@ class SearchSectors extends React.Component {
       sectorValue: undefined,
       componentId: uuidv4()
     };
+  }
+  componentDidMount() {
+    if(this.props.sectorSearchData.name !== null) {
+      const sectorSearchArray =  [...this.props.sectorSearchSet];
+      const sectorValue = sectorSearchArray.find(e => e.label === this.props.sectorSearchData.name);
+      this.setState({ sectorValue });
+    }
   }
   onChange(sectorValue) {  
     if(sectorValue === null) {
@@ -28,10 +40,10 @@ class SearchSectors extends React.Component {
   }
   zoomToPoint(e) {
     if(this.state.sectorValue) {
-      const newZoom = 6;
       const dataStreamMessage = "Zoomed to " + this.state.sectorValue.label + ' Sector ...';
-      this.props.dispatch( addItemToDataStream(dataStreamMessage) );
-      this.props.dispatch(setMapCenterAndZoom(this.state.sectorValue.value, newZoom));
+      const map = this.props.map;
+      map.fitBounds(this.props.SearchBoundaries);
+      this.props.dispatch(addItemToDataStream(dataStreamMessage));
     }
   }
   render() {

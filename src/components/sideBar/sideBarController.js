@@ -16,7 +16,7 @@ class SideBarController extends React.Component {
       <div id="control-container">
         <If condition={ this.props.systemsSearchControlsOn }>
             <Then>
-              <SearchData/>
+              <SearchData map={this.props.map}/>
             </Then>
             <Else>{() => null }</Else>
         </If>

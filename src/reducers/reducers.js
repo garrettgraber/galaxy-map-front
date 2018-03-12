@@ -104,11 +104,21 @@ const BlankSector = {
 	link: ''
 };
 const BlankHyperspaceRoute = {
-	lanes: [],
+	coordinates: [],
 	name: null,
 	link: ''
 };
-
+const NullSearchObject = {
+	_northEast: {
+		lat: null,
+		lng: null
+	},
+	_southWest: {
+		lat: null,
+		lng: null
+	}
+};
+const blankSearchValue = '';
 
 
 const maxJumps = 90;
@@ -119,6 +129,30 @@ const emptyNameSet = new Set();
 
 
 
+function currentSeachValue(state = blankSearchValue, action) {
+	switch (action.type) {
+		case Actions.CURRENT_SEARCH_VALUE_IS_SYSTEMS:
+			return 'systems';
+		case Actions.CURRENT_SEARCH_VALUE_IS_SECTORS:
+			return 'sectors';
+		case Actions.CURRENT_SEARCH_VALUE_IS_LANES:
+			return 'lanes';
+		case Actions.NO_CURRENT_SEARCH_VALUE:
+			return blankSearchValue;
+		default:
+			return state;
+	}
+}
+function searchObjectBoundaries(state = NullSearchObject, action) {
+	switch (action.type) {
+		case Actions.NEW_SEARCH_OBJECT_BOUNDARIES:
+			return action.payload;
+		case Actions.NO_SEARCH_OBJECT_BOUNDARIES:
+			return NullSearchObject;
+		default:
+			return state;
+	}
+}
 function hyperspaceRouteSearchData(state = BlankHyperspaceRoute, action) {
 	switch (action.type) {
 		case Actions.NEW_HYPERSPACE_ROUTE_DATA:
@@ -694,6 +728,8 @@ function updateHyperspaceNavigation(state = false, action) {
 }
 
 export default combineReducers({
+	currentSeachValue,
+	searchObjectBoundaries,
 	hyperspaceRouteSearchData,
 	sectorSearchData,
 	systemsSearchLocation,
