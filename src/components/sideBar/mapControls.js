@@ -14,9 +14,7 @@ class MapControls extends React.Component {
   constructor() {
     super();
   }
-  componentDidMount() { 
-    console.log("MapControls has Mounted");
-  }
+  componentDidMount() {}
   goHome() {
     if(this.props.mapCenterAndZoom.zoom > 2) {
       this.props.dispatch(addItemToDataStream('Moved to Galaxy View...'));

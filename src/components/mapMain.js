@@ -9,13 +9,12 @@ import ScrollArea from 'react-scrollbar';
 import Config from 'Config';
 const activeTileServer = Config.tileServerUrl;
 
-console.log("Config: ", Config);
+// console.log("Config: ", Config);
 
 import {
     setMapCenterAndZoom,
     updateNorthEastMapHash,
     updateSouthWestMapHash,
-    newGalacticXandY,
     setMapZoom,
     loadingIconOn,
     loadingIconOff,
@@ -73,9 +72,7 @@ class MapMain extends React.Component {
   	}
     this.props.dispatch(setMapZoom(currentZoom));
     this.props.dispatch(setCursorValue());
-
     this.props.dispatch(buildHyperspaceLaneNamesSet());
-
   }
 
   componentWillReceiveProps(newProps) {
@@ -83,30 +80,17 @@ class MapMain extends React.Component {
   }
 
   onZoomend(e) {
-    // console.log("Zoom End has fired", e.target._zoom);
     const mapBounds = this.refs.map.leafletElement.getBounds();
     const currentZoom = this.refs.map.leafletElement.getZoom();
-    // console.log("currentZoom: ", currentZoom);
-    // console.log("mapCenter Zoom", this.props.mapCenterAndZoom.zoom);
     if(!(currentZoom === 2 && this.props.mapCenterAndZoom.zoom === 3)) {
       this.props.dispatch(setMapZoom(currentZoom));
     }
   }
 
-  onZoomstart(e) {
-    // console.log("\nZoom Start has fired: ", e.target._animateToZoom);
-    // const mapBounds = this.refs.map.leafletElement.getBounds();
-    // const currentZoom = this.refs.map.leafletElement.getZoom();
-    // console.log("currentZoom: ", currentZoom);
-    // console.log("mapCenter Zoom", this.props.mapCenterAndZoom.zoom);
-  }
+  onZoomstart(e) { }
 
   onMovestart(e) {
-    // const mapInstance = this.refs.map.leafletElement;
-    // const MapBounds = getNorthEastAndSoutWestBounds(mapInstance);
-    // console.log("Map Move Start");
     this.props.dispatch(loadingIconOn());
-
   }
 
   onMoveend(e) {
@@ -114,12 +98,10 @@ class MapMain extends React.Component {
     const MapBounds = getNorthEastAndSoutWestBounds(mapInstance);
     const northEastMapBoundsDifferent = MapBounds.northEast !== this.props.northEastMapHash;
     const southWestMapBoundsDifferent = MapBounds.southWest !== this.props.southWestMapHash;
-
     if(northEastMapBoundsDifferent || southWestMapBoundsDifferent) {
       this.props.dispatch(updateNorthEastMapHash(MapBounds.northEast));
       this.props.dispatch(updateSouthWestMapHash(MapBounds.southWest));
     }
-    // console.log("Map Move End");
     this.props.dispatch(loadingIconOff());
   }
 
@@ -129,16 +111,9 @@ class MapMain extends React.Component {
 
   onMove(e) { }
 
-  onMouseMove(e) {
-    // const GalacticCoordinates = getGalacticFromLatLng(e.latlng);
-    // console.log("Galactic Coordinates: ", GalacticCoordinates);
-    // this.props.dispatch(newGalacticXandY(GalacticCoordinates));
-  }
+  onMouseMove(e) { }
 
   onClickHyperspaceNavigation(e) {
-    // console.log("onClickHyperspaceNavigation pathSearchStart: ", this.props.pathSearchStart);
-    // console.log("onClickHyperspaceNavigation pathSearchEnd: ", this.props.pathSearchEnd);
-
     if(this.props.pathSearchEnd || this.props.pathSearchStart) {
       const isStartNode = (this.props.pathSearchStart)? true : false;
       const HyperspaceNodeSearch = {
@@ -166,7 +141,6 @@ class MapMain extends React.Component {
   }
 
   onOverlayadd(e) {
-    console.log("Adding layer: ", e.name);
     if(e.name === 'Star Systems') {
       this.props.dispatch(starMapIsOn());
     } else if(e.name === 'Sectors') {
@@ -175,7 +149,6 @@ class MapMain extends React.Component {
   }
 
   onOverlayremove(e) {
-    console.log("Removing layer: ", e.name);
     if(e.name === 'Star Systems') {
       this.props.dispatch(starMapIsOff());
     } else if(e.name === 'Sectors') {
@@ -188,10 +161,6 @@ class MapMain extends React.Component {
   	const maxZoom = 8;
   	const zIndexGalaxy = 210;
     const zIndexBlack = 205;
-
-    // if(!this.props.starMapOverlayStatus) {
-    //   this.props.dispatch(loadingIconOff());
-    // }
 
   	return (
       <ScrollArea

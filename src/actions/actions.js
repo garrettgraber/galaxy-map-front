@@ -110,6 +110,7 @@ export function findSystem(systemName) {
           emptySpace: false,
           coordinates: SystemObject.coordinates,
           sector: SystemObject.sector,
+          region: SystemObject.region,
           link: SystemObject.link
 				};
 				dispatch(setActiveSystem(SystemData));
@@ -264,14 +265,12 @@ export function hyperspacePositionSearch(SystemSearch) {
         const NodeDataArray = JSON.parse(dataNode);
         if(NodeDataArray.length > 0) {
           const NodeData = NodeDataArray[0];
-          const NewPositionState = createPositionFromNode(NodeData);
-          const NewPositionPlanetState = createPositionFromPlanet(PlanetData);
-          console.log("NodeData: ", NodeData);
+          const NewPositionState = createPositionFromPlanet(PlanetData);
           const NewNodeState = createNodeState(NodeData);
           dispatch(checkNodesAndUpdate({
             isStartPosition: SystemSearch.isStartPosition,
             NewNodeState: NewNodeState,
-            NewPositionState: NewPositionPlanetState,
+            NewPositionState: NewPositionState,
             system: SystemSearch.system
           }));
         } else {
@@ -286,7 +285,6 @@ export function hyperspacePositionSearch(SystemSearch) {
             if(NodeDataArray.length > 0) {
               const NodeData = NodeDataArray[0];
               const NewPositionState = createPositionFromPlanet(PlanetData);
-              console.log("NodeData: ", NodeData);
               const NewNodeState = createNodeState(NodeData);
               dispatch(checkNodesAndUpdate({
                 isStartPosition: SystemSearch.isStartPosition,
@@ -369,6 +367,7 @@ function checkNodesAndUpdate(Options) {
         system: Options.system,
         isStartPosition: Options.isStartPosition
       }).then(data => {
+        console.log("node connection data: ", data);
         if(data.connected) {
           dispatch(setHyperspaceState(Options));
         } else {
@@ -508,8 +507,9 @@ export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
         yGalactic: yGalactic,
         zoom: 10,
         emptySpace: true,
-        link: null,
+        link: '',
         sector: [null],
+        region: '',
         coordinates: 'Unknown'
       };
 
@@ -575,8 +575,9 @@ function createPositionFromPlanetEmptySpace(PlanetData) {
     zoom: PlanetData.zoom,
     emptySpace: true,
     coordinates: '',
-    sector: '',
-    link: null
+    sector: [null],
+    region: '',
+    link: ''
   }
 }
 
@@ -591,6 +592,7 @@ function createPositionFromPlanet(PlanetData) {
     emptySpace: false,
     coordinates: PlanetData.coordinates,
     sector: PlanetData.sector,
+    region: PlanetData.region,
     link: PlanetData.link
   }
 }

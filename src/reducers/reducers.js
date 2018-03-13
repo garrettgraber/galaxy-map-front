@@ -47,20 +47,21 @@ storeTest.dispatch({ type: 'DECREMENT' });
 console.log( (storeTest.getState() === 1)? "redux on" : "redux off" );
 
 const CoruscantLocation = {
-	center: [0, 0],
+	center: [0.00, 0.00],
 	zoom: 2
 };
 const CoruscantSystem = {
-	lat: 0,
-	lng: 0,
+	lat: 0.00,
+	lng: 0.00,
 	zoom: 2,
 	system: 'Coruscant',
-	xGalactic: 0,
-	yGalactic: 0,
-	emptySpace: null,
+	xGalactic: 0.00,
+	yGalactic: 0.00,
+	emptySpace: false,
 	coordinates: 'L9',
 	sector: 'Unknown',
-	link: ''
+	region: 'Core',
+	link: 'http://starwars.wikia.com/wiki/Coruscant'
 };
 const BlankPoint = {
 	system: '',
@@ -71,8 +72,9 @@ const BlankPoint = {
 	zoom: null,
 	emptySpace: null,
 	coordinates: '',
-	sector: '',
-	link: ''
+  sector: [null],
+  region: '',
+  link: ''
 };
 const BlankNode = {
 	system: '',

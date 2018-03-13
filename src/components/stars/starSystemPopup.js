@@ -28,6 +28,7 @@ class StarSystemPopup extends React.Component {
           <span>Y:&nbsp;&nbsp;{StarObject.yGalactic.toString()}</span><br/>
           <span>Grid:&nbsp;&nbsp;{StarObject.coordinates}</span><br/>
           <span>Sector:&nbsp;&nbsp;{sector}</span><br/>
+          <span>Region:&nbsp;&nbsp;{StarObject.region}</span><br/>
           <span>
             <a href={StarObject.link} rel="external" target="_blank">Wookieepedia Link</a>
           </span>

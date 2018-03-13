@@ -20,8 +20,10 @@ import StarSystemNavigationPopup from './starSystemNavigationPopup.js';
 class StarSystem extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { };
   }
+
+  componentDidMount() { }
 
   onClick(e) {
     if(this.props.pathStartClick || this.props.pathEndClick) {
@@ -38,15 +40,8 @@ class StarSystem extends React.Component {
     const starColor = 'red';
     const fillColor = '#f03';
     const fillOpacity = 0.5;
-    const textWidth = StarObject.textWidth;
     const starLocation = [ StarObject.lat, StarObject.lng ];
     const myIcon = textIconGenerator(StarObject.system);
-    const toolTipIcon = L.divIcon({
-      className: "systemTooltip",
-      iconSize: new L.Point(StarObject.textWidth + 30, 24),
-      iconAnchor: new L.Point(textWidth / 3.0, 36),
-      html: StarObject.system
-    });
 
   	return (
       <div style={ {caretColor: 'teal'} }>
@@ -93,10 +88,15 @@ class StarSystem extends React.Component {
 function textIconGenerator(systemName) {
   const textWidth = width(systemName, {size: "1em"});
   let textPadding = 0;
+
   if(textWidth >= 75) {
     textPadding = 30;
-  } else if(textWidth < 75 && textWidth > 40) {
+  } else if(textWidth < 75 && textWidth > 58) {
+    textPadding = 25;
+  } else if(textWidth <= 58 && textWidth > 40) {
     textPadding = 20;
+  } else if(textWidth <= 40 && textWidth > 20) {
+    textPadding = 15;
   } else {
     textPadding = 10;
   }

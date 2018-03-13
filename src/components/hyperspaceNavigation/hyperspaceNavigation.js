@@ -2,50 +2,22 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {
   Pane,
-  GeoJSON,
-  CircleMarker,
-  Popup,
-  Circle,
-  Tooltip,
-  Marker,
   FeatureGroup,
   LayerGroup
 } from 'react-leaflet';
 import L from 'leaflet';
-import width from 'text-width';
-import 'whatwg-fetch';
-import _ from 'lodash';
-import uuidv1 from 'uuid/v1';
-import uuidv4 from 'uuid/v4';
-import distance from 'euclidean-distance';
-import Geohash from 'latlon-geohash';
 
-
-
-// import ReactFauxDOM from 'react-faux-dom';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
 import 'leaflet_marker_2x';
 import 'leaflet_marker_shadow';
 import '../../css/main.css';
 
-import HyperspaceData from 'json-loader!../../data/hyperspace.geojson';
-import HyperspacePathCollection from './hyperspacePathCollection.js';
-import {
-  createFreespaceLane,
-  nodeAndPointAreEqual
-} from './hyperspaceMethods.js';
 import PathGenerator from '../../classes/pathGenerator.js';
 import {
-  addHyperspacePathToCollection,
-  updateHyperspacePaths,
   stopUpdatingHyperspacePath,
-  errorHyperspacePath,
   hyperspaceNavigationUpdateOff
 } from '../../actions/actionCreators.js';
-import {
-  getHyperspacePathCollection
-} from '../../actions/actions.js';
 
 
 class HyperspaceNavigation extends React.Component {
@@ -54,23 +26,13 @@ class HyperspaceNavigation extends React.Component {
     this.state = {
       HyperspaceCollectionsComponents: [],
       HSpaceComponentsMaster: [],
-      // zoom: null
     };
   }
-  componentDidMount() {
-    // this.setState({zoom: this.props.newZoom});
-  }
+
+  componentDidMount() { }
+
   componentWillReceiveProps(newProps) {
-
-    // console.log("newProps.newZoom: ", newProps.newZoom);
-
-    // if(newProps.newZoom !== this.state.zoom) {
-    //   console.log("Zoom change!");
-    //   this.setState({zoom: newProps.newZoom});
-    // }
-
     if(newProps.update) {
-
       const CurentPathGenerator = new PathGenerator(
         newProps.hyperspaceActiveStartPoint,
         newProps.hyperspaceActiveEndPoint,
@@ -86,9 +48,7 @@ class HyperspaceNavigation extends React.Component {
         newProps.hyperspacePathCollections,
         newProps.hyperspacePathChange
       );
-
       CurentPathGenerator.generateNavigationComponents();
-
       if(CurentPathGenerator.pathUpdateAndHyperspaceJumpsInArray()){
         this.setState(
           {
@@ -96,11 +56,9 @@ class HyperspaceNavigation extends React.Component {
           }
         );
       }
-
       if(CurentPathGenerator.hyperspacePathChange) {
         this.props.dispatch(stopUpdatingHyperspacePath());
       }
-
       this.setState({HSpaceComponentsMaster: CurentPathGenerator.navComponentsRendered});
       this.props.dispatch(hyperspaceNavigationUpdateOff());
     }
@@ -115,7 +73,6 @@ class HyperspaceNavigation extends React.Component {
     const navComponents = renderComponentsOrNull(this.state.HSpaceComponentsMaster);
 
   	return (
-
       <LayerGroup>
         <Pane name="hyperspace-navigation-pane" style={{ zIndex: zIndex }}>
           <FeatureGroup> 
@@ -123,8 +80,6 @@ class HyperspaceNavigation extends React.Component {
           </FeatureGroup>
         </Pane>
       </LayerGroup>
-
-
   	)
   }
 }
