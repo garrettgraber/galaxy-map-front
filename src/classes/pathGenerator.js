@@ -230,6 +230,37 @@ export default class PathGenerator {
       this.antPathComponents.push(<HyperSpaceLaneOverlay key={hyperspaceHash}  pathCoordinates={lanePathCoordinates} style={hyperspaceLanesStylePink} isSinglePath={isSinglePath} />);
     }
   }
+
+
+  generateCoordinatesArray() {
+    let jumpPathCoordinates = [];
+    const FirstPathCollection = this.hyperspacePathCollections[0];
+    if(FirstPathCollection) {
+      const isSinglePath = (this.hyperspacePathCollections.length > 1)? false : true;
+      const lanes = FirstPathCollection.lanes;
+      for(let Lane of lanes) {
+        jumpPathCoordinates = jumpPathCoordinates.concat(Lane.coordinates);
+      }
+    }
+    if(!this.startPointAndNodeEqual() && !this.closeEnoughForFreespaceJump()) {
+      jumpPathCoordinates.unshift([this.StartPoint.lng, this.StartPoint.lat]);
+    }
+    if(!this.endPointAndNodeEqual() && !this.closeEnoughForFreespaceJump()) {
+      jumpPathCoordinates.push([this.EndPoint.lng, this.EndPoint.lat]);
+    }
+    if(this.closeEnoughForFreespaceJump()) {
+      const startLngLat = [this.StartPoint.lng, this.StartPoint.lat];
+      const endLngLat = [this.EndPoint.lng, this.EndPoint.lat];
+      jumpPathCoordinates = [startLngLat, endLngLat];
+    }
+
+    const jumpPathCoordinatesCopy = _.cloneDeep(jumpPathCoordinates);
+
+    const jumpPathCoordinatesLatLng = reverseToLatLng(jumpPathCoordinatesCopy);
+    return jumpPathCoordinatesLatLng;
+  }
+
+
  
 	generateNavigationComponents() {
 		if(this.hyperspacePathChange) {
@@ -301,4 +332,13 @@ function distanceBetweenPointsGalactic(Point1, Point2) {
 
 function pointArrayGalactic(PointTemp) {
   return [PointTemp.xGalacticLong, PointTemp.yGalacticLong];
+}
+
+function reverseToLatLng(lanesArray) {
+  const latLngArray = [];
+  for(let lane of lanesArray) {
+    lane.reverse();
+    latLngArray.push(lane);
+  }
+  return latLngArray;
 }

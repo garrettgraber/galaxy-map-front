@@ -22,7 +22,7 @@ class SideBarController extends React.Component {
         </If>
         <If condition={ this.props.hyperspaceNavigationControlsOn }>
             <Then>
-              <HyperspacePathSearch/>
+              <HyperspacePathSearch map={this.props.map}/>
             </Then>
             <Else>{() => null }</Else>
         </If>

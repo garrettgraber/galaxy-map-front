@@ -1,7 +1,17 @@
 import Actions from '../constants/actionTypesModule.js';
 
 
-
+export function newNavigationObjectBoundaries(BoundaryData) {
+  return {
+    type: Actions.NEW_NAVIGATION_OBJECT_BOUNDARIES,
+    payload: BoundaryData
+  }
+}
+export function noNavigationObjectBoundaries() {
+  return {
+    type: Actions.NO_NAVIGATION_OBJECT_BOUNDARIES
+  }
+}
 export function setSearchValueToSystems() {
 	return {
 		type: Actions.CURRENT_SEARCH_VALUE_IS_SYSTEMS

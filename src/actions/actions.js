@@ -107,6 +107,8 @@ export function findSystem(systemName) {
           zoom: newZoom,
           xGalactic: SystemObject.xGalactic,
           yGalactic: SystemObject.yGalactic,
+          xGalacticLong: SystemObject.xGalacticLong,
+          yGalacticLong: SystemObject.yGalacticLong,
           emptySpace: false,
           coordinates: SystemObject.coordinates,
           sector: SystemObject.sector,
@@ -251,7 +253,6 @@ export function noSetSelectedHyperspaceRoute() {
 
 
 export function hyperspacePositionSearch(SystemSearch) {
-  console.log("hyperspacePositionSearch has fired..");
   return function(dispatch, getState) {
     const SystemSearchSent = omit(SystemSearch, ['isStartPosition']);
     ApiService.findPlanet(SystemSearchSent).then(response => {
@@ -367,7 +368,6 @@ function checkNodesAndUpdate(Options) {
         system: Options.system,
         isStartPosition: Options.isStartPosition
       }).then(data => {
-        console.log("node connection data: ", data);
         if(data.connected) {
           dispatch(setHyperspaceState(Options));
         } else {
@@ -503,6 +503,8 @@ export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
         system: NameHash,
         lat: lat,
         lng: lng,
+        xGalacticLong: xGalacticLong,
+        yGalacticLong: yGalacticLong,
         xGalactic: xGalactic,
         yGalactic: yGalactic,
         zoom: 10,
@@ -565,13 +567,14 @@ function createPositionFromNode(NodeData) {
 }
 
 function createPositionFromPlanetEmptySpace(PlanetData) {
-  console.log("PlanetData: ", PlanetData);
   return {
     system: PlanetData.system,
     lat: PlanetData.lat,
     lng: PlanetData.lng,
-    xGalactic: PlanetData.xGalacticLong,
-    yGalactic: PlanetData.yGalacticLong,
+    xGalactic: PlanetData.xGalactic,
+    yGalactic: PlanetData.yGalactic,
+    xGalacticLong: PlanetData.xGalacticLong,
+    yGalacticLong: PlanetData.yGalacticLong,
     zoom: PlanetData.zoom,
     emptySpace: true,
     coordinates: '',
@@ -588,6 +591,8 @@ function createPositionFromPlanet(PlanetData) {
     lng: PlanetData.lng,
     xGalactic: PlanetData.xGalactic,
     yGalactic: PlanetData.yGalactic,
+    xGalacticLong: PlanetData.xGalacticLong,
+    yGalacticLong: PlanetData.yGalacticLong,
     zoom: PlanetData.zoom,
     emptySpace: false,
     coordinates: PlanetData.coordinates,

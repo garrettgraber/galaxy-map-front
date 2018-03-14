@@ -1,16 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import ReactTooltip from 'react-tooltip';
+import uuidv4 from 'uuid/v4';
+
 import JumpPlot from './jumpPlot.js';
-import '../../../../css/main.css';
 
 import {
   noSetSelectedHyperspaceRoute
 } from '../../../../actions/actions.js';
 
+import '../../../../css/main.css';
 
 class JumpGrid extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      componentId: uuidv4()
+    }
   }
 
   componentDidMount() { }
@@ -26,6 +32,12 @@ class JumpGrid extends React.Component {
 
   onMouseLeave() {
     this.props.dispatch(noSetSelectedHyperspaceRoute());
+  }
+
+  zoomToHyperspacePath() {
+    console.log("Zoom to Hyperspace Path");
+    const map = this.props.map;
+    map.fitBounds(this.props.navigationObjectBoundaries);
   }
 
   render() {
@@ -56,10 +68,24 @@ class JumpGrid extends React.Component {
     const activeStartSystem = this.props.hyperspaceActiveStartPoint.system;
     const acttveEndSystem = this.props.hyperspaceActiveEndPoint.system;
 
+    const zoomToPathClasses = "btn hyperspace-navigation-button btn-success pull-right";
+
+
     return (
       <div >
         <div className="pane-row-control" style={JumpGridControllerStyle}>
           <span className="nav-text">&nbsp;&nbsp;Total Paths:&nbsp;&nbsp;{jumpPaths.length}</span>
+          <button
+            type="button"
+            className={zoomToPathClasses}
+            style={{verticalAlign: "top"}}
+            onClick={(e) => this.zoomToHyperspacePath(e)}
+            data-tip="Zoom to Path"
+            data-for={'zoom-hyperspace-navigation-click' + this.state.componentId}
+          >
+            <i className="fa fa-sun-o"></i>
+          </button>
+          <ReactTooltip id={'zoom-hyperspace-navigation-click' + this.state.componentId} place="right">{}</ReactTooltip>
         </div>
         <div id="div1" style={containerDiv1Styles}>
           <div id="div2" style={containerDiv2Styles} >

@@ -69,6 +69,8 @@ const BlankPoint = {
 	lng: null,
 	xGalactic: null,
 	yGalactic: null,
+	xGalacticLong: null,
+	yGalacticLong: null,
 	zoom: null,
 	emptySpace: null,
 	coordinates: '',
@@ -84,6 +86,8 @@ const BlankNode = {
 	nodeId: null,
 	xGalactic: null,
 	yGalactic: null,
+	xGalacticLong: null,
+	yGalacticLong: null,
 	zoom: null,
 	emptySpace: null
 };
@@ -110,7 +114,7 @@ const BlankHyperspaceRoute = {
 	name: null,
 	link: ''
 };
-const NullSearchObject = {
+const NullBoundaryObject = {
 	_northEast: {
 		lat: null,
 		lng: null
@@ -131,6 +135,18 @@ const emptyNameSet = new Set();
 
 
 
+
+
+function navigationObjectBoundaries(state = NullBoundaryObject, action) {
+  switch (action.type) {
+    case Actions.NEW_NAVIGATION_OBJECT_BOUNDARIES:
+      return action.payload;
+    case Actions.NO_NAVIGATION_OBJECT_BOUNDARIES:
+      return NullBoundaryObject;
+    default:
+      return state;
+  }
+}
 function currentSeachValue(state = blankSearchValue, action) {
 	switch (action.type) {
 		case Actions.CURRENT_SEARCH_VALUE_IS_SYSTEMS:
@@ -145,12 +161,12 @@ function currentSeachValue(state = blankSearchValue, action) {
 			return state;
 	}
 }
-function searchObjectBoundaries(state = NullSearchObject, action) {
+function searchObjectBoundaries(state = NullBoundaryObject, action) {
 	switch (action.type) {
 		case Actions.NEW_SEARCH_OBJECT_BOUNDARIES:
 			return action.payload;
 		case Actions.NO_SEARCH_OBJECT_BOUNDARIES:
-			return NullSearchObject;
+			return NullBoundaryObject;
 		default:
 			return state;
 	}
@@ -730,6 +746,7 @@ function updateHyperspaceNavigation(state = false, action) {
 }
 
 export default combineReducers({
+	navigationObjectBoundaries,
 	currentSeachValue,
 	searchObjectBoundaries,
 	hyperspaceRouteSearchData,

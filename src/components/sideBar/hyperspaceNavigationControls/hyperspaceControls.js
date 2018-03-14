@@ -13,7 +13,8 @@ import {
   activeEndPositionDefault,
   loadingIconOff,
   loadingIconOn,
-  addItemToDataStream
+  addItemToDataStream,
+  noNavigationObjectBoundaries
 } from '../../../actions/actionCreators.js';
 import {
   getHyperspacePathCollection,
@@ -71,7 +72,6 @@ class HyperspaceControls extends React.Component {
     const startSystemExists = this.props.hyperspaceStartSystem.length > 0;
     const endSystemExists = this.props.hyperspaceEndSystem.length > 0;
     if(startSystemExists && endSystemExists) {
-
       this.setState({ jumpButtonClasses: "navbar-button button-border-teal" });
       const CurentPathGenerator = new PathGenerator(
         this.props.hyperspaceActiveStartPoint,
@@ -102,7 +102,6 @@ class HyperspaceControls extends React.Component {
   maxJumpsChange(e) {
     const maxJumps = parseInt(e.target.value);
     if(this.state.limit > 1 && maxJumps > 35) {
-      console.log("Multiple Paths cannot be calculated for distances over 35 jumps away");
       const maxJumpsMessage = "Multi-path jumps can't be calculated over 35 jumps away";
       this.props.dispatch(addItemToDataStream(maxJumpsMessage));
     } else {
@@ -113,7 +112,6 @@ class HyperspaceControls extends React.Component {
   limitChange(e) {
     const pathNumber = parseInt(e.target.value);
     if(pathNumber > 10) {
-      console.log("Maximum of 10 paths");
       const maxPathsMessage = "Maximum of 10 paths";
       this.props.dispatch(addItemToDataStream(maxPathsMessage));
     } else {
@@ -126,6 +124,7 @@ class HyperspaceControls extends React.Component {
     this.props.dispatch(emptyHyperspacePathCollections());
     this.props.dispatch(activeStartPositionDefault());
     this.props.dispatch(activeEndPositionDefault());
+    this.props.dispatch(noNavigationObjectBoundaries());
     this.props.dispatch(hyperspaceNavigationUpdateOn());
   }
 

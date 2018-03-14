@@ -16,7 +16,8 @@ import '../../css/main.css';
 import PathGenerator from '../../classes/pathGenerator.js';
 import {
   stopUpdatingHyperspacePath,
-  hyperspaceNavigationUpdateOff
+  hyperspaceNavigationUpdateOff,
+  newNavigationObjectBoundaries
 } from '../../actions/actionCreators.js';
 
 
@@ -60,6 +61,10 @@ class HyperspaceNavigation extends React.Component {
         this.props.dispatch(stopUpdatingHyperspacePath());
       }
       this.setState({HSpaceComponentsMaster: CurentPathGenerator.navComponentsRendered});
+      const coordiantes = CurentPathGenerator.generateCoordinatesArray();
+      const polyline = L.polyline(coordiantes);
+      const polylineBounds = polyline.getBounds();
+      this.props.dispatch(newNavigationObjectBoundaries(polylineBounds));
       this.props.dispatch(hyperspaceNavigationUpdateOff());
     }
   }
@@ -95,6 +100,15 @@ function renderComponentsOrNull(currentComponents) {
   }
 }
 
+
+function reverseToLatLng(lanesArray) {
+  const latLngArray = [];
+  for(let lane of lanesArray) {
+    lane.reverse();
+    latLngArray.push(lane);
+  }
+  return latLngArray;
+}
 
 const mapStateToProps = (state = {}) => {
     return Object.assign({}, state);
