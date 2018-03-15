@@ -99,9 +99,9 @@
 }
 
 #hyperspace-navigation-pane {
-    height: 520px;
+    /*height: 520px;*/
     width: 400px;
-    overflow: hidden;
+    /*overflow: hidden;*/
     border-radius: 4px;
 }
 
@@ -119,6 +119,14 @@
     padding-top: 4px;
     padding-bottom: 4px;
 }
+
+
+.hyperspace-controls-pane-row {
+    height: 45px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
 
 .pane-row-table {
     padding-top: 4px;
@@ -143,8 +151,16 @@
 }
 
 .pane-section {
-    border-bottom: 1px solid #49fb35;
+    border-top: 1px solid #49fb35;
     padding: 3px;
+}
+
+.pane-container {
+    /*border: 1px solid #49fb35;*/
+    border-right: 1px solid #49fb35;
+    border-left: 1px solid #49fb35;
+    border-bottom: 1px solid #49fb35;
+    margin-bottom: 10px;
 }
 
 .pane-section-padding {
@@ -340,7 +356,7 @@
 
 .number-input {
     padding-left: 8px;
-    width: 56px;
+    width: 50px;
 }
 
 

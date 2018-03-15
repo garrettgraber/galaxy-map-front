@@ -55,14 +55,14 @@ export default class JumpStatus {
 	}
 
 	jumpClassesString() {
-	  let jumpClasses = "navbar-button pulsating-button-off";
+	  let jumpClasses = "hyperspace-navigation-button  pulsating-button-off";
 	  const hyperspacePointsAreValid = (validatePoints(this.startPoint) && validatePoints(this.endPoint));
 	  if( hyperspacePointsAreValid && (this.hyperspacePathsEmpty() || this.activeAndSearchAreDifferent()) ) {
 	    jumpClasses = "navbar-button pulsating-button-ready";
 	  } else if(this.hyperspacePathsNotEmpty() && this.activeAndSearchAreTheSame()) {
-	    jumpClasses = "navbar-button button-border-green";
+	    jumpClasses = "hyperspace-navigation-button  button-border-green";
 	  }  else {
-	    jumpClasses = "navbar-button pulsating-button-off";
+	    jumpClasses = "hyperspace-navigation-button  pulsating-button-off";
 	  }
 	  return jumpClasses;
 	}

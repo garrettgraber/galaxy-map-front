@@ -90,7 +90,7 @@ class PinPoint extends React.Component {
         </button>
         <ReactTooltip id={'pin-point-hyperspace-' + this.state.componentId} place="top">{}</ReactTooltip>
 
-        <span className="display-text">&nbsp;&nbsp;{this.props.Point.system.slice(0, 14)}</span>
+        <span className="display-text">&nbsp;&nbsp;{this.props.Point.system}</span>
       </div>
     );
   }

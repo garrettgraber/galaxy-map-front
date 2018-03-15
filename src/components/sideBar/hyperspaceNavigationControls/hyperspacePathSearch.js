@@ -19,21 +19,30 @@ class HyperspacePathSearch extends React.Component {
       hyperspacePathData = FirstHyperspaceCollection.paths;
     }
     const startDefault = 'Kamino';
-    const endDefault = 'Lok'
+    const endDefault = 'Lok';
+
+    const jumpSuccessfullyCalculated = hyperspacePathData.length > 0;
+    const navigationPaneStyle = (jumpSuccessfullyCalculated)? {height: 520, overFlow: 'visible'} : {height: 288, overFlow: 'visible'};
+
+    // const navigationPaneStyle = (jumpSuccessfullyCalculated)? {height: 520} : {height: 520};
+
+
     return (
-      <div id="hyperspace-navigation-pane" className="control-row">
-        <HyperspaceShipDetails />
-        <HyperspaceControls
-          StartPoint={this.props.hyperspaceStartPoint}
-          EndPoint={this.props.hyperspaceEndPoint}
-          ActiveStartPoint={this.props.hyperspaceActiveStartPoint}
-          ActiveEndPoint={this.props.hyperspaceActiveEndPoint}
-          jumpIsCalculating={this.props.calculateHyperspaceJump}
-          hyperspacePathHasChanged={this.props.hyperspacePathChange}
-        />
-        <PivotPoint Point={this.props.hyperspaceStartPoint} Node={this.props.hyperspaceStartNode} isStartPosition={true} pointName={'Start'} defaultSystem={startDefault} pinPoint={this.props.pinPointStart} pinPointAlternate={this.props.pinPointEnd} clickSystem={this.props.pathStartClick}  clickSystemAlternate={this.props.pathEndClick} />
-        <PivotPoint Point={this.props.hyperspaceEndPoint} Node={this.props.hyperspaceEndNode} isStartPosition={false} pointName={'End'} defaultSystem={endDefault} pinPoint={this.props.pinPointEnd} pinPointAlternate={this.props.pinPointStart} clickSystem={this.props.pathEndClick} clickSystemAlternate={this.props.pathStartClick}   />
-        <If condition={ hyperspacePathData.length > 0 }>
+      <div id="hyperspace-navigation-pane" className="control-row" style={navigationPaneStyle}>
+        <div className="pane-container">
+          <HyperspaceShipDetails />
+          <PivotPoint Point={this.props.hyperspaceStartPoint} Node={this.props.hyperspaceStartNode} isStartPosition={true} pointName={'Start'} defaultSystem={startDefault} pinPoint={this.props.pinPointStart} pinPointAlternate={this.props.pinPointEnd} clickSystem={this.props.pathStartClick}  clickSystemAlternate={this.props.pathEndClick} />
+          <PivotPoint Point={this.props.hyperspaceEndPoint} Node={this.props.hyperspaceEndNode} isStartPosition={false} pointName={'End'} defaultSystem={endDefault} pinPoint={this.props.pinPointEnd} pinPointAlternate={this.props.pinPointStart} clickSystem={this.props.pathEndClick} clickSystemAlternate={this.props.pathStartClick}   />
+          <HyperspaceControls
+            StartPoint={this.props.hyperspaceStartPoint}
+            EndPoint={this.props.hyperspaceEndPoint}
+            ActiveStartPoint={this.props.hyperspaceActiveStartPoint}
+            ActiveEndPoint={this.props.hyperspaceActiveEndPoint}
+            jumpIsCalculating={this.props.calculateHyperspaceJump}
+            hyperspacePathHasChanged={this.props.hyperspacePathChange}
+          />
+        </div>
+        <If condition={jumpSuccessfullyCalculated}>
           <Then>
             <JumpGrid  map={this.props.map}/>
           </Then>

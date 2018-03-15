@@ -76,6 +76,7 @@ class JumpPlot extends React.Component {
     };
     const activeStartSystem = this.props.hyperspaceActiveStartPoint.system;
     const acttveEndSystem = this.props.hyperspaceActiveEndPoint.system;
+    const jumpDistance = this.props.PathObject.length.toFixed(2);
 
     return (
       <div style={JumpPlotStyle}
@@ -85,7 +86,7 @@ class JumpPlot extends React.Component {
         onMouseLeave={(e) => this.onMouseLeave(e)} >
 
         <div style={{width: '100%'}} >
-          <span className="nav-text" >&nbsp;Length:&nbsp;{this.props.PathObject.length.toFixed(2)}</span>
+          <span className="nav-text" >&nbsp;Length:&nbsp;{jumpDistance.toLocaleString()}&nbsp;parsecs</span>
           <span className="nav-text" >&nbsp;&nbsp;Jumps:&nbsp;{this.props.PathObject.numberOfJumps}</span>
         </div>
       </div>

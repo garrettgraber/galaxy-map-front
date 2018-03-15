@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import distance from 'euclidean-distance';
 import ReactTooltip from 'react-tooltip';
+import { If, Then, Else } from 'react-if';
 
 import '../../../css/main.css';
 import {
@@ -14,7 +15,11 @@ import {
   loadingIconOff,
   loadingIconOn,
   addItemToDataStream,
-  noNavigationObjectBoundaries
+  noNavigationObjectBoundaries,
+  setDefaultStartPosition,
+  setDefaultStartNode,
+  setDefaultEndPosition,
+  setDefaultEndNode
 } from '../../../actions/actionCreators.js';
 import {
   getHyperspacePathCollection,
@@ -32,7 +37,8 @@ class HyperspaceControls extends React.Component {
     this.state = { 
       maxJumps: 30,
       limit: 1,
-      jumpButtonClasses: 'navbar-button pulsating-button-off'
+      jumpButtonClasses: 'hyperspace-navigation-button pulsating-button-off',
+      singleJump: true
     };
   }
 
@@ -72,7 +78,7 @@ class HyperspaceControls extends React.Component {
     const startSystemExists = this.props.hyperspaceStartSystem.length > 0;
     const endSystemExists = this.props.hyperspaceEndSystem.length > 0;
     if(startSystemExists && endSystemExists) {
-      this.setState({ jumpButtonClasses: "navbar-button button-border-teal" });
+      this.setState({ jumpButtonClasses: "hyperspace-navigation-button  button-border-teal" });
       const CurentPathGenerator = new PathGenerator(
         this.props.hyperspaceActiveStartPoint,
         this.props.hyperspaceActiveEndPoint,
@@ -116,22 +122,31 @@ class HyperspaceControls extends React.Component {
       this.props.dispatch(addItemToDataStream(maxPathsMessage));
     } else {
       this.setState({limit: pathNumber});
+      const singleJumpStatus = (pathNumber <= 1)? true : false;
+      this.setState({singleJump: singleJumpStatus});
     }
   }
 
-  clearCurrentHyperspaceJump(e) {
+  clearCurrentHyperspaceJumpSearch(e) {
     console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
-    this.props.dispatch(emptyHyperspacePathCollections());
-    this.props.dispatch(activeStartPositionDefault());
-    this.props.dispatch(activeEndPositionDefault());
-    this.props.dispatch(noNavigationObjectBoundaries());
+    this.props.dispatch(setDefaultStartPosition());
+    this.props.dispatch(setDefaultStartNode());
+    this.props.dispatch(setDefaultEndPosition());
+    this.props.dispatch(setDefaultEndNode());
     this.props.dispatch(hyperspaceNavigationUpdateOn());
+  }
+
+  singleJumpToggle(e) {
+    const currentJumpIsSingular = this.state.singleJump;
+    const newSingleJumpStatus = !currentJumpIsSingular;
+    (newSingleJumpStatus)? this.setState({limit: 1}) : this.setState({limit: 2});
+    this.setState({singleJump: newSingleJumpStatus});
   }
 
   render() {
     const JumpButtonStyle = {
-      width: 60,
-      height: 30,
+      width: 40,
+      height: 36,
       padding: 2,
       borderRadius: 2,
       backgroundColor: 'black',
@@ -146,16 +161,48 @@ class HyperspaceControls extends React.Component {
       color: 'red'
     };
 
+    const singleJumpToggleClasses = (this.state.singleJump)? "btn hyperspace-navigation-button btn-warning" : "btn hyperspace-navigation-button btn-success";
+    const jumpTypeTooltip = (this.state.singleJump)? "Calculate Multiple Paths" : "Calculate Single Path";
+
     return (
-      <div className="pane-row-control pane-section">
-        <span className="nav-text">Jumps:&nbsp;&nbsp;</span>
-        <input id="max-jumps-input" type="number" min={1} placeholder="Max Jumps" className="search-input number-input" value={this.state.maxJumps}  onChange={(e) => this.maxJumpsChange(e)}/>
-        <span className="nav-text">&nbsp;&nbsp;Paths:&nbsp;&nbsp;</span>
-        <input id="limit-paths-input" type="number" min={1} placeholder="Limit" className="search-input number-input" value={this.state.limit}  onChange={(e) => this.limitChange(e)}/>
-        <img  id="calculate-hyperspace-jump" src={EnterHyperspaceIcon} className={this.state.jumpButtonClasses}  style={JumpButtonStyle} onClick={(e) => this.findHyperspacePath(e)} data-tip="Calculate Hyperspace Jump" data-for="calculate-hyperspace-jump-tooltip" />
+      <div className="hyperspace-controls-pane-row pane-section">
+        <img  id="calculate-hyperspace-jump" src={EnterHyperspaceIcon} className={this.state.jumpButtonClasses}  style={JumpButtonStyle} onClick={(e) => this.findHyperspacePath(e)} data-tip="Calculate Jump" data-for="calculate-hyperspace-jump-tooltip" />
         <ReactTooltip id='calculate-hyperspace-jump-tooltip' place="top">{}</ReactTooltip>
-        <button  id="reset-hyperspace-jump" className="navbar-button button-border-red"  style={EraseButtonStyle} onClick={(e) => this.clearCurrentHyperspaceJump(e)} data-tip="Reset Hyperspace Jump" data-for="reset-hyperspace-jump-tooltip" >X</button>
-        <ReactTooltip id='reset-hyperspace-jump-tooltip' place="top">{}</ReactTooltip>
+        
+        <button
+          type="button"
+          className={singleJumpToggleClasses}
+          style={{verticalAlign: "top", width: 40}}
+          onClick={(e) => this.singleJumpToggle(e)}
+          data-tip={jumpTypeTooltip}
+          data-for={'multi-jump-toggle' + this.state.componentId}
+        >
+          <If condition={ this.state.singleJump }>
+            <Then><i className="fa fa-arrows"></i></Then>
+            <Else><i className="fa fa-arrow-right"></i></Else>
+          </If>
+        </button>
+        <ReactTooltip id={'multi-jump-toggle' + this.state.componentId} place="top">{}</ReactTooltip>
+
+        <If condition={ this.state.singleJump }>
+          <Then>
+            <span className="nav-text">&nbsp;&nbsp;Calculating shortest path...&nbsp;&nbsp;</span>
+          </Then>
+          <Else>
+            <span>
+              <span className="nav-text">&nbsp;&nbsp;Jumps:&nbsp;&nbsp;</span>
+              <input id="max-jumps-input" type="number" min={1} placeholder="Max Jumps" className="search-input number-input" value={this.state.maxJumps}  onChange={(e) => this.maxJumpsChange(e)}/>
+              <span className="nav-text">&nbsp;&nbsp;Paths:&nbsp;&nbsp;</span>
+              <input id="limit-paths-input" type="number" min={1} placeholder="Limit" className="search-input number-input" value={this.state.limit}  onChange={(e) => this.limitChange(e)}/>
+            </span>
+          </Else>
+        </If>
+        
+        <button  id="reset-hyperspace-jump-search" className="btn hyperspace-navigation-button btn-danger pull-right" style={{width: 40}} onClick={(e) => this.clearCurrentHyperspaceJumpSearch(e)} data-tip="Reset Start & End Points" data-for="reset-hyperspace-jump-search-tooltip" >
+          <i className="fa fa-close"></i>
+        </button>
+        <ReactTooltip id='reset-hyperspace-jump-search-tooltip' place="top">{}</ReactTooltip>
+
       </div>
     );
   }

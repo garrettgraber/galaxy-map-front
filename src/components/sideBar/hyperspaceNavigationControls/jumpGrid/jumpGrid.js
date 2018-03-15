@@ -9,6 +9,14 @@ import {
   noSetSelectedHyperspaceRoute
 } from '../../../../actions/actions.js';
 
+import {
+  emptyHyperspacePathCollections,
+  hyperspaceNavigationUpdateOn,
+  activeStartPositionDefault,
+  activeEndPositionDefault,
+  noNavigationObjectBoundaries
+} from '../../../../actions/actionCreators.js';
+
 import '../../../../css/main.css';
 
 class JumpGrid extends React.Component {
@@ -40,12 +48,21 @@ class JumpGrid extends React.Component {
     map.fitBounds(this.props.navigationObjectBoundaries);
   }
 
+  clearCurrentHyperspaceJump(e) {
+    console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
+    this.props.dispatch(emptyHyperspacePathCollections());
+    this.props.dispatch(activeStartPositionDefault());
+    this.props.dispatch(activeEndPositionDefault());
+    this.props.dispatch(noNavigationObjectBoundaries());
+    this.props.dispatch(hyperspaceNavigationUpdateOn());
+  }
+
   render() {
     const jumpPlotHeight = 50;
     const jumpPaths = this.getJumpPaths();
     const jumpListHeight = jumpPaths.length * jumpPlotHeight;
     const containerDiv1Styles = {
-      height: 200,
+      height: 108,
       position: 'relative',
     };
     const containerDiv2Styles = {
@@ -65,27 +82,50 @@ class JumpGrid extends React.Component {
     const JumpGridControllerStyle = {
       color:  '#49fb35',
     };
+    const StartAndEndStyles = {
+      height: 30,
+      color:  '#49fb35',
+      verticalAlign: "top",
+      paddingTop: 4,
+      paddingBottom: 4
+    };
     const activeStartSystem = this.props.hyperspaceActiveStartPoint.system;
     const acttveEndSystem = this.props.hyperspaceActiveEndPoint.system;
-
-    const zoomToPathClasses = "btn hyperspace-navigation-button btn-success pull-right";
-
+    const zoomToPathClasses = "btn hyperspace-navigation-button btn-success";
 
     return (
-      <div >
-        <div className="pane-row-control" style={JumpGridControllerStyle}>
-          <span className="nav-text">&nbsp;&nbsp;Total Paths:&nbsp;&nbsp;{jumpPaths.length}</span>
-          <button
-            type="button"
-            className={zoomToPathClasses}
-            style={{verticalAlign: "top"}}
-            onClick={(e) => this.zoomToHyperspacePath(e)}
-            data-tip="Zoom to Path"
-            data-for={'zoom-hyperspace-navigation-click' + this.state.componentId}
-          >
-            <i className="fa fa-sun-o"></i>
-          </button>
-          <ReactTooltip id={'zoom-hyperspace-navigation-click' + this.state.componentId} place="right">{}</ReactTooltip>
+      <div className="pane-container">
+        <div className="pane-section">
+          <div className="hyperspace-controls-pane-row" style={JumpGridControllerStyle}>
+
+            <button
+              type="button"
+              className={zoomToPathClasses}
+              style={{verticalAlign: "top", width: 40}}
+              onClick={(e) => this.zoomToHyperspacePath(e)}
+              data-tip="Zoom to Path"
+              data-for={'zoom-hyperspace-navigation-click' + this.state.componentId}
+            >
+              <i className="fa fa-bullseye"></i>
+            </button>
+            <ReactTooltip id={'zoom-hyperspace-navigation-click' + this.state.componentId} place="top">{}</ReactTooltip>
+
+            <div className="pane-column">
+              <span className="nav-text">&nbsp;&nbsp;Total Paths:&nbsp;&nbsp;{jumpPaths.length}</span>
+            </div>
+            <button  id="reset-hyperspace-jump" className="btn hyperspace-navigation-button btn-danger pull-right" style={{width: 40}} onClick={(e) => this.clearCurrentHyperspaceJump(e)} data-tip="Reset Hyperspace Jump" data-for="reset-hyperspace-jump-tooltip-foo" >
+              <i className="fa fa-close"></i>
+            </button>
+            <ReactTooltip id='reset-hyperspace-jump-tooltip-foo' place="top">{}</ReactTooltip>
+          </div>
+          <div style={StartAndEndStyles}>
+            &nbsp;Start:&nbsp;{this.props.hyperspaceActiveStartPoint.system}
+          </div>
+
+          <div style={StartAndEndStyles}>
+            &nbsp;End&nbsp;:&nbsp;{this.props.hyperspaceActiveEndPoint.system}
+          </div>
+
         </div>
         <div id="div1" style={containerDiv1Styles}>
           <div id="div2" style={containerDiv2Styles} >

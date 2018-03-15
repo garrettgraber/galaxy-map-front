@@ -61,10 +61,10 @@ class NavigationSystemSearch extends React.Component {
   setSystemValue(isStartPosition, startSystem, endSystem) {
     const isStartEmptySpace = startSystem.slice(0, 3) === 'ES@';
     const isEndEmptySpace = endSystem.slice(0, 3) === 'ES@';
-    if(startSystem && !isStartEmptySpace && isStartPosition) {
+    if(!isStartEmptySpace && isStartPosition) {
       this.setState({system: startSystem});
     }
-    if(endSystem && !isEndEmptySpace && !isStartPosition) {
+    if(!isEndEmptySpace && !isStartPosition) {
       this.setState({system: endSystem});
     }
   }

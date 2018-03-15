@@ -18,7 +18,7 @@ function LocationGalacticDisplay(Point) {
   const yGalacticIsNotSet = (Point.yGalactic === null)? true : false;
   return (
     <div className="pane-row-text">
-      <span className="display-text">Position:&nbsp;</span>
+      <span className="display-text">Position&nbsp;:&nbsp;</span>
       <If condition={xGalacticIsNotSet}>
         <Then>
           <span className="display-text">&nbsp;&nbsp;X:&nbsp;&nbsp;</span>
