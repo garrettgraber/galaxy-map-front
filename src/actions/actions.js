@@ -399,10 +399,11 @@ function checkNodesAndUpdate(Options) {
 
 function setEndNodeAndPoint(Options) {
   return function (dispatch, getState) {
+    console.log("setEndNodeAndPoint Options.system: ", Options.system);
     ApiService.findHyperspaceNode({system: Options.system}).then(nodeResponse => {
       return nodeResponse.json();
-    }).then(NodeDataJson => {
-      const NodeData = JSON.parse(NodeDataJson);
+    }).then(dataNode => {
+      const NodeData = JSON.parse(dataNode);
       const NewPositionStateData = createPositionFromNode(NodeData);
       const NewNodeStateData = createNodeState(NodeData);
       const NewPositionState = NewPositionStateData[0];
