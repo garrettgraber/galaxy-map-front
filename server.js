@@ -19,12 +19,35 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-console.log("ip: ", ip.address());
+// console.log("ip: ", ip.address());
+
+// let webpack = require('webpack');
+// let webpackMiddleware = require('webpack-dev-middleware');
+// let webpackHotMiddleware = require('webpack-hot-middleware');
+// let config = require('./webpack.config.js');
+
+
+
+
 
 let webpack = require('webpack');
 let webpackMiddleware = require('webpack-dev-middleware');
 let webpackHotMiddleware = require('webpack-hot-middleware');
 let config = require('./webpack.config.js');
+let configProduction = require('./webpack.prod.js');
+let configDevelopment = require('./webpack.dev.js');
+
+const NODE_ENV = process.env.NODE_ENV;
+switch (NODE_ENV) {
+  case 'development':
+    config = configDevelopment;
+    break;
+  case 'production':
+    config = configProduction;
+    break;
+  default:
+}
+
 
 const compiler = webpack(config);
 const middleware = webpackMiddleware(compiler, {
