@@ -14,6 +14,8 @@ import {
   hyperspaceNavigationUpdateOn,
   activeStartPositionDefault,
   activeEndPositionDefault,
+  activeStartNodeDefault,
+  activeEndNodeDefault,
   noNavigationObjectBoundaries
 } from '../../../../actions/actionCreators.js';
 
@@ -52,9 +54,12 @@ class JumpGrid extends React.Component {
     console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
     this.props.dispatch(emptyHyperspacePathCollections());
     this.props.dispatch(activeStartPositionDefault());
+    this.props.dispatch(activeStartNodeDefault());
+    this.props.dispatch(activeEndNodeDefault());
     this.props.dispatch(activeEndPositionDefault());
     this.props.dispatch(noNavigationObjectBoundaries());
     this.props.dispatch(hyperspaceNavigationUpdateOn());
+    console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
   }
 
   render() {

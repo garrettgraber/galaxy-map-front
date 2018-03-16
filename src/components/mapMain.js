@@ -9,7 +9,7 @@ import ScrollArea from 'react-scrollbar';
 import Config from 'Config';
 const activeTileServer = Config.tileServerUrl;
 
-// console.log("Config: ", Config);
+console.log("Config: ", Config);
 
 import {
     setMapCenterAndZoom,

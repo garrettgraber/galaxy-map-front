@@ -10,7 +10,7 @@ const ProductionConfig = jsonfile.readFileSync(ProductionConfigPath);
 module.exports = (nodeEnvironment) => {
   const isProduction = (nodeEnvironment === 'production')? true : false;
   return (!isProduction) ? {
-    tileServerUrl:  'http://' + DatabaseLinks.tiles.hostname + ':' + DatabaseLinks.tiles.port + '/tiles-leaflet-8/{z}/{x}/{y}.png',
+    tileServerUrl:  'http://' + DatabaseLinks.tiles.hostname + ':' + DatabaseLinks.tiles.port + '/tiles-leaflet-8-fixed/{z}/{x}/{y}.png',
     apiServerUrl: 'http://' + DatabaseLinks.api.hostname + ':' + DatabaseLinks.api.port,
     hostname: ip.address()
   } : {

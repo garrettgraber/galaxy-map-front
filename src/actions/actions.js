@@ -472,6 +472,27 @@ async function nodeIsConnectedToCsilla(Options) {
   }
 }
 
+async function getNodeDataForUtegetuNebula() {
+  try {
+    const response = await ApiService.nodeDataForUtegetuNebula();
+    const NodeData = response.json();
+    return NodeData;
+  } catch(err) {
+    console.log("Error getting node data for Utegetu Nebula");
+  }
+}
+
+async function getNodeDataForTheRedoubt() {
+  try {
+    const response = await ApiService.nodeDataForTheRedoubt();
+    const NodeData = response.json();
+    return NodeData;
+  } catch(err) {
+    console.log("Error getting node data for The Redoubt");
+  }
+}
+
+
 
 
 

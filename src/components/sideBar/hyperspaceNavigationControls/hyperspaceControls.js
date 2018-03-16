@@ -19,7 +19,9 @@ import {
   setDefaultStartPosition,
   setDefaultStartNode,
   setDefaultEndPosition,
-  setDefaultEndNode
+  setDefaultEndNode,
+  emptyStartSystem,
+  emptyEndSystem
 } from '../../../actions/actionCreators.js';
 import {
   getHyperspacePathCollection,
@@ -128,12 +130,14 @@ class HyperspaceControls extends React.Component {
   }
 
   clearCurrentHyperspaceJumpSearch(e) {
-    console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
     this.props.dispatch(setDefaultStartPosition());
-    this.props.dispatch(setDefaultStartNode());
     this.props.dispatch(setDefaultEndPosition());
-    this.props.dispatch(setDefaultEndNode());
     this.props.dispatch(hyperspaceNavigationUpdateOn());
+    this.props.dispatch(setDefaultStartNode());
+    this.props.dispatch(setDefaultEndNode());
+    this.props.dispatch(emptyStartSystem());
+    this.props.dispatch(emptyEndSystem());
+    console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
   }
 
   singleJumpToggle(e) {

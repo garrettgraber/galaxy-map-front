@@ -1,4 +1,4 @@
 {
-	"TILE_SERVER_URL": "http://172.17.0.5:8110/tiles-leaflet-8/{z}/{x}/{y}.png",
+	"TILE_SERVER_URL": "http://172.17.0.5:8110/tiles-leaflet-8-fixed/{z}/{x}/{y}.png",
 	"API_SERVER_URL": ""
 }
