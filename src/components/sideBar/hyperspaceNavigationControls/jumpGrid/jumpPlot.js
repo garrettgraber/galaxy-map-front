@@ -86,7 +86,7 @@ class JumpPlot extends React.Component {
         onMouseLeave={(e) => this.onMouseLeave(e)} >
 
         <div style={{width: '100%'}} >
-          <span className="nav-text" >&nbsp;Length:&nbsp;{jumpDistance.toLocaleString()}&nbsp;parsecs</span>
+          <span className="nav-text" >&nbsp;Distance:&nbsp;{jumpDistance.toLocaleString()}&nbsp;parsecs</span>
           <span className="nav-text" >&nbsp;&nbsp;Jumps:&nbsp;{this.props.PathObject.numberOfJumps}</span>
         </div>
       </div>
