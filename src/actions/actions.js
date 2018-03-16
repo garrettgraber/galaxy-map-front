@@ -509,7 +509,7 @@ export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
       return response.json();
     }).then(data => {
       const NodeDataArray = JSON.parse(data);
-      const NodeState = NodeDataArray[0]
+      const NodeState = NodeDataArray[0];
       const NewNodeState = omit(NodeState, ['_id', '__v']);
       const lat = LngLatSearch.LatLng.lat;
       const lng = LngLatSearch.LatLng.lng;
