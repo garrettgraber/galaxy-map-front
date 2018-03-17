@@ -403,8 +403,12 @@ function setEndNodeAndPoint(Options) {
     ApiService.findHyperspaceNode({system: Options.system}).then(nodeResponse => {
       return nodeResponse.json();
     }).then(dataNode => {
+      console.log("dataNode: ", dataNode);
       const NodeData = JSON.parse(dataNode);
+      console.log("NodeData: ", NodeData);
       const NewPositionStateData = createPositionFromNode(NodeData);
+      console.log("NewPositionStateData: ", NewPositionStateData);
+
       const NewNodeStateData = createNodeState(NodeData);
       const NewPositionState = NewPositionStateData[0];
       const NewNodeState = NewNodeStateData[0];
