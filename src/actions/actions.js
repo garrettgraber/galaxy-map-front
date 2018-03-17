@@ -406,19 +406,15 @@ function setEndNodeAndPoint(Options) {
       const nodeDataArray = JSON.parse(dataNode);
       const NodeData = nodeDataArray[0];
       const NewNodeState = createNodeState(NodeData);
-      console.log("NewNodeState: ", NewNodeState);
       ApiService.findSystemByName(Options.system).then(dataSystem => {
         const DataSystemParsed = JSON.parse(dataSystem);
         const NewPositionState = createPositionFromPlanet(DataSystemParsed);
-        // const NewPositionState = createPositionFromNode(NodeData);
-        console.log("NewPositionState: ", NewPositionState);
         dispatch(setHyperspaceState({
           isStartPosition: Options.isStartPosition,
           NewNodeState: NewNodeState,
           NewPositionState: NewPositionState,
           system: Options.system
         }));
-
       }).catch(SystemDataError => {
         console.log("Error getting system data: ", SystemDataError);
       });
