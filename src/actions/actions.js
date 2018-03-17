@@ -1,5 +1,6 @@
 import omit from 'object.omit';
 import Geohash from 'latlon-geohash';
+import _ from 'lodash';
 
 import {
 	setActiveSystem,
@@ -399,25 +400,28 @@ function checkNodesAndUpdate(Options) {
 
 function setEndNodeAndPoint(Options) {
   return function (dispatch, getState) {
-    console.log("setEndNodeAndPoint Options.system: ", Options.system);
     ApiService.findHyperspaceNode({system: Options.system}).then(nodeResponse => {
       return nodeResponse.json();
     }).then(dataNode => {
-      console.log("dataNode: ", dataNode);
-      const NodeData = JSON.parse(dataNode);
-      console.log("NodeData: ", NodeData);
-      const NewPositionStateData = createPositionFromNode(NodeData);
-      console.log("NewPositionStateData: ", NewPositionStateData);
+      const nodeDataArray = JSON.parse(dataNode);
+      const NodeData = nodeDataArray[0];
+      const NewNodeState = createNodeState(NodeData);
+      console.log("NewNodeState: ", NewNodeState);
+      ApiService.findSystemByName(Options.system).then(dataSystem => {
+        const DataSystemParsed = JSON.parse(dataSystem);
+        const NewPositionState = createPositionFromPlanet(DataSystemParsed);
+        // const NewPositionState = createPositionFromNode(NodeData);
+        console.log("NewPositionState: ", NewPositionState);
+        dispatch(setHyperspaceState({
+          isStartPosition: Options.isStartPosition,
+          NewNodeState: NewNodeState,
+          NewPositionState: NewPositionState,
+          system: Options.system
+        }));
 
-      const NewNodeStateData = createNodeState(NodeData);
-      const NewPositionState = NewPositionStateData[0];
-      const NewNodeState = NewNodeStateData[0];
-      dispatch(setHyperspaceState({
-        isStartPosition: Options.isStartPosition,
-        NewNodeState: NewNodeState,
-        NewPositionState: NewPositionState,
-        system: Options.system
-      }));
+      }).catch(SystemDataError => {
+        console.log("Error getting system data: ", SystemDataError);
+      });
     }).catch(NodeDataError => {
       console.log("Error finding hyperspace node: ", NodeDataError);
     });
@@ -586,6 +590,7 @@ function createPositionFromNode(NodeData) {
   return omit(NodeData, [
     '_id',
     '__v',
+    'geoHash',
     'hyperspaceLanes',
     'loc',
     'nodeId'
@@ -628,4 +633,6 @@ function createPositionFromPlanet(PlanetData) {
   }
 }
 
-function createNodeState(NodeData) { return omit(NodeData, ['_id', '__v', 'loc']) }
+function createNodeState(NodeData) {
+  return omit(NodeData, ['_id', '__v', 'loc', 'geoHash']);
+}
