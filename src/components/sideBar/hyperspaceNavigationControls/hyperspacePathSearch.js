@@ -20,12 +20,9 @@ class HyperspacePathSearch extends React.Component {
     }
     const startDefault = 'Kamino';
     const endDefault = 'Lok';
-
     const jumpSuccessfullyCalculated = hyperspacePathData.length > 0;
     const navigationPaneStyle = (jumpSuccessfullyCalculated)? {height: 520, overFlow: 'visible'} : {height: 288, overFlow: 'visible'};
-
     // const navigationPaneStyle = (jumpSuccessfullyCalculated)? {height: 520} : {height: 520};
-
 
     return (
       <div id="hyperspace-navigation-pane" className="control-row" style={navigationPaneStyle}>

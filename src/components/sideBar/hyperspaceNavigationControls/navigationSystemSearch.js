@@ -9,6 +9,7 @@ import '../../../css/main.css';
 
 import {
   hyperspacePositionSearch,
+  setHyperspaceNavigationPoints
 } from '../../../actions/actions.js';
 import {
   setDefaultStartPosition,
@@ -27,6 +28,8 @@ import {
   defaultCursor,
   notAllowedCursor
 } from '../../../actions/actionCreators.js';
+
+import Place from '../../../classes/place.js';
 
 class NavigationSystemSearch extends React.Component {
   constructor() {
@@ -83,7 +86,16 @@ class NavigationSystemSearch extends React.Component {
     } else {
       const Search = {system: systemValue.value, isStartPosition: this.props.isStartPosition};
       this.setState({system: Search.system});
-      this.props.dispatch(hyperspacePositionSearch(Search));
+
+
+      const SearchPlace = new Place({
+        system: systemValue.value,
+        emptySpace: false,
+        isStartPosition: this.props.isStartPosition
+      });
+
+      this.props.dispatch(setHyperspaceNavigationPoints(SearchPlace));
+      // this.props.dispatch(hyperspacePositionSearch(Search));
     }
   }
 

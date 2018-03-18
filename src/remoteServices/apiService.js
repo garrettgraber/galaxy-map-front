@@ -43,6 +43,18 @@ class ApiService {
 	  });
 	}
 
+	findNearestNodeOfPoint(SearchPoint) {
+	  const nodeQuery = this.API_ENDPOINT + 'hyperspacenode/nearest-node-to-point?' + queryString.stringify(SearchPoint);
+	  return fetch(nodeQuery, {
+	    method: 'GET',
+	    headers: {
+	      'Content-Type': 'application/json'
+	    },
+	  }).then(response => {
+    	return response.json();
+    });
+	}
+
 	getHyperspacePathData(PathSearch) {
 		let jumpEndpoint = this.API_ENDPOINT + 'hyperspace-jump/';
 		jumpEndpoint += (PathSearch.shortest)? 'calc-shortest' : 'calc-many';
@@ -127,6 +139,19 @@ class ApiService {
 	    headers: {
 	      'Content-Type': 'application/json'
 	    },
+	  }).then(response => {
+    	return response.json();
+    });
+	}
+
+	placesConnected(placesArray) {
+		const placesConnectedEndpoint = this.API_ENDPOINT + 'hyperspacenode/places-connected';
+	  return fetch(placesConnectedEndpoint, {
+	    method: 'POST',
+	    headers: {
+	      'Content-Type': 'application/json'
+	    },
+	    body: JSON.stringify(placesArray)
 	  }).then(response => {
     	return response.json();
     });

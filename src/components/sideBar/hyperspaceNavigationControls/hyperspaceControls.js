@@ -79,6 +79,8 @@ class HyperspaceControls extends React.Component {
   findHyperspacePath() {
     const startSystemExists = this.props.hyperspaceStartSystem.length > 0;
     const endSystemExists = this.props.hyperspaceEndSystem.length > 0;
+    console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
+
     if(startSystemExists && endSystemExists) {
       this.setState({ jumpButtonClasses: "hyperspace-navigation-button  button-border-teal" });
       const CurentPathGenerator = new PathGenerator(

@@ -26,7 +26,8 @@ import {
 import {
   findAndSetNearsetHyperspaceNode,
   setCursorValue,
-  buildHyperspaceLaneNamesSet
+  buildHyperspaceLaneNamesSet,
+  setHyperspaceNavigationPoints
 } from '../actions/actions.js';
 
 const { BaseLayer, Overlay } = LayersControl;
@@ -43,6 +44,7 @@ import MapNavigationControl from './mapNavigationControls/mapNavigationControl.j
 import LoadingSpinner from './loading/loadingSpinner.js';
 import HyperspaceNavigation from './hyperspaceNavigation/hyperspaceNavigation.js';
 import Search from './search/search.js';
+import Place from '../classes/place.js';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
@@ -114,13 +116,28 @@ class MapMain extends React.Component {
   onMouseMove(e) { }
 
   onClickHyperspaceNavigation(e) {
+    console.log("e.latlng: ", e.latlng);
+
     if(this.props.pathSearchEnd || this.props.pathSearchStart) {
-      const isStartNode = (this.props.pathSearchStart)? true : false;
-      const HyperspaceNodeSearch = {
-        LatLng: e.latlng,
-        isStartNode: isStartNode
-      }
-      this.props.dispatch(findAndSetNearsetHyperspaceNode(HyperspaceNodeSearch));
+      const isStartPosition = (this.props.pathSearchStart)? true : false;
+      // const HyperspaceNodeSearch = {
+      //   LatLng: e.latlng,
+      //   isStartNode: isStartNode
+      // }
+
+
+
+      const SearchPlace = new Place({
+        lat: e.latlng.lat,
+        lng: e.latlng.lng,
+        emptySpace: true,
+        isStartPosition: isStartPosition
+      });
+
+      this.props.dispatch(setHyperspaceNavigationPoints(SearchPlace));
+
+
+      // this.props.dispatch(findAndSetNearsetHyperspaceNode(HyperspaceNodeSearch));
     } else {
       return null;
     }

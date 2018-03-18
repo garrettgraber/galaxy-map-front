@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { If, Then, Else } from 'react-if';
 
 import SearchData from './searchData/searchData.js';
-import MapControls from './mapControls.js';
 import HyperspacePathSearch from './hyperspaceNavigationControls/hyperspacePathSearch.js';
 import '../../css/main.css';
 

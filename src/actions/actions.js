@@ -53,6 +53,7 @@ import {
   getGalacticXFromLongitude
 } from '../components/hyperspaceNavigation/hyperspaceMethods.js';
 import ApiService from '../remoteServices/apiService.js';
+import Place from '../classes/place.js';
 
 
 
@@ -175,7 +176,6 @@ function createSectorData(CurrentSector) {
   ]);
 }
 
-
 export function plotFreeSpaceJumpToNode(HyperspacePathData) {
   return function(dispatch, getState) {
     const dataStreamMessage = "Jump calculated from " + HyperspacePathData.StartPoint.system + " to " + HyperspacePathData.EndPoint.system;
@@ -247,11 +247,256 @@ export function noSetSelectedHyperspaceRoute() {
 
 
 
+export function setHyperspaceNavigationPoints(PlaceObject) {
+  return function(dispatch, getState) {
+    createNodeAndPositionObjects(PlaceObject).then(NodesAndPositions => {
+      dispatch(checkNodeConnectionAndUpdate({
+        isStartPosition: PlaceObject.isStartPosition,
+        NewNodeState: NodesAndPositions.NewNodeState,
+        NewPositionState: NodesAndPositions.NewPositionState,
+        system: NodesAndPositions.NewPositionState.system
+      }));
+    });
+    return null;
+  }  
+}
+
+
+function checkNodeConnectionAndUpdate(Options) {
+  return function(dispatch, getState) {
+    console.log("checkNodeConnectionAndUpdate has fired...");
+    const unknownRegionsEdgeNode = 'The Redoubt';
+    const widerGalaxyEdgeNode = 'Utegetu Nebula';
+    const CurrentState = getState();
+    const currentStartNode = CurrentState.hyperspaceStartNode.system;
+    const currentEndNode = CurrentState.hyperspaceEndNode.system;
+    const checkConnectionToStartNode = (currentStartNode && !Options.isStartPosition)? true : false;
+    const checkConnectionToEndNode = (currentEndNode && Options.isStartPosition)? true : false;
+    if(checkConnectionToStartNode || checkConnectionToEndNode) {
+      const testStartNode = (checkConnectionToStartNode && !checkConnectionToEndNode)? true : false;
+      const NodeToTest = (testStartNode)? CurrentState.hyperspaceStartNode : CurrentState.hyperspaceEndNode;
+      const NodeSearchPlace = {
+        lat: Options.NewNodeState.lat,
+        lng: Options.NewNodeState.lng
+      };
+      const NodeFixedPlace = {
+        lat: NodeToTest.lat,
+        lng: NodeToTest.lng
+      };
+
+      ApiService.placesConnected([NodeFixedPlace, NodeSearchPlace]).then(connectionData => {
+        if(connectionData.connected) {
+          dispatch(setHyperspaceState(Options));
+        } else {
+          connectionToCoruscantAndCsilla(NodeSearchPlace).then(NodeSearchData => {
+            connectionToCoruscantAndCsilla(NodeFixedPlace).then(NodeFixedData => {
+              const fixedConnectedToCoruscantButNotCsilla = NodeFixedData.connectionCoruscant && !NodeFixedData.connectionCsilla;
+              const fixedConnectedToCsillaButNotCoruscant = NodeFixedData.connectionCsilla && !NodeFixedData.connectionCoruscant;
+              const searchConnectedToCoruscantButNotCsilla = NodeSearchData.connectionCoruscant && !NodeSearchData.connectionCsilla;
+              const searchConnectedToCsillaButNotCoruscant = NodeSearchData.connectionCsilla && !NodeSearchData.connectionCoruscant;
+              const searchHasOneNetworkConnection = (xor(searchConnectedToCoruscantButNotCsilla, searchConnectedToCsillaButNotCoruscant))? true : false;
+              const fixedHasOneNetworkConnection = (xor(fixedConnectedToCoruscantButNotCsilla, fixedConnectedToCsillaButNotCoruscant))? true : false;
+              if(searchHasOneNetworkConnection && fixedHasOneNetworkConnection) {
+                const UnknownRegionsEndPlace = new Place({
+                  system: 'The Redoubt',
+                  emptySpace: false,
+                  isStartPosition: false
+                });
+                const WiderGalaxyEndPlace = new Place({
+                  system: 'Utegetu Nebula',
+                  emptySpace: false,
+                  isStartPosition: false
+                });
+                if(Options.isStartPosition) {
+                  const NewEndPlace = (searchConnectedToCoruscantButNotCsilla)? WiderGalaxyEndPlace : UnknownRegionsEndPlace;
+                  createNodeAndPositionObjects(NewEndPlace).then(EndNodeAndPoint => {
+                    dispatch(setHyperspaceState({
+                      isStartPosition: false,
+                      NewNodeState: EndNodeAndPoint.NewNodeState,
+                      NewPositionState: EndNodeAndPoint.NewPositionState,
+                      system: EndNodeAndPoint.NewPositionState.system
+                    }));
+                    dispatch(setHyperspaceState({
+                      isStartPosition: Options.isStartPosition,
+                      NewNodeState: Options.NewNodeState,
+                      NewPositionState: Options.NewPositionState,
+                      system: Options.NewPositionState.system
+                    }));
+                    dispatch(addItemToDataStream('Jumping to ' + EndNodeAndPoint.NewPositionState.system + ' instead'));
+                  }).catch(errorNewEnd => {
+                    console.log("errorNewEnd: ", errorNewEnd);
+                  });
+                } else {
+                  const NewEndPlace = (fixedConnectedToCoruscantButNotCsilla)? WiderGalaxyEndPlace : UnknownRegionsEndPlace;
+                  createNodeAndPositionObjects(NewEndPlace).then(EndNodeAndPoint => {
+                    dispatch(setHyperspaceState({
+                      isStartPosition: false,
+                      NewNodeState: EndNodeAndPoint.NewNodeState,
+                      NewPositionState: EndNodeAndPoint.NewPositionState,
+                      system: EndNodeAndPoint.NewPositionState.system
+                    }));
+                    dispatch(addItemToDataStream('Jumping to ' + EndNodeAndPoint.NewPositionState.system + ' instead'));
+                  }).catch(errorNewEnd => {
+                    console.log("errorNewEnd: ", errorNewEnd);
+                  });
+                }
+              }
+            }).catch(errorFixed => {
+              console.log("errorFixed: ", errorFixed);
+            });
+
+          }).catch(err => {
+            console.log("err: ", err);
+          });
+        }
+      });
+    } else {
+      dispatch(setHyperspaceState(Options));
+    }
+    return null;
+  }
+}
+
+
+function xor(){
+  let b = false;
+  for( var j = 0; j < arguments.length; j++ )
+  {
+    if( arguments[ j ] && !b ) b = true;
+    else if( arguments[ j ] && b ) return false;
+  }
+  return b;
+};
+
+async function createNodeAndPositionObjects(PlaceObject) {
+  try {
+    const NearestNodeJson = await ApiService.findNearestNodeOfPoint(PlaceObject.searchQuery());
+    const NearestNode = JSON.parse(NearestNodeJson);
+    const NewNodeState = createNodeState(NearestNode);
+    const NewPositionState = await createPositionObject(PlaceObject);
+    return {
+      NewPositionState: NewPositionState,
+      NewNodeState: NewNodeState
+    };
+  } catch(err) {
+    console.log("error: ", err);
+  }
+}
+
+async function createPositionObject(PlaceObject) {
+  try {
+    if(PlaceObject.emptySpace) {
+      return PlaceObject.positionState();
+    } else {
+      const DataSystemSearchJson = await ApiService.findSystemByName(PlaceObject.system);
+      const PlanetData =  JSON.parse(DataSystemSearchJson);
+      return createPositionFromPlanet(PlanetData);
+    }
+  } catch(err) {
+    console.log("error: ", err);
+  }
+}
+
+async function connectionToCoruscantAndCsilla(NodeToTest) {
+  try {
+    const NodeLocation = {
+      lat: NodeToTest.lat,
+      lng: NodeToTest.lng
+    };
+    const CoruscantStatus = await ApiService.placesConnected([NodeLocation, {system: 'Coruscant'}]);
+    const CsillaStatus = await ApiService.placesConnected([NodeLocation, {system: 'Csilla'}]);
+    return {
+      connectionCoruscant: CoruscantStatus.connected,
+      connectionCsilla: CsillaStatus.connected
+    };
+  } catch(err) {
+    console.log("error: ", err);
+  }
+}
 
 
 
 
 
+
+
+
+
+
+export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
+  return function(dispatch, getState) {
+    ApiService.findNearestNode(LngLatSearch.LatLng).then(response => {
+      return response.json();
+    }).then(data => {
+      const NodeDataArray = JSON.parse(data);
+      const NodeState = NodeDataArray[0];
+      const NewNodeState = omit(NodeState, ['_id', '__v']);
+      const lat = LngLatSearch.LatLng.lat;
+      const lng = LngLatSearch.LatLng.lng;
+      let emptySpaceGeoHash = Geohash.encode(lat, lng, 22);
+      const upperCaseGeoHashShort = emptySpaceGeoHash.toUpperCase().slice(0,7);
+      const NameHash = 'Empty Space ' + upperCaseGeoHashShort;
+      const xGalacticLong = getGalacticXFromLongitude(lng);
+      const yGalacticLong = getGalacticYFromLatitude(lat);
+      const xGalactic = xGalacticLong.toFixed(2);
+      const yGalactic = yGalacticLong.toFixed(2);
+      const NewPositionState = {
+        system: NameHash,
+        lat: lat,
+        lng: lng,
+        xGalacticLong: xGalacticLong,
+        yGalacticLong: yGalacticLong,
+        xGalactic: xGalactic,
+        yGalactic: yGalactic,
+        zoom: 10,
+        emptySpace: true,
+        link: '',
+        sector: [null],
+        region: '',
+        coordinates: 'Unknown'
+      };
+
+      if(LngLatSearch.isStartNode) {
+        dispatch(setStartPosition(NewPositionState));
+        dispatch(setStartNode(NewNodeState));
+        dispatch(setStartSystem(NewPositionState.system));
+        dispatch(hyperspaceNavigationUpdateOn());
+      } else {
+
+
+        dispatch(checkNodesAndUpdateLatLng({
+          isStartPosition: false,
+          NewNodeState: NewNodeState,
+          NewPositionState: NewPositionState,
+          system: NewPositionState.system
+        }));
+
+
+
+        // dispatch(setEndPosition(NewPositionState));
+        // dispatch(setEndNode(NewNodeState));
+        // dispatch(setEndSystem(NewPositionState.system));
+        // dispatch(hyperspaceNavigationUpdateOn());
+      }
+      const state = getState();
+      if(state.pathSearchStart) {
+        dispatch(pinPointStartOff());
+      }
+      if(state.pathSearchEnd) {
+        dispatch(pinPointEndOff());
+      }
+      dispatch(defaultCursor());
+    }).catch(err => {
+      console.log("err: ", err);
+      if(LngLatSearch.isStartNode) {
+        dispatch(setStartPositionError(err));
+      } else {
+        dispatch(setEndPositionError(err));
+      }
+    });
+    return null;
+  }
+}
 
 export function hyperspacePositionSearch(SystemSearch) {
   return function(dispatch, getState) {
@@ -369,9 +614,62 @@ function checkNodesAndUpdate(Options) {
         system: Options.system,
         isStartPosition: Options.isStartPosition
       }).then(data => {
+          console.log("data: ", data);
         if(data.connected) {
           dispatch(setHyperspaceState(Options));
         } else {
+          console.log("data: ", data);
+          const connectedToCoruscantButNotCsilla = data.connectionToCoruscant && !data.connectionToCsilla;
+          const searchIsStartName = (connectedToCoruscantButNotCsilla)? widerGalaxyEdgeNode : unknownRegionsEdgeNode;
+          const searchIsEndName = (connectedToCoruscantButNotCsilla)? unknownRegionsEdgeNode : widerGalaxyEdgeNode;
+          const newEndNodeName = (Options.isStartPosition)? searchIsStartName : searchIsEndName;
+          dispatch(setEndNodeAndPoint({
+            isStartPosition: false,
+            system: newEndNodeName
+          }));
+          dispatch(addItemToDataStream('Jumping to ' + newEndNodeName + ' instead'));
+          if(Options.isStartPosition) {
+            dispatch(setHyperspaceState(Options));
+          } else {
+            dispatch(hyperspaceNavigationUpdateOn());
+            dispatch(setPathClickState());
+          }
+        }
+      }).catch(error => {
+        console.log("systems connected error: ", error);
+      });
+    } else {
+      dispatch(setHyperspaceState(Options));
+    }
+    return null;
+  };
+}
+
+function checkNodesAndUpdateLatLng(Options) {
+  return function (dispatch, getState) {
+    const unknownRegionsEdgeNode = 'The Redoubt';
+    const widerGalaxyEdgeNode = 'Utegetu Nebula';
+    const CurrentState = getState();
+    const StartNode = CurrentState.hyperspaceStartNode;
+    const EndNode = CurrentState.hyperspaceEndNode;
+    console.log("StartNode: ", StartNode);
+    console.log("EndNode: ", EndNode);
+    const currentStartNode = StartNode.lat && StartNode.lng;
+    const currentEndNode = EndNode.lat && EndNode.lng;
+    const checkConnectionToStartNode = (currentStartNode && !Options.isStartPosition)? true : false;
+    const checkConnectionToEndNode = (currentEndNode && Options.isStartPosition)? true : false;
+    if(checkConnectionToStartNode || checkConnectionToEndNode) {
+      getNodeConnectionDataLatLng({
+        lat: EndNode.lat,
+        lng: EndNode.lng,
+        system: Options.system,
+        isStartPosition: Options.isStartPosition
+      }).then(data => {
+          console.log("data: ", data);
+        if(data.connected) {
+          dispatch(setHyperspaceState(Options));
+        } else {
+          console.log("data: ", data);
           const connectedToCoruscantButNotCsilla = data.connectionToCoruscant && !data.connectionToCsilla;
           const searchIsStartName = (connectedToCoruscantButNotCsilla)? widerGalaxyEdgeNode : unknownRegionsEdgeNode;
           const searchIsEndName = (connectedToCoruscantButNotCsilla)? unknownRegionsEdgeNode : widerGalaxyEdgeNode;
@@ -403,8 +701,8 @@ function setEndNodeAndPoint(Options) {
     ApiService.findHyperspaceNode({system: Options.system}).then(nodeResponse => {
       return nodeResponse.json();
     }).then(dataNode => {
-      const nodeDataArray = JSON.parse(dataNode);
-      const NodeData = nodeDataArray[0];
+      const NodeData = JSON.parse(dataNode);
+      console.log("NodeData: ", NodeData);
       const NewNodeState = createNodeState(NodeData);
       ApiService.findSystemByName(Options.system).then(dataSystem => {
         const DataSystemParsed = JSON.parse(dataSystem);
@@ -435,6 +733,24 @@ async function getNodeConnectionData(Options) {
     const NodeConnectionData = JSON.parse(NodeConnectionStatus);
     return {
       connected: NodeConnectionData.connected,
+      connectionToCoruscant: CoruscantConnection,
+      connectionToCsilla: CsillaConnection
+    };
+  } catch(err) {
+    console.log("Error checking if nodes are connected: ", err);
+  }
+}
+
+async function getNodeConnectionDataLatLng(Options) {
+  try {
+    const responseCoruscant = await nodeIsConnectedToCoruscant({lat: Options.lat, lng: Options.lng});
+    const CoruscantConnection = JSON.parse(responseCoruscant);
+    const responseCsilla = await nodeIsConnectedToCsilla({lat: Options.lat, lng: Options.lng});
+    const CsillaConnection = JSON.parse(responseCsilla);
+    const NodeConnectionStatus = await checkIfNodesAreConnected(Options);
+    const NodeConnectionData = JSON.parse(NodeConnectionStatus);
+    return {
+      connected: false,
       connectionToCoruscant: CoruscantConnection,
       connectionToCsilla: CsillaConnection
     };
@@ -508,69 +824,7 @@ async function getNodeDataForTheRedoubt() {
 
 
 
-export function findAndSetNearsetHyperspaceNode(LngLatSearch) {
-  return function(dispatch, getState) {
-    ApiService.findNearestNode(LngLatSearch.LatLng).then(response => {
-      return response.json();
-    }).then(data => {
-      const NodeDataArray = JSON.parse(data);
-      const NodeState = NodeDataArray[0];
-      const NewNodeState = omit(NodeState, ['_id', '__v']);
-      const lat = LngLatSearch.LatLng.lat;
-      const lng = LngLatSearch.LatLng.lng;
-      let emptySpaceGeoHash = Geohash.encode(lat, lng, 22);
-      const upperCaseGeoHashShort = emptySpaceGeoHash.toUpperCase().slice(0,7);
-      const NameHash = 'Empty Space ' + upperCaseGeoHashShort;
-      const xGalacticLong = getGalacticXFromLongitude(lng);
-      const yGalacticLong = getGalacticYFromLatitude(lat);
-      const xGalactic = xGalacticLong.toFixed(2);
-      const yGalactic = yGalacticLong.toFixed(2);
-      const NewPositionState = {
-        system: NameHash,
-        lat: lat,
-        lng: lng,
-        xGalacticLong: xGalacticLong,
-        yGalacticLong: yGalacticLong,
-        xGalactic: xGalactic,
-        yGalactic: yGalactic,
-        zoom: 10,
-        emptySpace: true,
-        link: '',
-        sector: [null],
-        region: '',
-        coordinates: 'Unknown'
-      };
 
-      if(LngLatSearch.isStartNode) {
-        dispatch(setStartPosition(NewPositionState));
-        dispatch(setStartNode(NewNodeState));
-        dispatch(setStartSystem(NewPositionState.system));
-        dispatch(hyperspaceNavigationUpdateOn());
-      } else {
-        dispatch(setEndPosition(NewPositionState));
-        dispatch(setEndNode(NewNodeState));
-        dispatch(setEndSystem(NewPositionState.system));
-        dispatch(hyperspaceNavigationUpdateOn());
-      }
-      const state = getState();
-      if(state.pathSearchStart) {
-        dispatch(pinPointStartOff());
-      }
-      if(state.pathSearchEnd) {
-        dispatch(pinPointEndOff());
-      }
-      dispatch(defaultCursor());
-    }).catch(err => {
-      console.log("err: ", err);
-      if(LngLatSearch.isStartNode) {
-        dispatch(setStartPositionError(err));
-      } else {
-        dispatch(setEndPositionError(err));
-      }
-    });
-    return null;
-  }
-}
 
 function setDataStreamItemThenClear(dataStreamItem) {
   return function(dispatch, getState) {
@@ -630,5 +884,5 @@ function createPositionFromPlanet(PlanetData) {
 }
 
 function createNodeState(NodeData) {
-  return omit(NodeData, ['_id', '__v', 'loc', 'geoHash']);
+  return omit(NodeData, ['_id', '__v', 'loc', 'geoHash', 'distanceFromPoint', 'distanceFromPointNormalized']);
 }

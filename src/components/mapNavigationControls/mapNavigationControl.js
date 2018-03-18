@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import { If, Then, Else } from 'react-if';
 
-
 import '../../css/main.css';
 import {
   setMapToZeroZero,
@@ -14,7 +13,6 @@ import {
 } from '../../actions/actionCreators.js';
 
 import GalaxyIconOnEdge from '../../images/icons/randomly-found/galaxy.png';
-
 
 class MapNavigationControl extends React.Component {
   constructor() {
@@ -70,22 +68,17 @@ class MapNavigationControl extends React.Component {
     const mapControlsOn = this.state.mapControlsOn;
     this.setState({mapControlsOn: !mapControlsOn});
     console.log("Map Controls toggle: ", this.state.mapControlsOn);
-
   }
   
 	render() {
-
     const bottomBase = 40;
-
     const mapControlsButtonPositionRight = (this.state.mapControlsOn)? 170 : 0;
     const mapControlsButtonClasses = (this.state.mapControlsOn)? "btn btn-success" : "btn btn-danger";
     const mapControlsButtonMessage = (this.state.mapControlsOn)? "Close Map Tools" : "Open Map Tools";
 
     return (
       <div>
-
         <div style={{position: "fixed", bottom: bottomBase + 65, right: mapControlsButtonPositionRight, width: 40, height: 40, zIndex: 12}}>
-
           <button
             type="button"
             className={mapControlsButtonClasses}
@@ -97,14 +90,10 @@ class MapNavigationControl extends React.Component {
             <i className="fa fa-map-marker"></i>
           </button>
           <ReactTooltip id='close-map-tools-toggle-navigation' place="top">{}</ReactTooltip>
-
         </div>
-
-
         <If condition={ this.state.mapControlsOn }>
             <Then>
               <div style={{bottom: bottomBase, right: 10, height: 220, width: 160, zIndex: 11, position: 'fixed'}}>
-
                 <div style={{height: 40}}>
                   <div  style={{height: '100%', width: '50%', display: 'inline-block'}}>
                     <button
@@ -118,8 +107,6 @@ class MapNavigationControl extends React.Component {
                       <i className="fa fa-minus-circle"></i>
                     </button>
                     <ReactTooltip id='zoom-out-toggle-navigation' place="top">{}</ReactTooltip>
-
-
                   </div>
                   <div  style={{height: '100%', width: '50%', display: 'inline-block'}}>
                     <button
@@ -133,15 +120,10 @@ class MapNavigationControl extends React.Component {
                       <i className="fa fa-plus-circle"></i>
                     </button>
                     <ReactTooltip id='zoom-in-toggle-navigation' place="top">{}</ReactTooltip>
-
-
                   </div>          
                 </div>
-
                 <div style={{height: 160, position: 'fixed', bottom: bottomBase + 5}}>
-
                   <div id="circle" className="rotate-circle" style={{cursor: 'pointer'}}>
-                    
                     <div id="q1" className="quarter map-navigation-pan " onClick={e => this.handleUpPanClick(e)}>
                       <i className="fa fa-angle-double-left"   style={{ position: 'relative', top: '30%', left: '40%', transform: 'rotate(45deg)', fontSize: '28pt' }} ></i>
                     </div>
@@ -149,14 +131,11 @@ class MapNavigationControl extends React.Component {
                     </div>
                     <div id="q3" className="quarter map-navigation-pan " onClick={e => this.handleLeftPanClick(e)} data-tip="Pan Left" data-for="pan-left-navigation-toggle" ><i className="fa fa-angle-double-down"   style={{ position: 'relative', top: '20%', left: '40%', transform: 'rotate(45deg)', fontSize: '28pt' }}></i>
                     </div>
-
                     <div id="q4" className="quarter map-navigation-pan " onClick={e => this.handleDownPanClick(e)}><i className="fa fa-angle-double-right"   style={{ position: 'relative', top: '18%', left: '30%', transform: 'rotate(45deg)', fontSize: '28pt' }}></i>
                     </div>
                   </div>
                 </div>
-
                 <div style={{height: 50, width: 50, borderRadius: 25, position: 'fixed', bottom: bottomBase + 60, right: 63, zIndex: 12}}>
-
                   <button
                     style={{ width: 50, height: 50, fontSize: 18, lineHeight: 1.33, borderRadius: 25, backgroundColor: 'black', verticalAlign: 'middle', display: 'block',  margin: '0 auto', position: 'relative'}}
                     onClick={e => this.goHome(e)}
@@ -171,13 +150,10 @@ class MapNavigationControl extends React.Component {
             </Then>
             <Else>{() => null }</Else>
         </If>
-
       </div>
-
     );
   }
 }
-
 
 
 const mapStateToProps = (state = {}) => {
