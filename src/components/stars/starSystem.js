@@ -11,10 +11,7 @@ import 'leaflet_marker_2x';
 import 'leaflet_marker_shadow';
 import '../../css/main.css';
 
-import { 
-  hyperspacePositionSearch,
-  setHyperspaceNavigationPoints,
-} from '../../actions/actions.js';
+import { setHyperspaceNavigationPoints } from '../../actions/actions.js';
 import StarSystemPopup from './starSystemPopup.js';
 import StarSystemNavigationPopup from './starSystemNavigationPopup.js';
 import Place from '../../classes/place.js';
@@ -30,18 +27,12 @@ class StarSystem extends React.Component {
   onClick(e) {
     if(this.props.pathStartClick || this.props.pathEndClick) {
       const isStartPosition = (this.props.pathStartClick && !this.props.pathEndClick)? true : false;
-
       const SearchPlace = new Place({
         system: this.props.StarObject.system,
         emptySpace: false,
         isStartPosition: isStartPosition
       });
       this.props.dispatch(setHyperspaceNavigationPoints(SearchPlace));
-
-      // this.props.dispatch(hyperspacePositionSearch({
-      //   system: this.props.StarObject.system,
-      //   isStartPosition: isStartPosition
-      // }));
     }
   }
 

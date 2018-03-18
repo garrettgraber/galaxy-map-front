@@ -264,7 +264,6 @@ export function setHyperspaceNavigationPoints(PlaceObject) {
 
 function checkNodeConnectionAndUpdate(Options) {
   return function(dispatch, getState) {
-    console.log("checkNodeConnectionAndUpdate has fired...");
     const unknownRegionsEdgeNode = 'The Redoubt';
     const widerGalaxyEdgeNode = 'Utegetu Nebula';
     const CurrentState = getState();
@@ -614,11 +613,9 @@ function checkNodesAndUpdate(Options) {
         system: Options.system,
         isStartPosition: Options.isStartPosition
       }).then(data => {
-          console.log("data: ", data);
         if(data.connected) {
           dispatch(setHyperspaceState(Options));
         } else {
-          console.log("data: ", data);
           const connectedToCoruscantButNotCsilla = data.connectionToCoruscant && !data.connectionToCsilla;
           const searchIsStartName = (connectedToCoruscantButNotCsilla)? widerGalaxyEdgeNode : unknownRegionsEdgeNode;
           const searchIsEndName = (connectedToCoruscantButNotCsilla)? unknownRegionsEdgeNode : widerGalaxyEdgeNode;
@@ -652,8 +649,6 @@ function checkNodesAndUpdateLatLng(Options) {
     const CurrentState = getState();
     const StartNode = CurrentState.hyperspaceStartNode;
     const EndNode = CurrentState.hyperspaceEndNode;
-    console.log("StartNode: ", StartNode);
-    console.log("EndNode: ", EndNode);
     const currentStartNode = StartNode.lat && StartNode.lng;
     const currentEndNode = EndNode.lat && EndNode.lng;
     const checkConnectionToStartNode = (currentStartNode && !Options.isStartPosition)? true : false;
@@ -665,11 +660,9 @@ function checkNodesAndUpdateLatLng(Options) {
         system: Options.system,
         isStartPosition: Options.isStartPosition
       }).then(data => {
-          console.log("data: ", data);
         if(data.connected) {
           dispatch(setHyperspaceState(Options));
         } else {
-          console.log("data: ", data);
           const connectedToCoruscantButNotCsilla = data.connectionToCoruscant && !data.connectionToCsilla;
           const searchIsStartName = (connectedToCoruscantButNotCsilla)? widerGalaxyEdgeNode : unknownRegionsEdgeNode;
           const searchIsEndName = (connectedToCoruscantButNotCsilla)? unknownRegionsEdgeNode : widerGalaxyEdgeNode;
@@ -702,7 +695,6 @@ function setEndNodeAndPoint(Options) {
       return nodeResponse.json();
     }).then(dataNode => {
       const NodeData = JSON.parse(dataNode);
-      console.log("NodeData: ", NodeData);
       const NewNodeState = createNodeState(NodeData);
       ApiService.findSystemByName(Options.system).then(dataSystem => {
         const DataSystemParsed = JSON.parse(dataSystem);

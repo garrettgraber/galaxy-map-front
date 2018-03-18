@@ -24,7 +24,6 @@ import {
     sectorMapIsOff
 } from '../actions/actionCreators.js';
 import {
-  findAndSetNearsetHyperspaceNode,
   setCursorValue,
   buildHyperspaceLaneNamesSet,
   setHyperspaceNavigationPoints
@@ -116,28 +115,15 @@ class MapMain extends React.Component {
   onMouseMove(e) { }
 
   onClickHyperspaceNavigation(e) {
-    console.log("e.latlng: ", e.latlng);
-
     if(this.props.pathSearchEnd || this.props.pathSearchStart) {
       const isStartPosition = (this.props.pathSearchStart)? true : false;
-      // const HyperspaceNodeSearch = {
-      //   LatLng: e.latlng,
-      //   isStartNode: isStartNode
-      // }
-
-
-
       const SearchPlace = new Place({
         lat: e.latlng.lat,
         lng: e.latlng.lng,
         emptySpace: true,
         isStartPosition: isStartPosition
       });
-
       this.props.dispatch(setHyperspaceNavigationPoints(SearchPlace));
-
-
-      // this.props.dispatch(findAndSetNearsetHyperspaceNode(HyperspaceNodeSearch));
     } else {
       return null;
     }

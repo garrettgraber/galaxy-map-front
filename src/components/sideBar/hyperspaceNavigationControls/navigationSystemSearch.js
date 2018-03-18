@@ -7,10 +7,7 @@ import createFilterOptions from 'react-select-fast-filter-options';
 
 import '../../../css/main.css';
 
-import {
-  hyperspacePositionSearch,
-  setHyperspaceNavigationPoints
-} from '../../../actions/actions.js';
+import { setHyperspaceNavigationPoints } from '../../../actions/actions.js';
 import {
   setDefaultStartPosition,
   setDefaultEndPosition,
@@ -86,16 +83,12 @@ class NavigationSystemSearch extends React.Component {
     } else {
       const Search = {system: systemValue.value, isStartPosition: this.props.isStartPosition};
       this.setState({system: Search.system});
-
-
       const SearchPlace = new Place({
         system: systemValue.value,
         emptySpace: false,
         isStartPosition: this.props.isStartPosition
       });
-
       this.props.dispatch(setHyperspaceNavigationPoints(SearchPlace));
-      // this.props.dispatch(hyperspacePositionSearch(Search));
     }
   }
 
