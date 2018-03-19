@@ -41,10 +41,12 @@ class SearchSystems extends React.Component {
     } else {
       this.setState({ selectValue });
       this.props.dispatch(findSystem(selectValue.value));
+      this.refs.zoomToSystem.focus();
     }
   }
   zoomToPoint(e) {
     if(this.state.selectValue !== null) {
+      this.refs.zoomToSystem.blur();
       const lat = this.props.activeSystem.lat;
       const lng = this.props.activeSystem.lng;
       const systemCenter = [lat, lng];
@@ -73,7 +75,7 @@ class SearchSystems extends React.Component {
           />
         </div>
         <span>
-          <button type="button" className={pointZoom} style={{verticalAlign: "top", marginLeft: 10}} onClick={(e) => this.zoomToPoint(e)}   data-tip={tooltipZoomText}  data-for={'go-to-system-from-search' + this.state.componentId}>
+          <button type="button" className={pointZoom} style={{verticalAlign: "top", marginLeft: 10}} onClick={(e) => this.zoomToPoint(e)}   data-tip={tooltipZoomText}  data-for={'go-to-system-from-search' + this.state.componentId} ref="zoomToSystem">
             <i className={"fa fa-bullseye"} ></i>
           </button>
           <ReactTooltip id={'go-to-system-from-search' + this.state.componentId} place="right">{}</ReactTooltip>

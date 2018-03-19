@@ -1,4 +1,4 @@
-class Logger {
+export default class Logger {
   constructor() {
     this.active = true;
   }
@@ -29,5 +29,3 @@ class Logger {
     }
   }
 };
-
-export default new Logger();

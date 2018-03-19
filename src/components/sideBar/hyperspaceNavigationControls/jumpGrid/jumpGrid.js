@@ -45,13 +45,18 @@ class JumpGrid extends React.Component {
   }
 
   zoomToHyperspacePath() {
-    console.log("Zoom to Hyperspace Path");
     const map = this.props.map;
+    // console.log("navigationObjectBoundaries: ", this.props.navigationObjectBoundaries);
     map.fitBounds(this.props.navigationObjectBoundaries);
+    const newBounds = map.getBounds();
+    this.refs.zoomPathButton.blur();
+    // console.log("new boundaries: ", newBounds);
+    const mapIsAtGalaxyView = mapAtGalaxyView(newBounds);
+    // console.log("mapIsAtGalaxyView: ", mapIsAtGalaxyView);
   }
 
   clearCurrentHyperspaceJump(e) {
-    console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
+    // console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
     this.props.dispatch(emptyHyperspacePathCollections());
     this.props.dispatch(activeStartPositionDefault());
     this.props.dispatch(activeStartNodeDefault());
@@ -59,7 +64,7 @@ class JumpGrid extends React.Component {
     this.props.dispatch(activeEndPositionDefault());
     this.props.dispatch(noNavigationObjectBoundaries());
     this.props.dispatch(hyperspaceNavigationUpdateOn());
-    console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
+    // console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
   }
 
   render() {
@@ -110,6 +115,7 @@ class JumpGrid extends React.Component {
               onClick={(e) => this.zoomToHyperspacePath(e)}
               data-tip="Zoom to Path"
               data-for={'zoom-hyperspace-navigation-click' + this.state.componentId}
+              ref="zoomPathButton"
             >
               <i className="fa fa-bullseye"></i>
             </button>
@@ -118,7 +124,7 @@ class JumpGrid extends React.Component {
             <div className="pane-column">
               <span className="nav-text">&nbsp;&nbsp;Total Paths:&nbsp;&nbsp;{jumpPaths.length}</span>
             </div>
-            <button  id="reset-hyperspace-jump" className="btn hyperspace-navigation-button btn-danger pull-right" style={{width: 40}} onClick={(e) => this.clearCurrentHyperspaceJump(e)} data-tip="Reset Hyperspace Jump" data-for="reset-hyperspace-jump-tooltip-foo" >
+            <button  id="reset-hyperspace-jump" className="btn hyperspace-navigation-button btn-danger pull-right" style={{width: 40}} onClick={(e) => this.clearCurrentHyperspaceJump(e)} data-tip="Reset Hyperspace Jump" data-for="reset-hyperspace-jump-tooltip-foo" ref="resetJump">
               <i className="fa fa-close"></i>
             </button>
             <ReactTooltip id='reset-hyperspace-jump-tooltip-foo' place="top">{}</ReactTooltip>
@@ -146,9 +152,10 @@ class JumpGrid extends React.Component {
 
 function generateGridRowPaths(pathsArray) {
   let masterJumpPlotsArray = [];
+  const singleJump = (pathsArray.length === 1)? true : false;
   for(let i=0; i < pathsArray.length; i++) {
     const Path = pathsArray[i];
-    masterJumpPlotsArray.push(<JumpPlot key={Path.hashValue} PathObject={Path} />);
+    masterJumpPlotsArray.push(<JumpPlot key={Path.hashValue} PathObject={Path} singleJump={singleJump}/>);
   }
   return masterJumpPlotsArray;
 }
@@ -161,6 +168,24 @@ function emptySpaceCheck(system) {
     return emptySpaceName;
   } else {
     return system;
+  }
+}
+
+
+function mapAtGalaxyView(mapBounds) {
+  const aboveIsGalaxyViewLat = 80.0;
+  const aboveIsGalaxyViewLng = 180.0;
+  const northEastLatIsGalaxy = mapBounds._northEast.lat > aboveIsGalaxyViewLat;
+  const northEastLngIsGalaxy = mapBounds._northEast.lng > aboveIsGalaxyViewLng;
+  const southWestLatIsGalaxy = mapBounds._southWest.lat < -aboveIsGalaxyViewLat;
+  const southWestLngIsGalaxy = mapBounds._southWest.lng < -aboveIsGalaxyViewLng;
+  const northEastIsGalaxyLevel = northEastLatIsGalaxy && northEastLngIsGalaxy;
+  const southWestIsGalaxyLevel = southWestLatIsGalaxy && southWestLngIsGalaxy;
+
+  if(northEastIsGalaxyLevel && southWestIsGalaxyLevel) {
+    return true;
+  }else {
+    return false;
   }
 }
 

@@ -32,6 +32,7 @@ class PivotPoint extends React.Component {
   }
   componentDidMount() { }
   zoomToPoint() {
+    this.refs.zoomPoint.blur();
     if(!_.isEmpty(this.props.Point)) {
       const Point = this.props.Point;
       const spaceCoordinates = [Point.lat, Point.lng];
@@ -39,6 +40,7 @@ class PivotPoint extends React.Component {
     }    
   }
   switchSearchType() {
+    this.refs.switchSearchType.blur();
     const searchSystemsNewValue = !this.state.searchSystems;
     this.setState({searchSystems: searchSystemsNewValue});
     if(this.props.isStartPosition) {
@@ -67,9 +69,9 @@ class PivotPoint extends React.Component {
       <div className="pane-section">
         <div className="pane-row-control">
           <div className="nav-text" style={{width: 40, display: "inline-block", verticalAlign: "top"}}>{this.props.pointName.slice(0, 8)}&nbsp;</div>
-          <button id="point-jump-icon" type="button" className={searchSystems} style={{verticalAlign: "top"}}  onClick={(e) => this.switchSearchType(e)}   data-tip="Search by System" data-for={'search-by-system-' + this.state.componentId}><i className={"fa fa-globe"}></i></button>
+          <button id="point-jump-icon" type="button" className={searchSystems} style={{verticalAlign: "top"}}  onClick={(e) => this.switchSearchType(e)}   data-tip="Search by System" data-for={'search-by-system-' + this.state.componentId} ref="switchSearchType"><i className={"fa fa-globe"}></i></button>
           <ReactTooltip id={'search-by-system-' + this.state.componentId} place="top">{}</ReactTooltip>
-          <button type="button" className={pointZoom} style={{verticalAlign: "top"}} onClick={(e) => this.zoomToPoint(e)}   data-tip="Zoom To System" data-for={'go-to-star-system-' + this.state.componentId}><i className={"fa fa-bullseye"}  ></i></button>
+          <button type="button" className={pointZoom} style={{verticalAlign: "top"}} onClick={(e) => this.zoomToPoint(e)}   data-tip="Zoom To System" data-for={'go-to-star-system-' + this.state.componentId} ref="zoomPoint"><i className={"fa fa-bullseye"}  ></i></button>
           <ReactTooltip id={'go-to-star-system-' + this.state.componentId} place="top">{}</ReactTooltip>
           <If condition={ this.state.searchSystems }>
             <Then>

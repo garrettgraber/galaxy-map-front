@@ -19,9 +19,11 @@ class SideBar extends React.Component {
     super();
   }
   searchSystemsToggle(e) {
+    this.refs.searchSystems.blur();
     this.props.dispatch(toggleSystemsSearchControls());
   }
   hyperspaceNavigationControls(e) {
+    this.refs.navigationControls.blur();
     if(this.props.hyperspaceNavigationControlsOn) {
       this.props.dispatch(defaultCursor());
       this.props.dispatch(pathStartClickOff());
@@ -53,6 +55,7 @@ class SideBar extends React.Component {
           onClick={e => this.searchSystemsToggle(e)}
           data-tip="Search"
           data-for="systems-search-toggle"
+          ref="searchSystems"
         >
           <ReactTooltip id='systems-search-toggle'>{}</ReactTooltip>
           <i className="glyphicon glyphicon-search"></i>
@@ -64,6 +67,7 @@ class SideBar extends React.Component {
           onClick={e => this.hyperspaceNavigationControls(e)}
           data-tip="Hyperspace Navigation Computer"
           data-for="hyperspace-navigation-computer-toggle"
+          ref="navigationControls"
         >
           <ReactTooltip id='hyperspace-navigation-computer-toggle'>{}</ReactTooltip>
           <i className="fa fa-rocket"></i>

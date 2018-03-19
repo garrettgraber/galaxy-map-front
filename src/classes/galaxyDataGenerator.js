@@ -2,18 +2,23 @@ import _ from 'lodash';
 import width from 'text-width';
 
 import Planet from './planet.js';
+import Logger from '../classes/logger.js';
+
+const LoggerInstance = new Logger();
+LoggerInstance.setInActive();
+
 
 export default class GalaxyDataGenerator {
 	constructor(StarData) {
-		console.time("Planet Array Build Time");
+		LoggerInstance.time("Planet Array Build Time");
 		this.PlanetsArray = this.buildPlanetArray(StarData);
-		console.timeEnd("Planet Array Build Time");
-		console.log("PlanetsArray length: ", this.PlanetsArray.length);
+		LoggerInstance.timeEnd("Planet Array Build Time");
+		LoggerInstance.log("PlanetsArray length: ", this.PlanetsArray.length);
 		this.systemNameSet = this.buildSystemNamesSet(this.PlanetsArray);
 	}
 
 	buildSystemNamesSet(PlanetsArray) {
-		console.time("System Names Set Build Time");
+		LoggerInstance.time("System Names Set Build Time");
 	  let systemNamesArray = _.map(PlanetsArray, CurrentStar => {
       return { label: CurrentStar.system, value: CurrentStar.system };
 	  }).sort(function(a, b){
@@ -24,7 +29,7 @@ export default class GalaxyDataGenerator {
 	    return 0;
 	  });
 	  const frozenSystemNamesSet = Object.freeze(new Set(systemNamesArray));
-		console.timeEnd("System Names Set Build Time");
+		LoggerInstance.timeEnd("System Names Set Build Time");
 		return frozenSystemNamesSet;
 	}
 

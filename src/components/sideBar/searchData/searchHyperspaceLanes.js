@@ -39,9 +39,11 @@ class SearchHyperspaceLanes extends React.Component {
     } else {
       this.setState({ laneValue });
       this.props.dispatch(findHyperspaceRoute(laneValue.value));
+      this.refs.zoomToButton.focus();
     }
   }
   zoomToPoint(e) {
+    this.refs.zoomToButton.blur();
     if(this.state.laneValue) {
       const dataStreamMessage = "Zoomed to the " + this.props.hyperspaceRouteSearchData.name;
       const map = this.props.map;
@@ -75,7 +77,7 @@ class SearchHyperspaceLanes extends React.Component {
           />
         </div>
         <span>
-          <button type="button" className={pointZoom} style={{verticalAlign: "top", marginLeft: 10}} onClick={(e) => this.zoomToPoint(e)}   data-tip={tooltipZoomText}  data-for={'go-to-lane-from-search' + this.state.componentId}>
+          <button type="button" className={pointZoom} style={{verticalAlign: "top", marginLeft: 10}} onClick={(e) => this.zoomToPoint(e)}   data-tip={tooltipZoomText}  data-for={'go-to-lane-from-search' + this.state.componentId} ref="zoomToButton">
             <i className={"fa fa-bullseye"} ></i>
           </button>
           <ReactTooltip id={'go-to-lane-from-search' + this.state.componentId} place="right">{}</ReactTooltip>

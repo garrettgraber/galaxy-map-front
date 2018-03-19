@@ -25,6 +25,7 @@ class MapNavigationControl extends React.Component {
   componentDidMount() { }
   goHome() {
     if(this.props.mapCenterAndZoom.zoom > 2) {
+      this.refs.galaxyButton.blur();
       this.props.dispatch(addItemToDataStream('Moved to Galaxy View...'));
       this.props.dispatch(setMapToZeroZero());
       this.props.dispatch(loadingIconOff());
@@ -58,16 +59,17 @@ class MapNavigationControl extends React.Component {
     }
   }
   increaseZoom() {
+    this.refs.increaseZoom.blur();
     this.props.dispatch( increaseMapZoom() );
   }
   decreaseZoom() {
+    this.refs.decreaseZoom.blur();
     this.props.dispatch( decreaseMapZoom() );
   }
   mapControlsToggle(e) {
-    console.log("Closing map controls");
+    this.refs.mapOpenToggle.blur();
     const mapControlsOn = this.state.mapControlsOn;
     this.setState({mapControlsOn: !mapControlsOn});
-    console.log("Map Controls toggle: ", this.state.mapControlsOn);
   }
   
 	render() {
@@ -86,6 +88,7 @@ class MapNavigationControl extends React.Component {
             data-tip={mapControlsButtonMessage}
             data-for="close-map-tools-toggle-navigation"
             style={{width: 40, height: 40, borderRadius: 20}}
+            ref="mapOpenToggle"
           >
             <i className="fa fa-map-marker"></i>
           </button>
@@ -103,6 +106,7 @@ class MapNavigationControl extends React.Component {
                       onClick={(e) => this.decreaseZoom(e)}
                       data-tip="Zoom Out"
                       data-for="zoom-out-toggle-navigation"
+                      ref="decreaseZoom"
                     >
                       <i className="fa fa-minus-circle"></i>
                     </button>
@@ -116,6 +120,7 @@ class MapNavigationControl extends React.Component {
                       onClick={(e) => this.increaseZoom(e)}
                       data-tip="Zoom In"
                       data-for="zoom-in-toggle-navigation"
+                      ref="increaseZoom"
                     >
                       <i className="fa fa-plus-circle"></i>
                     </button>
@@ -141,6 +146,7 @@ class MapNavigationControl extends React.Component {
                     onClick={e => this.goHome(e)}
                     data-tip="Galaxy View"
                     data-for="galaxy-view-toggle-navigation"
+                    ref="galaxyButton"
                     >
                     <img  id="galaxy-view-toggle-navigation-image" style={{width: 25, height: 25}} src={GalaxyIconOnEdge} />
                   </button>

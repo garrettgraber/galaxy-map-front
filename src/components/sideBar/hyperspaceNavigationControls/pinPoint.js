@@ -43,6 +43,7 @@ class PinPoint extends React.Component {
   }
 
   pinPointToggle(e) {
+    this.refs.pinPoint.blur();
     if(!this.props.pinPoint) {
       if(this.props.isStartPosition) {
         this.props.dispatch(pathStartClickOff());    
@@ -83,11 +84,11 @@ class PinPoint extends React.Component {
           onClick={(e) => this.pinPointToggle(e)}
           data-tip={buttonTooltip}
           data-for={'pin-point-hyperspace-' + this.state.componentId}
+          ref="pinPoint"
         >
           <i className={pinPointIconButtonClass}></i>
         </button>
         <ReactTooltip id={'pin-point-hyperspace-' + this.state.componentId} place="top">{}</ReactTooltip>
-
         <span className="display-text">&nbsp;&nbsp;{this.props.Point.system}</span>
       </div>
     );

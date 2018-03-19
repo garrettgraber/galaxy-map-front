@@ -21,20 +21,7 @@ class Grid extends React.Component {
         };
     }
 
-    componentDidMount() {
-    	// console.log("grid ref: ", this.refs.grid.leafletElement);
-        // console.log("componentDidMount in grid");
-        // console.log("componentDidMount this.props: ", this.props);
-    }
-
-    pointToLayer(feature, latlng) {
-        // console.log("feature in pointToLayer: ", feature);
-        // console.log("latlng in pointToLayer: ", latlng);
-    }
-
     onEachFeature(feature, layer) {
-        // console.log("layer: ", layer);
-    	// console.log("feature: ", feature);
     	let currentGridValue = feature.properties.grid;
     	let polygonArray = feature.geometry.coordinates[0][0];
         polygonArray = polygonArray.slice(0, 4);
@@ -43,8 +30,6 @@ class Grid extends React.Component {
         let gridInArray = this.state.gridLabelsArray.filter(e => e.grid == currentGridValue);
         const northWestGeoJson = polygonArray[0];
         const southEastGeoJson = polygonArray[2];
-        // console.log("northWestGeoJson: ", northWestGeoJson);
-        // console.log("southEastGeoJson: ", southEastGeoJson);
         const northWest = geoJsonToLatLng(polygonArray[0]);
         const southEast = geoJsonToLatLng(polygonArray[2]);
         const gridCellBounds = [northWest,  southEast];
@@ -56,7 +41,6 @@ class Grid extends React.Component {
 	        });
 		}
         if(this.state.gridLabelsArray.length >= 552) {
-            console.log("Grid Labels Ready. Release the Krakken! ");
             this.setState({gridLabelsReady: true});
         }
     }

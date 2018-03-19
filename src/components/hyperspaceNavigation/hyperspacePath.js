@@ -81,7 +81,6 @@ function createVisibleToplane(lanes, isSinglePath) {
   for(let Lane of lanes) {
     lanePathCoordinates = lanePathCoordinates.concat(Lane.coordinates);
   }
-  console.log("Total coordinates: ", lanePathCoordinates.length);
   const startPoint = lanePathCoordinates[ 0 ];
   const endPoint = lanePathCoordinates[ lanePathCoordinates.length - 1 ];
   const hyperspaceHash = uuidv4();

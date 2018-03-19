@@ -3,6 +3,11 @@ import uuidv4 from 'uuid/v4';
 import { createStore, combineReducers } from 'redux';
 import Actions from '../constants/actionTypesModule.js';
 
+import Logger from '../classes/logger.js';
+
+const LoggerInstance = new Logger();
+LoggerInstance.setInActive();
+
 /**
  * This is a reducer, a pure function with (state, action) => state signature.
  * It describes how an action transforms the state into the next state.
@@ -33,7 +38,7 @@ let storeTest = createStore(counter);
 // However it can also be handy to persist the current state in the localStorage.
 
 storeTest.subscribe(() => {
-  console.log(storeTest.getState());
+  LoggerInstance.log(storeTest.getState());
 });
 
 // The only way to mutate the internal state is to dispatch an action.
@@ -44,7 +49,8 @@ storeTest.dispatch({ type: 'INCREMENT' });
 // 2
 storeTest.dispatch({ type: 'DECREMENT' });
 // 1
-console.log( (storeTest.getState() === 1)? "redux on" : "redux off" );
+const reduxStatus = (storeTest.getState() === 1)? "redux on" : "redux off";
+LoggerInstance.log(reduxStatus);
 
 const CoruscantLocation = {
 	center: [0.00, 0.00],

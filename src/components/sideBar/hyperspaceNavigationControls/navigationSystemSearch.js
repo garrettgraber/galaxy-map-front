@@ -93,6 +93,7 @@ class NavigationSystemSearch extends React.Component {
   }
 
   clickSystemsToggle(e) {
+    this.refs.starSystemClick.blur();
     if(!this.props.clickSystem) {
       if(this.props.isStartPosition) {
         this.props.dispatch(pathEndClickOff());
@@ -141,6 +142,7 @@ class NavigationSystemSearch extends React.Component {
           onClick={(e) => this.clickSystemsToggle(e)}
           data-tip="Click on Star System"
           data-for={'star-system-hyperspace-click' + this.state.componentId}
+          ref="starSystemClick"
         >
           <i className="fa fa-sun-o"></i>
         </button>

@@ -64,19 +64,13 @@ class Regions extends React.Component {
         }
     }
 
-    componentDidMount() {
-    	// console.log("componentDidMount in regions");
-    }
+    componentDidMount() {}
 
-    pointToLayer() {
-        // console.log("pointToLayer has fired in regions...");
-    }
+    pointToLayer() {}
 
     onEachFeature(feature, layer) {
         const currentRegionValue = feature.properties.region;
         const currentRegionLabel = RegionsDictionary[currentRegionValue][0];
-        // console.log("\nregion: ", currentRegionValue);
-        // console.log("lat lng: ", currentRegionLabel);
         let regionInArray = this.state.regionsLabelArray.filter(e => (e.region == currentRegionValue));
         if (regionInArray.length == 0) {
             this.state.regionsLabelArray.push({
@@ -86,14 +80,11 @@ class Regions extends React.Component {
             });
         }
         if(this.state.regionsLabelArray.length >= 10) {
-            console.log("Regions Ready. The Bull is Loose! ");
             this.setState({regionsReady: true});
         }
     }
 
-    regionClick(e) {
-        // console.log("region click e: ", e.latlng);
-    }
+    regionClick(e) { }
 
     render() {
 

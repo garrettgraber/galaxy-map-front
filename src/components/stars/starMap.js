@@ -10,7 +10,8 @@ import GalaxyDataGenerator from '../../classes/galaxyDataGenerator.js';
 import NavigationPoints from '../../classes/navigationPoints.js';
 import Logger from '../../classes/logger.js';
 
-Logger.setInActive();
+const LoggerInstance = new Logger();
+LoggerInstance.setInActive();
 
 import StarSystem from './starSystem.js';
 import {
@@ -54,17 +55,17 @@ class StarMap extends React.Component {
   }
 
   createStarMap(currentZoom, currentMap, NavPoints) {
-    Logger.log("\n****StarMap creation!****");
-    Logger.time('Star Map Generation Time');
+    LoggerInstance.log("\n****StarMap creation!****");
+    LoggerInstance.time('Star Map Generation Time');
     const filteredGalacticPlanetsArray = NavPoints.filteredPlanetsArray(this.state.GalacticPlanetsArray);
     const CurrentStarMap = new StarMapGenerator({
       zoom: currentZoom,
       Map: currentMap
     });
     const StellarData = CurrentStarMap.generateStellarArrays(currentMap, filteredGalacticPlanetsArray, this.state.previousIntersectionMap, this.state.StarMapComponents);
-    Logger.log("Systems Generated for Star Map: " + StellarData.starComponents.length);
-    Logger.timeEnd('Star Map Generation Time');
-    Logger.log("****StarMap finished!****\n");
+    LoggerInstance.log("Systems Generated for Star Map: " + StellarData.starComponents.length);
+    LoggerInstance.timeEnd('Star Map Generation Time');
+    LoggerInstance.log("****StarMap finished!****\n");
     return StellarData;
   }
 

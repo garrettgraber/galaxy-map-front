@@ -36,9 +36,11 @@ class SearchSectors extends React.Component {
     } else {
       this.setState({ sectorValue });
       this.props.dispatch(zoomToSector(sectorValue, 6));
+      this.refs.zoomToButton.focus();
     }
   }
   zoomToPoint(e) {
+    this.refs.zoomToButton.blur();
     if(this.state.sectorValue) {
       const dataStreamMessage = "Zoomed to " + this.state.sectorValue.label + ' Sector ...';
       const map = this.props.map;
@@ -72,7 +74,7 @@ class SearchSectors extends React.Component {
           />
         </div>
         <span>
-          <button type="button" className={pointZoom} style={{verticalAlign: "top", marginLeft: 10}} onClick={(e) => this.zoomToPoint(e)}   data-tip={tooltipZoomText}  data-for={'go-to-sector-from-search' + this.state.componentId}>
+          <button type="button" className={pointZoom} style={{verticalAlign: "top", marginLeft: 10}} onClick={(e) => this.zoomToPoint(e)}   data-tip={tooltipZoomText}  data-for={'go-to-sector-from-search' + this.state.componentId} ref="zoomToButton">
             <i className={"fa fa-bullseye"} ></i>
           </button>
           <ReactTooltip id={'go-to-sector-from-search' + this.state.componentId} place="right">{}</ReactTooltip>

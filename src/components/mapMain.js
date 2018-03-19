@@ -6,10 +6,15 @@ import L from 'leaflet';
 import Geohash from 'latlon-geohash';
 import ScrollArea from 'react-scrollbar';
 
+import Logger from '../classes/logger.js';
+
+const LoggerInstance = new Logger();
+LoggerInstance.setInActive();
+
 import Config from 'Config';
 const activeTileServer = Config.tileServerUrl;
 
-console.log("Config: ", Config);
+LoggerInstance.log(Config);
 
 import {
     setMapCenterAndZoom,

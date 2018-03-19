@@ -83,6 +83,7 @@ class HyperspaceControls extends React.Component {
 
     if(startSystemExists && endSystemExists) {
       this.setState({ jumpButtonClasses: "hyperspace-navigation-button  button-border-teal" });
+      this.refs.calculateJump.focus();
       const CurentPathGenerator = new PathGenerator(
         this.props.hyperspaceActiveStartPoint,
         this.props.hyperspaceActiveEndPoint,
@@ -132,6 +133,7 @@ class HyperspaceControls extends React.Component {
   }
 
   clearCurrentHyperspaceJumpSearch(e) {
+    this.refs.resetJump.blur();
     this.props.dispatch(setDefaultStartPosition());
     this.props.dispatch(setDefaultEndPosition());
     this.props.dispatch(hyperspaceNavigationUpdateOn());
@@ -143,6 +145,7 @@ class HyperspaceControls extends React.Component {
   }
 
   singleJumpToggle(e) {
+    this.refs.jumpToggle.blur();
     const currentJumpIsSingular = this.state.singleJump;
     const newSingleJumpStatus = !currentJumpIsSingular;
     (newSingleJumpStatus)? this.setState({limit: 1}) : this.setState({limit: 2});
@@ -172,7 +175,7 @@ class HyperspaceControls extends React.Component {
 
     return (
       <div className="hyperspace-controls-pane-row pane-section">
-        <img  id="calculate-hyperspace-jump" src={EnterHyperspaceIcon} className={this.state.jumpButtonClasses}  style={JumpButtonStyle} onClick={(e) => this.findHyperspacePath(e)} data-tip="Calculate Jump" data-for="calculate-hyperspace-jump-tooltip" />
+        <img  id="calculate-hyperspace-jump" src={EnterHyperspaceIcon} className={this.state.jumpButtonClasses}  style={JumpButtonStyle} onClick={(e) => this.findHyperspacePath(e)} data-tip="Calculate Jump" data-for="calculate-hyperspace-jump-tooltip" ref="calculateJump"/>
         <ReactTooltip id='calculate-hyperspace-jump-tooltip' place="top">{}</ReactTooltip>
         
         <button
@@ -182,6 +185,7 @@ class HyperspaceControls extends React.Component {
           onClick={(e) => this.singleJumpToggle(e)}
           data-tip={jumpTypeTooltip}
           data-for={'multi-jump-toggle' + this.state.componentId}
+          ref="jumpToggle"
         >
           <If condition={ this.state.singleJump }>
             <Then><i className="fa fa-arrows"></i></Then>
@@ -204,7 +208,7 @@ class HyperspaceControls extends React.Component {
           </Else>
         </If>
         
-        <button  id="reset-hyperspace-jump-search" className="btn hyperspace-navigation-button btn-danger pull-right" style={{width: 40}} onClick={(e) => this.clearCurrentHyperspaceJumpSearch(e)} data-tip="Reset Start & End Points" data-for="reset-hyperspace-jump-search-tooltip" >
+        <button  id="reset-hyperspace-jump-search" className="btn hyperspace-navigation-button btn-danger pull-right" style={{width: 40}} onClick={(e) => this.clearCurrentHyperspaceJumpSearch(e)} data-tip="Reset Start & End Points" data-for="reset-hyperspace-jump-search-tooltip" ref="resetJump" >
           <i className="fa fa-close"></i>
         </button>
         <ReactTooltip id='reset-hyperspace-jump-search-tooltip' place="top">{}</ReactTooltip>

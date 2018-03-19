@@ -18,45 +18,58 @@ class JumpPlot extends React.Component {
     };
   }
 
-  componentDidMount() { }
+  componentDidMount() {
+    if(this.props.singleJump) {
+      this.setState({singleJump: true});
+      this.setState({currentlyActive: true});
+    } else {
+      this.setState({singleJump: false});
+    }
+  }
 
   onClick(e) {
-    const selectedAndNoActiveJump = this.state.selected && this.props.activeHyperspaceJump === null;
-    const jumpIsActive = this.props.activeHyperspaceJump === this.props.PathObject.hashValue;
-    if(!jumpIsActive) {
-      this.setState({currentlyActive: true});
-      this.props.dispatch(activeHyperspaceJump(this.props.PathObject.hashValue));
-    } else if(jumpIsActive) {
-      this.setState({currentlyActive: false});
-      this.props.dispatch(nullActiveHyperspaceJump());
-    } else {
-      console.log("Miss click bitch!");
+    if(!this.props.singleJump) {
+      const selectedAndNoActiveJump = this.state.selected && this.props.activeHyperspaceJump === null;
+      const jumpIsActive = this.props.activeHyperspaceJump === this.props.PathObject.hashValue;
+      if(!jumpIsActive) {
+        this.setState({currentlyActive: true});
+        this.props.dispatch(activeHyperspaceJump(this.props.PathObject.hashValue));
+      } else if(jumpIsActive) {
+        this.setState({currentlyActive: false});
+        this.props.dispatch(nullActiveHyperspaceJump());
+      } else {
+
+      }
     }
   }
 
   onMouseEnter(e) {
-    if(this.props.PathObject.hashValue !== this.props.hyperspaceHash) {
+    if(!this.props.singleJump && this.props.PathObject.hashValue !== this.props.hyperspaceHash) {
       this.setState({selected: true});
       this.props.dispatch(setSelectedHyperspaceRoute(this.props.PathObject.hashValue));
     }
   }
   onMouseLeave(e) {
-    this.setState({selected: false});
+    if(!this.props.singleJump) {
+      this.setState({selected: false});
+    }
   }
 
   onMouseOver(e) {
-    if(this.props.PathObject.hashValue !== this.props.hyperspaceHash) {
+    if(!this.props.singleJump && this.props.PathObject.hashValue !== this.props.hyperspaceHash) {
       this.setState({selected: true});
       this.props.dispatch(setSelectedHyperspaceRoute(this.props.PathObject.hashValue));
     }
   }
 
   onMouseOut(e) {
-    this.setState({selected: false});
+    if(!this.props.singleJump) {
+      this.setState({selected: false});
+    }
   }
 
   componentWillReceiveProps(newProps) {
-    if(this.state.currentlyActive && this.props.PathObject.hashValue !== newProps.activeHyperspaceJump) {
+    if(!this.props.singleJump && this.state.currentlyActive && this.props.PathObject.hashValue !== newProps.activeHyperspaceJump) {
       this.setState({currentlyActive: false});
     }
   }
@@ -74,8 +87,6 @@ class JumpPlot extends React.Component {
       backgroundColor: backgroundColor,
       border: '1px solid #49fb35',
     };
-    const activeStartSystem = this.props.hyperspaceActiveStartPoint.system;
-    const acttveEndSystem = this.props.hyperspaceActiveEndPoint.system;
     const jumpDistance = this.props.PathObject.length.toFixed(2);
 
     return (
