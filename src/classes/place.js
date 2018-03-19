@@ -1,7 +1,5 @@
 import omit from 'object.omit';
 import Geohash from 'latlon-geohash';
-import _ from 'lodash';
-
 
 import {
   getGalacticYFromLatitude,

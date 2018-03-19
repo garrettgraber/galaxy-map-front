@@ -18,9 +18,7 @@ import {
   defaultCursor,
   crosshairCursor,
 } from '../../../actions/actionCreators.js';
-import {
-  setCursorValue
-} from '../../../actions/actions.js';
+
 
 class PinPoint extends React.Component {
   constructor() {

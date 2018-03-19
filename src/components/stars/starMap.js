@@ -8,6 +8,9 @@ import Geohash from 'latlon-geohash';
 import StarMapGenerator from '../../classes/starMapGenerator.js';
 import GalaxyDataGenerator from '../../classes/galaxyDataGenerator.js';
 import NavigationPoints from '../../classes/navigationPoints.js';
+import Logger from '../../classes/logger.js';
+
+// Logger.setInActive();
 
 import StarSystem from './starSystem.js';
 import {
@@ -51,17 +54,17 @@ class StarMap extends React.Component {
   }
 
   createStarMap(currentZoom, currentMap, NavPoints) {
-    console.log("\n****StarMap creation!****");
-    console.time('Star Map Generation Time');
+    Logger.log("\n****StarMap creation!****");
+    Logger.time('Star Map Generation Time');
     const filteredGalacticPlanetsArray = NavPoints.filteredPlanetsArray(this.state.GalacticPlanetsArray);
     const CurrentStarMap = new StarMapGenerator({
       zoom: currentZoom,
       Map: currentMap
     });
     const StellarData = CurrentStarMap.generateStellarArrays(currentMap, filteredGalacticPlanetsArray, this.state.previousIntersectionMap, this.state.StarMapComponents);
-    console.log("Systems Generated for Star Map: ", StellarData.starComponents.length);
-    console.timeEnd('Star Map Generation Time');
-    console.log("****StarMap finished!****\n");
+    Logger.log("Systems Generated for Star Map: " + StellarData.starComponents.length);
+    Logger.timeEnd('Star Map Generation Time');
+    Logger.log("****StarMap finished!****\n");
     return StellarData;
   }
 
