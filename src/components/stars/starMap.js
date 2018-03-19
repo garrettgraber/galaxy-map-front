@@ -10,7 +10,7 @@ import GalaxyDataGenerator from '../../classes/galaxyDataGenerator.js';
 import NavigationPoints from '../../classes/navigationPoints.js';
 import Logger from '../../classes/logger.js';
 
-// Logger.setInActive();
+Logger.setInActive();
 
 import StarSystem from './starSystem.js';
 import {
