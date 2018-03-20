@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { CircleMarker, Popup, Circle, Tooltip, Marker } from 'react-leaflet';
+import { CircleMarker, Marker } from 'react-leaflet';
 import L from 'leaflet';
 import width from 'text-width';
 import { If, Then, Else } from 'react-if';

@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {
   CircleMarker,
-  Popup,
   Marker
 } from 'react-leaflet';
 import L from 'leaflet';
@@ -56,16 +55,23 @@ class SystemsSearchResults extends React.Component {
   }
 }
 
+
 function textIconGenerator(systemName) {
   const textWidth = width(systemName, {size: "1em"});
   let textPadding = 0;
+
   if(textWidth >= 75) {
     textPadding = 30;
-  } else if(textWidth < 75 && textWidth > 40) {
+  } else if(textWidth < 75 && textWidth > 58) {
+    textPadding = 25;
+  } else if(textWidth <= 58 && textWidth > 40) {
     textPadding = 20;
+  } else if(textWidth <= 40 && textWidth > 20) {
+    textPadding = 15;
   } else {
     textPadding = 10;
   }
+
   return L.divIcon({
     className: "systemSearchLabel",
     iconSize: new L.Point(textWidth + textPadding, 24),
@@ -73,6 +79,7 @@ function textIconGenerator(systemName) {
     html: systemName
   });
 }
+
 
 const mapStateToProps = (state = {}) => {
     return Object.assign({}, state);

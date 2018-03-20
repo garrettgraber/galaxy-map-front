@@ -187,6 +187,17 @@ function hyperspaceRouteSearchData(state = BlankHyperspaceRoute, action) {
 			return state;
 	}
 }
+function hyperspaceRouteNameSet(state = emptyNameSet, action) {
+	switch (action.type) {
+		case Actions.BUILD_HYPERSPACE_ROUTE_NAME_SET:
+			const newHyperspaceRouteNameSet = action.payload;
+			return newHyperspaceRouteNameSet;
+		case Actions.EMPTY_HYPERSPACE_ROUTE_NAME_SET:
+			return emptyNameSet;
+		default:
+			return state;
+	}
+}
 function sectorSearchData(state = BlankSector, action) {
 	switch (action.type) {
 		case Actions.NEW_SECTOR_DATA:
@@ -207,32 +218,132 @@ function systemsSearchLocation(state = BlankLocation, action) {
 			return state;
 	}
 }
-function sectorMapOverlayStatus(state = false, action) {
+function searchSystems(state = false, action) {
 	switch (action.type) {
-		case Actions.SECTOR_MAP_ON:
+		case Actions.SEARCH_SYSTEMS_ON:
 			return true;
-		case Actions.SECTOR_MAP_OFF:
+		case Actions.SEARCH_SYSTEMS_OFF:
 			return false;
 		default:
 			return state;
 	}
 }
-function starMapOverlayStatus(state = true, action) {
+function activeSystem(state = BlankPoint, action) {
+	let StateClone = _.cloneDeep(state);
 	switch (action.type) {
-		case Actions.STAR_MAP_ON:
-			return true;
-		case Actions.STAR_MAP_OFF:
-			return false;
+		case Actions.SET_SYSTEM:
+			if(action.payload.zoom === 2) {
+				return CoruscantSystem;
+			} else {
+				return action.payload;
+			}
+		case Actions.INCREMENT_SYSTEM_ZOOM:
+			StateClone.zoom += 1;
+			return StateClone;
+		case Actions.DECREMENT_SYSTEM_ZOOM:
+			StateClone.zoom -= 1;
+			return StateClone;
+		case Actions.SET_SYSTEM_ZOOM_VALUE:
+			if(action.payload.zoom === 2) {
+				return CoruscantSystem;
+			} else {
+				StateClone.zoom = action.payload;
+				return StateClone;
+			}
+		case Actions.SET_SYSTEM_ERROR:
+			return state;
+		case Actions.SET_SYSTEM_TO_CORUSCANT:
+			return CoruscantSystem;
+		case Actions.SET_DEFAULT_SYSYTEM:
+			return BlankPoint;
 		default:
 			return state;
 	}
 }
+function systemsSearchControlsOn(state = false, action) {
+	switch (action.type) {
+		case Actions.SYSTEMS_SEARCH_CONTROLS_ON:
+			return true;
+		case Actions.SYSTEMS_SEARCH_CONTROLS_OFF:
+			return false;
+		case Actions.SYSTEMS_SEARCH_CONTROLS_TOGGLE:
+			let newState = (state)? false : true;
+			return newState;
+		default:
+			return state;
+	}
+}
+function systemNameSet(state = emptyNameSet, action) {
+	switch (action.type) {
+		case Actions.BUILD_SYSTEM_NAME_SET:
+			const newSystemNameSet = action.payload;
+			return newSystemNameSet;
+		case Actions.EMPTY_SYSTEM_NAME_SET:
+			return emptyNameSet;
+		default:
+			return state;
+	}
+}
+function sectorSearchSet(state = emptyNameSet, action) {
+	switch (action.type) {
+		case Actions.ADD_SECTOR_SEARCH_SET:
+			let SetClone = new Set(state);
+			SetClone.add(action.payload);
+			return SetClone;
+		case Actions.BUILD_SECTOR_SEARCH_SET:
+			const newSectorSearchSet = action.payload;
+			return newSectorSearchSet;
+		case Actions.EMPTY_SECTOR_SEARCH_SET:
+			return emptyNameSet;
+		default:
+			return state;
+	}
+}
+
+
 function loadingIconOn(state = false, action) {
 	switch (action.type) {
 		case Actions.LOADING_ICON_ON:
 			return true;
 		case Actions.LOADING_ICON_OFF:
 			return false;
+		default:
+			return state;
+	}
+}
+function dataStream(state = DefaultDataStream, action) {
+	let StateClone = _.cloneDeep(state);
+	switch (action.type) {
+		case Actions.ADD_DATA_STREAM_ITEM:
+			StateClone.currentItem = action.payload;
+			StateClone.streamItemArrray.unshift(action.payload);
+			if(StateClone.streamItemArrray.length > 10) {
+				StateClone.streamItemArrray.pop();
+			}
+			StateClone.deCodedIndex = 0;
+			return StateClone;
+		case Actions.SET_CURRENT_DATA_STREAM_ITEM_TEMP:
+			StateClone.currentItem = action.payload;
+			return StateClone;
+		case Actions.SET_CURRENT_DATA_STREAM_ITEM_TO_MOST_RECENT:
+			StateClone.currentItem = StateClone.streamItemArrray[0];
+			return StateClone;
+		case Actions.SET_CURRENT_DATA_STREAM_ITEM_TO_BLANK:
+			StateClone.currentItem = '';
+			return StateClone;
+		case Actions.DECODE_ADDITIONAL_LETTER:
+			if(StateClone.deCodedIndex < StateClone.currentItem.length) {
+				StateClone.deCodedIndex += 1;
+			}			
+			return StateClone;
+		case Actions.RE_ENCODE_PREVIOUS_LETTER:
+			if(StateClone.deCodedIndex > 0) {
+				StateClone.deCodedIndex -= 1;
+			}
+			return StateClone;
+		case Actions.ZERO_DECODE_LETTERS:
+			StateClone.deCodedIndex = 0;
+			return StateClone;
 		default:
 			return state;
 	}
@@ -279,63 +390,29 @@ function mapControlsDisplayed(state = true, action) {
 			return state;			
 	}
 }
-function sectorSearchSet(state = emptyNameSet, action) {
+function mapCenterAndZoom(state = CoruscantLocation, action) {
+	let StateClone = _.cloneDeep(state);
 	switch (action.type) {
-		case Actions.ADD_SECTOR_SEARCH_SET:
-			let SetClone = new Set(state);
-			SetClone.add(action.payload);
-			return SetClone;
-		case Actions.BUILD_SECTOR_SEARCH_SET:
-			const newSectorSearchSet = action.payload;
-			return newSectorSearchSet;
-		case Actions.EMPTY_SECTOR_SEARCH_SET:
-			return emptyNameSet;
+		case Actions.SET_MAP_CENTER:
+			StateClone.center = action.payload;
+			return StateClone;
+		case Actions.SET_MAP_ZOOM:
+			StateClone.zoom = action.payload;
+			return StateClone;
+		case Actions.SET_MAP_CENTER_AND_ZOOM:
+			StateClone.center = action.payload.center;
+			StateClone.zoom = action.payload.zoom;
+			return StateClone;
+		case Actions.INCREASE_MAP_ZOOM_BY_ONE:
+			StateClone.zoom += 1;
+			return StateClone;
+		case Actions.DECREASE_MAP_ZOOM_BY_ONE:
+			StateClone.zoom -= 1;
+			return StateClone;
+		case Actions.SET_MAP_CENTER_AND_ZOOM_TO_DEFAULT:
+			return CoruscantLocation;
 		default:
-			return state;
-	}
-}
-function systemNameSet(state = emptyNameSet, action) {
-	switch (action.type) {
-		case Actions.BUILD_SYSTEM_NAME_SET:
-			const newSystemNameSet = action.payload;
-			return newSystemNameSet;
-		case Actions.EMPTY_SYSTEM_NAME_SET:
-			return emptyNameSet;
-		default:
-			return state;
-	}
-}
-function hyperspaceRouteNameSet(state = emptyNameSet, action) {
-	switch (action.type) {
-		case Actions.BUILD_HYPERSPACE_ROUTE_NAME_SET:
-			const newHyperspaceRouteNameSet = action.payload;
-			return newHyperspaceRouteNameSet;
-		case Actions.EMPTY_HYPERSPACE_ROUTE_NAME_SET:
-			return emptyNameSet;
-		default:
-			return state;
-	}
-}
-function activeHyperspaceJump(state = nullHyperspaceHash, action) {
-	switch (action.type) {
-		case Actions.SET_ACTIVE_HYPERSPACE_JUMP:
-			const hyperspaceHash = action.payload;
-			return hyperspaceHash;
-		case Actions.SET_NULL_ACTIVE_HYPERSPACE_JUMP:
-			return nullHyperspaceHash;
-		default:
-			return state;
-	}	
-}
-function hyperspaceHash(state = nullHyperspaceHash, action) {
-	switch (action.type) {
-		case Actions.SET_SELECTED_HYPERSPACE_HASH:
-			const hyperspaceHash = action.payload;
-			return hyperspaceHash;
-		case Actions.SET_NULL_HYPERSPACE_HASH:
-			return nullHyperspaceHash;
-		default:
-			return state;			
+			return state;	
 	}
 }
 function southWestMapHash(state = emptyMapHash, action) {
@@ -360,55 +437,28 @@ function northEastMapHash(state = emptyMapHash, action) {
 			return state;
 	}
 }
-function dataStream(state = DefaultDataStream, action) {
-	let StateClone = _.cloneDeep(state);
 
+
+function activeHyperspaceJump(state = nullHyperspaceHash, action) {
 	switch (action.type) {
-		case Actions.ADD_DATA_STREAM_ITEM:
-			StateClone.currentItem = action.payload;
-			StateClone.streamItemArrray.unshift(action.payload);
-			if(StateClone.streamItemArrray.length > 10) {
-				StateClone.streamItemArrray.pop();
-			}
-			StateClone.deCodedIndex = 0;
-			return StateClone;
-		case Actions.SET_CURRENT_DATA_STREAM_ITEM_TEMP:
-			StateClone.currentItem = action.payload;
-			return StateClone;
-		case Actions.SET_CURRENT_DATA_STREAM_ITEM_TO_MOST_RECENT:
-			StateClone.currentItem = StateClone.streamItemArrray[0];
-			return StateClone;
-		case Actions.SET_CURRENT_DATA_STREAM_ITEM_TO_BLANK:
-			StateClone.currentItem = '';
-			return StateClone;
-		case Actions.DECODE_ADDITIONAL_LETTER:
-			if(StateClone.deCodedIndex < StateClone.currentItem.length) {
-				StateClone.deCodedIndex += 1;
-			}			
-			return StateClone;
-		case Actions.RE_ENCODE_PREVIOUS_LETTER:
-			if(StateClone.deCodedIndex > 0) {
-				StateClone.deCodedIndex -= 1;
-			}
-			return StateClone;
-		case Actions.ZERO_DECODE_LETTERS:
-			StateClone.deCodedIndex = 0;
-			return StateClone;
+		case Actions.SET_ACTIVE_HYPERSPACE_JUMP:
+			const hyperspaceHash = action.payload;
+			return hyperspaceHash;
+		case Actions.SET_NULL_ACTIVE_HYPERSPACE_JUMP:
+			return nullHyperspaceHash;
 		default:
 			return state;
-	}
+	}	
 }
-function systemsSearchControlsOn(state = false, action) {
+function hyperspaceHash(state = nullHyperspaceHash, action) {
 	switch (action.type) {
-		case Actions.SYSTEMS_SEARCH_CONTROLS_ON:
-			return true;
-		case Actions.SYSTEMS_SEARCH_CONTROLS_OFF:
-			return false;
-		case Actions.SYSTEMS_SEARCH_CONTROLS_TOGGLE:
-			let newState = (state)? false : true;
-			return newState;
+		case Actions.SET_SELECTED_HYPERSPACE_HASH:
+			const hyperspaceHash = action.payload;
+			return hyperspaceHash;
+		case Actions.SET_NULL_HYPERSPACE_HASH:
+			return nullHyperspaceHash;
 		default:
-			return state;
+			return state;			
 	}
 }
 function hyperspaceNavigationControlsOn(state = false, action) {
@@ -422,63 +472,6 @@ function hyperspaceNavigationControlsOn(state = false, action) {
 			return newState;
 		default:
 			return state;
-	}
-}
-function activeSystem(state = BlankPoint, action) {
-	let StateClone = _.cloneDeep(state);
-	switch (action.type) {
-		case Actions.SET_SYSTEM:
-			if(action.payload.zoom === 2) {
-				return CoruscantSystem;
-			} else {
-				return action.payload;
-			}
-		case Actions.INCREMENT_SYSTEM_ZOOM:
-			StateClone.zoom += 1;
-			return StateClone;
-		case Actions.DECREMENT_SYSTEM_ZOOM:
-			StateClone.zoom -= 1;
-			return StateClone;
-		case Actions.SET_SYSTEM_ZOOM_VALUE:
-			if(action.payload.zoom === 2) {
-				return CoruscantSystem;
-			} else {
-				StateClone.zoom = action.payload;
-				return StateClone;
-			}
-		case Actions.SET_SYSTEM_ERROR:
-			return state;
-		case Actions.SET_SYSTEM_TO_CORUSCANT:
-			return CoruscantSystem;
-		case Actions.SET_DEFAULT_SYSYTEM:
-			return BlankPoint;
-		default:
-			return state;
-	}
-}
-function mapCenterAndZoom(state = CoruscantLocation, action) {
-	let StateClone = _.cloneDeep(state);
-	switch (action.type) {
-		case Actions.SET_MAP_CENTER:
-			StateClone.center = action.payload;
-			return StateClone;
-		case Actions.SET_MAP_ZOOM:
-			StateClone.zoom = action.payload;
-			return StateClone;
-		case Actions.SET_MAP_CENTER_AND_ZOOM:
-			StateClone.center = action.payload.center;
-			StateClone.zoom = action.payload.zoom;
-			return StateClone;
-		case Actions.INCREASE_MAP_ZOOM_BY_ONE:
-			StateClone.zoom += 1;
-			return StateClone;
-		case Actions.DECREASE_MAP_ZOOM_BY_ONE:
-			StateClone.zoom -= 1;
-			return StateClone;
-		case Actions.SET_MAP_CENTER_AND_ZOOM_TO_DEFAULT:
-			return CoruscantLocation;
-		default:
-			return state;	
 	}
 }
 function hyperspacePathCollections(state = [], action) {
@@ -623,16 +616,6 @@ function hyperspaceMaxJumps(state = maxJumps, action) {
 			return state;	
 	}
 }
-function searchSystems(state = false, action) {
-	switch (action.type) {
-		case Actions.SEARCH_SYSTEMS_ON:
-			return true;
-		case Actions.SEARCH_SYSTEMS_OFF:
-			return false;
-		default:
-			return state;
-	}
-}
 function calculateHyperspaceJump(state = false, action) {
 	switch (action.type) {
 		case Actions.CALCULATE_HYPERSPACE_JUMP_ON:
@@ -750,6 +733,29 @@ function updateHyperspaceNavigation(state = false, action) {
 			return state;
 	}
 }
+
+
+function starMapOverlayStatus(state = true, action) {
+	switch (action.type) {
+		case Actions.STAR_MAP_ON:
+			return true;
+		case Actions.STAR_MAP_OFF:
+			return false;
+		default:
+			return state;
+	}
+}
+function sectorMapOverlayStatus(state = false, action) {
+	switch (action.type) {
+		case Actions.SECTOR_MAP_ON:
+			return true;
+		case Actions.SECTOR_MAP_OFF:
+			return false;
+		default:
+			return state;
+	}
+}
+
 
 export default combineReducers({
 	navigationObjectBoundaries,
