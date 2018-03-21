@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import distance from 'euclidean-distance';
 import ReactTooltip from 'react-tooltip';
 import { If, Then, Else } from 'react-if';
 
@@ -40,7 +39,8 @@ class HyperspaceControls extends React.Component {
       maxJumps: 30,
       limit: 1,
       jumpButtonClasses: 'hyperspace-navigation-button pulsating-button-off',
-      singleJump: true
+      singleJump: true,
+      multiplePathsEnabled: false
     };
   }
 
@@ -146,10 +146,12 @@ class HyperspaceControls extends React.Component {
 
   singleJumpToggle(e) {
     this.refs.jumpToggle.blur();
-    const currentJumpIsSingular = this.state.singleJump;
-    const newSingleJumpStatus = !currentJumpIsSingular;
-    (newSingleJumpStatus)? this.setState({limit: 1}) : this.setState({limit: 2});
-    this.setState({singleJump: newSingleJumpStatus});
+    if(this.state.multiplePathsEnabled) {
+      const currentJumpIsSingular = this.state.singleJump;
+      const newSingleJumpStatus = !currentJumpIsSingular;
+      (newSingleJumpStatus)? this.setState({limit: 1}) : this.setState({limit: 2});
+      this.setState({singleJump: newSingleJumpStatus});
+    }
   }
 
   render() {
@@ -170,8 +172,8 @@ class HyperspaceControls extends React.Component {
       color: 'red'
     };
 
-    const singleJumpToggleClasses = (this.state.singleJump)? "btn hyperspace-navigation-button btn-warning" : "btn hyperspace-navigation-button btn-success";
-    const jumpTypeTooltip = (this.state.singleJump)? "Calculate Multiple Paths" : "Calculate Single Path";
+    const singleJumpToggleClasses = (this.state.singleJump)? "btn hyperspace-navigation-button btn-success" : "btn hyperspace-navigation-button btn-warning";
+    const jumpTypeTooltip = (this.state.singleJump)? "Calculating Single Path" : "Calculating Multiple Path";
 
     return (
       <div className="hyperspace-controls-pane-row pane-section">
@@ -188,8 +190,8 @@ class HyperspaceControls extends React.Component {
           ref="jumpToggle"
         >
           <If condition={ this.state.singleJump }>
-            <Then><i className="fa fa-arrows"></i></Then>
-            <Else><i className="fa fa-arrow-right"></i></Else>
+            <Then><i className="fa fa-arrow-right"></i></Then>
+            <Else><i className="fa fa-arrows"></i></Else>
           </If>
         </button>
         <ReactTooltip id={'multi-jump-toggle' + this.state.componentId} place="top">{}</ReactTooltip>
