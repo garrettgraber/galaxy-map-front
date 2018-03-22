@@ -5,6 +5,7 @@ import createFilterOptions from 'react-select-fast-filter-options';
 import ReactTooltip from 'react-tooltip';
 import uuidv4 from 'uuid/v4';
 
+
 import { findSystem } from '../../../actions/actions.js';
 import {
   noSystemsLocation,
@@ -61,6 +62,8 @@ class SearchSystems extends React.Component {
     const filterOptions = createFilterOptions({ options: selectOptions });
     const tooltipZoomText = (this.state.selectValue)? 'Zoom to ' + this.state.selectValue.value : 'No System selected';
     const pointZoom = (this.state.selectValue)? 'btn hyperspace-navigation-button btn-success' : 'btn hyperspace-navigation-button btn-danger';
+
+    const newButtonZoom = (this.state.selectValue)? 'success' : 'danger';
 
     return (
       <div style={{display: 'inline-block'}}>

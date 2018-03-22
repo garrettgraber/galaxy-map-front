@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import MapMain from './mapMain.js';
 
+
 class App extends React.Component {
 	constructor(props, context) {
 	    super(props, context);

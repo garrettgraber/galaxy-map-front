@@ -59,7 +59,9 @@ import 'react-virtualized/styles.css';
 import 'react-virtualized-select/styles.css';
 
 import imgBlack from '../images/black-tile.png';
+import imgWhite from '../images/white-tile.png';
 const blackTileImage = imgBlack;
+const whiteTileImage = imgWhite;
 
 class MapMain extends React.Component {
   constructor(props) {
@@ -169,6 +171,7 @@ class MapMain extends React.Component {
   	const maxZoom = 8;
   	const zIndexGalaxy = 210;
     const zIndexBlack = 205;
+    const zIndexWhite = 204;
 
   	return (
       <ScrollArea
@@ -210,6 +213,11 @@ class MapMain extends React.Component {
               <BaseLayer name="Black" checked={false} >
                 <Pane name="black-pane" style={{ zIndex: zIndexBlack }}>
                   <TileLayer url={blackTileImage} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} />
+                </Pane>
+              </BaseLayer>
+              <BaseLayer name="White" checked={false} >
+                <Pane name="white-pane" style={{ zIndex: zIndexWhite }}>
+                  <TileLayer url={whiteTileImage} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} />
                 </Pane>
               </BaseLayer>
               <Overlay name="Sectors" checked={this.props.sectorMapOverlayStatus}>
