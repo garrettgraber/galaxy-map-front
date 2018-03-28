@@ -1,52 +1,11 @@
 
 
-#circle {
-  display: block;
-  padding: 0;
-  width: 160px;
-  height: 160px;
-  border: 1px;
-  border-radius: 50%;
-  overflow: hidden;
-}
-.quarter {
-  display:table-cell;
-  float: left;
-  margin: 0;
-  padding: 0;
-  width: 80px;
-  height: 80px;
-  border: 1px solid white;
-}
-
 .rotate-circle {
     -webkit-transform: rotate(45deg);
     -moz-transform: rotate(45deg);
     -o-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
-}
-
-.map-navigation-pan {
-    /*background-color: #708090;*/
-    /*background-color: #428bca;*/
-    background-color: #337AB7;
-}
-
-#q1 {
-    color: white;
-}
-
-#q2 {
-    color: white;
-}
-
-#q3 {
-    color: white;
-}
-
-#q4 {
-    color: white;
 }
 
 
@@ -67,9 +26,8 @@
     font-style: normal;
 }
 
-.aurebesh-font{
-    font-family:'Aurebesh';
-}
+
+
 
 
 .navbar-button {

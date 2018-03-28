@@ -140,9 +140,6 @@ const nullHyperspaceHash = null;
 const emptyNameSet = new Set();
 
 
-
-
-
 function navigationObjectBoundaries(state = NullBoundaryObject, action) {
   switch (action.type) {
     case Actions.NEW_NAVIGATION_OBJECT_BOUNDARIES:
@@ -755,7 +752,26 @@ function sectorMapOverlayStatus(state = false, action) {
 			return state;
 	}
 }
-
+function blackBaseMapOverlayStatus(state = false, action) {
+  switch (action.type) {
+    case Actions.BLACK_BASE_MAP_ON:
+      return true;
+    case Actions.BLACK_BASE_MAP_OFF:
+      return false;
+    default:
+      return state;
+  }
+}
+function galaxyBaseMapOverlayStatus(state = true, action) {
+  switch (action.type) {
+    case Actions.GALAXY_BASE_MAP_ON:
+      return true;
+    case Actions.GALAXY_BASE_MAP_OFF:
+      return false;
+    default:
+      return state;
+  }
+}
 
 export default combineReducers({
 	navigationObjectBoundaries,
@@ -764,6 +780,8 @@ export default combineReducers({
 	hyperspaceRouteSearchData,
 	sectorSearchData,
 	systemsSearchLocation,
+	galaxyBaseMapOverlayStatus,
+	blackBaseMapOverlayStatus,
 	sectorMapOverlayStatus,
 	starMapOverlayStatus,
 	loadingIconOn,

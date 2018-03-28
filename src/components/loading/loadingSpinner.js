@@ -20,7 +20,6 @@ class LoadingSpinner extends React.Component {
     const spinnerMaxTimeSeconds = 30;
     setTimeout(() => {
       if(this.props.loadingIconOn && !this.props.updateHyperspaceNavigation) {
-        console.log("Spinner should stop now");
         this.props.dispatch(loadingIconOff());
       }
     }, spinnerMaxTimeSeconds * 1000);

@@ -156,6 +156,12 @@ class MapMain extends React.Component {
     } else if(e.name === 'Sectors') {
       this.props.dispatch(sectorMapIsOn());
     }
+
+    console.log("e.name added: ", e.name);
+  }
+
+  onBaselayerChange(e) {
+    console.log("baselayer change: ", e);
   }
 
   onOverlayremove(e) {
@@ -164,6 +170,8 @@ class MapMain extends React.Component {
     } else if(e.name === 'Sectors') {
       this.props.dispatch(sectorMapIsOff());
     }
+
+    console.log("e.name removed: ", e.name);
   }
 
   render() {
@@ -172,6 +180,11 @@ class MapMain extends React.Component {
   	const zIndexGalaxy = 210;
     const zIndexBlack = 205;
     const zIndexWhite = 204;
+
+    if(this.refs.map) {
+      const LeafletMap = this.refs.map;
+      // console.log("LeafletMap: ", LeafletMap);
+    }
 
   	return (
       <ScrollArea
