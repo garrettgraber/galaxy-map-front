@@ -20,7 +20,7 @@ module.exports = merge(common, {
           pure_getters: true,
           unsafe: true,
           unsafe_comps: true,
-          screw_ie8: true,
+          ie8: false,
           conditionals: true,
           unused: true,
           comparisons: true,
