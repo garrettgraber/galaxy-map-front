@@ -16,6 +16,8 @@ module.exports = merge(common, {
       uglifyOptions: {
         mangle: false
       }
-    })
+    }),
+    new webpack.optimize.DedupePlugin(), //dedupe similar code 
+    new webpack.optimize.AggressiveMergingPlugin() //Merge chunks
   ]
 });
