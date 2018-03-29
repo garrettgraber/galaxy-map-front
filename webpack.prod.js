@@ -32,10 +32,10 @@ module.exports = merge(common, {
           drop_debugger: true,
           drop_console: true, // strips console statements
           booleans: true,
+        },
+        output: {
+          comments: false,
         }
-      },
-      output: {
-        comments: false,
       },
       cache: true
     }),
