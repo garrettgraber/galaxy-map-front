@@ -36,7 +36,7 @@ module.exports = merge(common, {
       },
       output: {
         comments: false,
-      }
+      },
       cache: true
     }),
     new webpack.optimize.AggressiveMergingPlugin() //Merge chunks
