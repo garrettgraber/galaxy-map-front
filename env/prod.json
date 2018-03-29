@@ -1,4 +1,4 @@
 {
 	"TILE_SERVER_URL": "https://s3.amazonaws.com/tiledata.sw.map.east.master/tiles-leaflet-8-master/{z}/{x}/{y}.png",
-	"API_SERVER_URL": "http://www.api.travelinhyperspace.com"
+	"API_SERVER_URL": "http://ec2-54-145-162-235.compute-1.amazonaws.com"
 }
