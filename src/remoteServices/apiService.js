@@ -157,6 +157,54 @@ class ApiService {
     });
 	}
 
+	gridGeoJsonData() {
+	  const gridGeoJsonEndpoint = this.API_ENDPOINT + 'data/grid';
+	  return fetch(gridGeoJsonEndpoint, {
+	    method: 'GET',
+	    headers: {
+	      'Content-Type': 'application/json'
+	    },
+	  }).then(response => {
+    	return response.json();
+    });
+	}
+
+	regionGeoJsonData() {
+	  const regionGeoJsonEndpoint = this.API_ENDPOINT + 'data/region';
+	  return fetch(regionGeoJsonEndpoint, {
+	    method: 'GET',
+	    headers: {
+	      'Content-Type': 'application/json'
+	    },
+	  }).then(response => {
+    	return response.json();
+    });
+	}
+
+	sectorGeoJsonData() {
+	  const sectorGeoJsonEndpoint = this.API_ENDPOINT + 'data/sector';
+	  return fetch(sectorGeoJsonEndpoint, {
+	    method: 'GET',
+	    headers: {
+	      'Content-Type': 'application/json'
+	    },
+	  }).then(response => {
+    	return response.json();
+    });
+	}
+
+	hyperspaceGeoJsonData() {
+	  const hyperspaceGeoJsonEndpoint = this.API_ENDPOINT + 'data/hyperspace';
+	  return fetch(hyperspaceGeoJsonEndpoint, {
+	    method: 'GET',
+	    headers: {
+	      'Content-Type': 'application/json'
+	    },
+	  }).then(response => {
+    	return response.json();
+    });
+	}
+
 }
 
 export default new ApiService();

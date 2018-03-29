@@ -1,21 +1,33 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Pane, GeoJSON } from 'react-leaflet';
+import { Pane, GeoJSON, LayerGroup } from 'react-leaflet';
 import L from 'leaflet';
+import { If, Then, Else } from 'react-if';
+import _ from 'lodash';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
 import 'leaflet_marker_2x';
 import 'leaflet_marker_shadow';
 
-import HyperspaceData from 'json-loader!../../data/hyperspace.geojson';
+import ApiService from '../../remoteServices/apiService.js';
 
 class HyperspaceLanesData extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      HyperspaceData: {}
+    };
   }
 
-  componentDidMount() { }
+  componentDidMount() {
+    ApiService.hyperspaceGeoJsonData().then(jsonResponse => {
+      const Data = JSON.parse(jsonResponse);
+      this.setState({HyperspaceData: Data});
+    }).catch(err => {
+      console.log("Error getting hyperspace geo json data: ", err);
+    });
+  }
 
   onEachFeature(feature, layer) {
     if(feature.properties.hyperspace) {
@@ -47,9 +59,22 @@ class HyperspaceLanesData extends React.Component {
     const hyperspaceLanesStyleCarolina = {color: '#99badd ', weight: 3};
   	const zIndex = 250;
   	return (
-  		<Pane name="hyperspace-pane" style={{ zIndex: zIndex }}>
-  			<GeoJSON data={HyperspaceData} style={hyperspaceLanesStyleCarolina} ref='hyperspace' onEachFeature={(feature, layer) => this.onEachFeature(feature,layer)}  pointToLayer={(feature, latlng) => this.pointToLayer(feature, latlng)}/>
-  		</Pane>
+      <LayerGroup className="layer-group">
+    		<Pane name="hyperspace-pane" style={{ zIndex: zIndex }}>
+          <If condition={ !_.isEmpty(this.state.HyperspaceData)}>
+            <Then>
+              <GeoJSON
+                data={this.state.HyperspaceData}
+                style={hyperspaceLanesStyleCarolina}
+                ref='hyperspace'
+                onEachFeature={(feature, layer) => this.onEachFeature(feature,layer)}
+                pointToLayer={(feature, latlng) => this.pointToLayer(feature, latlng)}
+              />
+            </Then>
+            <Else>{() => null }</Else>
+          </If>
+    		</Pane>
+      </LayerGroup>
   	)
   }
 }
