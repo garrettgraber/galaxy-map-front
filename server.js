@@ -82,9 +82,9 @@ app.get('/api/*', function(req, res) {
   const apiFullUrl = API + apiFragUrl;
   request(apiFullUrl, function(error, response, body) {
     if(error) {
-      // console.log("error: ", error);
+      console.log("error: ", error);
     } else if(response.statusCode === 200) {
-      res.json(body);
+      res.send(body);
     } else {
       // console.log("API error");
     }
@@ -101,7 +101,6 @@ app.post('/api/*', function(req, res) {
   console.log("post data: ", req.body);
   const apiFragUrl = req.url;
   const apiFullUrl = API + apiFragUrl;
-  // res.json(req.body);
   const JumpData = req.body;
   const options = {
     method: 'post',
@@ -116,7 +115,7 @@ app.post('/api/*', function(req, res) {
       res.sendStatus(500);
     } else {
       console.log("Found hyperspace jump, loading to front end!!");
-      res.json(body);
+      res.send(body);
     }
   });
 });
@@ -136,3 +135,13 @@ const server = app.listen(port, hostname, function onStart(err) {
 });
 
 server.keepAliveTimeout = 60000 * 2;
+
+
+function isJson(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}

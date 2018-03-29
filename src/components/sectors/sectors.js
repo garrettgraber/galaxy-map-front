@@ -24,8 +24,7 @@ class Sectors extends React.Component {
   }
 
   componentDidMount() {
-    ApiService.sectorGeoJsonData().then(jsonResponse => {
-      const Data = JSON.parse(jsonResponse);
+    ApiService.sectorGeoJsonData().then(Data => {
       this.setState({SectorData: Data});
     }).catch(err => {
       console.log("Error getting grid sector json data: ", err);

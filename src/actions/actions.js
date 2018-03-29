@@ -42,6 +42,19 @@ import Place from '../classes/place.js';
 
 
 
+
+
+function isJson(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
+
+
 export function setCursorValue() {
   return function(dispatch, getState) {
     const currentCursor = getState().cursorValue;
@@ -55,8 +68,7 @@ export function setCursorValue() {
 export function findSystem(systemName) {
 	return function(dispatch, getState) {
     dispatch( searchSystemsStart() );
-    ApiService.findSystemByName(systemName).then(json => {
-    	let SystemObject = JSON.parse(json);
+    ApiService.findSystemByName(systemName).then(SystemObject => {
     	if(SystemObject.hasLocation) {
         const dataStreamMessage = "Found " + SystemObject.system + ' ...';
         dispatch( addItemToDataStream(dataStreamMessage) );
@@ -114,8 +126,7 @@ export function zoomToLocation(locationCenter, zoom) {
 // Sector Actions
 export function zoomToSector(SectorSearch, zoom) {
   return function(dispatch, getState) {
-    ApiService.findSector({name: SectorSearch.label}).then(sectorFoundJson => {
-      const sectorFoundResults = JSON.parse(sectorFoundJson);
+    ApiService.findSector({name: SectorSearch.label}).then(sectorFoundResults => {
       const SectorFound = sectorFoundResults[0];
       const dataStreamMessage = "Found the " + SectorFound.name + ' Sector...';
       dispatch( addItemToDataStream(dataStreamMessage) );
@@ -158,9 +169,7 @@ export function getHyperspacePathCollection(HyperspacePathSearch, HyperspacePath
 	return function(dispatch, getState) {
     dispatch(calculateHyperspaceJumpOn());
     dispatch(loadingIconOn());
-    ApiService.getHyperspacePathData(HyperspacePathSearch).then(response => {
-      return response.json();
-    }).then(data => {
+    ApiService.getHyperspacePathData(HyperspacePathSearch).then(data => {
       const dataStreamMessage = "Jump calculated from " + HyperspacePathSearch.startPoint + " to " + HyperspacePathSearch.endPoint;
       dispatch(addItemToDataStream(dataStreamMessage));
       dispatch(loadHyperspacePathCollections(data));
@@ -203,10 +212,9 @@ export function noSetSelectedHyperspaceRoute() {
 
 export function findHyperspaceRoute(routeName) {
   return function(dispatch, getState) {
-    ApiService.searchForHyperspaceRoute({name: routeName}).then(data => {
-      const dataParsed = JSON.parse(data);
-      dispatch(addItemToDataStream('Found the ' + dataParsed.name));
-      dispatch(newHyperspaceRoute(dataParsed));
+    ApiService.searchForHyperspaceRoute({name: routeName}).then(RouteData => {
+      dispatch(addItemToDataStream('Found the ' + RouteData.name));
+      dispatch(newHyperspaceRoute(RouteData));
     });
     return null;
   }  
@@ -214,9 +222,8 @@ export function findHyperspaceRoute(routeName) {
 
 export function buildHyperspaceLaneNamesSet() {
   return function(dispatch, getState) {
-    ApiService.allHyperspaceLaneNames().then(data => {
-      const dataParsed = JSON.parse(data);
-      const laneNamesSet = new Set(dataParsed);
+    ApiService.allHyperspaceLaneNames().then(LaneData => {
+      const laneNamesSet = new Set(LaneData);
       dispatch(buildHyperspaceRouteNameSet(laneNamesSet));
     });
     return null; 
@@ -350,8 +357,7 @@ function xor(){
 
 async function createNodeAndPositionObjects(PlaceObject) {
   try {
-    const NearestNodeJson = await ApiService.findNearestNodeOfPoint(PlaceObject.searchQuery());
-    const NearestNode = JSON.parse(NearestNodeJson);
+    const NearestNode = await ApiService.findNearestNodeOfPoint(PlaceObject.searchQuery());
     const NewNodeState = createNodeState(NearestNode);
     const NewPositionState = await createPositionObject(PlaceObject);
     return {
@@ -368,8 +374,7 @@ async function createPositionObject(PlaceObject) {
     if(PlaceObject.emptySpace) {
       return PlaceObject.positionState();
     } else {
-      const DataSystemSearchJson = await ApiService.findSystemByName(PlaceObject.system);
-      const PlanetData =  JSON.parse(DataSystemSearchJson);
+      const PlanetData = await ApiService.findSystemByName(PlaceObject.system);
       return createPositionFromPlanet(PlanetData);
     }
   } catch(err) {

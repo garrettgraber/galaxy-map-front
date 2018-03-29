@@ -21,8 +21,7 @@ class HyperspaceLanesData extends React.Component {
   }
 
   componentDidMount() {
-    ApiService.hyperspaceGeoJsonData().then(jsonResponse => {
-      const Data = JSON.parse(jsonResponse);
+    ApiService.hyperspaceGeoJsonData().then(Data => {
       this.setState({HyperspaceData: Data});
     }).catch(err => {
       console.log("Error getting hyperspace geo json data: ", err);

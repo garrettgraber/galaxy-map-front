@@ -9,6 +9,8 @@ import StarMapGenerator from '../../classes/starMapGenerator.js';
 import GalaxyDataGenerator from '../../classes/galaxyDataGenerator.js';
 import NavigationPoints from '../../classes/navigationPoints.js';
 import Logger from '../../classes/logger.js';
+import ApiService from '../../remoteServices/apiService.js';
+
 
 const LoggerInstance = new Logger();
 LoggerInstance.setInActive();
@@ -40,11 +42,8 @@ class StarMap extends React.Component {
   }
 
   componentDidMount() {
-  	fetch('/api/has-location')  
-		.then(response => {
-	    	return response.json();
-		}).then(data => {
-      const GalaxyData = new GalaxyDataGenerator(JSON.parse(data));
+  	ApiService.allPlanetsWithALocation().then(PlanetData => {
+      const GalaxyData = new GalaxyDataGenerator(PlanetData);
       this.setState({GalacticPlanetsArray: GalaxyData.PlanetsArray});
       const currentMapZoom = this.props.map.getZoom();
       const MapBoundariesHashes = getNorthEastAndSoutWestBounds(this.props.map);

@@ -156,7 +156,6 @@ class MapMain extends React.Component {
     } else if(e.name === 'Sectors') {
       this.props.dispatch(sectorMapIsOn());
     }
-
     console.log("e.name added: ", e.name);
   }
 

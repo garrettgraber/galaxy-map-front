@@ -68,8 +68,7 @@ class Regions extends React.Component {
   }
 
   componentDidMount() {
-    ApiService.regionGeoJsonData().then(jsonResponse => {
-      const Data = JSON.parse(jsonResponse);
+    ApiService.regionGeoJsonData().then(Data => {
       this.setState({RegionData: Data});
     }).catch(err => {
       console.log("Error getting regions geo json data: ", err);

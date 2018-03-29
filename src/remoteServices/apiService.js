@@ -2,13 +2,40 @@ import 'whatwg-fetch';
 import queryString from 'query-string';
 import urlencode from 'urlencode';
 
+import Config from 'Config';
+
+console.log("Config: ", Config);
+
+function apiSelector(CurrentConfig) {
+	const apiPathFragment = '/api/';
+	const frontEndAPIEndpoint = apiPathFragment;
+	const backEndAPIEndpoint = CurrentConfig.apiServerUrl + apiPathFragment;
+
+	switch (CurrentConfig.environmentName) {
+		case 'development':
+			return backEndAPIEndpoint;
+		case 'production':
+			return frontEndAPIEndpoint;
+		default:
+			return frontEndAPIEndpoint;
+	}
+}
+
 class ApiService {
 	constructor() {
-		this.API_ENDPOINT = '/api/';
+		this.API_ENDPOINT = apiSelector(Config);
+	}
+
+	allPlanetsWithALocation() {
+		const planetsWithALocationEndpoint = this.API_ENDPOINT + 'has-location';
+		return fetch(planetsWithALocationEndpoint).then(response => {
+    	return response.json();
+		});
 	}
 
 	findSystemByName(systemName) {
-    return fetch(this.API_ENDPOINT + 'search/?system=' + urlencode(systemName)).then(response => {
+		const findSystemNameEndpoint = this.API_ENDPOINT + 'search/?system=' + urlencode(systemName);
+    return fetch(findSystemNameEndpoint).then(response => {
     	return response.json();
     });
 	}
@@ -20,7 +47,9 @@ class ApiService {
 	    headers: {
 	      'Content-Type': 'application/json'
 	    },
-	  });
+	  }).then(response => {
+    	return response.json();
+    });
 	}
 
 	findHyperspaceNode(nodeSearch) {
@@ -30,7 +59,9 @@ class ApiService {
 	    headers: {
 	      'Content-Type': 'application/json'
 	    },
-	  });
+	  }).then(response => {
+    	return response.json();
+    });
 	}
 
 	findNearestNode(LngLatSearch) {
@@ -40,7 +71,9 @@ class ApiService {
 	    headers: {
 	      'Content-Type': 'application/json'
 	    },
-	  });
+	  }).then(response => {
+    	return response.json();
+    });
 	}
 
 	findNearestNodeOfPoint(SearchPoint) {
@@ -64,7 +97,9 @@ class ApiService {
 	      'Content-Type': 'application/json'
 	    },
 	    body: JSON.stringify(PathSearch)
-	  });
+	  }).then(response => {
+      return response.json();
+    });
 	}
 
 	systemsConnected(Systems) {
@@ -74,7 +109,9 @@ class ApiService {
 	    headers: {
 	      'Content-Type': 'application/json'
 	    },
-	  });
+	  }).then(response => {
+      return response.json();
+    });
 	}
 
 	systemConnectedToCoruscant(CurrentSystem) {
@@ -84,7 +121,9 @@ class ApiService {
 	    headers: {
 	      'Content-Type': 'application/json'
 	    },
-	  });
+	  }).then(response => {
+      return response.json();
+    });
 	}
 
 	systemConnectedToCsilla(CurrentSystem) {
@@ -94,7 +133,9 @@ class ApiService {
 	    headers: {
 	      'Content-Type': 'application/json'
 	    },
-	  });
+	  }).then(response => {
+      return response.json();
+    });
 	}
 
 	systemLink(CurrentSystem) {
@@ -104,8 +145,9 @@ class ApiService {
 	    headers: {
 	      'Content-Type': 'application/json'
 	    },
-	  });
-
+	  }).then(response => {
+      return response.json();
+    });
 	}
 
 	findSector(Sector) {
@@ -164,6 +206,7 @@ class ApiService {
 	    headers: {
 	      'Content-Type': 'application/json'
 	    },
+	    mode: 'cors'
 	  }).then(response => {
     	return response.json();
     });
@@ -176,6 +219,7 @@ class ApiService {
 	    headers: {
 	      'Content-Type': 'application/json'
 	    },
+	    mode: 'cors'
 	  }).then(response => {
     	return response.json();
     });
@@ -188,6 +232,7 @@ class ApiService {
 	    headers: {
 	      'Content-Type': 'application/json'
 	    },
+	    mode: 'cors'
 	  }).then(response => {
     	return response.json();
     });
@@ -200,6 +245,7 @@ class ApiService {
 	    headers: {
 	      'Content-Type': 'application/json'
 	    },
+	    mode: 'cors'
 	  }).then(response => {
     	return response.json();
     });

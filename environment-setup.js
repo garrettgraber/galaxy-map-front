@@ -12,10 +12,13 @@ module.exports = (nodeEnvironment) => {
   return (!isProduction) ? {
     tileServerUrl:  'http://' + DatabaseLinks.tiles.hostname + ':' + DatabaseLinks.tiles.port + '/tiles-leaflet-8-fixed/{z}/{x}/{y}.png',
     apiServerUrl: 'http://' + DatabaseLinks.api.hostname + ':' + DatabaseLinks.api.port,
-    hostname: ip.address()
+    hostname: ip.address(),
+    environmentName: 'development'
   } : {
     tileServerUrl:  ProductionConfig.TILE_SERVER_URL,
     apiServerUrl: ProductionConfig.API_SERVER_URL,
-    hostname: '0.0.0.0'
+    hostname: '0.0.0.0',
+    environmentName: 'production'
   };
 };
+
