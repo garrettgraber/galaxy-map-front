@@ -9,16 +9,17 @@ console.log("Config: ", Config);
 function apiSelector(CurrentConfig) {
 	const apiPathFragment = '/api/';
 	const frontEndAPIEndpoint = apiPathFragment;
-	const backEndAPIEndpoint = CurrentConfig.apiServerUrl + apiPathFragment;
+	const ApiServerUrl = CurrentConfig.apiServerUrl + apiPathFragment;
+	return ApiServerUrl;
 
-	switch (CurrentConfig.environmentName) {
-		case 'development':
-			return backEndAPIEndpoint;
-		case 'production':
-			return frontEndAPIEndpoint;
-		default:
-			return frontEndAPIEndpoint;
-	}
+	// switch (CurrentConfig.environmentName) {
+	// 	case 'development':
+	// 		return ApiServerUrl;
+	// 	case 'production':
+	// 		return frontEndAPIEndpoint;
+	// 	default:
+	// 		return frontEndAPIEndpoint;
+	// }
 }
 
 class ApiService {
