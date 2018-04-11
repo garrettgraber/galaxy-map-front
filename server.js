@@ -71,6 +71,8 @@ app.use(middleware);
 app.use(webpackHotMiddleware(compiler));
 
 app.get('*.js', function (req, res, next) {
+
+  console.log("Calling js file");
   req.url = req.url + '.gz';
   res.set('Content-Encoding', 'gzip');
   next();
