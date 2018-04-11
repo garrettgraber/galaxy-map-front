@@ -35,7 +35,9 @@ class Sectors extends React.Component {
 	  if(feature.properties.sector) {
       const sectorName = feature.properties.sector;
       const link = feature.properties.link;
-      const sectorNameString = '<span style="font-weight: bold;">' + sectorName + ' Sector' + '</span><br/>';
+      const sectorHasSectorInName = sectorName.toLowerCase().indexOf('sector') > -1;
+      const sectorDisplayName = (sectorHasSectorInName)? sectorName : sectorName + ' Sector';
+      const sectorNameString = '<span style="font-weight: bold;">' + sectorDisplayName + '</span><br/>';
       const secotrLinkString = '<a href=' + link + ' rel="external" target="_blank">Wookieepedia Link</a>';
       const sectorPopupString = sectorNameString + secotrLinkString;
       layer.bindPopup(sectorPopupString);
