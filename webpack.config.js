@@ -6,17 +6,11 @@ const environmentSetup = require('./environment-setup.js');
 
 const javascriptEntryPath = path.resolve(__dirname, 'src', 'index.js');
 const htmlEntryPath = path.resolve(__dirname, 'src', 'index.html');
-const htmlEntryPathProduction = path.resolve(__dirname, 'src', 'index-production.html');
-
 const buildPath = path.resolve(__dirname, 'public', 'build');
 const srcPath = path.resolve(__dirname, 'src');
 
-
-const htmlEntryPathUsed = (process.env.NODE_ENV === 'production')? htmlEntryPathProduction : htmlEntryPath;
-
-
 console.log("javascriptEntryPath: ", javascriptEntryPath);
-console.log("htmlEntryPath: ", htmlEntryPathUsed);
+console.log("htmlEntryPath: ", htmlEntryPath);
 console.log("buildPath:", buildPath);
 console.log("srcPath: ", srcPath);
 
@@ -27,7 +21,7 @@ module.exports = {
     'whatwg-fetch',
     'webpack-hot-middleware/client?reload=true', 
     javascriptEntryPath,
-    htmlEntryPathUsed
+    htmlEntryPath
   ],
   output: {
     publicPath: "/",

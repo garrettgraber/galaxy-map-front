@@ -65,34 +65,23 @@ const middleware = webpackMiddleware(compiler, {
 });
 
 const bundlePath = path.join(__dirname, './public/build/index.html');
-const bundlePathProduction = path.join(__dirname, './public/build/index-production.html');
-
 
 app.use(middleware);
 
 app.use(webpackHotMiddleware(compiler));
 
-// app.get('*.js', function (req, res, next) {
+app.get('*.js', function (req, res, next) {
 
-//   console.log("Calling js file");
-//   req.url = req.url + '.gz';
-//   res.set('Content-Encoding', 'gzip');
-//   next();
-// });
+  console.log("Calling js file");
+  req.url = req.url + '.gz';
+  res.set('Content-Encoding', 'gzip');
+  next();
+});
 
 app.get(/^\/(?!api).*/, function(req, res) {
   console.log("\ncall made to webpack");
   console.log('==> 🌎 Listening on port. Open up http://' + hostname + ':' + port);
-
-  if(EnvironmentEndpoints.environmentName === 'development') {
-    res.write(middleware.fileSystem.readFileSync(bundlePath));
-  } else if(EnvironmentEndpoints.environmentName === 'production') {
-    res.set('Content-Encoding', 'gzip');
-    res.write(middleware.fileSystem.readFileSync(bundlePathProduction));
-  } else {
-    console.log("not production or development");
-  }
-
+  res.write(middleware.fileSystem.readFileSync(bundlePath));
 });
 
 app.get('/api/*', function(req, res) {
