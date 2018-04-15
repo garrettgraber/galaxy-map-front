@@ -6,7 +6,7 @@ const environmentSetup = require('./environment-setup.js');
 
 const javascriptEntryPath = path.resolve(__dirname, 'src', 'index.js');
 const htmlEntryPath = path.resolve(__dirname, 'src', 'index.html');
-const htmlEntryPathProduction = path.resolve(__dirname, 'src', 'index.html');
+const htmlEntryPathProduction = path.resolve(__dirname, 'src', 'index-production.html');
 
 const buildPath = path.resolve(__dirname, 'public', 'build');
 const srcPath = path.resolve(__dirname, 'src');
