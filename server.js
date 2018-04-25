@@ -6,6 +6,8 @@ const cors = require('cors');
 const jsonfile = require('jsonfile');
 const request = require('request');
 const bodyParser = require('body-parser');
+const compression = require('compression');
+
 
 const environmentSetup = require('./environment-setup.js');
 const EnvironmentEndpoints = environmentSetup(process.env.NODE_ENV);
@@ -16,6 +18,7 @@ console.log("Environment Endpoints: ", EnvironmentEndpoints);
 const port = 8108;
 const app = express();
 
+app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -69,14 +72,6 @@ const bundlePath = path.join(__dirname, './public/build/index.html');
 app.use(middleware);
 
 app.use(webpackHotMiddleware(compiler));
-
-app.get('*.js', function (req, res, next) {
-
-  console.log("Calling js file");
-  req.url = req.url + '.gz';
-  res.set('Content-Encoding', 'gzip');
-  next();
-});
 
 app.get(/^\/(?!api).*/, function(req, res) {
   console.log("\ncall made to webpack");
