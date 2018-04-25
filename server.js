@@ -73,7 +73,17 @@ app.use(middleware);
 
 app.use(webpackHotMiddleware(compiler));
 
-app.get(/^\/(?!api).*/, function(req, res) {
+app.get('*.js', function (req, res, next) {
+
+  console.log("Calling js file");
+  // req.url = req.url + '.gz';
+  // res.set('Content-Encoding', 'gzip');
+  next();
+});
+
+
+
+app.get('/', function(req, res) {
   console.log("\ncall made to webpack");
   console.log('==> 🌎 Listening on port. Open up http://' + hostname + ':' + port);
   res.write(middleware.fileSystem.readFileSync(bundlePath));
