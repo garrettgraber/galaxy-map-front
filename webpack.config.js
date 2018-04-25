@@ -3,9 +3,12 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const environmentSetup = require('./environment-setup.js');
+const indexFolder = environmentSetup(process.env.NODE_ENV).indexFolder;
+
+const htmlIndexPath = path.join('src', indexFolder, 'index.html');
 
 const javascriptEntryPath = path.resolve(__dirname, 'src', 'index.js');
-const htmlEntryPath = path.resolve(__dirname, 'src', 'index.html');
+const htmlEntryPath = path.resolve(__dirname, htmlIndexPath);
 const buildPath = path.resolve(__dirname, 'public', 'build');
 const srcPath = path.resolve(__dirname, 'src');
 

@@ -12,7 +12,7 @@ function apiSelector(CurrentConfig) {
 	const ApiServerUrl = CurrentConfig.apiServerUrl + apiPathFragment;
 	// return ApiServerUrl;
 
-	switch (CurrentConfig.environmentName) {
+	switch (CurrentConfig.name) {
 		case 'development':
 			return ApiServerUrl;
 		case 'production':
