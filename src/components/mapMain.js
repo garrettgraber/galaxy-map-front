@@ -31,7 +31,8 @@ import {
 import {
   setCursorValue,
   buildHyperspaceLaneNamesSet,
-  setHyperspaceNavigationPoints
+  setHyperspaceNavigationPoints,
+  changeBaseLayer
 } from '../actions/actions.js';
 
 const { BaseLayer, Overlay } = LayersControl;
@@ -162,6 +163,7 @@ class MapMain extends React.Component {
 
   onBaselayerchange(e) {
     console.log("baselayer change: ", e);
+    this.props.dispatch(changeBaseLayer(e.name));
   }
 
   onOverlayremove(e) {
@@ -180,6 +182,8 @@ class MapMain extends React.Component {
   	const zIndexGalaxy = 210;
     const zIndexBlack = 205;
     const zIndexWhite = 204;
+
+    console.log("Base Layer: ", this.props.baseLayerName);
 
     if(this.refs.map) {
       const LeafletMap = this.refs.map;

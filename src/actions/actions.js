@@ -34,7 +34,10 @@ import {
   newSystemsLocation,
   newSectorData,
   buildHyperspaceRouteNameSet,
-  newHyperspaceRoute
+  newHyperspaceRoute,
+  baseMapIsGalaxy,
+  baseMapIsBlack,
+  baseMapIsWhite
 } from './actionCreators.js';
 
 import ApiService from '../remoteServices/apiService.js';
@@ -51,6 +54,26 @@ function isJson(str) {
     return false;
   }
   return true;
+}
+
+
+export function changeBaseLayer(newBaseLayer) {
+  return function(dispatch, getState) {
+    switch (newBaseLayer) {
+      case "Galaxy":
+        dispatch(baseMapIsGalaxy());
+        break;
+      case "Black":
+        dispatch(baseMapIsBlack());
+        break;
+      case "White":
+        dispatch(baseMapIsWhite());
+        break;
+      default:
+        dispatch(baseMapIsBlack());
+    }
+    return null; 
+  }
 }
 
 

@@ -714,3 +714,18 @@ export function generateSameMapHash() {
 		type: Actions.SAME_MAP_HASH
 	}
 }
+export function baseMapIsGalaxy() {
+	return {
+		type: Actions.BASE_LAYER_GALAXY
+	}
+}
+export function baseMapIsBlack() {
+	return {
+		type: Actions.BASE_LAYER_BLACK
+	}
+}
+export function baseMapIsWhite() {
+	return {
+		type: Actions.BASE_LAYER_WHITE
+	}
+}

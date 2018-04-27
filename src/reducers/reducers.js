@@ -773,6 +773,18 @@ function galaxyBaseMapOverlayStatus(state = true, action) {
       return state;
   }
 }
+function baseLayerName(state = "Galaxy", action) {
+  switch (action.type) {
+    case Actions.BASE_LAYER_GALAXY:
+      return "Galaxy";
+    case Actions.BASE_LAYER_BLACK:
+      return "Black";
+    case Actions.BASE_LAYER_WHITE:
+      return "White";
+    default:
+      return state;
+  }
+}
 
 export default combineReducers({
 	navigationObjectBoundaries,
@@ -783,6 +795,7 @@ export default combineReducers({
 	systemsSearchLocation,
 	galaxyBaseMapOverlayStatus,
 	blackBaseMapOverlayStatus,
+	baseLayerName,
 	sectorMapOverlayStatus,
 	starMapOverlayStatus,
 	loadingIconOn,
