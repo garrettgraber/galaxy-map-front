@@ -13,21 +13,33 @@ import '../../css/main.css';
 class LoadingSpinner extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { };
+    this.state = {
+      loading: false,
+      loadingIconTimer: 0
+    };
   }
 
-  componentDidMount() {
-    const spinnerMaxTimeSeconds = 30;
-    setTimeout(() => {
-      if(this.props.loadingIconOn && !this.props.updateHyperspaceNavigation) {
-        this.props.dispatch(loadingIconOff());
-      }
-    }, spinnerMaxTimeSeconds * 1000);
-  }
+  componentDidMount() { }
 
   componentWillUnmount(){ }
 
-  componentWillReceiveProps(newProps) { }
+  componentWillReceiveProps(newProps) {
+
+    if(!this.state.loading && newProps.loadingIconOn) {
+      const spinnerMaxTimeSeconds = 13;
+      const spinnerTimeOut = setTimeout(() => {
+        console.log("Spinner timeout has fired");
+        this.props.dispatch(loadingIconOff());
+      }, spinnerMaxTimeSeconds * 1000);
+      this.setState({loadingIconTimer: spinnerTimeOut});
+      this.setState({loading: true});
+    } else if(this.state.loading && !newProps.loadingIconOn){
+      clearTimeout(this.state.loadingIconTimer);
+      this.setState({loadingIconTimer: 0});
+      this.setState({loading: false});
+    }
+
+  }
 
 	render() {
     const spinnerYPosition = (window.innerHeight / 2.0) - 15.0; 
