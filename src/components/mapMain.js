@@ -76,6 +76,7 @@ class MapMain extends React.Component {
   	const currentZoom = this.refs.map.leafletElement.getZoom();
   	this.refs.map.leafletElement.setMaxBounds(mapBounds);
   	if(this.refs.map) {
+      console.log("Map: ", this.refs.map.leafletElement);
   		this.setState({map: this.refs.map.leafletElement});
   	}
     this.props.dispatch(setMapZoom(currentZoom));
@@ -159,7 +160,7 @@ class MapMain extends React.Component {
     console.log("e.name added: ", e.name);
   }
 
-  onBaselayerChange(e) {
+  onBaselayerchange(e) {
     console.log("baselayer change: ", e);
   }
 
@@ -215,6 +216,7 @@ class MapMain extends React.Component {
             onViewportChanged={e => this.onViewportChanged(e)}
             onOverlayadd={e => this.onOverlayadd(e)}
             onOverlayremove={e => this.onOverlayremove(e)}
+            onBaselayerchange={e => this.onBaselayerchange(e)}
           >
       			<LayersControl>
       				<BaseLayer name="Galaxy" checked={true}>

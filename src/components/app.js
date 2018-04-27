@@ -8,12 +8,12 @@ class App extends React.Component {
 	    super(props, context);
 	}
 
-	componentDidMount() { }
+	componentDidMount() {	}
 
 	render() {
 		return (
 			<div>
-				<MapMain />
+				<MapMain/>
 			</div>
         );
     }
