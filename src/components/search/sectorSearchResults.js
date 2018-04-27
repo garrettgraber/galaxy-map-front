@@ -51,7 +51,7 @@ class SectorSearchResults extends React.Component {
       <Polygon
         className="search-sector pulse-sector"
         positions={this.props.sectorSearchData.coordinates}
-        color="crimson"
+        color="#FF8300"
         ref="sectorSearch"
       >
         <Popup key={uuidv4()} className="search-sector-popup"  minWidth={90} autoPan={false}>

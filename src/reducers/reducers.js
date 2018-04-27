@@ -118,7 +118,8 @@ const BlankSector = {
 const BlankHyperspaceRoute = {
 	coordinates: [],
 	name: null,
-	link: ''
+	link: '',
+	length: null
 };
 const NullBoundaryObject = {
 	_northEast: {

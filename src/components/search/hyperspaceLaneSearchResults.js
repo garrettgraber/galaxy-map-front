@@ -54,12 +54,14 @@ class HyperspaceLaneSearchResults extends React.Component {
         className="pulse-sector"
         positions={this.props.hyperspaceRouteSearchData.coordinates}
         options={LaneOptions}
-        color="gold"
+        color="#FF8300"
         ref="fullRoute"
       >
         <Popup className="hyperspace-route-popup" ref="popup" minWidth={90} autoPan={false}>
           <div>
             <span style={{fontWeight: 'bold'}}>{this.props.hyperspaceRouteSearchData.name}</span><br/>
+            <span style={{color: 'red'}}>Distance:&nbsp;{this.props.hyperspaceRouteSearchData.length.toLocaleString()}&nbsp;parsecs</span><br/>
+
             <If condition={this.props.hyperspaceRouteSearchData.link === 'No Link'}>
               <Then>
                 <span>No Link</span>
