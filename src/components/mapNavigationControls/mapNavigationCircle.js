@@ -48,12 +48,14 @@ class MapNavigationCircle extends React.Component {
   handleDownPanClick() {
     const map = this.props.map;
     if(this.props.mapCenterAndZoom.zoom > 2) {
-      map.panBy(point, {animate: true, duration: 0.25, noMoveStart: true});
+      map.panBy([0, 100]);
     }
   }
   increaseZoom() {
     this.refs.increaseZoom.blur();
-    this.props.dispatch( increaseMapZoom() );
+    if(this.props.baseLayerName !== "Galaxy" || this.props.mapCenterAndZoom.zoom <= 7) {
+      this.props.dispatch( increaseMapZoom() );
+    }
   }
   decreaseZoom() {
     this.refs.decreaseZoom.blur();

@@ -25,11 +25,6 @@ class Grid extends React.Component {
 
   componentDidMount() {
     ApiService.gridGeoJsonData().then(Data => {
-
-      // console.log("Grid Data: ", Data);
-
-      console.log("Is Grid Data Json: ", isJson(Data));
-
       this.setState({GridData: Data});
     }).catch(err => {
       console.log("Error getting grid geo json data: ", err);

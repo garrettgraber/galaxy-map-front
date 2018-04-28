@@ -45,8 +45,6 @@ import Place from '../classes/place.js';
 
 
 
-
-
 function isJson(str) {
   try {
     JSON.parse(str);

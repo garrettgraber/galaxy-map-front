@@ -90,6 +90,7 @@ class MapMain extends React.Component {
   }
 
   onZoomend(e) {
+    console.log("zoom end: ", e.target._zoom);
     const mapBounds = this.refs.map.leafletElement.getBounds();
     const currentZoom = this.refs.map.leafletElement.getZoom();
     if(!(currentZoom === 2 && this.props.mapCenterAndZoom.zoom === 3)) {
@@ -97,7 +98,9 @@ class MapMain extends React.Component {
     }
   }
 
-  onZoomstart(e) { }
+  onZoomstart(e) {
+    console.log("zoom start: ", e.target._zoom);
+  }
 
   onMovestart(e) {
     this.props.dispatch(loadingIconOn());
@@ -158,11 +161,11 @@ class MapMain extends React.Component {
     } else if(e.name === 'Sectors') {
       this.props.dispatch(sectorMapIsOn());
     }
-    console.log("e.name added: ", e.name);
+    // console.log("e.name added: ", e.name);
   }
 
   onBaselayerchange(e) {
-    console.log("baselayer change: ", e);
+    // console.log("baselayer change: ", e);
     this.props.dispatch(changeBaseLayer(e.name));
   }
 
@@ -173,7 +176,7 @@ class MapMain extends React.Component {
       this.props.dispatch(sectorMapIsOff());
     }
 
-    console.log("e.name removed: ", e.name);
+    // console.log("e.name removed: ", e.name);
   }
 
   render() {
@@ -182,8 +185,6 @@ class MapMain extends React.Component {
   	const zIndexGalaxy = 210;
     const zIndexBlack = 205;
     const zIndexWhite = 204;
-
-    console.log("Base Layer: ", this.props.baseLayerName);
 
     if(this.refs.map) {
       const LeafletMap = this.refs.map;
