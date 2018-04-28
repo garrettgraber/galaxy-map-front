@@ -38,6 +38,7 @@ class SearchHyperspaceLanes extends React.Component {
       this.props.dispatch(noHyperspaceRoute());
     } else {
       this.setState({ laneValue });
+      this.props.dispatch(noHyperspaceRoute());
       this.props.dispatch(findHyperspaceRoute(laneValue.value));
       this.refs.zoomToButton.focus();
     }
