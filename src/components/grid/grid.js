@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Marker, Pane, GeoJSON, FeatureGroup, LayerGroup } from 'react-leaflet';
+import { Pane, GeoJSON, LayerGroup } from 'react-leaflet';
 import { If, Then, Else } from 'react-if';
 import L from 'leaflet';
 import _ from 'lodash';
