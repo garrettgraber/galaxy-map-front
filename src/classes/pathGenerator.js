@@ -8,13 +8,10 @@ import HyperspacePathCollection from '../components/hyperspaceNavigation/hypersp
 import HyperspaceNavigationPoint from '../components/hyperspaceNavigation/hyperspaceNavigationPoint.js';
 import HyperSpaceLaneOverlay from '../components/hyperspaceNavigation/hyperspaceLaneOverlay.js';
 
-
-
 import {
 	nodeAndPointAreEqual,
 	createFreespaceLane
 } from '../components/hyperspaceNavigation/hyperspaceMethods.js';
-
 
 export default class PathGenerator {
 	constructor(
@@ -211,7 +208,6 @@ export default class PathGenerator {
 	  this.navComponentsRendered.push(PathCollectionsComponentsArray);
 	}
 
-
   generateAntPath() {
     const hyperspaceLanesStylePink = {color: '#FF69B4', weight: 3};
     console.log("First PathCollection: ", this.hyperspacePathCollections[0]);
@@ -230,7 +226,6 @@ export default class PathGenerator {
       this.antPathComponents.push(<HyperSpaceLaneOverlay key={hyperspaceHash}  pathCoordinates={lanePathCoordinates} style={hyperspaceLanesStylePink} isSinglePath={isSinglePath} />);
     }
   }
-
 
   generateCoordinatesArray() {
     let jumpPathCoordinates = [];
@@ -253,15 +248,11 @@ export default class PathGenerator {
       const endLngLat = [this.EndPoint.lng, this.EndPoint.lat];
       jumpPathCoordinates = [startLngLat, endLngLat];
     }
-
     const jumpPathCoordinatesCopy = _.cloneDeep(jumpPathCoordinates);
-
     const jumpPathCoordinatesLatLng = reverseToLatLng(jumpPathCoordinatesCopy);
     return jumpPathCoordinatesLatLng;
   }
 
-
- 
 	generateNavigationComponents() {
 		if(this.hyperspacePathChange) {
       if(this.hyperspaceJumpsInArray()) {

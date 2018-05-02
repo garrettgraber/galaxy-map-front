@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
+import distance from 'euclidean-distance';
 
 import HyperSpacePathCollection from '../../classes/hyperspacePathCollection.js';
 import Point from '../../classes/point.js';
@@ -59,4 +60,30 @@ export function getGalacticYFromLatitude(latitude) {
 
 export function getGalacticXFromLongitude(longitude) {
   return (111.3194866138503 * longitude);
+}
+
+export function distanceBetweenPoints(Point1, Point2) {
+  const pointOneCoordinates = [Point1.xGalactic, Point1.yGalactic];
+  const pointTwoCoordinates = [Point2.xGalactic, Point2.yGalactic];
+  const distanceBetweenNodeAndPoint = distance(pointOneCoordinates, pointTwoCoordinates);
+  return distanceBetweenNodeAndPoint;
+}
+
+export function isPointBlank(CurrentPoint) {
+  if(CurrentPoint.lat === null && CurrentPoint.lng === null) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+export function allPointsAreValid(pointArray) {
+  const validPoints = _.filter(pointArray, CurrentPoint => {
+    return !isPointBlank(CurrentPoint);
+  });
+  if(validPoints.length === pointArray.length) {
+    return true;
+  } else {
+    return false;
+  }
 }

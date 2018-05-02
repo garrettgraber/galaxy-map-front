@@ -4,6 +4,10 @@ import ReactTooltip from 'react-tooltip';
 import uuidv4 from 'uuid/v4';
 
 import JumpPlot from './jumpPlot.js';
+import {
+  nodeAndPointAreEqual,
+  distanceBetweenPoints
+} from '../../../hyperspaceNavigation/hyperspaceMethods.js';
 
 import {
   noSetSelectedHyperspaceRoute
@@ -25,11 +29,21 @@ class JumpGrid extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      componentId: uuidv4()
+      componentId: uuidv4(),
+      freeSpaceDistance: 0
     }
   }
 
-  componentDidMount() { }
+  componentDidMount() {
+    const StartPoint = this.props.hyperspaceStartPoint;
+    const StartNode = this.props.hyperspaceStartNode;
+    const EndPoint = this.props.hyperspaceEndPoint;
+    const EndNode = this.props.hyperspaceEndNode;
+    const distanceBetweenStartNodeAndPoint = distanceBetweenPoints(StartPoint, StartNode);
+    const distanceBetweenEndNodeAndPoint = distanceBetweenPoints(EndPoint, EndNode);
+    const freeSpaceDistance = distanceBetweenStartNodeAndPoint + distanceBetweenEndNodeAndPoint;
+    this.setState({freeSpaceDistance: freeSpaceDistance}); 
+  }
 
   getJumpPaths() {
     let hyperspacePathData = [];
@@ -103,6 +117,8 @@ class JumpGrid extends React.Component {
     const acttveEndSystem = this.props.hyperspaceActiveEndPoint.system;
     const zoomToPathClasses = "btn hyperspace-navigation-button btn-success";
 
+    console.log("Free space distance: ", this.state.freeSpaceDistance);
+
     return (
       <div className="pane-container">
         <div className="pane-section">
@@ -141,7 +157,7 @@ class JumpGrid extends React.Component {
         <div id="div1" style={containerDiv1Styles}>
           <div id="div2" style={containerDiv2Styles} >
             <div id="div3"  style={JumpListStyle} onMouseLeave={(e) => this.onMouseLeave(e)} >
-              { generateGridRowPaths(this.getJumpPaths()) }
+              { generateGridRowPaths(this.getJumpPaths(), this.state.freeSpaceDistance) }
             </div>
           </div>
         </div>
@@ -150,12 +166,24 @@ class JumpGrid extends React.Component {
   }
 }
 
-function generateGridRowPaths(pathsArray) {
+function generateGridRowPaths(pathsArray, freeSpaceDistance) {
   let masterJumpPlotsArray = [];
-  const singleJump = (pathsArray.length === 1)? true : false;
-  for(let i=0; i < pathsArray.length; i++) {
-    const Path = pathsArray[i];
-    masterJumpPlotsArray.push(<JumpPlot key={Path.hashValue} PathObject={Path} singleJump={singleJump}/>);
+  console.log("pathsArray: ", pathsArray);
+  if(pathsArray.length > 0) {
+    const singleJump = (pathsArray.length === 1)? true : false;
+    for(let i=0; i < pathsArray.length; i++) {
+      const Path = pathsArray[i];
+      masterJumpPlotsArray.push(<JumpPlot key={Path.hashValue} PathObject={Path} singleJump={singleJump} freeSpaceDistance={freeSpaceDistance} />);
+    }
+  } else {
+    const jumpHashVaule = uuidv4();
+    const PathObject = {
+      hashValue: jumpHashVaule,
+      numberOfJumps: 1,
+      length: 0
+    };
+    masterJumpPlotsArray.push(<JumpPlot key={PathObject.hashValue} PathObject={PathObject} singleJump={true} freeSpaceDistance={freeSpaceDistance} />);
+
   }
   return masterJumpPlotsArray;
 }

@@ -4,7 +4,7 @@ import { CircleMarker, Popup, Circle, Tooltip, Marker, Polyline } from 'react-le
 import L from 'leaflet';
 import AntPath from "react-leaflet-ant-path";
 import { If, Then, Else } from 'react-if';
-
+import distance from 'euclidean-distance';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
@@ -20,8 +20,15 @@ const freeSpaceJumpDelay = 400 * freeSpaceJumpSlowdownModifier;
 class HyperSpaceFreeSpaceJump extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      jumpDistance: null
+    };
   }
   componentDidMount() {
+    const Point = this.props.HyperSpacePoint;
+    const Node = this.props.HyperSpaceNode;
+    const distanceBetweenNodeAndPoint = distance([Point.xGalactic, Point.yGalactic], [Node.xGalactic, Node.yGalactic]);
+    this.setState({jumpDistance: distanceBetweenNodeAndPoint});
     if(this.refs.lane) {
       const lane = this.refs.lane.leafletElement;
     }
@@ -54,10 +61,20 @@ class HyperSpaceFreeSpaceJump extends React.Component {
     const hyperspacePointLocation = [HyperSpacePoint.lat, HyperSpacePoint.lng];
     let jumpCoordinates = freeSpaceJumpCoordinates(HyperSpacePoint, HyperSpaceNode);
 
+    const LaneOptions = {
+      opacity: 0.0,
+      interactive: true,
+      weight: 10
+    };
+
     if(this.props.isStart) {
       jumpCoordinates.reverse();
     }
- 
+
+    const freeSpaceJumpDistance = (this.state.jumpDistance)? parseFloat(this.state.jumpDistance.toFixed(2)) : 0;
+    const startName = (this.props.isStart)? this.props.HyperSpacePoint.system : this.props.HyperSpaceNode.system;
+     const endName = (this.props.isStart)? this.props.HyperSpaceNode.system : this.props.HyperSpacePoint.system;
+
   	return (
       <div >
         <If condition={nodeAndPointAreEqual(HyperSpacePoint, HyperSpaceNode)}>
@@ -70,14 +87,23 @@ class HyperSpaceFreeSpaceJump extends React.Component {
                   {
                     color: this.props.styleOfJump.color,
                     opacity: 0.4,
-                    interactive: false,
+                    interactive: true,
                     delay: freeSpaceJumpDelay
                   }
                 }
                 ref="lane"
                 onMouseOver={e => this.onMouseOver(e)}
                 onMouseOut={e => this.onMouseOut(e)}
-              />
+              >
+                <Popup className="active-hyperspace-lane-popup" ref="popupFreeSpace" minWidth={90} autoPan={false}>
+                  <div>
+                    <span style={{fontWeight: 'bold'}}>Free Space Jump</span><br/>
+                    <span>Distance:&nbsp;{freeSpaceJumpDistance.toLocaleString()}&nbsp;&nbsp;parsecs</span><br/>
+                    <span>Start:&nbsp;{startName}</span><br/>
+                    <span>End&nbsp;:&nbsp;{endName}</span><br/>
+                  </div>
+                </Popup>
+              </AntPath>
               <CircleMarker center={hyperspaceNodeLocation} radius={1} color={nodeColor} ref='nodeHyperSpace' />
             </div>
           </Else>

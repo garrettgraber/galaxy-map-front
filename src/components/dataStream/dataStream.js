@@ -6,6 +6,7 @@ import uuidv4 from 'uuid/v4';
 import * as DataStreamStyles from './dataStreamStyles.js';
 
 const decodeTimeInMilliseconds = 100;
+const copyRightText = 'Star Wars and all related locations, story, and information are copyright of Lucasfilm and Disney.';
 
 class DataStream extends React.Component {
   constructor(props) {
@@ -15,6 +16,7 @@ class DataStream extends React.Component {
       dataMessage: '',
       dataMessageInEnglish: true,
       componentId: uuidv4()
+
     };
   }
 
@@ -71,6 +73,9 @@ class DataStream extends React.Component {
         </div>
         <div style={DataStreamStyles.ZoomStyle}>
           <span style={DataStreamStyles.MessageStyle} >&nbsp;&nbsp;&nbsp;Zoom:&nbsp;&nbsp;{this.props.mapCenterAndZoom.zoom - 1}</span>
+        </div>
+        <div style={DataStreamStyles.CopyrightStyle}>
+          <span style={DataStreamStyles.MessageStyle}>&nbsp;&nbsp;{copyRightText}</span>
         </div>
       </div>
     );

@@ -73,3 +73,15 @@ export const ZoomStyle = {
   fontSize: '1.2em',
   display: 'table'
 };
+
+export const CopyrightStyle = {
+  position: 'fixed',
+  bottom: 0,
+  left: 0,
+  height: 10,
+  opacity: 1.0,
+  fontSize: '1.0em',
+  display: 'table',
+  zIndex: 40,
+  color: 'white'
+};

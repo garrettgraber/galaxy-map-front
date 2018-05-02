@@ -98,7 +98,8 @@ class JumpPlot extends React.Component {
 
         <div style={{width: '100%'}} >
           <span className="nav-text" >&nbsp;Distance:&nbsp;{jumpDistance.toLocaleString()}&nbsp;parsecs</span>
-          <span className="nav-text" >&nbsp;&nbsp;Jumps:&nbsp;{this.props.PathObject.numberOfJumps}</span>
+          <span className="nav-text" >&nbsp;&nbsp;Jumps:&nbsp;{this.props.PathObject.numberOfJumps}</span><br/>
+          <span className="nav-text" >&nbsp;Distance out of Hyperspace Lane:&nbsp;{this.props.freeSpaceDistance.toLocaleString()}&nbsp;parsecs</span>
         </div>
       </div>
     );

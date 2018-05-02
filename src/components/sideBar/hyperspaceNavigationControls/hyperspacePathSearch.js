@@ -5,6 +5,10 @@ import HyperspaceControls from './hyperspaceControls.js';
 import HyperspaceShipDetails from './hyperspaceShipDetails.js';
 import JumpGrid from './jumpGrid/jumpGrid.js';
 import PivotPoint from './pivotPoint.js';
+import {
+  allPointsAreValid
+} from '../../hyperspaceNavigation/hyperspaceMethods.js';
+
 import '../../../css/main.css';
 
 class HyperspacePathSearch extends React.Component {
@@ -20,9 +24,10 @@ class HyperspacePathSearch extends React.Component {
     }
     const startDefault = 'Kamino';
     const endDefault = 'Lok';
-    const jumpSuccessfullyCalculated = hyperspacePathData.length > 0;
-    const navigationPaneStyle = (jumpSuccessfullyCalculated)? {height: 520, overFlow: 'visible'} : {height: 288, overFlow: 'visible'};
-    // const navigationPaneStyle = (jumpSuccessfullyCalculated)? {height: 520} : {height: 520};
+    const activeHyperspaceJumpPoints = [this.props.hyperspaceActiveStartPoint, this.props.hyperspaceActiveStartNode, this.props.hyperspaceActiveEndPoint, this.props.hyperspaceActiveEndNode];
+    const jumpSuccessfullyCalculated = (hyperspacePathData.length > 0 || allPointsAreValid(activeHyperspaceJumpPoints))? true : false;
+
+    const navigationPaneStyle = (jumpSuccessfullyCalculated)? {height: 520, overFlow: 'visible'} : {height: 288, overFlow: 'visible'}
 
     return (
       <div id="hyperspace-navigation-pane" className="control-row" style={navigationPaneStyle}>
