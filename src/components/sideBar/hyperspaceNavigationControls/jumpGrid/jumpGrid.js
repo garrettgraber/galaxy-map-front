@@ -81,12 +81,24 @@ class JumpGrid extends React.Component {
     // console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
   }
 
+  componentWillReceiveProps(newProps) {
+    const StartPoint = newProps.hyperspaceStartPoint;
+    const StartNode = newProps.hyperspaceStartNode;
+    const EndPoint = newProps.hyperspaceEndPoint;
+    const EndNode = newProps.hyperspaceEndNode;
+    const distanceBetweenStartNodeAndPoint = distanceBetweenPoints(StartPoint, StartNode);
+    const distanceBetweenEndNodeAndPoint = distanceBetweenPoints(EndPoint, EndNode);
+    const freeSpaceDistance = distanceBetweenStartNodeAndPoint + distanceBetweenEndNodeAndPoint;
+    this.setState({freeSpaceDistance: freeSpaceDistance}); 
+  }
+
   render() {
     const jumpPlotHeight = 50;
     const jumpPaths = this.getJumpPaths();
     const jumpListHeight = jumpPaths.length * jumpPlotHeight;
     const containerDiv1Styles = {
-      height: 108,
+      // height: 108,
+      height: 51,
       position: 'relative',
     };
     const containerDiv2Styles = {
@@ -117,13 +129,10 @@ class JumpGrid extends React.Component {
     const acttveEndSystem = this.props.hyperspaceActiveEndPoint.system;
     const zoomToPathClasses = "btn hyperspace-navigation-button btn-success";
 
-    console.log("Free space distance: ", this.state.freeSpaceDistance);
-
     return (
       <div className="pane-container">
         <div className="pane-section">
           <div className="hyperspace-controls-pane-row" style={JumpGridControllerStyle}>
-
             <button
               type="button"
               className={zoomToPathClasses}
@@ -168,7 +177,6 @@ class JumpGrid extends React.Component {
 
 function generateGridRowPaths(pathsArray, freeSpaceDistance) {
   let masterJumpPlotsArray = [];
-  console.log("pathsArray: ", pathsArray);
   if(pathsArray.length > 0) {
     const singleJump = (pathsArray.length === 1)? true : false;
     for(let i=0; i < pathsArray.length; i++) {
@@ -183,7 +191,6 @@ function generateGridRowPaths(pathsArray, freeSpaceDistance) {
       length: 0
     };
     masterJumpPlotsArray.push(<JumpPlot key={PathObject.hashValue} PathObject={PathObject} singleJump={true} freeSpaceDistance={freeSpaceDistance} />);
-
   }
   return masterJumpPlotsArray;
 }
@@ -198,7 +205,6 @@ function emptySpaceCheck(system) {
     return system;
   }
 }
-
 
 function mapAtGalaxyView(mapBounds) {
   const aboveIsGalaxyViewLat = 80.0;

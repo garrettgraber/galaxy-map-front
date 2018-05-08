@@ -26,8 +26,10 @@ class HyperspacePathSearch extends React.Component {
     const endDefault = 'Lok';
     const activeHyperspaceJumpPoints = [this.props.hyperspaceActiveStartPoint, this.props.hyperspaceActiveStartNode, this.props.hyperspaceActiveEndPoint, this.props.hyperspaceActiveEndNode];
     const jumpSuccessfullyCalculated = (hyperspacePathData.length > 0 || allPointsAreValid(activeHyperspaceJumpPoints))? true : false;
+    const multipleJumpHeight = 520;
+    const singleJumpHeight = 463;
 
-    const navigationPaneStyle = (jumpSuccessfullyCalculated)? {height: 520, overFlow: 'visible'} : {height: 288, overFlow: 'visible'}
+    const navigationPaneStyle = (jumpSuccessfullyCalculated)? {height: singleJumpHeight, overFlow: 'visible'} : {height: 288, overFlow: 'visible'}
 
     return (
       <div id="hyperspace-navigation-pane" className="control-row" style={navigationPaneStyle}>

@@ -63,6 +63,7 @@ class JumpPlot extends React.Component {
   }
 
   onMouseOut(e) {
+    console.log("mouse out jump plot");
     if(!this.props.singleJump) {
       this.setState({selected: false});
     }
@@ -87,7 +88,7 @@ class JumpPlot extends React.Component {
       backgroundColor: backgroundColor,
       border: '1px solid #49fb35',
     };
-    const jumpDistance = this.props.PathObject.length.toFixed(2);
+    const jumpDistance = parseFloat(this.props.PathObject.length.toFixed(2));
 
     return (
       <div style={JumpPlotStyle}

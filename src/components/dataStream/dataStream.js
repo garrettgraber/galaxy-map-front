@@ -62,13 +62,15 @@ class DataStream extends React.Component {
 
     return (
       <div id="data-stream" >
-        <div style={DataStreamStyles.ClockStyle}>
-          <span style={DataStreamStyles.MessageStyle}>&nbsp;<Clock format={'HH : mm'} ticking={true}/></span>
-        </div>
-        <div style={DataStreamStyles.DataStreamMessageContainerStyle} >
-          <div style={DataStreamStyles.MessageDataStyle}>
-            &nbsp;&nbsp;{deCodedMessage}
-            <span style={DataStreamStyles.EnCodedeMessageStyle}>{enCodedMessage}</span>
+        <div id="foo">
+          <div style={DataStreamStyles.ClockStyle}>
+            <span style={DataStreamStyles.MessageStyle}>&nbsp;<Clock format={'HH : mm'} ticking={true}/></span>
+          </div>
+          <div style={DataStreamStyles.DataStreamMessageContainerStyle} >
+            <div style={DataStreamStyles.MessageDataStyle}>
+              &nbsp;&nbsp;{deCodedMessage}
+              <span style={DataStreamStyles.EnCodedeMessageStyle}>{enCodedMessage}</span>
+            </div>
           </div>
         </div>
         <div style={DataStreamStyles.ZoomStyle}>
