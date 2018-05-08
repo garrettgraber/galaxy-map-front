@@ -52,6 +52,11 @@ storeTest.dispatch({ type: 'DECREMENT' });
 const reduxStatus = (storeTest.getState() === 1)? "redux on" : "redux off";
 LoggerInstance.log(reduxStatus);
 
+
+const CoruscantLocationZoomOne = {
+	center: [0.00, 0.00],
+	zoom: 1
+};
 const CoruscantLocation = {
 	center: [0.00, 0.00],
 	zoom: 2
@@ -140,7 +145,16 @@ const emptyMapHash = null;
 const nullHyperspaceHash = null;
 const emptyNameSet = new Set();
 
-
+function mobileStatus(state = false, action) {
+	switch (action.type) {
+		case Actions.MOBILE_STATUS_ON:
+			return true;
+		case Actions.MOBILE_STATUS_OFF:
+			return false;
+		default:
+			return state;
+	}
+}
 function navigationObjectBoundaries(state = NullBoundaryObject, action) {
   switch (action.type) {
     case Actions.NEW_NAVIGATION_OBJECT_BOUNDARIES:
@@ -409,6 +423,8 @@ function mapCenterAndZoom(state = CoruscantLocation, action) {
 			return StateClone;
 		case Actions.SET_MAP_CENTER_AND_ZOOM_TO_DEFAULT:
 			return CoruscantLocation;
+		case Actions.SET_MAP_CENTER_AND_ZOOM_TO_ONE:
+			return CoruscantLocationZoomOne;
 		default:
 			return state;	
 	}
@@ -787,6 +803,7 @@ function baseLayerName(state = "Galaxy", action) {
 }
 
 export default combineReducers({
+	mobileStatus,
 	navigationObjectBoundaries,
 	currentSeachValue,
 	searchObjectBoundaries,

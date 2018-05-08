@@ -1,6 +1,16 @@
 import Actions from '../constants/actionTypesModule.js';
 
 
+export function mapShouldDisplayForMobile() {
+	return {
+		type: Actions.MOBILE_STATUS_ON
+	}
+}
+export function mapShouldDisplayForDesktop() {
+	return {
+		type: Actions.MOBILE_STATUS_OFF
+	}
+}
 export function newNavigationObjectBoundaries(BoundaryData) {
   return {
     type: Actions.NEW_NAVIGATION_OBJECT_BOUNDARIES,
@@ -440,6 +450,11 @@ export function setMapCenterAndZoom(newCenter, newZoom) {
 export function setMapToZeroZero() {
 	return {
 		type: Actions.SET_MAP_CENTER_AND_ZOOM_TO_DEFAULT
+	}
+}
+export function setMapToZeroZeroZoomOne() {
+	return {
+		type: Actions.SET_MAP_CENTER_AND_ZOOM_TO_ONE
 	}
 }
 export function setMapError(error) {

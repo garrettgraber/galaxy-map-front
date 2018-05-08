@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Clock from 'react-live-clock';
 import uuidv4 from 'uuid/v4';
+import { If, Then, Else } from 'react-if';
+
 
 import * as DataStreamStyles from './dataStreamStyles.js';
 
@@ -62,23 +64,39 @@ class DataStream extends React.Component {
 
     return (
       <div id="data-stream" >
-        <div id="foo">
-          <div style={DataStreamStyles.ClockStyle}>
-            <span style={DataStreamStyles.MessageStyle}>&nbsp;<Clock format={'HH : mm'} ticking={true}/></span>
-          </div>
-          <div style={DataStreamStyles.DataStreamMessageContainerStyle} >
-            <div style={DataStreamStyles.MessageDataStyle}>
-              &nbsp;&nbsp;{deCodedMessage}
-              <span style={DataStreamStyles.EnCodedeMessageStyle}>{enCodedMessage}</span>
+        <If condition={this.props.mobileStatus}>
+          <Then>{() => null }</Then>
+          <Else>
+            <div id="foo">
+              <div style={DataStreamStyles.ClockStyle}>
+                <span style={DataStreamStyles.MessageStyle}>&nbsp;<Clock format={'HH : mm'} ticking={true}/></span>
+              </div>
+              <div style={DataStreamStyles.DataStreamMessageContainerStyle} >
+                <div style={DataStreamStyles.MessageDataStyle}>
+                  &nbsp;&nbsp;{deCodedMessage}
+                  <span style={DataStreamStyles.EnCodedeMessageStyle}>{enCodedMessage}</span>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </Else>
+        </If>        
         <div style={DataStreamStyles.ZoomStyle}>
           <span style={DataStreamStyles.MessageStyle} >&nbsp;&nbsp;&nbsp;Zoom:&nbsp;&nbsp;{this.props.mapCenterAndZoom.zoom - 1}</span>
         </div>
-        <div style={DataStreamStyles.CopyrightStyle}>
-          <span style={DataStreamStyles.MessageStyle}>&nbsp;&nbsp;{copyRightText}</span>
-        </div>
+        <If condition={this.props.mobileStatus}>
+          <Then>
+            
+          </Then>
+          <Else>
+            <div style={DataStreamStyles.CopyrightStyle}>
+              <span style={DataStreamStyles.MessageStyle}>&nbsp;&nbsp;{copyRightText}</span>
+            </div>
+          </Else>
+        </If>
+
+
+
+        
       </div>
     );
   }

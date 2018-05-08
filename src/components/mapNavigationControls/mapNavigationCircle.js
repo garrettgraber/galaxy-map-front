@@ -5,6 +5,7 @@ import ReactTooltip from 'react-tooltip';
 import '../../css/main.css';
 import {
   setMapToZeroZero,
+  setMapToZeroZeroZoomOne,
   addItemToDataStream,
   increaseMapZoom,
   decreaseMapZoom,
@@ -23,7 +24,11 @@ class MapNavigationCircle extends React.Component {
     if(this.props.mapCenterAndZoom.zoom > 2) {
       this.refs.galaxyButton.blur();
       this.props.dispatch(addItemToDataStream('Moved to Galaxy View...'));
-      this.props.dispatch(setMapToZeroZero());
+      if(this.props.mobileStatus) {
+        this.props.dispatch(setMapToZeroZeroZoomOne());
+      } else {
+        this.props.dispatch(setMapToZeroZero());
+      }
       this.props.dispatch(loadingIconOff());
     }
   }

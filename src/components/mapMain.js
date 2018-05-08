@@ -26,7 +26,10 @@ import {
     starMapIsOn,
     starMapIsOff,
     sectorMapIsOn,
-    sectorMapIsOff
+    sectorMapIsOff,
+    mapShouldDisplayForMobile,
+    mapShouldDisplayForDesktop,
+    setMapToZeroZeroZoomOne
 } from '../actions/actionCreators.js';
 import {
   setCursorValue,
@@ -68,21 +71,52 @@ class MapMain extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-    	map: null
+    	map: null,
+      mobileStatus: false,
+      minZoom: 2
+    }
+  }
+
+  handleResize(e) {
+    if(window.innerWidth < 850 && !this.props.mobileStatus) {
+      console.log("hide data stream message");
+      console.log("window width: ", window.innerWidth);
+      this.props.dispatch(mapShouldDisplayForMobile());
+    }
+
+    if(window.innerWidth >= 850 && this.props.mobileStatus) {
+      console.log("display data stream message");
+      console.log("window width: ", window.innerWidth);
+      this.props.dispatch(mapShouldDisplayForDesktop());
     }
   }
 
   componentDidMount() {
+
+    this.props.dispatch(buildHyperspaceLaneNamesSet());
+    this.props.dispatch(setCursorValue());
+
   	const mapBounds = this.refs.map.leafletElement.getBounds();
-  	const currentZoom = this.refs.map.leafletElement.getZoom();
   	this.refs.map.leafletElement.setMaxBounds(mapBounds);
   	if(this.refs.map) {
       console.log("Map: ", this.refs.map.leafletElement);
   		this.setState({map: this.refs.map.leafletElement});
   	}
-    this.props.dispatch(setMapZoom(currentZoom));
-    this.props.dispatch(setCursorValue());
-    this.props.dispatch(buildHyperspaceLaneNamesSet());
+
+    if(window.innerWidth < 850) {
+      this.setState({minZoom: 1});
+      this.props.dispatch(setMapToZeroZeroZoomOne());
+      this.props.dispatch(mapShouldDisplayForMobile());
+    } else {
+      const currentZoom = this.refs.map.leafletElement.getZoom();
+      this.props.dispatch(setMapZoom(currentZoom)); 
+    }
+
+    window.addEventListener('resize', this.handleResize.bind(this));
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize.bind(this));
   }
 
   componentWillReceiveProps(newProps) {
@@ -180,8 +214,12 @@ class MapMain extends React.Component {
   }
 
   render() {
-  	const minZoom = 2;
+  	const minZoomMobile = 1;
+    const minZoomDesktop = 2;
+    const minZoom = this.state.minZoom;
   	const maxZoom = 8;
+    // const maxZoom = 7;
+
   	const zIndexGalaxy = 210;
     const zIndexBlack = 205;
     const zIndexWhite = 204;
@@ -191,10 +229,19 @@ class MapMain extends React.Component {
       // console.log("LeafletMap: ", LeafletMap);
     }
 
+    // console.log("zoom: ", this.props.mapCenterAndZoom.zoom);
+
+    // const verticalScroll = (this.props.mapCenterAndZoom.zoom > 2)? false : true;
+
+    // console.log("$: ", $ === jQuery);
+
+    // if(this.props.mapCenterAndZoom.zoom > 2) {
+    //   $('.leaflet-container').css("height", "100%");
+    // } else {
+    //   $('.leaflet-container').css("height", 1000);
+    // }
+
   	return (
-      <ScrollArea
-        onScroll={(value) => { }}
-      >
         <div id="container" >
           <LoadingSpinner/>
           <DataStream dataMessage={this.props.dataStream.currentItem}/>
@@ -202,6 +249,7 @@ class MapMain extends React.Component {
           <SideBarController map={this.state.map}/>
           <MapNavigationControl  map={this.state.map}/>
       		<Map
+            id="map"
             ref='map'
             style={{zIndex: 5}}
             center={this.props.mapCenterAndZoom.center}
@@ -271,7 +319,7 @@ class MapMain extends React.Component {
   				  </LayersControl>
       		</Map>
         </div>
-      </ScrollArea>
+      
   	)
   }
 }
