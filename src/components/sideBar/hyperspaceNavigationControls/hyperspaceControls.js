@@ -183,7 +183,7 @@ class HyperspaceControls extends React.Component {
         <button
           type="button"
           className={singleJumpToggleClasses}
-          style={{verticalAlign: "top", width: 40}}
+          style={{verticalAlign: "top", width: 40, display: 'none'}}
           onClick={(e) => this.singleJumpToggle(e)}
           data-tip={jumpTypeTooltip}
           data-for={'multi-jump-toggle' + this.state.componentId}

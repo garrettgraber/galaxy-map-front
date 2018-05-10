@@ -33,7 +33,7 @@ class SearchData extends React.Component {
   }
 
   componentDidMount() {
-    if(this.props.currentSeachValue === 'systems') {
+    if(this.props.currentSeachValue === 'systems' || this.props.mobileStatus) {
       this.setState({
         selectedSearchValue: {
           value: 'systems',
@@ -102,9 +102,50 @@ class SearchData extends React.Component {
     const searchingSectors = selectedSearchValue && selectedSearchValue.value === 'sectors';
     const searchingLanes = selectedSearchValue && selectedSearchValue.value === 'lanes';
 
+    const SearchDataStyles = {
+      borderRadius: 4,
+      position: 'static',
+      display: 'block',
+      padding: 5,
+      border: '1px solid #49fb35',
+      backgroundColor: 'black',
+      marginBottom: 10,
+      height: 50,
+      width: 400,
+    };
+
+    const SearchDataStylesMobile = {
+      borderRadius: 4,
+      position: 'static',
+      display: 'block',
+      padding: 5,
+      border: '1px solid #49fb35',
+      backgroundColor: 'black',
+      marginBottom: 10,
+      height: 130,
+      width: '100%',
+      padding: 4
+    };
+
+    const SearchSelectStyles = {
+      display: 'inline-block',
+      width: 140,
+      marginLeft: 5
+    };
+
+    const SearchSelectStylesMobile = {
+      display: 'block',
+      width: '100%',
+      marginBottom: 5
+    };
+
+    const ActiveSearchDataStyles = (this.props.mobileStatus)? SearchDataStylesMobile : SearchDataStyles;
+
+    const ActiveSearchSelectStyles = (this.props.mobileStatus)? SearchSelectStylesMobile : SearchSelectStyles
+
     return (
-      <div id="search-data" className="control-row nav-section">
-        <div style={{display: 'inline-block', width: 140, marginLeft: 5}}>
+      <div id="search-data" style={ActiveSearchDataStyles}>
+        <div style={ActiveSearchSelectStyles}>
           <Select
             name="search-selection-type"
             value={this.state.selectedSearchValue}

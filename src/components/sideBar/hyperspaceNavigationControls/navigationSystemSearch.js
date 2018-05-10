@@ -34,7 +34,7 @@ class NavigationSystemSearch extends React.Component {
     this.state = { 
       system: '',
       componentId: uuidv4(),
-
+      searchBarWidth: 200
     };
   }
 
@@ -46,6 +46,15 @@ class NavigationSystemSearch extends React.Component {
     if(this.props.clickSystem) {
       this.props.dispatch(notAllowedCursor());
     }
+
+    if(window.innerWidth < 400) {
+
+      const windowDifference = 400 - window.innerWidth;
+
+      const newSearchBarWidth = 200 - windowDifference - 8;
+
+      this.setState({searchBarWidth: newSearchBarWidth});
+    }
   }
 
   componentWillReceiveProps(newProps) {
@@ -56,6 +65,17 @@ class NavigationSystemSearch extends React.Component {
     if(newProps.clickSystem) {
       this.props.dispatch(notAllowedCursor());
     }
+
+
+    if(window.innerWidth < 400) {
+
+      const windowDifference = 400 - window.innerWidth;
+
+      const newSearchBarWidth = 200 - windowDifference - 8;
+
+      this.setState({searchBarWidth: newSearchBarWidth});
+    }
+
   }
 
   setSystemValue(isStartPosition, startSystem, endSystem) {
@@ -122,10 +142,22 @@ class NavigationSystemSearch extends React.Component {
     const clickSystemClasses = (startClickIsOn || endClickIsOn)? "btn hyperspace-navigation-button btn-success" : "btn hyperspace-navigation-button btn-primary";
     const selectOptions = [...this.props.systemNameSet];
     const filterOptions = createFilterOptions({ options: selectOptions });
+    let searchBarWidth = 200;
+
+    // if(window.innerWidth < 400) {
+
+    //   const windowDifference = 400 - window.innerWidth;
+
+    //   const newSearchBarWidth = 200 - windowDifference - 8;
+
+    //   searchBarWidth = newSearchBarWidth
+
+    //   // this.setState({searchBarWidth: newSearchBarWidth});
+    // }
 
     return (
       <div className="pane-column">
-        <div style={{display: 'inline-block', width: 200, marginRight: 3, marginLeft: 3}}>
+        <div style={{display: 'inline-block', width: this.state.searchBarWidth, marginRight: 3, marginLeft: 3}}>
           <Select
             name="selected-system-search"
             filterOptions={filterOptions}

@@ -11,8 +11,29 @@ class SideBarController extends React.Component {
     super();
   }
 	render() {
+
+    const ControlContainerStyles = {
+      position: 'fixed',
+      top: 70,
+      left: 70,
+      height: 'auto',
+      zIndex: 10
+    };
+
+    const ControlContainerStylesMobile = {
+      position: 'fixed',
+      top: 70,
+      left: 0,
+      height: 'auto',
+      zIndex: 10,
+      width: '100%',
+      padding: 4
+    };
+
+    const ActiveControlContainerStyles = (this.props.mobileStatus)? ControlContainerStylesMobile : ControlContainerStyles;
+
     return (
-      <div id="control-container">
+      <div id="control-container" style={ActiveControlContainerStyles}>
         <If condition={ this.props.systemsSearchControlsOn }>
             <Then>
               <SearchData map={this.props.map}/>

@@ -53,7 +53,8 @@ class GridCell extends React.Component {
   }
 
   gridClick(e) {
-    this.props.dispatch(zoomToLocation([this.props.lat, this.props.lng], 6));
+    const zoomDepth = (this.props.mobileStatus)? 5 : 6;
+    this.props.dispatch(zoomToLocation([this.props.lat, this.props.lng], zoomDepth));
   }
 
   render() {

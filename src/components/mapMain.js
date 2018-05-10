@@ -66,44 +66,73 @@ import imgBlack from '../images/black-tile.png';
 import imgWhite from '../images/white-tile.png';
 const blackTileImage = imgBlack;
 const whiteTileImage = imgWhite;
+const mobileWidth = 500;
+const messageBarHideWidth = 850;
+const MaxBounds = {
+  _northEast: {
+    lat: 85.00,
+    lng: 230.00
+  },
+  _southWest: {
+    lat: -85.00,
+    lng: -230.00
+  }
+};
 
 class MapMain extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
     	map: null,
-      mobileStatus: false,
-      minZoom: 2
+      minZoom: 2,
+      hideMessageBar: false
     }
   }
 
   handleResize(e) {
-    if(window.innerWidth < 850 && !this.props.mobileStatus) {
-      console.log("hide data stream message");
+    const widthLessThanMessageBar = window.innerWidth < messageBarHideWidth;
+    const shouldMessageBarHide = (widthLessThanMessageBar && !this.state.hideMessageBar)? true : false;
+    const shouldMessageBarReveal = (!widthLessThanMessageBar && this.state.hideMessageBar)? true : false;
+
+    if(shouldMessageBarHide) {
+      this.setState({hideMessageBar: true});
+    }
+
+    if(shouldMessageBarReveal) {
+      this.setState({hideMessageBar: false});
+    }
+
+    if(window.innerWidth < mobileWidth && !this.props.mobileStatus) {
+      console.log("set for mobile");
       console.log("window width: ", window.innerWidth);
+      this.setState({minZoom: 1});
       this.props.dispatch(mapShouldDisplayForMobile());
     }
 
-    if(window.innerWidth >= 850 && this.props.mobileStatus) {
-      console.log("display data stream message");
+    if(window.innerWidth >= mobileWidth && this.props.mobileStatus) {
+      console.log("set for diplay larger than mobile");
       console.log("window width: ", window.innerWidth);
       this.props.dispatch(mapShouldDisplayForDesktop());
     }
   }
 
   componentDidMount() {
+    if(window.innerWidth < messageBarHideWidth) {
+      this.setState({hideMessageBar: true});
+    }
 
     this.props.dispatch(buildHyperspaceLaneNamesSet());
     this.props.dispatch(setCursorValue());
-
   	const mapBounds = this.refs.map.leafletElement.getBounds();
-  	this.refs.map.leafletElement.setMaxBounds(mapBounds);
+    console.log("Starting map Bounds: ", mapBounds);
+
+  	this.refs.map.leafletElement.setMaxBounds(MaxBounds);
   	if(this.refs.map) {
       console.log("Map: ", this.refs.map.leafletElement);
   		this.setState({map: this.refs.map.leafletElement});
   	}
 
-    if(window.innerWidth < 850) {
+    if(window.innerWidth < mobileWidth) {
       this.setState({minZoom: 1});
       this.props.dispatch(setMapToZeroZeroZoomOne());
       this.props.dispatch(mapShouldDisplayForMobile());
@@ -185,10 +214,6 @@ class MapMain extends React.Component {
     ));
   }
 
-  onClickStarMapOverlay(e) {
-    console.log("onClickStarMapOverlay has fired...");
-  }
-
   onOverlayadd(e) {
     if(e.name === 'Star Systems') {
       this.props.dispatch(starMapIsOn());
@@ -209,49 +234,28 @@ class MapMain extends React.Component {
     } else if(e.name === 'Sectors') {
       this.props.dispatch(sectorMapIsOff());
     }
-
     // console.log("e.name removed: ", e.name);
   }
 
   render() {
-  	const minZoomMobile = 1;
-    const minZoomDesktop = 2;
     const minZoom = this.state.minZoom;
   	const maxZoom = 8;
-    // const maxZoom = 7;
-
   	const zIndexGalaxy = 210;
     const zIndexBlack = 205;
     const zIndexWhite = 204;
-
-    if(this.refs.map) {
-      const LeafletMap = this.refs.map;
-      // console.log("LeafletMap: ", LeafletMap);
-    }
-
-    // console.log("zoom: ", this.props.mapCenterAndZoom.zoom);
-
-    // const verticalScroll = (this.props.mapCenterAndZoom.zoom > 2)? false : true;
-
-    // console.log("$: ", $ === jQuery);
-
-    // if(this.props.mapCenterAndZoom.zoom > 2) {
-    //   $('.leaflet-container').css("height", "100%");
-    // } else {
-    //   $('.leaflet-container').css("height", 1000);
-    // }
+    const windowHeight = window.innerHeight;
 
   	return (
         <div id="container" >
           <LoadingSpinner/>
-          <DataStream dataMessage={this.props.dataStream.currentItem}/>
+          <DataStream dataMessage={this.props.dataStream.currentItem}  hideMessages={this.state.hideMessageBar}/>
           <SideBar />
           <SideBarController map={this.state.map}/>
           <MapNavigationControl  map={this.state.map}/>
       		<Map
             id="map"
             ref='map'
-            style={{zIndex: 5}}
+            style={{zIndex: 5, height: windowHeight}}
             center={this.props.mapCenterAndZoom.center}
             zoom={this.props.mapCenterAndZoom.zoom}
             zoomControl={false}

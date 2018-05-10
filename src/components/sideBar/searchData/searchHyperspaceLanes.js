@@ -4,6 +4,9 @@ import Select from 'react-select';
 import createFilterOptions from 'react-select-fast-filter-options';
 import ReactTooltip from 'react-tooltip';
 import uuidv4 from 'uuid/v4';
+import { If, Then, Else } from 'react-if';
+
+import * as SearchStyles from './searchStyles.js';
 
 import {
   findHyperspaceRoute
@@ -63,11 +66,19 @@ class SearchHyperspaceLanes extends React.Component {
     });
     const filterLaneOptions = createFilterOptions({ options: laneSearchArray });
     const tooltipZoomText = (this.state.laneValue)? 'Zoom to the ' + this.state.laneValue.label  : 'No Lane selected';
-    const pointZoom = (this.state.laneValue)? 'btn hyperspace-navigation-button btn-success' : 'btn hyperspace-navigation-button btn-danger';
+    const pointZoom = (this.state.laneValue)? 'btn btn-success' : 'btn btn-danger';
+
+
+
+    const ActiveSearchSystemsStyles = (this.props.mobileStatus)? SearchStyles.SearchSystemsStylesMobile : SearchStyles.SearchSystemsStyles;
+    const ActiveSearchSystemsSelectStyles = (this.props.mobileStatus)? SearchStyles.SearchSystemsSelectStylesMobile : SearchStyles.SearchSystemsSelectStyles;
+    const ActiveSearchButtonStyles = (this.props.mobileStatus)? SearchStyles.SearchButtonStylesMobile : SearchStyles.SearchButtonStyles;
+    const selectedLane = (this.state.laneValue)? this.state.laneValue.label : null;
+
 
     return (
-      <div style={{display: 'inline-block'}}>
-        <div style={{display: 'inline-block', width: 180, marginLeft: 10}}>
+      <div style={ActiveSearchSystemsStyles}>
+        <div style={ActiveSearchSystemsSelectStyles}>
           <Select
             name="selected-lane-search"
             filterOptions={filterLaneOptions}
@@ -77,12 +88,26 @@ class SearchHyperspaceLanes extends React.Component {
             placeholder="Go To Hyperspace Route..."
           />
         </div>
+
         <span>
-          <button type="button" className={pointZoom} style={{verticalAlign: "top", marginLeft: 10}} onClick={(e) => this.zoomToPoint(e)}   data-tip={tooltipZoomText}  data-for={'go-to-lane-from-search' + this.state.componentId} ref="zoomToButton">
-            <i className={"fa fa-bullseye"} ></i>
+          <button type="button" className={pointZoom} style={ActiveSearchButtonStyles} onClick={(e) => this.zoomToPoint(e)}   data-tip={tooltipZoomText}  data-for={'go-to-sector-from-search' + this.state.componentId} ref="zoomToButton">
+            <If condition={ this.props.mobileStatus && selectedLane !== null}>
+              <Then>
+                <span>
+                  &nbsp;&nbsp;&nbsp;&nbsp;Zoom to the {selectedLane}&nbsp;&nbsp;&nbsp;&nbsp;
+                </span>
+              </Then>
+              <Else><i className={"fa fa-bullseye"} ></i></Else>
+            </If>
           </button>
-          <ReactTooltip id={'go-to-lane-from-search' + this.state.componentId} place="right">{}</ReactTooltip>
+          <If condition={ this.props.mobileStatus }>
+            <Then>{() => null}</Then>
+            <Else>
+              <ReactTooltip id={'go-to-lane-from-search' + this.state.componentId} place="right">{}</ReactTooltip>
+            </Else>
+          </If>
         </span>
+
       </div>
     );
   }

@@ -4,6 +4,9 @@ import Select from 'react-select';
 import createFilterOptions from 'react-select-fast-filter-options';
 import ReactTooltip from 'react-tooltip';
 import uuidv4 from 'uuid/v4';
+import { If, Then, Else } from 'react-if';
+
+import * as SearchStyles from './searchStyles.js';
 
 import {
   zoomToSector
@@ -59,11 +62,19 @@ class SearchSectors extends React.Component {
     });
     const filterSectorOptions = createFilterOptions({ options: sectorSearchArray });
     const tooltipZoomText = (this.state.sectorValue)? 'Zoom to the ' + this.state.sectorValue.label + ' Sector' : 'No Sector selected';
-    const pointZoom = (this.state.sectorValue)? 'btn hyperspace-navigation-button btn-success' : 'btn hyperspace-navigation-button btn-danger';
+    const pointZoom = (this.state.sectorValue)? 'btn btn-success' : 'btn btn-danger';
+
+
+    const ActiveSearchSystemsStyles = (this.props.mobileStatus)? SearchStyles.SearchSystemsStylesMobile : SearchStyles.SearchSystemsStyles;
+    const ActiveSearchSystemsSelectStyles = (this.props.mobileStatus)? SearchStyles.SearchSystemsSelectStylesMobile : SearchStyles.SearchSystemsSelectStyles;
+    const ActiveSearchButtonStyles = (this.props.mobileStatus)? SearchStyles.SearchButtonStylesMobile : SearchStyles.SearchButtonStyles;
+    const selectedSector = (this.state.sectorValue)? this.state.sectorValue.label : null;
+    const sectorHasSectorInName = (selectedSector && selectedSector.toLowerCase().indexOf('sector') > -1)? true : false;
+    const sectorDisplayName = (sectorHasSectorInName)? selectedSector : selectedSector + ' Sector';
 
     return (
-      <div style={{display: 'inline-block'}}>
-        <div style={{display: 'inline-block', width: 180, marginLeft: 10}}>
+      <div style={ActiveSearchSystemsStyles}>
+        <div style={ActiveSearchSystemsSelectStyles}>
           <Select
             name="selected-sector-search"
             filterOptions={filterSectorOptions}
@@ -73,12 +84,29 @@ class SearchSectors extends React.Component {
             placeholder="Go To Sector..."
           />
         </div>
+
         <span>
-          <button type="button" className={pointZoom} style={{verticalAlign: "top", marginLeft: 10}} onClick={(e) => this.zoomToPoint(e)}   data-tip={tooltipZoomText}  data-for={'go-to-sector-from-search' + this.state.componentId} ref="zoomToButton">
-            <i className={"fa fa-bullseye"} ></i>
+          <button type="button" className={pointZoom} style={ActiveSearchButtonStyles} onClick={(e) => this.zoomToPoint(e)}   data-tip={tooltipZoomText}  data-for={'go-to-sector-from-search' + this.state.componentId} ref="zoomToButton">
+            <If condition={ this.props.mobileStatus && selectedSector !== null}>
+              <Then>
+                <span>
+                  &nbsp;&nbsp;&nbsp;&nbsp;Zoom to the {sectorDisplayName}&nbsp;&nbsp;&nbsp;&nbsp;
+                </span>
+              </Then>
+              <Else><i className={"fa fa-bullseye"} ></i></Else>
+            </If>
           </button>
-          <ReactTooltip id={'go-to-sector-from-search' + this.state.componentId} place="right">{}</ReactTooltip>
+          <If condition={ this.props.mobileStatus }>
+            <Then>{() => null}</Then>
+            <Else>
+              <ReactTooltip id={'go-to-sector-from-search' + this.state.componentId} place="right">{}</ReactTooltip>
+            </Else>
+          </If>
         </span>
+
+
+
+
       </div>
     );
   }

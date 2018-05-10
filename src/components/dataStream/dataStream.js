@@ -17,8 +17,8 @@ class DataStream extends React.Component {
       deCodedIndex: 0,
       dataMessage: '',
       dataMessageInEnglish: true,
-      componentId: uuidv4()
-
+      componentId: uuidv4(),
+      hideMessages: false
     };
   }
 
@@ -40,6 +40,9 @@ class DataStream extends React.Component {
   componentDidMount() {
     this.setState({dataMessage: this.props.dataMessage});
     this.intervalId = setInterval(this.deCodeLetter.bind(this), decodeTimeInMilliseconds);
+    if(this.props.hideMessages){
+      this.setState({hideMessages: true});
+    }
   }
 
   componentWillUnmount(){
@@ -53,6 +56,10 @@ class DataStream extends React.Component {
       this.setState({dataMessage: newProps.dataMessage});
       this.intervalId = setInterval(this.deCodeLetter.bind(this), decodeTimeInMilliseconds);
     }
+
+    if (newProps.hideMessages !== this.state.hideMessages){
+      this.setState({hideMessages: newProps.hideMessages});
+    }
   }
   
 	render() {
@@ -64,7 +71,7 @@ class DataStream extends React.Component {
 
     return (
       <div id="data-stream" >
-        <If condition={this.props.mobileStatus}>
+        <If condition={this.state.hideMessages}>
           <Then>{() => null }</Then>
           <Else>
             <div id="foo">
@@ -80,12 +87,24 @@ class DataStream extends React.Component {
             </div>
           </Else>
         </If>        
-        <div style={DataStreamStyles.ZoomStyle}>
-          <span style={DataStreamStyles.MessageStyle} >&nbsp;&nbsp;&nbsp;Zoom:&nbsp;&nbsp;{this.props.mapCenterAndZoom.zoom - 1}</span>
-        </div>
+        
+
         <If condition={this.props.mobileStatus}>
           <Then>
-            
+            <div style={DataStreamStyles.ZoomStyleMobile}>
+              <span style={DataStreamStyles.MessageStyle} >&nbsp;&nbsp;&nbsp;Zoom:&nbsp;&nbsp;{this.props.mapCenterAndZoom.zoom - 1}</span>
+            </div>
+          </Then>
+          <Else>
+            <div style={DataStreamStyles.ZoomStyle}>
+              <span style={DataStreamStyles.MessageStyle} >&nbsp;&nbsp;&nbsp;Zoom:&nbsp;&nbsp;{this.props.mapCenterAndZoom.zoom - 1}</span>
+            </div>
+          </Else>
+        </If>
+
+        <If condition={this.props.mobileStatus}>
+          <Then>
+            {() => null }
           </Then>
           <Else>
             <div style={DataStreamStyles.CopyrightStyle}>

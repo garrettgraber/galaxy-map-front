@@ -74,6 +74,23 @@ export const ZoomStyle = {
   display: 'table'
 };
 
+export const ZoomStyleMobile = {
+  position: 'fixed',
+  bottom: 0,
+  left: 0,
+  height: 40,
+  width: 100,
+  zIndex: 40,
+  color: '#ff0101',
+  opacity: 1.0,
+  // left: 630,
+  backgroundColor: 'black',
+  fontSize: '1.2em',
+  display: 'table',
+  border: '1px solid #49fb35',
+  borderRadius: 4
+};
+
 export const CopyrightStyle = {
   position: 'fixed',
   bottom: 0,

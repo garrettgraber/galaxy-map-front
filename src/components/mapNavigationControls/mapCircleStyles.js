@@ -126,6 +126,23 @@ export const GalaxyHomeButtonStyle = {
 	position: 'relative'
 };
 
+export const GalaxyHomeButtonMobileStyle = {
+	width: galaxyButtonSideLength,
+	height: galaxyButtonSideLength,
+	fontSize: 18,
+	lineHeight: 1.33,
+	borderRadius: galaxyButtonBorderRadius,
+	backgroundColor: 'black',
+	verticalAlign: 'middle',
+	display: 'block',
+	position: 'fixed',
+	// bottom: 20,
+	bottom: '7%',
+	right: 0,
+	zIndex: 12,
+	border: '2px solid #49fb35'
+};
+
 export const GalaxyImageStyle = {
 	width: galaxyButtonBorderRadius,
 	height: galaxyButtonBorderRadius
