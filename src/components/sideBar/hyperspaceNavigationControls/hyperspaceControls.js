@@ -56,6 +56,7 @@ class HyperspaceControls extends React.Component {
       oldPathCollection : this.props.hyperspacePathCollections      
     });
     const jumpButtonClass = CurrentJumpStatus.jumpClassesString();
+    // console.log("Can calculate jump: ", CurrentJumpStatus.jumpCanCalculate());
     this.setState({ jumpButtonClasses: jumpButtonClass });
   }
 
@@ -70,20 +71,50 @@ class HyperspaceControls extends React.Component {
       oldEndPoint : this.props.hyperspaceEndPoint.system,
       oldPathCollection : this.props.hyperspacePathCollections
     });
+
+    // console.log("jump can calculate: ", CurrentJumpStatus.jumpCanCalculate());
+    // console.log("calculate new jump: ", CurrentJumpStatus.newJumpShouldBeCalculated());
+
+
     if(CurrentJumpStatus.newJumpShouldBeCalculated()) {
       const jumpButtonClass = CurrentJumpStatus.jumpClassesString();
+
+      // console.log("Calculate new jump!!");
+
+      // console.log("jump can calculate: ", CurrentJumpStatus.jumpCanCalculate());
+
       this.setState({ jumpButtonClasses: jumpButtonClass });
     }
+
+    // console.log("Jump can calculate: ", CurrentJumpStatus.jumpCanCalculate());
+
+    if(CurrentJumpStatus.jumpCanCalculate()) {
+      this.refs.calculateJump.focus();
+    } else {
+      // this.refs.calculateJump.blur();
+    }
+
+
+
+    const activeElement = document.activeElement;
+    const jumpButtonIsActive = activeElement.isEqualNode(this.refs.calculateJump);
+
+
+    if(!CurrentJumpStatus.jumpCanCalculate() && jumpButtonIsActive) {
+      this.refs.calculateJump.blur();
+    }
+
+    // console.log("jump button is active: ", jumpButtonIsActive);
+
   }
 
   findHyperspacePath() {
+
     const startSystemExists = this.props.hyperspaceStartSystem.length > 0;
     const endSystemExists = this.props.hyperspaceEndSystem.length > 0;
-    // console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
-
+    // this.refs.calculateJump.blur();
     if(startSystemExists && endSystemExists) {
       this.setState({ jumpButtonClasses: "hyperspace-navigation-button  button-border-teal" });
-      this.refs.calculateJump.focus();
       const CurentPathGenerator = new PathGenerator(
         this.props.hyperspaceActiveStartPoint,
         this.props.hyperspaceActiveEndPoint,
@@ -141,7 +172,6 @@ class HyperspaceControls extends React.Component {
     this.props.dispatch(setDefaultEndNode());
     this.props.dispatch(emptyStartSystem());
     this.props.dispatch(emptyEndSystem());
-    // console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
   }
 
   singleJumpToggle(e) {
@@ -152,6 +182,10 @@ class HyperspaceControls extends React.Component {
       (newSingleJumpStatus)? this.setState({limit: 1}) : this.setState({limit: 2});
       this.setState({singleJump: newSingleJumpStatus});
     }
+  }
+
+  handleKeyPress(e) {
+    if(e.key == 'Enter'){ this.findHyperspacePath(e) }
   }
 
   render() {
@@ -171,15 +205,24 @@ class HyperspaceControls extends React.Component {
       backgroundColor: 'black',
       color: 'red'
     };
-
     const singleJumpToggleClasses = (this.state.singleJump)? "btn hyperspace-navigation-button btn-success" : "btn hyperspace-navigation-button btn-warning";
     const jumpTypeTooltip = (this.state.singleJump)? "Calculating Single Path" : "Calculating Multiple Path";
 
     return (
       <div className="hyperspace-controls-pane-row pane-section">
-        <img  id="calculate-hyperspace-jump" src={EnterHyperspaceIcon} className={this.state.jumpButtonClasses}  style={JumpButtonStyle} onClick={(e) => this.findHyperspacePath(e)} data-tip="Calculate Jump" data-for="calculate-hyperspace-jump-tooltip" ref="calculateJump"/>
+        <img
+          id="calculate-hyperspace-jump"
+          src={EnterHyperspaceIcon}
+          className={this.state.jumpButtonClasses}
+          style={JumpButtonStyle}
+          onClick={(e) => this.findHyperspacePath(e)}
+          data-tip="Calculate Jump"
+          data-for="calculate-hyperspace-jump-tooltip"
+          ref="calculateJump"
+          tabIndex="0"
+          onKeyPress={(e) => this.handleKeyPress(e)}
+        />
         <ReactTooltip id='calculate-hyperspace-jump-tooltip' place="top">{}</ReactTooltip>
-        
         <button
           type="button"
           className={singleJumpToggleClasses}

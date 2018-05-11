@@ -67,6 +67,15 @@ export default class JumpStatus {
 	  return jumpClasses;
 	}
 
+	jumpCanCalculate() {
+	  const hyperspacePointsAreValid = (validatePoints(this.startPoint) && validatePoints(this.endPoint));
+	  if( hyperspacePointsAreValid && (this.hyperspacePathsEmpty() || this.activeAndSearchAreDifferent()) ) {
+	    return true;
+	  } else {
+	  	return false;
+	  }
+	}
+
 };
 
 

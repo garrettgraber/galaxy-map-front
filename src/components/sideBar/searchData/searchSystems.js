@@ -116,6 +116,7 @@ class SearchSystems extends React.Component {
             onChange={(selectValue) => this.onChange(selectValue)}
             value={this.state.selectValue}
             placeholder="Go To System..."
+            autoBlur={true}
           />
         </div>
         <span>

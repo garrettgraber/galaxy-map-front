@@ -86,6 +86,7 @@ class SearchHyperspaceLanes extends React.Component {
             onChange={(laneValue) => this.onChange(laneValue)}
             value={this.state.laneValue}
             placeholder="Go To Hyperspace Route..."
+            autoBlur={true}
           />
         </div>
 

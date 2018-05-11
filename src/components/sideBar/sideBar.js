@@ -21,24 +21,37 @@ class SideBar extends React.Component {
   constructor() {
     super();
   }
+  componentDidMount() {
+    console.log("Side Bar has mounted");
+
+    if(this.props.layersControl) {
+      console.log("layersControl is ready to fire: ", this.props.layersControl);
+    }
+
+  }
   searchSystemsToggle(e) {
     this.refs.searchSystems.blur();
+
+    if(this.props.mobileStatus) {
+      this.props.layersControl.collapse();
+    }
 
     if(this.props.mobileStatus && this.props.hyperspaceNavigationControlsOn && !this.props.systemsSearchControlsOn) {
       this.props.dispatch(deActivateHyperspaceNavigationControls());
     }
 
     this.props.dispatch(toggleSystemsSearchControls());
-
   }
   hyperspaceNavigationControls(e) {
     this.refs.navigationControls.blur();
 
+    if(this.props.mobileStatus) {
+      this.props.layersControl.collapse();
+    }
 
     if(this.props.mobileStatus && this.props.systemsSearchControlsOn && !this.props.hyperspaceNavigationControlsOn) {
       this.props.dispatch(deActivateSystemsSearchControls());
     }
-
 
     if(this.props.hyperspaceNavigationControlsOn) {
       this.props.dispatch(defaultCursor());
@@ -50,9 +63,10 @@ class SideBar extends React.Component {
     this.props.dispatch( toggleHyperspaceNavigationControls() );
   }
 	render() {
+
     const SideBarStyles = {
       position: 'fixed',
-      top: 70,
+      top: 60,
       height: 120,
       width: 60,
       zIndex: 30,
@@ -70,11 +84,10 @@ class SideBar extends React.Component {
       border: '1px solid #49fb35',
       borderRadius: 4
     };
-
     const ActiveSideBarStyle = (this.props.mobileStatus)? SideBarStylesMobile : SideBarStyles;
-
     const searchSystemsClasses = (this.props.systemsSearchControlsOn)? "btn btn-success control-button" : "btn btn-danger control-button";
     const hyperspaceNavigationClasses = (this.props.hyperspaceNavigationControlsOn)? "btn btn-success control-button" : "btn btn-danger control-button";
+
     return (
       <div id="side-bar" style={ActiveSideBarStyle}>
         <button

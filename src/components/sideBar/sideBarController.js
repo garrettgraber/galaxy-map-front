@@ -14,7 +14,7 @@ class SideBarController extends React.Component {
 
     const ControlContainerStyles = {
       position: 'fixed',
-      top: 70,
+      top: 60,
       left: 70,
       height: 'auto',
       zIndex: 10
@@ -22,7 +22,7 @@ class SideBarController extends React.Component {
 
     const ControlContainerStylesMobile = {
       position: 'fixed',
-      top: 70,
+      top: 60,
       left: 0,
       height: 'auto',
       zIndex: 10,

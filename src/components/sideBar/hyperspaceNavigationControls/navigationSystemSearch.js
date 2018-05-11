@@ -165,6 +165,7 @@ class NavigationSystemSearch extends React.Component {
             style={{height: 32}}
             onChange={(selectValue) => this.systemChange(selectValue)}
             value={this.state.system}
+            autoBlur={true}
           />
         </div>
         <button

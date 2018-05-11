@@ -71,17 +71,20 @@ class SearchSectors extends React.Component {
     const selectedSector = (this.state.sectorValue)? this.state.sectorValue.label : null;
     const sectorHasSectorInName = (selectedSector && selectedSector.toLowerCase().indexOf('sector') > -1)? true : false;
     const sectorDisplayName = (sectorHasSectorInName)? selectedSector : selectedSector + ' Sector';
+    const otherProps = {autoBlur: true};
 
     return (
       <div style={ActiveSearchSystemsStyles}>
         <div style={ActiveSearchSystemsSelectStyles}>
           <Select
+            {...otherProps}
             name="selected-sector-search"
             filterOptions={filterSectorOptions}
             options={sectorSearchArray}
             onChange={(sectorValue) => this.onChange(sectorValue)}
             value={this.state.sectorValue}
             placeholder="Go To Sector..."
+            autoBlur={true}
           />
         </div>
 

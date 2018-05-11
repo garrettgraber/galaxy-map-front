@@ -42,7 +42,8 @@ class JumpGrid extends React.Component {
     const distanceBetweenStartNodeAndPoint = distanceBetweenPoints(StartPoint, StartNode);
     const distanceBetweenEndNodeAndPoint = distanceBetweenPoints(EndPoint, EndNode);
     const freeSpaceDistance = distanceBetweenStartNodeAndPoint + distanceBetweenEndNodeAndPoint;
-    this.setState({freeSpaceDistance: freeSpaceDistance}); 
+    this.setState({freeSpaceDistance: freeSpaceDistance});
+    this.refs.zoomPathButton.focus();
   }
 
   getJumpPaths() {
@@ -67,6 +68,8 @@ class JumpGrid extends React.Component {
     // console.log("new boundaries: ", newBounds);
     const mapIsAtGalaxyView = mapAtGalaxyView(newBounds);
     // console.log("mapIsAtGalaxyView: ", mapIsAtGalaxyView);
+    console.log("this.props: ", this.props);
+
   }
 
   clearCurrentHyperspaceJump(e) {
@@ -89,7 +92,19 @@ class JumpGrid extends React.Component {
     const distanceBetweenStartNodeAndPoint = distanceBetweenPoints(StartPoint, StartNode);
     const distanceBetweenEndNodeAndPoint = distanceBetweenPoints(EndPoint, EndNode);
     const freeSpaceDistance = distanceBetweenStartNodeAndPoint + distanceBetweenEndNodeAndPoint;
-    this.setState({freeSpaceDistance: freeSpaceDistance}); 
+    this.setState({freeSpaceDistance: freeSpaceDistance});
+
+    const ActiveStartPoint = newProps.hyperspaceActiveStartPoint;
+    const ActiveEndPoint = newProps.hyperspaceActiveEndPoint;
+    const OldActiveStartPoint = this.props.hyperspaceActiveStartPoint;
+    const OldActiveEndPoint = this.props.hyperspaceActiveEndPoint;
+    const startPointHasChanged = !nodeAndPointAreEqual(ActiveStartPoint, OldActiveStartPoint);
+    const endPointHasChanged = !nodeAndPointAreEqual(ActiveEndPoint, OldActiveEndPoint);
+
+    if(startPointHasChanged || endPointHasChanged) {
+      console.log("Point change in jump grid");
+      this.refs.zoomPathButton.focus();
+    }
   }
 
   render() {

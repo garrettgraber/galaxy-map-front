@@ -29,7 +29,9 @@ import {
     sectorMapIsOff,
     mapShouldDisplayForMobile,
     mapShouldDisplayForDesktop,
-    setMapToZeroZeroZoomOne
+    setMapToZeroZeroZoomOne,
+    deActivateSystemsSearchControls,
+    deActivateHyperspaceNavigationControls
 } from '../actions/actionCreators.js';
 import {
   setCursorValue,
@@ -136,6 +138,14 @@ class MapMain extends React.Component {
       this.setState({minZoom: 1});
       this.props.dispatch(setMapToZeroZeroZoomOne());
       this.props.dispatch(mapShouldDisplayForMobile());
+      setTimeout(() => {
+        const controlLayer = document.getElementsByClassName('leaflet-control-layers-toggle')[0];
+        controlLayer.addEventListener("click", () => {
+          // console.log("Click has fired bitch! Titan A.E. forever");
+          this.props.dispatch(deActivateSystemsSearchControls());
+          this.props.dispatch(deActivateHyperspaceNavigationControls());
+        }); 
+      }, 3000);
     } else {
       const currentZoom = this.refs.map.leafletElement.getZoom();
       this.props.dispatch(setMapZoom(currentZoom)); 
@@ -153,7 +163,7 @@ class MapMain extends React.Component {
   }
 
   onZoomend(e) {
-    console.log("zoom end: ", e.target._zoom);
+    // console.log("zoom end: ", e.target._zoom);
     const mapBounds = this.refs.map.leafletElement.getBounds();
     const currentZoom = this.refs.map.leafletElement.getZoom();
     if(!(currentZoom === 2 && this.props.mapCenterAndZoom.zoom === 3)) {
@@ -162,7 +172,7 @@ class MapMain extends React.Component {
   }
 
   onZoomstart(e) {
-    console.log("zoom start: ", e.target._zoom);
+    // console.log("zoom start: ", e.target._zoom);
   }
 
   onMovestart(e) {
@@ -237,6 +247,18 @@ class MapMain extends React.Component {
     // console.log("e.name removed: ", e.name);
   }
 
+  onClickLayers(e) {
+    console.log("Layers control expansion: ", e);
+  }
+
+  onCollapse(e) {
+    console.log("Layers control collapse: ", e);
+  }
+
+  componentDidMountLayersControl(e) {
+    console.log("Layers control componentDidMount");
+  }
+
   render() {
     const minZoom = this.state.minZoom;
   	const maxZoom = 8;
@@ -245,11 +267,16 @@ class MapMain extends React.Component {
     const zIndexWhite = 204;
     const windowHeight = window.innerHeight;
 
+    if(this.refs.layersControl) {
+      const layersControl = this.refs.layersControl.leafletElement;
+      // console.log("Layers Control: ", layersControl);
+    }
+
   	return (
         <div id="container" >
           <LoadingSpinner/>
           <DataStream dataMessage={this.props.dataStream.currentItem}  hideMessages={this.state.hideMessageBar}/>
-          <SideBar />
+          <SideBar layersControl={(this.refs.layersControl)? this.refs.layersControl.leafletElement : null}/>
           <SideBarController map={this.state.map}/>
           <MapNavigationControl  map={this.state.map}/>
       		<Map
@@ -275,7 +302,7 @@ class MapMain extends React.Component {
             onOverlayremove={e => this.onOverlayremove(e)}
             onBaselayerchange={e => this.onBaselayerchange(e)}
           >
-      			<LayersControl>
+      			<LayersControl ref='layersControl' componentDidMount={e => this.componentDidMountLayersControl(e)}>
       				<BaseLayer name="Galaxy" checked={true}>
       					<Pane name="galaxy-pane" style={{ zIndex: zIndexGalaxy }}>
   							 <TileLayer url={activeTileServer} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
