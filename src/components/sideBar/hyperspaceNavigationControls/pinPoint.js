@@ -88,7 +88,7 @@ class PinPoint extends React.Component {
         >
           <i className={pinPointIconButtonClass}></i>
         </button>
-        <ReactTooltip id={'pin-point-hyperspace-' + this.state.componentId} place="top">{}</ReactTooltip>
+        <ReactTooltip id={'pin-point-hyperspace-' + this.state.componentId} place="top" disable={this.props.mobileStatus}>{}</ReactTooltip>
         <span className="display-text">&nbsp;&nbsp;{this.props.Point.system}</span>
       </div>
     );

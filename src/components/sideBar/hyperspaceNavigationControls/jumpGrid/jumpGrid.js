@@ -68,7 +68,7 @@ class JumpGrid extends React.Component {
     // console.log("new boundaries: ", newBounds);
     const mapIsAtGalaxyView = mapAtGalaxyView(newBounds);
     // console.log("mapIsAtGalaxyView: ", mapIsAtGalaxyView);
-    console.log("this.props: ", this.props);
+    // console.log("this.props: ", this.props);
 
   }
 
@@ -159,7 +159,7 @@ class JumpGrid extends React.Component {
             >
               <i className="fa fa-bullseye"></i>
             </button>
-            <ReactTooltip id={'zoom-hyperspace-navigation-click' + this.state.componentId} place="top">{}</ReactTooltip>
+            <ReactTooltip id={'zoom-hyperspace-navigation-click' + this.state.componentId} place="top" disable={this.props.mobileStatus}>{}</ReactTooltip>
 
             <div className="pane-column">
               <span className="nav-text">&nbsp;&nbsp;Total Paths:&nbsp;&nbsp;{jumpPaths.length}</span>
@@ -167,7 +167,7 @@ class JumpGrid extends React.Component {
             <button  id="reset-hyperspace-jump" className="btn hyperspace-navigation-button btn-danger pull-right" style={{width: 40}} onClick={(e) => this.clearCurrentHyperspaceJump(e)} data-tip="Reset Hyperspace Jump" data-for="reset-hyperspace-jump-tooltip-foo" ref="resetJump">
               <i className="fa fa-close"></i>
             </button>
-            <ReactTooltip id='reset-hyperspace-jump-tooltip-foo' place="top">{}</ReactTooltip>
+            <ReactTooltip id='reset-hyperspace-jump-tooltip-foo' place="top" disable={this.props.mobileStatus}>{}</ReactTooltip>
           </div>
           <div style={StartAndEndStyles}>
             &nbsp;Start:&nbsp;{this.props.hyperspaceActiveStartPoint.system}

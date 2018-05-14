@@ -13,7 +13,9 @@ import {
 } from '../../../actions/actions.js';
 import {
   addItemToDataStream,
-  noHyperspaceRoute
+  noHyperspaceRoute,
+  focusSelect,
+  blurSelect
 } from '../../../actions/actionCreators.js';
 import '../../../css/main.css';
 
@@ -55,6 +57,21 @@ class SearchHyperspaceLanes extends React.Component {
       this.props.dispatch(addItemToDataStream(dataStreamMessage));
     }
   }
+
+  selectFocus(e) {
+    console.log("search hyperspace lanes select focus");
+    if(this.props.mobileStatus) {
+      this.props.dispatch(focusSelect());
+    }
+  }
+
+  selectBlur(e) {
+    console.log("search hyperspace lanes select blur");
+    if(this.props.mobileStatus) {
+      this.props.dispatch(blurSelect());
+    }
+  }
+
   render() {
     let laneSearchArray =  [...this.props.hyperspaceRouteNameSet];
     laneSearchArray.sort(function(a, b){
@@ -87,6 +104,8 @@ class SearchHyperspaceLanes extends React.Component {
             value={this.state.laneValue}
             placeholder="Go To Hyperspace Route..."
             autoBlur={true}
+            onFocus={(e) => this.selectFocus(e)}
+            onBlur={(e) => this.selectBlur(e)}
           />
         </div>
 
@@ -101,12 +120,7 @@ class SearchHyperspaceLanes extends React.Component {
               <Else><i className={"fa fa-bullseye"} ></i></Else>
             </If>
           </button>
-          <If condition={ this.props.mobileStatus }>
-            <Then>{() => null}</Then>
-            <Else>
-              <ReactTooltip id={'go-to-lane-from-search' + this.state.componentId} place="right">{}</ReactTooltip>
-            </Else>
-          </If>
+          <ReactTooltip id={'go-to-lane-from-search' + this.state.componentId} place="right" disable={this.props.mobileStatus}>{}</ReactTooltip>
         </span>
 
       </div>

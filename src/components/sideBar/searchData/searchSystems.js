@@ -13,7 +13,9 @@ import {
   noSystemsLocation,
   setDefaultActiveSystem,
   setMapCenterAndZoom,
-  addItemToDataStream
+  addItemToDataStream,
+  focusSelect,
+  blurSelect
 } from '../../../actions/actionCreators.js';
 
 import '../../../css/main.css';
@@ -59,6 +61,21 @@ class SearchSystems extends React.Component {
       this.props.dispatch(setMapCenterAndZoom(systemCenter, newZoom));
     }
   }
+
+  selectFocus(e) {
+    console.log("search systems select focus");
+    if(this.props.mobileStatus) {
+      this.props.dispatch(focusSelect());
+    }
+  }
+
+  selectBlur(e) {
+    console.log("search systems select blur");
+    if(this.props.mobileStatus) {
+      this.props.dispatch(blurSelect());
+    }
+  }
+
   render() {
     const selectOptions = [...this.props.systemNameSet];
     const filterOptions = createFilterOptions({ options: selectOptions });
@@ -117,6 +134,8 @@ class SearchSystems extends React.Component {
             value={this.state.selectValue}
             placeholder="Go To System..."
             autoBlur={true}
+            onFocus={(e) => this.selectFocus(e)}
+            onBlur={(e) => this.selectBlur(e)}
           />
         </div>
         <span>
@@ -130,12 +149,7 @@ class SearchSystems extends React.Component {
               <Else><i className={"fa fa-bullseye"} ></i></Else>
             </If>
           </button>
-            <If condition={ this.props.mobileStatus }>
-              <Then>{() => null}</Then>
-              <Else>
-                <ReactTooltip id={'go-to-system-from-search' + this.state.componentId} place="right">{}</ReactTooltip>
-              </Else>
-            </If>
+          <ReactTooltip id={'go-to-system-from-search' + this.state.componentId} place="right" disable={this.props.mobileStatus}>{}</ReactTooltip>
         </span>
       </div>
     );

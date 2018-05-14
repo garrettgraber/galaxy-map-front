@@ -99,12 +99,7 @@ class SideBar extends React.Component {
           data-for="systems-search-toggle"
           ref="searchSystems"
         >
-          <If condition={ this.props.mobileStatus }>
-            <Then>{() => null}</Then>
-            <Else>
-              <ReactTooltip id='systems-search-toggle'>{}</ReactTooltip>
-            </Else>
-          </If>
+          <ReactTooltip id='systems-search-toggle' disable={this.props.mobileStatus}>{}</ReactTooltip>
           <i className="glyphicon glyphicon-search"></i>
         </button>
         <button
@@ -116,12 +111,7 @@ class SideBar extends React.Component {
           data-for="hyperspace-navigation-computer-toggle"
           ref="navigationControls"
         >
-          <If condition={ this.props.mobileStatus }>
-            <Then>{() => null}</Then>
-            <Else>
-              <ReactTooltip id='hyperspace-navigation-computer-toggle'>{}</ReactTooltip>
-            </Else>
-          </If>
+          <ReactTooltip id='hyperspace-navigation-computer-toggle' disable={this.props.mobileStatus}>{}</ReactTooltip>
           <i className="fa fa-rocket"></i>
         </button>
       </div>

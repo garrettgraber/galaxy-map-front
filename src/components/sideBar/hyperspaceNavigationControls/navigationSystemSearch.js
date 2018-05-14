@@ -23,7 +23,9 @@ import {
   pathEndClickOn,
   pathEndClickOff,
   defaultCursor,
-  notAllowedCursor
+  notAllowedCursor,
+  focusSelect,
+  blurSelect
 } from '../../../actions/actionCreators.js';
 
 import Place from '../../../classes/place.js';
@@ -136,6 +138,22 @@ class NavigationSystemSearch extends React.Component {
     }
   }
 
+
+  selectFocus(e) {
+    console.log("navigation systems select focus");
+    if(this.props.mobileStatus) {
+      this.props.dispatch(focusSelect());
+    }
+  }
+
+
+  selectBlur(e) {
+    console.log("navigation systems select blur");
+    if(this.props.mobileStatus) {
+      this.props.dispatch(blurSelect());
+    }
+  }
+
   render() {
     const startClickIsOn = (this.props.isStartPosition && this.props.pathStartClick);
     const endClickIsOn = (!this.props.isStartPosition && this.props.pathEndClick);
@@ -166,6 +184,8 @@ class NavigationSystemSearch extends React.Component {
             onChange={(selectValue) => this.systemChange(selectValue)}
             value={this.state.system}
             autoBlur={true}
+            onFocus={(e) => this.selectFocus(e)}
+            onBlur={(e) => this.selectBlur(e)}
           />
         </div>
         <button
@@ -179,7 +199,7 @@ class NavigationSystemSearch extends React.Component {
         >
           <i className="fa fa-sun-o"></i>
         </button>
-        <ReactTooltip id={'star-system-hyperspace-click' + this.state.componentId} place="top">{}</ReactTooltip>
+        <ReactTooltip id={'star-system-hyperspace-click' + this.state.componentId} place="top" disable={this.props.mobileStatus}>{}</ReactTooltip>
       </div>
     );
   }

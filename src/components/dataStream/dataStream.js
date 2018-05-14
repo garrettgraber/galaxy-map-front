@@ -91,9 +91,14 @@ class DataStream extends React.Component {
 
         <If condition={this.props.mobileStatus}>
           <Then>
-            <div style={DataStreamStyles.ZoomStyleMobile}>
-              <span style={DataStreamStyles.MessageStyle} >&nbsp;&nbsp;&nbsp;Zoom:&nbsp;&nbsp;{this.props.mapCenterAndZoom.zoom - 1}</span>
-            </div>
+            <If condition={this.props.selectFocused}>
+              <Then>{() => null }</Then>
+              <Else>
+                <div style={DataStreamStyles.ZoomStyleMobile}>
+                  <span style={DataStreamStyles.MessageStyle} >&nbsp;&nbsp;&nbsp;Zoom:&nbsp;&nbsp;{this.props.mapCenterAndZoom.zoom - 1}</span>
+                </div>
+              </Else>
+            </If>
           </Then>
           <Else>
             <div style={DataStreamStyles.ZoomStyle}>

@@ -49,13 +49,18 @@ class MapNavigationControl extends React.Component {
       <div>
         <If condition={ this.props.mobileStatus }>
           <Then>
-            <button
-              style={MapCircleStyles.GalaxyHomeButtonMobileStyle}
-              onClick={e => this.goHome(e)}
-              ref="galaxyHomeButtonMobile"
-            >
-              <img id="galaxy-view-home-mobile" style={MapCircleStyles.GalaxyImageStyle} src={GalaxyIconOnEdge}/>
-            </button>
+            <If condition={ this.props.selectFocused }>
+              <Then>{() => null }</Then>
+              <Else>
+                <button
+                  style={MapCircleStyles.GalaxyHomeButtonMobileStyle}
+                  onClick={e => this.goHome(e)}
+                  ref="galaxyHomeButtonMobile"
+                >
+                  <img id="galaxy-view-home-mobile" style={MapCircleStyles.GalaxyImageStyle} src={GalaxyIconOnEdge}/>
+                </button>
+              </Else>
+            </If>
           </Then>
           <Else>
             <div>

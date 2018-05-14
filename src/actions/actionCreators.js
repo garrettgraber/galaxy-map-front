@@ -1,6 +1,17 @@
 import Actions from '../constants/actionTypesModule.js';
 
 
+
+export function focusSelect() {
+	return {
+		type: Actions.SELECT_FOCUSED
+	}
+}
+export function blurSelect() {
+	return {
+		type: Actions.SELECT_BLURRED
+	}
+}
 export function mapShouldDisplayForMobile() {
 	return {
 		type: Actions.MOBILE_STATUS_ON

@@ -13,7 +13,9 @@ import {
 } from '../../../actions/actions.js';
 import {
   noSectorData,
-  addItemToDataStream
+  addItemToDataStream,
+  focusSelect,
+  blurSelect
 } from '../../../actions/actionCreators.js';
 import '../../../css/main.css';
 
@@ -51,6 +53,21 @@ class SearchSectors extends React.Component {
       this.props.dispatch(addItemToDataStream(dataStreamMessage));
     }
   }
+
+  selectFocus(e) {
+    console.log("search sectors select focus");
+    if(this.props.mobileStatus) {
+      this.props.dispatch(focusSelect());
+    }
+  }
+
+  selectBlur(e) {
+    console.log("search sectors select blur");
+    if(this.props.mobileStatus) {
+      this.props.dispatch(blurSelect());
+    }
+  }
+
   render() {
     let sectorSearchArray =  [...this.props.sectorSearchSet];
     sectorSearchArray.sort(function(a, b){
@@ -85,6 +102,8 @@ class SearchSectors extends React.Component {
             value={this.state.sectorValue}
             placeholder="Go To Sector..."
             autoBlur={true}
+            onFocus={(e) => this.selectFocus(e)}
+            onBlur={(e) => this.selectBlur(e)}
           />
         </div>
 
@@ -99,16 +118,8 @@ class SearchSectors extends React.Component {
               <Else><i className={"fa fa-bullseye"} ></i></Else>
             </If>
           </button>
-          <If condition={ this.props.mobileStatus }>
-            <Then>{() => null}</Then>
-            <Else>
-              <ReactTooltip id={'go-to-sector-from-search' + this.state.componentId} place="right">{}</ReactTooltip>
-            </Else>
-          </If>
+          <ReactTooltip id={'go-to-sector-from-search' + this.state.componentId} place="right" disable={this.props.mobileStatus}>{}</ReactTooltip>
         </span>
-
-
-
 
       </div>
     );

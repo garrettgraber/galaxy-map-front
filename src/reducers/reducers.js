@@ -145,6 +145,18 @@ const emptyMapHash = null;
 const nullHyperspaceHash = null;
 const emptyNameSet = new Set();
 
+
+
+function selectFocused(state = false, action) {
+	switch (action.type) {
+		case Actions.SELECT_FOCUSED:
+			return true;
+		case Actions.SELECT_BLURRED:
+			return false;
+		default:
+			return state;
+	}
+}
 function mobileStatus(state = false, action) {
 	switch (action.type) {
 		case Actions.MOBILE_STATUS_ON:
@@ -803,6 +815,7 @@ function baseLayerName(state = "Galaxy", action) {
 }
 
 export default combineReducers({
+	selectFocused,
 	mobileStatus,
 	navigationObjectBoundaries,
 	currentSeachValue,

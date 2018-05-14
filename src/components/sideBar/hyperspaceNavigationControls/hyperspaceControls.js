@@ -86,6 +86,25 @@ class HyperspaceControls extends React.Component {
       this.setState({ jumpButtonClasses: jumpButtonClass });
     }
 
+    if(CurrentJumpStatus.startPointAndEndPointEqual()) {
+      
+
+
+      if(CurrentJumpStatus.startPointHasChanged()) {
+        this.props.dispatch(setDefaultStartPosition());
+        this.props.dispatch(setDefaultStartNode());
+        this.props.dispatch(emptyEndSystem());
+      }
+
+      if(CurrentJumpStatus.endPointHasChanged()) {
+        this.props.dispatch(setDefaultEndPosition());
+        this.props.dispatch(setDefaultEndNode());
+        this.props.dispatch(emptyStartSystem());
+      }
+
+      this.props.dispatch(addItemToDataStream('Cannot jump to the same place'));
+    }
+
     // console.log("Jump can calculate: ", CurrentJumpStatus.jumpCanCalculate());
 
     if(CurrentJumpStatus.jumpCanCalculate()) {
@@ -222,7 +241,7 @@ class HyperspaceControls extends React.Component {
           tabIndex="0"
           onKeyPress={(e) => this.handleKeyPress(e)}
         />
-        <ReactTooltip id='calculate-hyperspace-jump-tooltip' place="top">{}</ReactTooltip>
+        <ReactTooltip id='calculate-hyperspace-jump-tooltip' place="top" disable={this.props.mobileStatus}>{}</ReactTooltip>
         <button
           type="button"
           className={singleJumpToggleClasses}
@@ -237,7 +256,7 @@ class HyperspaceControls extends React.Component {
             <Else><i className="fa fa-arrows"></i></Else>
           </If>
         </button>
-        <ReactTooltip id={'multi-jump-toggle' + this.state.componentId} place="top">{}</ReactTooltip>
+        <ReactTooltip id={'multi-jump-toggle' + this.state.componentId} place="top" disable={this.props.mobileStatus}>{}</ReactTooltip>
 
         <If condition={ this.state.singleJump }>
           <Then>
@@ -256,7 +275,7 @@ class HyperspaceControls extends React.Component {
         <button  id="reset-hyperspace-jump-search" className="btn hyperspace-navigation-button btn-danger pull-right" style={{width: 40}} onClick={(e) => this.clearCurrentHyperspaceJumpSearch(e)} data-tip="Reset Start & End Points" data-for="reset-hyperspace-jump-search-tooltip" ref="resetJump" >
           <i className="fa fa-close"></i>
         </button>
-        <ReactTooltip id='reset-hyperspace-jump-search-tooltip' place="top">{}</ReactTooltip>
+        <ReactTooltip id='reset-hyperspace-jump-search-tooltip' place="top"  disable={this.props.mobileStatus}>{}</ReactTooltip>
 
       </div>
     );

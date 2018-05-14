@@ -10,6 +10,10 @@ export default class JumpStatus {
 		this.oldPathCollection = JumpOptions.oldPathCollection || [];
 	}
 
+	startPointAndEndPointEqual() {
+		return pointsAreEqual(this.startPoint, this.endPoint);
+	}
+
 	startPointAndActiveEqual() {
 		return this.startPoint === this.activeStartPoint;
 	}
@@ -51,7 +55,7 @@ export default class JumpStatus {
 	}
 
 	newJumpShouldBeCalculated() {
-		return (this.startOrEndPoinstHaveChanged() || this.hyperspacePathsHaveChanged() || this.activeAndSearchAreTheSame())? true : false;
+		return (!this.startPointAndEndPointEqual() && (this.startOrEndPoinstHaveChanged() || this.hyperspacePathsHaveChanged() || this.activeAndSearchAreTheSame()))? true : false;
 	}
 
 	jumpClassesString() {
@@ -78,6 +82,16 @@ export default class JumpStatus {
 
 };
 
+function pointsAreEqual(point1, point2) {
+  const sameName = (point1.system === point2.system)? true : false;
+  const sameLatitude = (point1.lat === point2.lat)? true : false;
+  const sameLongitude = (point1.lng === point2.lng)? true : false;
+  if(sameName && sameLatitude && sameLongitude) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 function validatePoints(systemName) {
 	return (systemName === '')? false : true;
