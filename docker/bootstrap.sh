@@ -36,7 +36,7 @@ echo "Run status in bootstrap: $RUN_STATUS"
 
 if [ "$RUN_STATUS" == "compile_production" ]; then
   echo "Compiling webpack for production...'"
-  npm compile:production 
+  npm build 
 fi
 
 if [ "$RUN_STATUS" != "compile_production" ]; then
