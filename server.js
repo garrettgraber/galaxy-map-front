@@ -18,7 +18,8 @@ const API = EnvironmentEndpoints.apiServerUrl;
 const hostname = EnvironmentEndpoints.hostname;
 console.log("Environment Endpoints: ", EnvironmentEndpoints);
 
-const bundlePath = path.join(__dirname, './public/build/index.html');
+const bundlePath = path.join(__dirname, '/public/build/index.html');
+const bundleFolder = path.join(__dirname, '/public/build');
 const port = 8108;
 const app = express();
 
@@ -76,10 +77,11 @@ if(isDeveloping) {
 } else {
 
   app.get('/', function(req, res) {
+    app.use(express.static(bundleFolder));
+
     console.log("\ncall made to webpack --> Production <-- ");
     console.log('==> 🌎 Listening on port. Open up http://' + hostname + ':' + port);
-    res.write(fs.readFileSync(bundlePath));
-    res.end();
+    res.sendFile(bundlePath);
   });
 }
 
