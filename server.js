@@ -59,9 +59,11 @@ const bundlePath = path.join(__dirname, './public/build/index.html');
 
 app.use(middleware);
 
-if(NODE_ENV === 'development') {
-  app.use(webpackHotMiddleware(compiler));
-}
+app.use(webpackHotMiddleware(compiler));
+
+// if(NODE_ENV === 'development') {
+//   app.use(webpackHotMiddleware(compiler));
+// }
 
 app.get('/', function(req, res) {
   console.log("\ncall made to webpack");
