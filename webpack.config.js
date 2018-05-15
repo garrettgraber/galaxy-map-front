@@ -1,12 +1,10 @@
 const path = require('path');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const environmentSetup = require('./environment-setup.js');
 const indexFolder = environmentSetup(process.env.NODE_ENV).indexFolder;
 
 const htmlIndexPath = path.join('src', indexFolder, 'index.html');
-
 const javascriptEntryPath = path.resolve(__dirname, 'src', 'index.js');
 const htmlEntryPath = path.resolve(__dirname, htmlIndexPath);
 const buildPath = path.resolve(__dirname, 'public', 'build');
@@ -22,7 +20,7 @@ module.exports = {
   entry: [
     'react-hot-loader/patch',
     'whatwg-fetch',
-    'webpack-hot-middleware/client?reload=true', 
+    // 'webpack-hot-middleware/client?reload=true',
     javascriptEntryPath,
     htmlEntryPath
   ],
@@ -122,7 +120,7 @@ module.exports = {
   },
   plugins: [ 
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
+    // new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
   ]
 };

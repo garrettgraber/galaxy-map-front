@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const ip = require('ip');
@@ -7,6 +8,9 @@ const jsonfile = require('jsonfile');
 const request = require('request');
 const bodyParser = require('body-parser');
 const compression = require('compression');
+const webpack = require('webpack');
+const webpackMiddleware = require('webpack-dev-middleware');
+const webpackHotMiddleware = require('webpack-hot-middleware');
 
 const environmentSetup = require('./environment-setup.js');
 const EnvironmentEndpoints = environmentSetup(process.env.NODE_ENV);
@@ -14,6 +18,7 @@ const API = EnvironmentEndpoints.apiServerUrl;
 const hostname = EnvironmentEndpoints.hostname;
 console.log("Environment Endpoints: ", EnvironmentEndpoints);
 
+const bundlePath = path.join(__dirname, './public/build/index.html');
 const port = 8108;
 const app = express();
 
@@ -21,55 +26,94 @@ app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-let webpack = require('webpack');
-let webpackMiddleware = require('webpack-dev-middleware');
-let webpackHotMiddleware = require('webpack-hot-middleware');
-let config = require('./webpack.config.js');
-let configProduction = require('./webpack.prod.js');
-let configDevelopment = require('./webpack.dev.js');
 
-const NODE_ENV = process.env.NODE_ENV;
-switch (NODE_ENV) {
-  case 'development':
-    config = configDevelopment;
-    break;
-  case 'production':
-    config = configProduction;
-    break;
-  default:
+// let config = require('./webpack.config.js');
+// let configProduction = require('./webpack.prod.js');
+// let configDevelopment = require('./webpack.dev.js');
+
+// const NODE_ENV = process.env.NODE_ENV;
+// switch (NODE_ENV) {
+//   case 'development':
+//     config = configDevelopment;
+//     break;
+//   case 'production':
+//     config = configProduction;
+//     break;
+//   default:
+// }
+
+const isDeveloping = (process.env.NODE_ENV !== 'production')? true : false;
+
+if(isDeveloping) {
+  const configDevelopment = require('./webpack.dev.js');
+  const compiler = webpack(configDevelopment);
+
+  const middleware = webpackMiddleware(compiler, {
+    publicPath: configDevelopment.output.publicPath,
+    noInfo: true,
+    quiet: false,
+    lazy: false,
+    watchOptions: {
+      aggregateTimeout: 300,
+      poll: true
+    },
+    stats: {
+      colors: true,
+    }
+  })
+  
+  app.use(middleware);
+
+  app.use(webpackHotMiddleware(compiler));
+
+  app.get('/', function(req, res) {
+    console.log("\ncall made to webpack --> Development <--");
+    console.log('==> 🌎 Listening on port. Open up http://' + hostname + ':' + port);
+    res.write(middleware.fileSystem.readFileSync(bundlePath));
+    res.end();
+  });
+
+} else {
+
+  app.get('/', function(req, res) {
+    console.log("\ncall made to webpack --> Production <-- ");
+    console.log('==> 🌎 Listening on port. Open up http://' + hostname + ':' + port);
+    res.write(fs.readFileSync(bundlePath));
+    res.end();
+  });
 }
 
 
-const compiler = webpack(config);
-const middleware = webpackMiddleware(compiler, {
-  publicPath: config.output.publicPath,
-  noInfo: true,
-  quiet: false,
-  lazy: false,
-  watchOptions: {
-    aggregateTimeout: 300,
-    poll: true
-  },
-  stats: {
-    colors: true,
-  }
-});
+// const compiler = webpack(config);
+// const middleware = webpackMiddleware(compiler, {
+//   publicPath: config.output.publicPath,
+//   noInfo: true,
+//   quiet: false,
+//   lazy: false,
+//   watchOptions: {
+//     aggregateTimeout: 300,
+//     poll: true
+//   },
+//   stats: {
+//     colors: true,
+//   }
+// });
 
-const bundlePath = path.join(__dirname, './public/build/index.html');
 
-app.use(middleware);
+// app.use(middleware);
 
-app.use(webpackHotMiddleware(compiler));
+// app.use(webpackHotMiddleware(compiler));
 
 // if(NODE_ENV === 'development') {
 //   app.use(webpackHotMiddleware(compiler));
 // }
 
-app.get('/', function(req, res) {
-  console.log("\ncall made to webpack");
-  console.log('==> 🌎 Listening on port. Open up http://' + hostname + ':' + port);
-  res.write(middleware.fileSystem.readFileSync(bundlePath));
-});
+// app.get('/', function(req, res) {
+//   console.log("\ncall made to webpack");
+//   console.log('==> 🌎 Listening on port. Open up http://' + hostname + ':' + port);
+//   res.write(middleware.fileSystem.readFileSync(bundlePath));
+//   res.end();
+// });
 
 app.get('/api/*', function(req, res) {
   console.log("\ncall made to api: ", API + req.url);

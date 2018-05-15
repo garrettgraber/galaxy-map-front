@@ -59,4 +59,8 @@ npm ls -g --depth=0;
 echo "Current directory: $PWD"
 ls
 
+echo "Current node environment: $NODE_ENV"
+
 npm start
+
+# npm production

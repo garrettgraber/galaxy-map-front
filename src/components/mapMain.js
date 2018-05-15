@@ -114,6 +114,7 @@ class MapMain extends React.Component {
     if(window.innerWidth >= mobileWidth && this.props.mobileStatus) {
       console.log("set for diplay larger than mobile");
       console.log("window width: ", window.innerWidth);
+      this.setState({minZoom: 2});
       this.props.dispatch(mapShouldDisplayForDesktop());
     }
   }
@@ -267,11 +268,6 @@ class MapMain extends React.Component {
     const zIndexWhite = 204;
     const windowHeight = window.innerHeight;
 
-    if(this.refs.layersControl) {
-      const layersControl = this.refs.layersControl.leafletElement;
-      // console.log("Layers Control: ", layersControl);
-    }
-
   	return (
         <div id="container" >
           <LoadingSpinner/>
@@ -287,7 +283,7 @@ class MapMain extends React.Component {
             zoom={this.props.mapCenterAndZoom.zoom}
             zoomControl={false}
             animate={true}
-            tap={this.props.mobileStatus}
+            // tap={(this.props.mobileStatus !== undefined)? this.props.mobileStatus : false}
             touchZoom={this.props.mobileStatus}
 
             onZoomend={e => this.onZoomend(e)}
