@@ -34,3 +34,19 @@ export const SearchButtonStylesMobile = {
   width: '100%',
   height: 36,
 };
+
+export const getSearchStyles = (mobileStatus) => {
+  if(mobileStatus) {
+    return {
+      SearchContainer: SearchSystemsStylesMobile,
+      SearchSelect: SearchSystemsSelectStylesMobile,
+      SearchButton: SearchButtonStylesMobile
+    };
+  } else {
+    return {
+      SearchContainer: SearchSystemsStyles,
+      SearchSelect: SearchSystemsSelectStyles,
+      SearchButton: SearchButtonStyles
+    };
+  }
+};

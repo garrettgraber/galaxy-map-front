@@ -6,8 +6,7 @@ import ReactTooltip from 'react-tooltip';
 import uuidv4 from 'uuid/v4';
 import { If, Then, Else } from 'react-if';
 
-import * as SearchStyles from './searchStyles.js';
-
+import { getSearchStyles } from './searchStyles.js';
 import { findSystem } from '../../../actions/actions.js';
 import {
   noSystemsLocation,
@@ -28,6 +27,7 @@ class SearchSystems extends React.Component {
       componentId: uuidv4()
     };
   }
+
   componentDidMount() {
     if(this.props.activeSystem.system !== "") {
       this.setState({
@@ -38,6 +38,7 @@ class SearchSystems extends React.Component {
       });
     }
   }
+
   onChange(selectValue) {
     if(selectValue === null) {
       this.setState({selectValue: undefined});
@@ -49,6 +50,7 @@ class SearchSystems extends React.Component {
       this.refs.zoomToSystem.focus();
     }
   }
+  
   zoomToPoint(e) {
     if(this.state.selectValue !== null) {
       this.refs.zoomToSystem.blur();
@@ -63,14 +65,12 @@ class SearchSystems extends React.Component {
   }
 
   selectFocus(e) {
-    console.log("search systems select focus");
     if(this.props.mobileStatus) {
       this.props.dispatch(focusSelect());
     }
   }
 
   selectBlur(e) {
-    console.log("search systems select blur");
     if(this.props.mobileStatus) {
       this.props.dispatch(blurSelect());
     }
@@ -81,51 +81,12 @@ class SearchSystems extends React.Component {
     const filterOptions = createFilterOptions({ options: selectOptions });
     const tooltipZoomText = (this.state.selectValue)? 'Zoom to ' + this.state.selectValue.value : 'No System selected';
     const pointZoom = (this.state.selectValue)? 'btn btn-success' : 'btn btn-danger';
-
-    const newButtonZoom = (this.state.selectValue)? 'success' : 'danger';
-
-    const SearchSystemsStyles = {
-      display: 'inline-block'
-    };
-
-    const SearchSystemsStylesMobile = {
-      display: 'block',
-      width: '100%'
-    };
-
-    const SearchSystemsSelectStyles = {
-      display: 'inline-block',
-      width: 180,
-      marginLeft: 10
-    };
-
-    const SearchSystemsSelectStylesMobile = {
-      display: 'block',
-      width: '100%',
-      marginBottom: 5
-    };
-
-    const SearchButtonStyles = {
-      height: 36,
-      marginRight: 3,
-      marginLeft: 3,
-      verticalAlign: "top",
-      marginLeft: 10
-    };
-
-    const SearchButtonStylesMobile = {
-      width: '100%',
-      height: 36,
-    };
-
-    const ActiveSearchSystemsStyles = (this.props.mobileStatus)? SearchStyles.SearchSystemsStylesMobile : SearchStyles.SearchSystemsStyles;
-    const ActiveSearchSystemsSelectStyles = (this.props.mobileStatus)? SearchStyles.SearchSystemsSelectStylesMobile : SearchStyles.SearchSystemsSelectStyles;
-    const ActiveSearchButtonStyles = (this.props.mobileStatus)? SearchStyles.SearchButtonStylesMobile : SearchStyles.SearchButtonStyles;
+    const Styles = getSearchStyles(this.props.mobileStatus);
     const jumpStatusLabel = (this.state.selectValue)? this.state.selectValue.label : null;
 
     return (
-      <div style={ActiveSearchSystemsStyles}>
-        <div style={ActiveSearchSystemsSelectStyles}>
+      <div style={Styles.SearchContainer}>
+        <div style={Styles.SearchSelect}>
           <Select
             name="selected-system-search"
             filterOptions={filterOptions}
@@ -139,7 +100,7 @@ class SearchSystems extends React.Component {
           />
         </div>
         <span>
-          <button type="button" className={pointZoom} style={ActiveSearchButtonStyles} onClick={(e) => this.zoomToPoint(e)}   data-tip={tooltipZoomText}  data-for={'go-to-system-from-search' + this.state.componentId} ref="zoomToSystem">
+          <button type="button" className={pointZoom} style={Styles.SearchButton} onClick={(e) => this.zoomToPoint(e)}   data-tip={tooltipZoomText}  data-for={'go-to-system-from-search' + this.state.componentId} ref="zoomToSystem">
             <If condition={ this.props.mobileStatus && jumpStatusLabel !== null}>
               <Then>
                 <span>

@@ -11,7 +11,11 @@ export default class JumpStatus {
 	}
 
 	startPointAndEndPointEqual() {
-		return pointsAreEqual(this.startPoint, this.endPoint);
+		return this.pointsAreValid() && systemsAreEqual(this.startPoint, this.endPoint);
+	}
+
+	pointsAreValid() {
+		return validatePoints(this.startPoint) && validatePoints(this.endPoint);
 	}
 
 	startPointAndActiveEqual() {
@@ -91,6 +95,10 @@ function pointsAreEqual(point1, point2) {
   } else {
     return false;
   }
+}
+
+function systemsAreEqual(system1, system2) {
+	return (system1 === system2)? true : false;
 }
 
 function validatePoints(systemName) {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import ReactTooltip from 'react-tooltip';
 import uuidv4 from 'uuid/v4';
 import Select from 'react-select';
@@ -50,11 +51,8 @@ class NavigationSystemSearch extends React.Component {
     }
 
     if(window.innerWidth < 400) {
-
       const windowDifference = 400 - window.innerWidth;
-
       const newSearchBarWidth = 200 - windowDifference - 8;
-
       this.setState({searchBarWidth: newSearchBarWidth});
     }
   }
@@ -68,16 +66,11 @@ class NavigationSystemSearch extends React.Component {
       this.props.dispatch(notAllowedCursor());
     }
 
-
     if(window.innerWidth < 400) {
-
       const windowDifference = 400 - window.innerWidth;
-
       const newSearchBarWidth = 200 - windowDifference - 8;
-
       this.setState({searchBarWidth: newSearchBarWidth});
     }
-
   }
 
   setSystemValue(isStartPosition, startSystem, endSystem) {
@@ -138,17 +131,13 @@ class NavigationSystemSearch extends React.Component {
     }
   }
 
-
   selectFocus(e) {
-    console.log("navigation systems select focus");
     if(this.props.mobileStatus) {
       this.props.dispatch(focusSelect());
     }
   }
 
-
   selectBlur(e) {
-    console.log("navigation systems select blur");
     if(this.props.mobileStatus) {
       this.props.dispatch(blurSelect());
     }
@@ -158,8 +147,10 @@ class NavigationSystemSearch extends React.Component {
     const startClickIsOn = (this.props.isStartPosition && this.props.pathStartClick);
     const endClickIsOn = (!this.props.isStartPosition && this.props.pathEndClick);
     const clickSystemClasses = (startClickIsOn || endClickIsOn)? "btn hyperspace-navigation-button btn-success" : "btn hyperspace-navigation-button btn-primary";
+    const oppositeSelectedSystem = (this.props.isStartPosition)? this.props.hyperspaceEndPoint.system : this.props.hyperspaceStartPoint.system;
     const selectOptions = [...this.props.systemNameSet];
-    const filterOptions = createFilterOptions({ options: selectOptions });
+    const filteredSelectedOptions = _.filter(selectOptions, (n) => n.value !== oppositeSelectedSystem );
+    const filterOptions = createFilterOptions({ options: filteredSelectedOptions });
     let searchBarWidth = 200;
 
     // if(window.innerWidth < 400) {
@@ -179,7 +170,7 @@ class NavigationSystemSearch extends React.Component {
           <Select
             name="selected-system-search"
             filterOptions={filterOptions}
-            options={selectOptions}
+            options={filteredSelectedOptions}
             style={{height: 32}}
             onChange={(selectValue) => this.systemChange(selectValue)}
             value={this.state.system}

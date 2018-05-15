@@ -56,7 +56,6 @@ class HyperspaceControls extends React.Component {
       oldPathCollection : this.props.hyperspacePathCollections      
     });
     const jumpButtonClass = CurrentJumpStatus.jumpClassesString();
-    // console.log("Can calculate jump: ", CurrentJumpStatus.jumpCanCalculate());
     this.setState({ jumpButtonClasses: jumpButtonClass });
   }
 
@@ -72,40 +71,14 @@ class HyperspaceControls extends React.Component {
       oldPathCollection : this.props.hyperspacePathCollections
     });
 
-    // console.log("jump can calculate: ", CurrentJumpStatus.jumpCanCalculate());
-    // console.log("calculate new jump: ", CurrentJumpStatus.newJumpShouldBeCalculated());
-
-
     if(CurrentJumpStatus.newJumpShouldBeCalculated()) {
       const jumpButtonClass = CurrentJumpStatus.jumpClassesString();
-
-      // console.log("Calculate new jump!!");
-
-      // console.log("jump can calculate: ", CurrentJumpStatus.jumpCanCalculate());
-
       this.setState({ jumpButtonClasses: jumpButtonClass });
     }
 
     if(CurrentJumpStatus.startPointAndEndPointEqual()) {
-      
-
-
-      if(CurrentJumpStatus.startPointHasChanged()) {
-        this.props.dispatch(setDefaultStartPosition());
-        this.props.dispatch(setDefaultStartNode());
-        this.props.dispatch(emptyEndSystem());
-      }
-
-      if(CurrentJumpStatus.endPointHasChanged()) {
-        this.props.dispatch(setDefaultEndPosition());
-        this.props.dispatch(setDefaultEndNode());
-        this.props.dispatch(emptyStartSystem());
-      }
-
-      this.props.dispatch(addItemToDataStream('Cannot jump to the same place'));
+      console.log('Cannot jump to the same place');
     }
-
-    // console.log("Jump can calculate: ", CurrentJumpStatus.jumpCanCalculate());
 
     if(CurrentJumpStatus.jumpCanCalculate()) {
       this.refs.calculateJump.focus();
@@ -113,25 +86,18 @@ class HyperspaceControls extends React.Component {
       // this.refs.calculateJump.blur();
     }
 
-
-
     const activeElement = document.activeElement;
     const jumpButtonIsActive = activeElement.isEqualNode(this.refs.calculateJump);
-
 
     if(!CurrentJumpStatus.jumpCanCalculate() && jumpButtonIsActive) {
       this.refs.calculateJump.blur();
     }
 
-    // console.log("jump button is active: ", jumpButtonIsActive);
-
   }
 
   findHyperspacePath() {
-
     const startSystemExists = this.props.hyperspaceStartSystem.length > 0;
     const endSystemExists = this.props.hyperspaceEndSystem.length > 0;
-    // this.refs.calculateJump.blur();
     if(startSystemExists && endSystemExists) {
       this.setState({ jumpButtonClasses: "hyperspace-navigation-button  button-border-teal" });
       const CurentPathGenerator = new PathGenerator(

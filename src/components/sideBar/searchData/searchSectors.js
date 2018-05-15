@@ -6,7 +6,9 @@ import ReactTooltip from 'react-tooltip';
 import uuidv4 from 'uuid/v4';
 import { If, Then, Else } from 'react-if';
 
-import * as SearchStyles from './searchStyles.js';
+// import * as SearchStyles from './searchStyles.js';
+
+import { getSearchStyles } from './searchStyles.js';
 
 import {
   zoomToSector
@@ -27,6 +29,7 @@ class SearchSectors extends React.Component {
       componentId: uuidv4()
     };
   }
+
   componentDidMount() {
     if(this.props.sectorSearchData.name !== null) {
       const sectorSearchArray =  [...this.props.sectorSearchSet];
@@ -34,6 +37,7 @@ class SearchSectors extends React.Component {
       this.setState({ sectorValue });
     }
   }
+
   onChange(sectorValue) {  
     if(sectorValue === null) {
       this.setState({sectorValue: undefined});
@@ -44,6 +48,7 @@ class SearchSectors extends React.Component {
       this.refs.zoomToButton.focus();
     }
   }
+
   zoomToPoint(e) {
     this.refs.zoomToButton.blur();
     if(this.state.sectorValue) {
@@ -55,14 +60,12 @@ class SearchSectors extends React.Component {
   }
 
   selectFocus(e) {
-    console.log("search sectors select focus");
     if(this.props.mobileStatus) {
       this.props.dispatch(focusSelect());
     }
   }
 
   selectBlur(e) {
-    console.log("search sectors select blur");
     if(this.props.mobileStatus) {
       this.props.dispatch(blurSelect());
     }
@@ -80,21 +83,15 @@ class SearchSectors extends React.Component {
     const filterSectorOptions = createFilterOptions({ options: sectorSearchArray });
     const tooltipZoomText = (this.state.sectorValue)? 'Zoom to the ' + this.state.sectorValue.label + ' Sector' : 'No Sector selected';
     const pointZoom = (this.state.sectorValue)? 'btn btn-success' : 'btn btn-danger';
-
-
-    const ActiveSearchSystemsStyles = (this.props.mobileStatus)? SearchStyles.SearchSystemsStylesMobile : SearchStyles.SearchSystemsStyles;
-    const ActiveSearchSystemsSelectStyles = (this.props.mobileStatus)? SearchStyles.SearchSystemsSelectStylesMobile : SearchStyles.SearchSystemsSelectStyles;
-    const ActiveSearchButtonStyles = (this.props.mobileStatus)? SearchStyles.SearchButtonStylesMobile : SearchStyles.SearchButtonStyles;
+    const Styles = getSearchStyles(this.props.mobileStatus);
     const selectedSector = (this.state.sectorValue)? this.state.sectorValue.label : null;
     const sectorHasSectorInName = (selectedSector && selectedSector.toLowerCase().indexOf('sector') > -1)? true : false;
     const sectorDisplayName = (sectorHasSectorInName)? selectedSector : selectedSector + ' Sector';
-    const otherProps = {autoBlur: true};
 
     return (
-      <div style={ActiveSearchSystemsStyles}>
-        <div style={ActiveSearchSystemsSelectStyles}>
+      <div style={Styles.SearchContainer}>
+        <div style={Styles.SearchSelect}>
           <Select
-            {...otherProps}
             name="selected-sector-search"
             filterOptions={filterSectorOptions}
             options={sectorSearchArray}
@@ -106,9 +103,8 @@ class SearchSectors extends React.Component {
             onBlur={(e) => this.selectBlur(e)}
           />
         </div>
-
         <span>
-          <button type="button" className={pointZoom} style={ActiveSearchButtonStyles} onClick={(e) => this.zoomToPoint(e)}   data-tip={tooltipZoomText}  data-for={'go-to-sector-from-search' + this.state.componentId} ref="zoomToButton">
+          <button type="button" className={pointZoom} style={Styles.SearchButton} onClick={(e) => this.zoomToPoint(e)}   data-tip={tooltipZoomText}  data-for={'go-to-sector-from-search' + this.state.componentId} ref="zoomToButton">
             <If condition={ this.props.mobileStatus && selectedSector !== null}>
               <Then>
                 <span>
@@ -120,7 +116,6 @@ class SearchSectors extends React.Component {
           </button>
           <ReactTooltip id={'go-to-sector-from-search' + this.state.componentId} place="right" disable={this.props.mobileStatus}>{}</ReactTooltip>
         </span>
-
       </div>
     );
   }

@@ -6,8 +6,7 @@ import ReactTooltip from 'react-tooltip';
 import uuidv4 from 'uuid/v4';
 import { If, Then, Else } from 'react-if';
 
-import * as SearchStyles from './searchStyles.js';
-
+import { getSearchStyles } from './searchStyles.js';
 import {
   findHyperspaceRoute
 } from '../../../actions/actions.js';
@@ -27,6 +26,7 @@ class SearchHyperspaceLanes extends React.Component {
       componentId: uuidv4(),
     };
   }
+
   componentDidMount() {
     if(this.props.hyperspaceRouteSearchData.name !== null) {
       this.setState({
@@ -37,6 +37,7 @@ class SearchHyperspaceLanes extends React.Component {
       });
     }
   }
+
   onChange(laneValue) {  
     if(laneValue === null) {
       this.setState({laneValue: undefined});
@@ -48,6 +49,7 @@ class SearchHyperspaceLanes extends React.Component {
       this.refs.zoomToButton.focus();
     }
   }
+  
   zoomToPoint(e) {
     this.refs.zoomToButton.blur();
     if(this.state.laneValue) {
@@ -59,14 +61,12 @@ class SearchHyperspaceLanes extends React.Component {
   }
 
   selectFocus(e) {
-    console.log("search hyperspace lanes select focus");
     if(this.props.mobileStatus) {
       this.props.dispatch(focusSelect());
     }
   }
 
   selectBlur(e) {
-    console.log("search hyperspace lanes select blur");
     if(this.props.mobileStatus) {
       this.props.dispatch(blurSelect());
     }
@@ -82,20 +82,14 @@ class SearchHyperspaceLanes extends React.Component {
       return 0;
     });
     const filterLaneOptions = createFilterOptions({ options: laneSearchArray });
-    const tooltipZoomText = (this.state.laneValue)? 'Zoom to the ' + this.state.laneValue.label  : 'No Lane selected';
+    const tooltipZoomText = (this.state.laneValue)? 'Zoom to the ' + this.state.laneValue.label : 'No Lane selected';
     const pointZoom = (this.state.laneValue)? 'btn btn-success' : 'btn btn-danger';
-
-
-
-    const ActiveSearchSystemsStyles = (this.props.mobileStatus)? SearchStyles.SearchSystemsStylesMobile : SearchStyles.SearchSystemsStyles;
-    const ActiveSearchSystemsSelectStyles = (this.props.mobileStatus)? SearchStyles.SearchSystemsSelectStylesMobile : SearchStyles.SearchSystemsSelectStyles;
-    const ActiveSearchButtonStyles = (this.props.mobileStatus)? SearchStyles.SearchButtonStylesMobile : SearchStyles.SearchButtonStyles;
+    const Styles = getSearchStyles(this.props.mobileStatus);
     const selectedLane = (this.state.laneValue)? this.state.laneValue.label : null;
 
-
     return (
-      <div style={ActiveSearchSystemsStyles}>
-        <div style={ActiveSearchSystemsSelectStyles}>
+      <div style={Styles.SearchContainer}>
+        <div style={Styles.SearchSelect}>
           <Select
             name="selected-lane-search"
             filterOptions={filterLaneOptions}
@@ -108,9 +102,8 @@ class SearchHyperspaceLanes extends React.Component {
             onBlur={(e) => this.selectBlur(e)}
           />
         </div>
-
         <span>
-          <button type="button" className={pointZoom} style={ActiveSearchButtonStyles} onClick={(e) => this.zoomToPoint(e)}   data-tip={tooltipZoomText}  data-for={'go-to-sector-from-search' + this.state.componentId} ref="zoomToButton">
+          <button type="button" className={pointZoom} style={Styles.SearchButton} onClick={(e) => this.zoomToPoint(e)}   data-tip={tooltipZoomText}  data-for={'go-to-sector-from-search' + this.state.componentId} ref="zoomToButton">
             <If condition={ this.props.mobileStatus && selectedLane !== null}>
               <Then>
                 <span>
@@ -122,7 +115,6 @@ class SearchHyperspaceLanes extends React.Component {
           </button>
           <ReactTooltip id={'go-to-lane-from-search' + this.state.componentId} place="right" disable={this.props.mobileStatus}>{}</ReactTooltip>
         </span>
-
       </div>
     );
   }

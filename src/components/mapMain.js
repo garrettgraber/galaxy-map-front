@@ -272,8 +272,6 @@ class MapMain extends React.Component {
       // console.log("Layers Control: ", layersControl);
     }
 
-    console.log("this.props: ", this.props);
-
   	return (
         <div id="container" >
           <LoadingSpinner/>
