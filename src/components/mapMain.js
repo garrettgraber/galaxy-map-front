@@ -287,6 +287,9 @@ class MapMain extends React.Component {
             zoom={this.props.mapCenterAndZoom.zoom}
             zoomControl={false}
             animate={true}
+            tap={this.props.mobileStatus}
+            touchZoom={this.props.mobileStatus}
+
             onZoomend={e => this.onZoomend(e)}
             onZoomstart={e => this.onZoomstart(e)}
             onMoveend={e => this.onMoveend(e)}
