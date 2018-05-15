@@ -48,7 +48,7 @@ export default class StarMapGenerator {
 	        }
 	      }
 	      const StarPoints = currentMap.latLngToLayerPoint(PlanetarySystem.latLng);
-	      starComponents.push( <StarSystem key={PlanetarySystem.system} StarObject={PlanetarySystem} zoom={zoom} map={currentMap} labels={true} StarPoints={StarPoints} /> );
+	      starComponents.push( <StarSystem key={PlanetarySystem.system} StarObject={PlanetarySystem} zoom={zoom} labels={true} StarPoints={StarPoints} /> );
 	    });  
 	  } else {
 	    starComponents = currentStarMapComponents;
