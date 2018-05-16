@@ -131,11 +131,12 @@ class StarMap extends React.Component {
       });
       this.starMapGeneratorController(zoomInStore, mapInstance, CurrentNavigationPoints);
     }
+
   }    
 
   render() {
   	const zIndex = 270;
-    const StarMapComponentsToRender = renderComponentsOrNull(this.state.StarMapComponents);
+    const StarMapComponentsToRender = (this.props.zoomChange)? null : renderComponentsOrNull(this.state.StarMapComponents);
 
   	return (
   		<Pane name="star-pane" style={{zIndex: zIndex}}>

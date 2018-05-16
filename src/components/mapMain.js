@@ -31,7 +31,9 @@ import {
     mapShouldDisplayForDesktop,
     setMapToZeroZeroZoomOne,
     deActivateSystemsSearchControls,
-    deActivateHyperspaceNavigationControls
+    deActivateHyperspaceNavigationControls,
+    zoomIsChaning,
+    zoomIsStable
 } from '../actions/actionCreators.js';
 import {
   setCursorValue,
@@ -170,10 +172,13 @@ class MapMain extends React.Component {
     if(!(currentZoom === 2 && this.props.mapCenterAndZoom.zoom === 3)) {
       this.props.dispatch(setMapZoom(currentZoom));
     }
+
+    this.props.dispatch(zoomIsStable());
   }
 
   onZoomstart(e) {
     // console.log("zoom start: ", e.target._zoom);
+    this.props.dispatch(zoomIsChaning());
   }
 
   onMovestart(e) {

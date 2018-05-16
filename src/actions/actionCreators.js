@@ -1,6 +1,15 @@
 import Actions from '../constants/actionTypesModule.js';
 
-
+export function zoomIsChaning() {
+	return {
+		type: Actions.ZOOM_CHANGE_ON
+	}
+};
+export function zoomIsStable() {
+	return {
+		type: Actions.ZOOM_CHANGE_OFF
+	}
+}
 
 export function focusSelect() {
 	return {

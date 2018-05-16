@@ -147,6 +147,16 @@ const emptyNameSet = new Set();
 
 
 
+function zoomChange(state = false, action) {
+	switch (action.type) {
+		case Actions.ZOOM_CHANGE_ON:
+			return true;
+		case Actions.ZOOM_CHANGE_OFF:
+			return false;
+		default:
+			return state;
+	}
+}
 function selectFocused(state = false, action) {
 	switch (action.type) {
 		case Actions.SELECT_FOCUSED:
@@ -815,6 +825,7 @@ function baseLayerName(state = "Galaxy", action) {
 }
 
 export default combineReducers({
+	zoomChange,
 	selectFocused,
 	mobileStatus,
 	navigationObjectBoundaries,
