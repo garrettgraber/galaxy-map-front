@@ -64,6 +64,8 @@
     border-radius: 4px;
 }
 
+
+
 #search-data {
     /*border-radius: 4px;*/
 }
@@ -115,6 +117,15 @@
 }
 
 .pane-container {
+    /*border: 1px solid #49fb35;*/
+    border-right: 1px solid #49fb35;
+    border-left: 1px solid #49fb35;
+    border-bottom: 1px solid #49fb35;
+    margin-bottom: 10px;
+}
+
+
+.pane-container-navigation-mobile {
     /*border: 1px solid #49fb35;*/
     border-right: 1px solid #49fb35;
     border-left: 1px solid #49fb35;
@@ -478,4 +489,38 @@
   100% {
     border: 3px solid red;
   }
+}
+
+
+
+
+@-webkit-keyframes glowing {
+  0% { -webkit-box-shadow: 0 0 1px #004A7F; }
+  50% { -webkit-box-shadow: 0 0 7px #0094FF; }
+  100% { -webkit-box-shadow: 0 0 1px #004A7F; }
+}
+
+@-moz-keyframes glowing {
+  0% { -moz-box-shadow: 0 0 1px #004A7F; }
+  50% { -moz-box-shadow: 0 0 7px #0094FF; }
+  100% { -moz-box-shadow: 0 0 1px #004A7F; }
+}
+
+@-o-keyframes glowing {
+  0% { box-shadow: 0 0 1px #004A7F; }
+  50% { box-shadow: 0 0 7px #0094FF; }
+  100% {  box-shadow: 0 0 1px #004A7F; }
+}
+
+@keyframes glowing {
+  0% { box-shadow: 0 0 1px #004A7F; }
+  50% { box-shadow: 0 0 7px #0094FF; }
+  100% { box-shadow: 0 0 1px #004A7F; }
+}
+
+.glowing-navigation-button {
+  -webkit-animation: glowing 1500ms infinite;
+  -moz-animation: glowing 1500ms infinite;
+  -o-animation: glowing 1500ms infinite;
+  animation: glowing 1500ms infinite;
 }

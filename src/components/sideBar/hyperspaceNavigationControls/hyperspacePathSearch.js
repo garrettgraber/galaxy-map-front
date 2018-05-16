@@ -6,7 +6,8 @@ import HyperspaceShipDetails from './hyperspaceShipDetails.js';
 import JumpGrid from './jumpGrid/jumpGrid.js';
 import PivotPoint from './pivotPoint.js';
 import {
-  allPointsAreValid
+  allPointsAreValid,
+  isPointBlank
 } from '../../hyperspaceNavigation/hyperspaceMethods.js';
 
 import '../../../css/main.css';
@@ -14,8 +15,28 @@ import '../../../css/main.css';
 class HyperspacePathSearch extends React.Component {
   constructor() {
     super();
+    this.state = {
+      isStartActive: true
+    };
   }
+
   componentDidMount() { }
+
+  endClick(e) {
+    this.refs.endNavigationButton.blur();
+    if(this.state.isStartActive) {
+      this.setState({isStartActive: false});
+    }
+  }
+
+  startClick(e) {
+    this.refs.startNavigationButton.blur();
+    if(!this.state.isStartActive) {
+      this.setState({isStartActive: true});
+    }
+
+  }
+
   render() {
     let hyperspacePathData = [];
     if(this.props.hyperspacePathCollections.length > 0) {
@@ -26,26 +47,68 @@ class HyperspacePathSearch extends React.Component {
     const endDefault = 'Lok';
     const activeHyperspaceJumpPoints = [this.props.hyperspaceActiveStartPoint, this.props.hyperspaceActiveStartNode, this.props.hyperspaceActiveEndPoint, this.props.hyperspaceActiveEndNode];
     const jumpSuccessfullyCalculated = (hyperspacePathData.length > 0 || allPointsAreValid(activeHyperspaceJumpPoints))? true : false;
-    const multipleJumpHeight = 520;
-    const singleJumpHeight = 463;
+    const mobileModifiler = (this.props.mobileStatus)? 95 : 0;
+    const multipleJumpHeight = 520 - mobileModifiler;
+    const singleJumpHeight = 463 - mobileModifiler;
+    const mobileHeight = 193;
+    const desktopHeight = 288;
+    const jumpNavigationHeight = (this.props.mobileStatus)? mobileHeight : desktopHeight;
+    const navigationPaneStyle = (jumpSuccessfullyCalculated)? {height: singleJumpHeight, overFlow: 'visible'} : {height: jumpNavigationHeight, overFlow: 'visible'};
 
-    const navigationPaneStyle = (jumpSuccessfullyCalculated)? {height: singleJumpHeight, overFlow: 'visible'} : {height: 288, overFlow: 'visible'}
+    const StartPoint = this.props.hyperspaceStartPoint;
+    const EndPoint = this.props.hyperspaceEndPoint;
+
+    let startButtonClasses = (isPointBlank(StartPoint))? "btn btn-danger" : "btn btn-success";
+    let endButtonClasses = (isPointBlank(EndPoint))? "btn btn-danger" : "btn btn-success";
+
+    startButtonClasses += (this.state.isStartActive)? " glowing-navigation-button" : "";
+    endButtonClasses += (!this.state.isStartActive)? " glowing-navigation-button" : "";
+
 
     return (
       <div id="hyperspace-navigation-pane" className="control-row" style={navigationPaneStyle}>
-        <div className="pane-container">
-          <HyperspaceShipDetails />
-          <PivotPoint Point={this.props.hyperspaceStartPoint} Node={this.props.hyperspaceStartNode} isStartPosition={true} pointName={'Start'} defaultSystem={startDefault} pinPoint={this.props.pinPointStart} pinPointAlternate={this.props.pinPointEnd} clickSystem={this.props.pathStartClick}  clickSystemAlternate={this.props.pathEndClick} />
-          <PivotPoint Point={this.props.hyperspaceEndPoint} Node={this.props.hyperspaceEndNode} isStartPosition={false} pointName={'End'} defaultSystem={endDefault} pinPoint={this.props.pinPointEnd} pinPointAlternate={this.props.pinPointStart} clickSystem={this.props.pathEndClick} clickSystemAlternate={this.props.pathStartClick}   />
-          <HyperspaceControls
-            StartPoint={this.props.hyperspaceStartPoint}
-            EndPoint={this.props.hyperspaceEndPoint}
-            ActiveStartPoint={this.props.hyperspaceActiveStartPoint}
-            ActiveEndPoint={this.props.hyperspaceActiveEndPoint}
-            jumpIsCalculating={this.props.calculateHyperspaceJump}
-            hyperspacePathHasChanged={this.props.hyperspacePathChange}
-          />
-        </div>
+        <If condition={this.props.mobileStatus}>
+          <Then>
+            <div className="pane-container">
+              <div className="pane-row-control pane-section">
+                <button type="button" className={startButtonClasses} style={{verticalAlign: "top", width: 54, marginRight: 3, marginLeft: 3}}  onClick={(e) => this.startClick(e)} ref="startNavigationButton">Start</button>
+                <button type="button" className={endButtonClasses} style={{verticalAlign: "top", width: 54, marginRight: 3, marginLeft: 3}}  onClick={(e) => this.endClick(e)} ref="endNavigationButton">End</button>
+                <span className="nav-text">&nbsp;&nbsp;Calculate Hyperspace Jump</span>
+              </div>
+              <If condition={this.state.isStartActive}>
+                <Then>
+                  <PivotPoint Point={this.props.hyperspaceStartPoint} Node={this.props.hyperspaceStartNode} isStartPosition={true} pointName={'Start'} defaultSystem={startDefault} pinPoint={this.props.pinPointStart} pinPointAlternate={this.props.pinPointEnd} clickSystem={this.props.pathStartClick}  clickSystemAlternate={this.props.pathEndClick}/>
+                </Then>
+                <Else>
+                  <PivotPoint Point={this.props.hyperspaceEndPoint} Node={this.props.hyperspaceEndNode} isStartPosition={false} pointName={'End'} defaultSystem={endDefault} pinPoint={this.props.pinPointEnd} pinPointAlternate={this.props.pinPointStart} clickSystem={this.props.pathEndClick} clickSystemAlternate={this.props.pathStartClick}/>
+                </Else>
+              </If>
+              <HyperspaceControls
+                StartPoint={this.props.hyperspaceStartPoint}
+                EndPoint={this.props.hyperspaceEndPoint}
+                ActiveStartPoint={this.props.hyperspaceActiveStartPoint}
+                ActiveEndPoint={this.props.hyperspaceActiveEndPoint}
+                jumpIsCalculating={this.props.calculateHyperspaceJump}
+                hyperspacePathHasChanged={this.props.hyperspacePathChange}
+              />
+            </div>
+          </Then>
+          <Else>
+            <div className="pane-container">
+              <HyperspaceShipDetails />
+              <PivotPoint Point={this.props.hyperspaceStartPoint} Node={this.props.hyperspaceStartNode} isStartPosition={true} pointName={'Start'} defaultSystem={startDefault} pinPoint={this.props.pinPointStart} pinPointAlternate={this.props.pinPointEnd} clickSystem={this.props.pathStartClick}  clickSystemAlternate={this.props.pathEndClick} />
+              <PivotPoint Point={this.props.hyperspaceEndPoint} Node={this.props.hyperspaceEndNode} isStartPosition={false} pointName={'End'} defaultSystem={endDefault} pinPoint={this.props.pinPointEnd} pinPointAlternate={this.props.pinPointStart} clickSystem={this.props.pathEndClick} clickSystemAlternate={this.props.pathStartClick}   />
+              <HyperspaceControls
+                StartPoint={this.props.hyperspaceStartPoint}
+                EndPoint={this.props.hyperspaceEndPoint}
+                ActiveStartPoint={this.props.hyperspaceActiveStartPoint}
+                ActiveEndPoint={this.props.hyperspaceActiveEndPoint}
+                jumpIsCalculating={this.props.calculateHyperspaceJump}
+                hyperspacePathHasChanged={this.props.hyperspacePathChange}
+              />
+            </div>
+          </Else>
+        </If>
         <If condition={jumpSuccessfullyCalculated}>
           <Then>
             <JumpGrid  map={this.props.map}/>
