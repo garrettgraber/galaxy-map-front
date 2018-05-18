@@ -39,6 +39,9 @@ RUN npm install webpack-dev-server -g
 # expose the port
 EXPOSE 8108
 
+# expose the http port
+EXPOSE 80
+
 #wire in a startup script
 ADD bootstrap.sh /root/bootstrap.sh
 
