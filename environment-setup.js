@@ -21,7 +21,7 @@ module.exports = (nodeEnvironment) => {
   } : {
     tileServerUrl:  ProductionConfig.TILE_SERVER_URL,
     apiServerUrl: ProductionConfig.API_SERVER_URL,
-    hostname: 'localhost',
+    hostname: ip.address(),
     name: 'production',
     indexFolder: 'indexProduction'
   };
