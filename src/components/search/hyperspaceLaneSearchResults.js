@@ -11,7 +11,6 @@ import {
     newSearchObjectBoundaries
 } from '../../actions/actionCreators.js';
 
-
 import 'leaflet/dist/leaflet.css';
 import 'leaflet_marker';
 import 'leaflet_marker_2x';
@@ -27,6 +26,7 @@ class HyperspaceLaneSearchResults extends React.Component {
   componentDidMount() {
     const fullRouteElement = this.refs.fullRoute.leafletElement;
     if(fullRouteElement) {
+      fullRouteElement.openPopup();
       const map = this.props.map;
       this.props.dispatch(newSearchObjectBoundaries(fullRouteElement.getBounds()));
     }
@@ -43,7 +43,7 @@ class HyperspaceLaneSearchResults extends React.Component {
   }
 
   render() {
-   const LaneOptions = {
+    const LaneOptions = {
       opacity: 1.0,
       interactive: true,
       weight: 10
@@ -61,7 +61,6 @@ class HyperspaceLaneSearchResults extends React.Component {
           <div>
             <span style={{fontWeight: 'bold'}}>{this.props.hyperspaceRouteSearchData.name}</span><br/>
             <span style={{color: 'red'}}>Distance:&nbsp;{this.props.hyperspaceRouteSearchData.length.toLocaleString()}&nbsp;parsecs</span><br/>
-
             <If condition={this.props.hyperspaceRouteSearchData.link === 'No Link'}>
               <Then>
                 <span>No Link</span>

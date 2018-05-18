@@ -14,7 +14,8 @@ function apiSelector(CurrentConfig) {
 
 	switch (CurrentConfig.name) {
 		case 'development':
-			return ApiServerUrl;
+			// return ApiServerUrl;
+			return frontEndAPIEndpoint;
 		case 'production':
 			return frontEndAPIEndpoint;
 		default:

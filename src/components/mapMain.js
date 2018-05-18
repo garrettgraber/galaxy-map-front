@@ -155,6 +155,8 @@ class MapMain extends React.Component {
     }
 
     window.addEventListener('resize', this.handleResize.bind(this));
+
+    console.log("searchLayer: ", this.refs.searchLayer.leafletElement);
   }
 
   componentWillUnmount() {
@@ -334,7 +336,7 @@ class MapMain extends React.Component {
               <Overlay name="Hyperspace Lanes" checked={false}>
                 <HyperspaceLanesData />
               </Overlay>
-              <Overlay name="Search Layer" checked={true}>
+              <Overlay name="Search Layer" checked={true} ref='searchLayer'>
                 <Search  map={this.state.map}/>
               </Overlay>
               <Overlay name="Hyperspace Navigation" checked={true}>
