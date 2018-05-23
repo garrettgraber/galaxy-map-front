@@ -1,5 +1,16 @@
 import Actions from '../constants/actionTypesModule.js';
 
+
+export function zoomToAndPanIsOn() {
+	return {
+		type: Actions.ZOOM_TO_AND_PAN_ON
+	}
+}
+export function zoomToAndPanIsOff() {
+	return {
+		type: Actions.ZOOM_TO_AND_PAN_OFF
+	}
+}
 export function zoomIsChaning() {
 	return {
 		type: Actions.ZOOM_CHANGE_ON

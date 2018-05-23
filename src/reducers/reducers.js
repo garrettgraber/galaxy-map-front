@@ -146,7 +146,16 @@ const nullHyperspaceHash = null;
 const emptyNameSet = new Set();
 
 
-
+function zoomToLocationAndPan(state = false,  action) {
+	switch (action.type) {
+		case Actions.ZOOM_TO_AND_PAN_ON:
+			return true;
+		case Actions.ZOOM_TO_AND_PAN_OFF:
+			return false;
+		default:
+			return state;
+	}
+}
 function zoomChange(state = false, action) {
 	switch (action.type) {
 		case Actions.ZOOM_CHANGE_ON:
@@ -825,6 +834,7 @@ function baseLayerName(state = "Galaxy", action) {
 }
 
 export default combineReducers({
+	zoomToLocationAndPan,
 	zoomChange,
 	selectFocused,
 	mobileStatus,

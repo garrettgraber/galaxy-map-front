@@ -17,7 +17,8 @@ import {
   noSectorData,
   addItemToDataStream,
   focusSelect,
-  blurSelect
+  blurSelect,
+  zoomToAndPanIsOn
 } from '../../../actions/actionCreators.js';
 import '../../../css/main.css';
 
@@ -120,6 +121,7 @@ class SearchSectors extends React.Component {
     );
   }
 }
+
 
 const mapStateToProps = (state = {}) => {
     return Object.assign({}, state);

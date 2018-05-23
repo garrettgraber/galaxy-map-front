@@ -159,7 +159,7 @@ class SearchData extends React.Component {
         </div>
         <If condition={ searchingSystems }>
           <Then>
-            <SearchSystems />
+            <SearchSystems map={this.props.map} />
           </Then>
           <Else>{() => null}</Else>
         </If>

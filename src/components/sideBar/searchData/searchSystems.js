@@ -14,7 +14,8 @@ import {
   setMapCenterAndZoom,
   addItemToDataStream,
   focusSelect,
-  blurSelect
+  blurSelect,
+  zoomToAndPanIsOn
 } from '../../../actions/actionCreators.js';
 
 import '../../../css/main.css';
@@ -61,6 +62,11 @@ class SearchSystems extends React.Component {
       const dataStreamMessage = "Zoomed to " + this.props.activeSystem.system + ' ...';
       this.props.dispatch( addItemToDataStream(dataStreamMessage) );
       this.props.dispatch(setMapCenterAndZoom(systemCenter, newZoom));
+      if(this.props.mobileStatus) {
+        this.props.dispatch(zoomToAndPanIsOn());
+      }
+      
+      // this.props.dispatch(zoomToLocationAndPan(systemCenter, newZoom, 100, this.props.map));
     }
   }
 

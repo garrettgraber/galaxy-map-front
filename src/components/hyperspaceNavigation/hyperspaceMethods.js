@@ -62,6 +62,13 @@ export function getGalacticXFromLongitude(longitude) {
   return (111.3194866138503 * longitude);
 }
 
+export function getGalacticFromLatLng(LatLng) {
+  return {
+    yGalactic: getGalacticYFromLatitude(LatLng.lat),
+    xGalactic: getGalacticXFromLongitude(LatLng.lng)
+  };
+}
+
 export function distanceBetweenPoints(Point1, Point2) {
   const pointOneCoordinates = [Point1.xGalactic, Point1.yGalactic];
   const pointTwoCoordinates = [Point2.xGalactic, Point2.yGalactic];

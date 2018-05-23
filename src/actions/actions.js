@@ -142,8 +142,6 @@ export function zoomToLocation(locationCenter, zoom) {
   }
 }
 
-
-
 // Sector Actions
 export function zoomToSector(SectorSearch, zoom) {
   return function(dispatch, getState) {

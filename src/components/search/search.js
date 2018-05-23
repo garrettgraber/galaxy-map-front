@@ -42,14 +42,6 @@ class Search extends React.Component {
                 {() => null}
               </Else>
             </If>
-            <If condition={this.props.activeSystem.lat !== null && this.props.activeSystem.lng !== null}>
-              <Then>
-                <SystemsSearchResults/>
-              </Then>
-              <Else>
-                {() => null}
-              </Else>
-            </If>
             <If condition={this.props.sectorSearchData.name !== null}>
               <Then>
                 <SectorSearchResults map={this.props.map}/>

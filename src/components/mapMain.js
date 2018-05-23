@@ -5,6 +5,9 @@ import { Map, TileLayer, LayersControl, Pane, LayerGroup, FeatureGroup } from 'r
 import L from 'leaflet';
 import Geohash from 'latlon-geohash';
 import ScrollArea from 'react-scrollbar';
+import { If, Then, Else } from 'react-if';
+import SystemsSearchResults from './search/systemsSearchResults.js';
+
 
 import Logger from '../classes/logger.js';
 
@@ -33,7 +36,8 @@ import {
     deActivateSystemsSearchControls,
     deActivateHyperspaceNavigationControls,
     zoomIsChaning,
-    zoomIsStable
+    zoomIsStable,
+    zoomToAndPanIsOff
 } from '../actions/actionCreators.js';
 import {
   setCursorValue,
@@ -41,6 +45,7 @@ import {
   setHyperspaceNavigationPoints,
   changeBaseLayer
 } from '../actions/actions.js';
+
 
 const { BaseLayer, Overlay } = LayersControl;
 
@@ -72,16 +77,11 @@ const blackTileImage = imgBlack;
 const whiteTileImage = imgWhite;
 const mobileWidth = 500;
 const messageBarHideWidth = 850;
-const MaxBounds = {
-  _northEast: {
-    lat: 85.00,
-    lng: 230.00
-  },
-  _southWest: {
-    lat: -85.00,
-    lng: -230.00
-  }
-};
+const MaxBounds = [
+  [90.00, 182.00],
+  [-90.00, -182.00]
+];
+
 
 class MapMain extends React.Component {
   constructor(props) {
@@ -156,7 +156,7 @@ class MapMain extends React.Component {
 
     window.addEventListener('resize', this.handleResize.bind(this));
 
-    console.log("searchLayer: ", this.refs.searchLayer.leafletElement);
+    // console.log("searchLayer: ", this.refs.searchLayer.leafletElement);
   }
 
   componentWillUnmount() {
@@ -168,18 +168,20 @@ class MapMain extends React.Component {
   }
 
   onZoomend(e) {
-    // console.log("zoom end: ", e.target._zoom);
     const mapBounds = this.refs.map.leafletElement.getBounds();
     const currentZoom = this.refs.map.leafletElement.getZoom();
     if(!(currentZoom === 2 && this.props.mapCenterAndZoom.zoom === 3)) {
       this.props.dispatch(setMapZoom(currentZoom));
     }
-
     this.props.dispatch(zoomIsStable());
+    if(this.props.zoomToLocationAndPan) {
+      this.props.dispatch(zoomToAndPanIsOff());
+      const map = this.refs.map.leafletElement;
+      map.panBy([0, -100]);
+    }
   }
 
   onZoomstart(e) {
-    // console.log("zoom start: ", e.target._zoom);
     this.props.dispatch(zoomIsChaning());
   }
 
@@ -188,6 +190,11 @@ class MapMain extends React.Component {
   }
 
   onMoveend(e) {
+    if(this.props.zoomToLocationAndPan) {
+      this.props.dispatch(zoomToAndPanIsOff());
+      const map = this.refs.map.leafletElement;
+      map.panBy([0, -100]);
+    }
     const mapInstance = this.refs.map.leafletElement;
     const MapBounds = getNorthEastAndSoutWestBounds(mapInstance);
     const northEastMapBoundsDifferent = MapBounds.northEast !== this.props.northEastMapHash;
@@ -255,18 +262,6 @@ class MapMain extends React.Component {
     // console.log("e.name removed: ", e.name);
   }
 
-  onClickLayers(e) {
-    console.log("Layers control expansion: ", e);
-  }
-
-  onCollapse(e) {
-    console.log("Layers control collapse: ", e);
-  }
-
-  componentDidMountLayersControl(e) {
-    console.log("Layers control componentDidMount");
-  }
-
   render() {
     const minZoom = this.state.minZoom;
   	const maxZoom = 8;
@@ -276,87 +271,88 @@ class MapMain extends React.Component {
     const windowHeight = window.innerHeight;
 
   	return (
-        <div id="container" >
-          <LoadingSpinner/>
-          <DataStream dataMessage={this.props.dataStream.currentItem}  hideMessages={this.state.hideMessageBar}/>
-          <SideBar layersControl={(this.refs.layersControl)? this.refs.layersControl.leafletElement : null}/>
-          <SideBarController map={this.state.map}/>
-          <MapNavigationControl  map={this.state.map}/>
-      		<Map
-            id="map"
-            ref='map'
-            style={{zIndex: 5, height: windowHeight}}
-            center={this.props.mapCenterAndZoom.center}
-            zoom={this.props.mapCenterAndZoom.zoom}
-            zoomControl={false}
-            animate={true}
-            // tap={(this.props.mobileStatus !== undefined)? this.props.mobileStatus : false}
-            touchZoom={this.props.mobileStatus}
-
-            onZoomend={e => this.onZoomend(e)}
-            onZoomstart={e => this.onZoomstart(e)}
-            onMoveend={e => this.onMoveend(e)}
-            onMovestart={e => this.onMovestart(e)}
-            onDragend={e => this.onDragend(e)}
-            onDragstart={e => this.onDragstart(e)}
-            onMove={e => this.onMove(e)}
-            onMouseMove={e => this.onMouseMove(e)}
-            onClick={(e) => this.onClickHyperspaceNavigation(e)}
-            onViewportChange={e => this.onViewportChange(e)}
-            onViewportChanged={e => this.onViewportChanged(e)}
-            onOverlayadd={e => this.onOverlayadd(e)}
-            onOverlayremove={e => this.onOverlayremove(e)}
-            onBaselayerchange={e => this.onBaselayerchange(e)}
-          >
-      			<LayersControl ref='layersControl' componentDidMount={e => this.componentDidMountLayersControl(e)}>
-      				<BaseLayer name="Galaxy" checked={true}>
-      					<Pane name="galaxy-pane" style={{ zIndex: zIndexGalaxy }}>
-  							 <TileLayer url={activeTileServer} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
-  						  </Pane>
-              </BaseLayer>
-              <BaseLayer name="Black" checked={false} >
-                <Pane name="black-pane" style={{ zIndex: zIndexBlack }}>
-                  <TileLayer url={blackTileImage} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} />
-                </Pane>
-              </BaseLayer>
-              <BaseLayer name="White" checked={false} >
-                <Pane name="white-pane" style={{ zIndex: zIndexWhite }}>
-                  <TileLayer url={whiteTileImage} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} />
-                </Pane>
-              </BaseLayer>
-              <Overlay name="Sectors" checked={this.props.sectorMapOverlayStatus}>
-                <Sectors />
-              </Overlay>
-  			    	<Overlay name="Regions" checked={false}>
-  			    		<Regions />
-  			    	</Overlay>
-              <Overlay name="Grid" checked={false}>
-                <Grid />
-              </Overlay>
-              <Overlay name="Hyperspace Lanes" checked={false}>
-                <HyperspaceLanesData />
-              </Overlay>
-              <Overlay name="Search Layer" checked={true} ref='searchLayer'>
-                <Search  map={this.state.map}/>
-              </Overlay>
-              <Overlay name="Hyperspace Navigation" checked={true}>
-                <HyperspaceNavigation update={this.props.updateHyperspaceNavigation} newZoom={this.props.mapCenterAndZoom.zoom} starMapOn={this.props.starMapOverlayStatus}/>
-              </Overlay>
-              <Overlay name="Star Systems" checked={this.props.starMapOverlayStatus} ref="layerContainer" >
-                <StarMap
-                  map={this.state.map}
-                  starMapOn={this.props.starMapOverlayStatus}
-                  StartPoint={this.props.hyperspaceStartPoint}
-                  EndPoint={this.props.hyperspaceEndPoint}
-                  ActiveStartPoint={this.props.hyperspaceActiveStartPoint}
-                  ActiveEndPoint={this.props.hyperspaceActiveEndPoint}
-                  ActiveSystem={this.props.activeSystem}
-                />
-              </Overlay>
-  				  </LayersControl>
-      		</Map>
-        </div>
-      
+      <div id="container" >
+        <LoadingSpinner/>
+        <DataStream dataMessage={this.props.dataStream.currentItem}  hideMessages={this.state.hideMessageBar}/>
+        <SideBar layersControl={(this.refs.layersControl)? this.refs.layersControl.leafletElement : null}/>
+        <SideBarController map={this.state.map}/>
+        <MapNavigationControl  map={this.state.map}/>
+    		<Map
+          id="map"
+          ref='map'
+          style={{zIndex: 5, height: windowHeight}}
+          center={this.props.mapCenterAndZoom.center}
+          zoom={this.props.mapCenterAndZoom.zoom}
+          zoomControl={false}
+          animate={true}
+          // tap={(this.props.mobileStatus !== undefined)? this.props.mobileStatus : false}
+          touchZoom={this.props.mobileStatus}
+          onZoomend={e => this.onZoomend(e)}
+          onZoomstart={e => this.onZoomstart(e)}
+          onMoveend={e => this.onMoveend(e)}
+          onMovestart={e => this.onMovestart(e)}
+          onDragend={e => this.onDragend(e)}
+          onDragstart={e => this.onDragstart(e)}
+          onMove={e => this.onMove(e)}
+          onMouseMove={e => this.onMouseMove(e)}
+          onClick={(e) => this.onClickHyperspaceNavigation(e)}
+          onViewportChange={e => this.onViewportChange(e)}
+          onViewportChanged={e => this.onViewportChanged(e)}
+          onOverlayadd={e => this.onOverlayadd(e)}
+          onOverlayremove={e => this.onOverlayremove(e)}
+          onBaselayerchange={e => this.onBaselayerchange(e)}
+        >
+    			<LayersControl ref='layersControl'>
+    				<BaseLayer name="Galaxy" checked={true}>
+    					<Pane name="galaxy-pane" style={{ zIndex: zIndexGalaxy }}>
+							 <TileLayer url={activeTileServer} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} maxZoom={maxZoom}/>
+						  </Pane>
+            </BaseLayer>
+            <BaseLayer name="Black" checked={false} >
+              <Pane name="black-pane" style={{ zIndex: zIndexBlack }}>
+                <TileLayer url={blackTileImage} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} />
+              </Pane>
+            </BaseLayer>
+            <BaseLayer name="White" checked={false} >
+              <Pane name="white-pane" style={{ zIndex: zIndexWhite }}>
+                <TileLayer url={whiteTileImage} tms={true} crs={L.CRS.Simple} maxBoundsViscosity={1.0} minZoom={minZoom} />
+              </Pane>
+            </BaseLayer>
+            <Overlay name="Sectors" checked={this.props.sectorMapOverlayStatus}>
+              <Sectors />
+            </Overlay>
+			    	<Overlay name="Regions" checked={false}>
+			    		<Regions />
+			    	</Overlay>
+            <Overlay name="Grid" checked={false}>
+              <Grid />
+            </Overlay>
+            <Overlay name="Hyperspace Lanes" checked={false}>
+              <HyperspaceLanesData />
+            </Overlay>
+            <Overlay name="Search Layer" checked={true} ref='searchLayer'>
+              <Search  map={this.state.map}/>
+            </Overlay>
+            <Overlay name="Hyperspace Navigation" checked={true}>
+              <HyperspaceNavigation update={this.props.updateHyperspaceNavigation} newZoom={this.props.mapCenterAndZoom.zoom} starMapOn={this.props.starMapOverlayStatus}/>
+            </Overlay>
+            <Overlay name="Star Systems" checked={this.props.starMapOverlayStatus} ref="layerContainer" >
+              <StarMap
+                map={this.state.map}
+                starMapOn={this.props.starMapOverlayStatus}
+                StartPoint={this.props.hyperspaceStartPoint}
+                EndPoint={this.props.hyperspaceEndPoint}
+                ActiveStartPoint={this.props.hyperspaceActiveStartPoint}
+                ActiveEndPoint={this.props.hyperspaceActiveEndPoint}
+                ActiveSystem={this.props.activeSystem}
+              />
+            </Overlay>
+            <Overlay name="System Search Layer" checked={true} ref='systemSearchLayer'>
+              <SystemsSearchResults/>
+            </Overlay>
+				  </LayersControl>
+    		</Map>
+      </div>
   	)
   }
 }
@@ -376,20 +372,6 @@ function getNorthEastAndSoutWestBounds(mapInstance) {
   };
 }
 
-function getGalacticYFromLatitude(latitude) {
-  return  (-3.07e-19*(latitude**12)) + (-1.823e-18*(latitude**11)) + (4.871543e-15*(latitude**10)) + (4.1565807e-14*(latitude**9)) + (-2.900986202e-11 * (latitude**8)) + (-1.40444283864e-10*(latitude**7)) + (7.9614373223054e-8*(latitude**6)) + (7.32976568692443e-7*(latitude**5)) + (-0.00009825374539548058*(latitude**4)) + (0.005511093818675318*(latitude**3)) + (0.04346753629461727 * (latitude**2)) + (111.30155374684914 * latitude);
-}
-
-function getGalacticXFromLongitude(longitude) {
-  return (111.3194866138503 * longitude);
-}
-
-function getGalacticFromLatLng(LatLng) {
-  return {
-    yGalactic: getGalacticYFromLatitude(LatLng.lat),
-    xGalactic: getGalacticXFromLongitude(LatLng.lng)
-  };
-}
 
 const mapStateToProps = (state = {}) => {
   return Object.assign({}, state);
