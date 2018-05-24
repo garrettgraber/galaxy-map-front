@@ -22,8 +22,6 @@ class SideBar extends React.Component {
     super();
   }
   componentDidMount() {
-    console.log("Side Bar has mounted");
-
     if(this.props.layersControl) {
       console.log("layersControl is ready to fire: ", this.props.layersControl);
     }
@@ -63,7 +61,6 @@ class SideBar extends React.Component {
     this.props.dispatch( toggleHyperspaceNavigationControls() );
   }
 	render() {
-
     const SideBarStyles = {
       position: 'fixed',
       top: 60,

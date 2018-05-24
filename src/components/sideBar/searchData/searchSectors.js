@@ -55,7 +55,12 @@ class SearchSectors extends React.Component {
     if(this.state.sectorValue) {
       const dataStreamMessage = "Zoomed to " + this.state.sectorValue.label + ' Sector ...';
       const map = this.props.map;
-      map.fitBounds(this.props.SearchBoundaries);
+
+      console.log("Search Boundaries: ", this.props.SearchBoundaries);
+
+      const FitBoundsOptions = getFitBounds(this.props.mobileStatus, this.props.hyperspaceNavigationControlsOn);
+
+      map.fitBounds(this.props.SearchBoundaries, FitBoundsOptions);
       this.props.dispatch(addItemToDataStream(dataStreamMessage));
     }
   }
@@ -119,6 +124,21 @@ class SearchSectors extends React.Component {
         </span>
       </div>
     );
+  }
+}
+
+
+function getFitBounds(mobileStatus, navigationControls) {
+  if(mobileStatus) {
+    return {
+      paddingTopLeft: [0, 160]
+    };
+  } else if(navigationControls) {
+    return {
+      paddingTopLeft: [400, 0]
+    };
+  } else {
+    return {};
   }
 }
 

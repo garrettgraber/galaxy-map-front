@@ -16,6 +16,8 @@ import {
   pathStartClickOff,
   pathEndClickOff,
   defaultCursor,
+  zoomToAndPanIsOn,
+  setMapCenterAndZoom
 } from '../../../actions/actionCreators.js';
 import {
   zoomToLocation
@@ -36,7 +38,11 @@ class PivotPoint extends React.Component {
     if(!_.isEmpty(this.props.Point)) {
       const Point = this.props.Point;
       const spaceCoordinates = [Point.lat, Point.lng];
-      this.props.dispatch(zoomToLocation(spaceCoordinates, 8));
+      // this.props.dispatch(zoomToLocation(spaceCoordinates, 8));
+      this.props.dispatch(setMapCenterAndZoom(spaceCoordinates, 8));
+      if(this.props.mobileStatus) {
+        this.props.dispatch(zoomToAndPanIsOn());
+      }
     }    
   }
   switchSearchType() {

@@ -26,7 +26,7 @@ class LoadingSpinner extends React.Component {
   componentWillReceiveProps(newProps) {
 
     if(!this.state.loading && newProps.loadingIconOn) {
-      const spinnerMaxTimeSeconds = 13;
+      const spinnerMaxTimeSeconds = 8;
       const spinnerTimeOut = setTimeout(() => {
         console.log("Spinner timeout has fired");
         this.props.dispatch(loadingIconOff());

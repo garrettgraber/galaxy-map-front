@@ -55,7 +55,11 @@ class SearchHyperspaceLanes extends React.Component {
     if(this.state.laneValue) {
       const dataStreamMessage = "Zoomed to the " + this.props.hyperspaceRouteSearchData.name;
       const map = this.props.map;
-      map.fitBounds(this.props.SearchBoundaries);
+
+      const FitBoundsOptions = getFitBounds(this.props.mobileStatus, this.props.hyperspaceNavigationControlsOn);
+
+
+      map.fitBounds(this.props.SearchBoundaries, FitBoundsOptions);
       this.props.dispatch(addItemToDataStream(dataStreamMessage));
     }
   }
@@ -119,6 +123,24 @@ class SearchHyperspaceLanes extends React.Component {
     );
   }
 }
+
+
+
+function getFitBounds(mobileStatus, navigationControls) {
+  if(mobileStatus) {
+    return {
+      paddingTopLeft: [0, 160]
+    };
+  } else if(navigationControls) {
+    return {
+      paddingTopLeft: [400, 0]
+    };
+  } else {
+    return {};
+  }
+}
+
+
 
 const mapStateToProps = (state = {}) => {
     return Object.assign({}, state);

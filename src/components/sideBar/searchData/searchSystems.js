@@ -58,15 +58,17 @@ class SearchSystems extends React.Component {
       const lat = this.props.activeSystem.lat;
       const lng = this.props.activeSystem.lng;
       const systemCenter = [lat, lng];
+      console.log("System Center lat: ", lat);
+      console.log("System Center lng: ", lng);
       const newZoom = 6;
+      const map = this.props.map;
       const dataStreamMessage = "Zoomed to " + this.props.activeSystem.system + ' ...';
       this.props.dispatch( addItemToDataStream(dataStreamMessage) );
-      this.props.dispatch(setMapCenterAndZoom(systemCenter, newZoom));
+      map.flyTo(systemCenter, newZoom, {animate: false});
+      // this.props.dispatch(setMapCenterAndZoom(systemCenter, newZoom));
       if(this.props.mobileStatus) {
         this.props.dispatch(zoomToAndPanIsOn());
       }
-      
-      // this.props.dispatch(zoomToLocationAndPan(systemCenter, newZoom, 100, this.props.map));
     }
   }
 
@@ -122,6 +124,30 @@ class SearchSystems extends React.Component {
     );
   }
 }
+
+
+
+function getFlyToOptions(mobileStatus, navigationControls) {
+  const BaseOptions = {
+    animate: false
+  };
+  if(mobileStatus) {
+    return {
+      paddingTopLeft: [0, 160],
+      animate: false
+    };
+  } else if(navigationControls) {
+    return {
+      paddingTopLeft: [400, 0],
+      animate: false
+    };
+  } else {
+    return BaseOptions;
+  }
+}
+
+
+
 
 
 const mapStateToProps = (state = {}) => {

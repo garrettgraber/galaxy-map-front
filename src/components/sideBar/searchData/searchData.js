@@ -13,7 +13,9 @@ import {
   setSearchValueToSystems,
   setSearchValueToSectors,
   setSearchValueToLanes,
-  setSearchValueToNothing
+  setSearchValueToNothing,
+  focusSelect,
+  blurSelect
 } from '../../../actions/actionCreators.js';
 
 import SearchSystems from './searchSystems.js';
@@ -60,7 +62,6 @@ class SearchData extends React.Component {
   }
 
   onChange(selectedSearchValue) {
-
     if(selectedSearchValue && selectedSearchValue.value === 'systems') {
       this.props.dispatch(setSearchValueToSystems());
     }
@@ -79,8 +80,7 @@ class SearchData extends React.Component {
     if(this.state.selectedSearchValue.value === 'lanes') {
       this.props.dispatch(noHyperspaceRoute());
     }
-
-    if(selectedSearchValue === null) {
+    if(!this.props.mobileStatus && selectedSearchValue === null) {
       this.setState({
         selectedSearchValue: {
           value: '',
@@ -92,16 +92,28 @@ class SearchData extends React.Component {
       this.props.dispatch(noSectorData());
       this.props.dispatch(noHyperspaceRoute());
       this.props.dispatch(setSearchValueToNothing());
-    } else {
+    } else if(selectedSearchValue !== null) {
       this.setState({ selectedSearchValue });
     }
   }
+
+  selectFocus(e) {
+    if(this.props.mobileStatus) {
+      this.props.dispatch(focusSelect());
+    }
+  }
+
+  selectBlur(e) {
+    if(this.props.mobileStatus) {
+      this.props.dispatch(blurSelect());
+    }
+  }
+
   render() {
     const { selectedSearchValue } = this.state;
     const searchingSystems = selectedSearchValue && selectedSearchValue.value === 'systems';
     const searchingSectors = selectedSearchValue && selectedSearchValue.value === 'sectors';
     const searchingLanes = selectedSearchValue && selectedSearchValue.value === 'lanes';
-
     const SearchDataStyles = {
       borderRadius: 4,
       position: 'static',
@@ -113,7 +125,6 @@ class SearchData extends React.Component {
       height: 50,
       width: 400,
     };
-
     const SearchDataStylesMobile = {
       borderRadius: 4,
       position: 'static',
@@ -126,21 +137,17 @@ class SearchData extends React.Component {
       width: '100%',
       padding: 4
     };
-
     const SearchSelectStyles = {
       display: 'inline-block',
       width: 140,
       marginLeft: 5
     };
-
     const SearchSelectStylesMobile = {
       display: 'block',
       width: '100%',
       marginBottom: 5
     };
-
     const ActiveSearchDataStyles = (this.props.mobileStatus)? SearchDataStylesMobile : SearchDataStyles;
-
     const ActiveSearchSelectStyles = (this.props.mobileStatus)? SearchSelectStylesMobile : SearchSelectStyles
 
     return (
@@ -155,6 +162,9 @@ class SearchData extends React.Component {
               { value: 'sectors', label: 'Sectors' },
               { value: 'lanes', label: 'Hyperspace Lanes'}
             ]}
+            autoBlur={true}
+            onFocus={(e) => this.selectFocus(e)}
+            onBlur={(e) => this.selectBlur(e)}
           />
         </div>
         <If condition={ searchingSystems }>

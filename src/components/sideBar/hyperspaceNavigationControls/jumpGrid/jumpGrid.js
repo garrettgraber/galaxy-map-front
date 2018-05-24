@@ -61,19 +61,13 @@ class JumpGrid extends React.Component {
 
   zoomToHyperspacePath() {
     const map = this.props.map;
-    // console.log("navigationObjectBoundaries: ", this.props.navigationObjectBoundaries);
     map.fitBounds(this.props.navigationObjectBoundaries);
     const newBounds = map.getBounds();
     this.refs.zoomPathButton.blur();
-    // console.log("new boundaries: ", newBounds);
     const mapIsAtGalaxyView = mapAtGalaxyView(newBounds);
-    // console.log("mapIsAtGalaxyView: ", mapIsAtGalaxyView);
-    // console.log("this.props: ", this.props);
-
   }
 
   clearCurrentHyperspaceJump(e) {
-    // console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
     this.props.dispatch(emptyHyperspacePathCollections());
     this.props.dispatch(activeStartPositionDefault());
     this.props.dispatch(activeStartNodeDefault());
@@ -81,7 +75,6 @@ class JumpGrid extends React.Component {
     this.props.dispatch(activeEndPositionDefault());
     this.props.dispatch(noNavigationObjectBoundaries());
     this.props.dispatch(hyperspaceNavigationUpdateOn());
-    // console.log("Ackbar: It's a trap!!  HyperspaceControls this.props: ", this.props);
   }
 
   componentWillReceiveProps(newProps) {
@@ -93,16 +86,13 @@ class JumpGrid extends React.Component {
     const distanceBetweenEndNodeAndPoint = distanceBetweenPoints(EndPoint, EndNode);
     const freeSpaceDistance = distanceBetweenStartNodeAndPoint + distanceBetweenEndNodeAndPoint;
     this.setState({freeSpaceDistance: freeSpaceDistance});
-
     const ActiveStartPoint = newProps.hyperspaceActiveStartPoint;
     const ActiveEndPoint = newProps.hyperspaceActiveEndPoint;
     const OldActiveStartPoint = this.props.hyperspaceActiveStartPoint;
     const OldActiveEndPoint = this.props.hyperspaceActiveEndPoint;
     const startPointHasChanged = !nodeAndPointAreEqual(ActiveStartPoint, OldActiveStartPoint);
     const endPointHasChanged = !nodeAndPointAreEqual(ActiveEndPoint, OldActiveEndPoint);
-
     if(startPointHasChanged || endPointHasChanged) {
-      console.log("Point change in jump grid");
       this.refs.zoomPathButton.focus();
     }
   }
@@ -112,7 +102,6 @@ class JumpGrid extends React.Component {
     const jumpPaths = this.getJumpPaths();
     const jumpListHeight = jumpPaths.length * jumpPlotHeight;
     const containerDiv1Styles = {
-      // height: 108,
       height: 51,
       position: 'relative',
     };
@@ -160,7 +149,6 @@ class JumpGrid extends React.Component {
               <i className="fa fa-bullseye"></i>
             </button>
             <ReactTooltip id={'zoom-hyperspace-navigation-click' + this.state.componentId} place="top" disable={this.props.mobileStatus}>{}</ReactTooltip>
-
             <div className="pane-column">
               <span className="nav-text">&nbsp;&nbsp;Total Paths:&nbsp;&nbsp;{jumpPaths.length}</span>
             </div>
@@ -172,11 +160,9 @@ class JumpGrid extends React.Component {
           <div style={StartAndEndStyles}>
             &nbsp;Start:&nbsp;{this.props.hyperspaceActiveStartPoint.system}
           </div>
-
           <div style={StartAndEndStyles}>
             &nbsp;End&nbsp;:&nbsp;{this.props.hyperspaceActiveEndPoint.system}
           </div>
-
         </div>
         <div id="div1" style={containerDiv1Styles}>
           <div id="div2" style={containerDiv2Styles} >
@@ -230,7 +216,6 @@ function mapAtGalaxyView(mapBounds) {
   const southWestLngIsGalaxy = mapBounds._southWest.lng < -aboveIsGalaxyViewLng;
   const northEastIsGalaxyLevel = northEastLatIsGalaxy && northEastLngIsGalaxy;
   const southWestIsGalaxyLevel = southWestLatIsGalaxy && southWestLngIsGalaxy;
-
   if(northEastIsGalaxyLevel && southWestIsGalaxyLevel) {
     return true;
   }else {

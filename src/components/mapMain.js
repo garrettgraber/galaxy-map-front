@@ -177,7 +177,10 @@ class MapMain extends React.Component {
     if(this.props.zoomToLocationAndPan) {
       this.props.dispatch(zoomToAndPanIsOff());
       const map = this.refs.map.leafletElement;
-      map.panBy([0, -100]);
+      const mapCenter = map.getCenter();
+      map.panBy([0, -100], {animate: true, duration: 2.5});
+      const mapCenterAfterPan = this.refs.map.leafletElement.getCenter();
+      console.log("mapCenterAfterPan: ", mapCenterAfterPan);
     }
   }
 
@@ -193,7 +196,10 @@ class MapMain extends React.Component {
     if(this.props.zoomToLocationAndPan) {
       this.props.dispatch(zoomToAndPanIsOff());
       const map = this.refs.map.leafletElement;
-      map.panBy([0, -100]);
+      const mapCenter = map.getCenter();
+      map.panBy([0, -100], {animate: true, duration: 2.5});
+      const mapCenterAfterPan = this.refs.map.leafletElement.getCenter();
+      console.log("mapCenterAfterPan: ", mapCenterAfterPan);
     }
     const mapInstance = this.refs.map.leafletElement;
     const MapBounds = getNorthEastAndSoutWestBounds(mapInstance);

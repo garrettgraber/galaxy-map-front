@@ -21,7 +21,6 @@ export function zoomIsStable() {
 		type: Actions.ZOOM_CHANGE_OFF
 	}
 }
-
 export function focusSelect() {
 	return {
 		type: Actions.SELECT_FOCUSED

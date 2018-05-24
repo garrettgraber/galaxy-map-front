@@ -8,6 +8,7 @@ import Logger from '../classes/logger.js';
 const LoggerInstance = new Logger();
 LoggerInstance.setInActive();
 
+
 /**
  * This is a reducer, a pure function with (state, action) => state signature.
  * It describes how an action transforms the state into the next state.
@@ -137,8 +138,6 @@ const NullBoundaryObject = {
 	}
 };
 const blankSearchValue = '';
-
-
 const maxJumps = 90;
 const pathLimit = 1;
 const emptyMapHash = null;
