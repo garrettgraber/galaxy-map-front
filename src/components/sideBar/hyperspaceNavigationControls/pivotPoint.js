@@ -36,10 +36,11 @@ class PivotPoint extends React.Component {
   zoomToPoint() {
     this.refs.zoomPoint.blur();
     if(!_.isEmpty(this.props.Point)) {
+      const newZoom = 8;
       const Point = this.props.Point;
       const spaceCoordinates = [Point.lat, Point.lng];
-      // this.props.dispatch(zoomToLocation(spaceCoordinates, 8));
-      this.props.dispatch(setMapCenterAndZoom(spaceCoordinates, 8));
+      const map = this.props.map;
+      map.flyTo(spaceCoordinates, newZoom, {animate: false});
       if(this.props.mobileStatus) {
         this.props.dispatch(zoomToAndPanIsOn());
       }
@@ -81,7 +82,6 @@ class PivotPoint extends React.Component {
             <button type="button" className={pointZoom} style={{verticalAlign: "top"}} onClick={(e) => this.zoomToPoint(e)}   data-tip="Zoom To System" data-for={'go-to-star-system-' + this.state.componentId} ref="zoomPoint"><i className={"fa fa-bullseye"}  ></i></button>
             <ReactTooltip id={'go-to-star-system-' + this.state.componentId} place="top" disable={this.props.mobileStatus}>{}</ReactTooltip>
           </div>
-
           <If condition={ this.state.searchSystems }>
             <Then>
               <NavigationSystemSearch isStartPosition={this.props.isStartPosition} pointName={this.props.pointName} system={this.props.Point.system} clickSystem={this.props.clickSystem}  />

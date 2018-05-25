@@ -40,7 +40,8 @@ class HyperspaceControls extends React.Component {
       limit: 1,
       jumpButtonClasses: 'hyperspace-navigation-button pulsating-button-off',
       singleJump: true,
-      multiplePathsEnabled: false
+      multiplePathsEnabled: false,
+      jumpStatusMessage: ''
     };
   }
 
@@ -56,6 +57,8 @@ class HyperspaceControls extends React.Component {
       oldPathCollection : this.props.hyperspacePathCollections      
     });
     const jumpButtonClass = CurrentJumpStatus.jumpClassesString();
+    const jumpStatusMessage = CurrentJumpStatus.statusMessageString();
+    this.setState({ jumpStatusMessage: jumpStatusMessage });
     this.setState({ jumpButtonClasses: jumpButtonClass });
   }
 
@@ -70,35 +73,30 @@ class HyperspaceControls extends React.Component {
       oldEndPoint : this.props.hyperspaceEndPoint.system,
       oldPathCollection : this.props.hyperspacePathCollections
     });
-
+    const jumpStatusMessage = CurrentJumpStatus.statusMessageString();
+    this.setState({ jumpStatusMessage: jumpStatusMessage });
     if(CurrentJumpStatus.newJumpShouldBeCalculated()) {
       const jumpButtonClass = CurrentJumpStatus.jumpClassesString();
       this.setState({ jumpButtonClasses: jumpButtonClass });
     }
-
     if(CurrentJumpStatus.startPointAndEndPointEqual()) {
-      console.log('Cannot jump to the same place');
+      // console.log('Cannot jump to the same place');
     }
-
     if(CurrentJumpStatus.jumpCanCalculate()) {
       this.refs.calculateJump.focus();
-    } else {
-      // this.refs.calculateJump.blur();
     }
-
     const activeElement = document.activeElement;
     const jumpButtonIsActive = activeElement.isEqualNode(this.refs.calculateJump);
-
     if(!CurrentJumpStatus.jumpCanCalculate() && jumpButtonIsActive) {
       this.refs.calculateJump.blur();
     }
-
   }
 
   findHyperspacePath() {
     const startSystemExists = this.props.hyperspaceStartSystem.length > 0;
     const endSystemExists = this.props.hyperspaceEndSystem.length > 0;
-    if(startSystemExists && endSystemExists) {
+    const jumpReady = this.state.jumpStatusMessage === 'Jump Ready to be Calculated';
+    if(startSystemExists && endSystemExists && jumpReady) {
       this.setState({ jumpButtonClasses: "hyperspace-navigation-button  button-border-teal" });
       const CurentPathGenerator = new PathGenerator(
         this.props.hyperspaceActiveStartPoint,
@@ -223,10 +221,9 @@ class HyperspaceControls extends React.Component {
           </If>
         </button>
         <ReactTooltip id={'multi-jump-toggle' + this.state.componentId} place="top" disable={this.props.mobileStatus}>{}</ReactTooltip>
-
         <If condition={ this.state.singleJump }>
           <Then>
-            <span className="nav-text">&nbsp;&nbsp;Calculating shortest path...&nbsp;&nbsp;</span>
+            <span className="nav-text">&nbsp;&nbsp;{this.state.jumpStatusMessage}&nbsp;&nbsp;</span>
           </Then>
           <Else>
             <span>
@@ -237,12 +234,10 @@ class HyperspaceControls extends React.Component {
             </span>
           </Else>
         </If>
-        
         <button  id="reset-hyperspace-jump-search" className="btn hyperspace-navigation-button btn-danger pull-right" style={{width: 40}} onClick={(e) => this.clearCurrentHyperspaceJumpSearch(e)} data-tip="Reset Start & End Points" data-for="reset-hyperspace-jump-search-tooltip" ref="resetJump" >
           <i className="fa fa-close"></i>
         </button>
         <ReactTooltip id='reset-hyperspace-jump-search-tooltip' place="top"  disable={this.props.mobileStatus}>{}</ReactTooltip>
-
       </div>
     );
   }

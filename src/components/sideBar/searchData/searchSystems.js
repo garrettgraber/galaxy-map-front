@@ -58,14 +58,11 @@ class SearchSystems extends React.Component {
       const lat = this.props.activeSystem.lat;
       const lng = this.props.activeSystem.lng;
       const systemCenter = [lat, lng];
-      console.log("System Center lat: ", lat);
-      console.log("System Center lng: ", lng);
       const newZoom = 6;
       const map = this.props.map;
       const dataStreamMessage = "Zoomed to " + this.props.activeSystem.system + ' ...';
       this.props.dispatch( addItemToDataStream(dataStreamMessage) );
       map.flyTo(systemCenter, newZoom, {animate: false});
-      // this.props.dispatch(setMapCenterAndZoom(systemCenter, newZoom));
       if(this.props.mobileStatus) {
         this.props.dispatch(zoomToAndPanIsOn());
       }

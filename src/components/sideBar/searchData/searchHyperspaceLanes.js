@@ -133,7 +133,7 @@ function getFitBounds(mobileStatus, navigationControls) {
     };
   } else if(navigationControls) {
     return {
-      paddingTopLeft: [400, 0]
+      paddingTopLeft: [420, 0]
     };
   } else {
     return {};

@@ -10,8 +10,8 @@ class SideBarController extends React.Component {
   constructor() {
     super();
   }
+  
 	render() {
-
     const ControlContainerStyles = {
       position: 'fixed',
       top: 60,
@@ -19,7 +19,6 @@ class SideBarController extends React.Component {
       height: 'auto',
       zIndex: 10
     };
-
     const ControlContainerStylesMobile = {
       position: 'fixed',
       top: 60,
@@ -29,7 +28,6 @@ class SideBarController extends React.Component {
       width: '100%',
       padding: 4
     };
-
     const ActiveControlContainerStyles = (this.props.mobileStatus)? ControlContainerStylesMobile : ControlContainerStyles;
 
     return (

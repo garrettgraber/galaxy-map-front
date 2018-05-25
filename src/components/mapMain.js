@@ -7,8 +7,6 @@ import Geohash from 'latlon-geohash';
 import ScrollArea from 'react-scrollbar';
 import { If, Then, Else } from 'react-if';
 import SystemsSearchResults from './search/systemsSearchResults.js';
-
-
 import Logger from '../classes/logger.js';
 
 const LoggerInstance = new Logger();
@@ -20,24 +18,24 @@ const activeTileServer = Config.tileServerUrl;
 LoggerInstance.log(Config);
 
 import {
-    setMapCenterAndZoom,
-    updateNorthEastMapHash,
-    updateSouthWestMapHash,
-    setMapZoom,
-    loadingIconOn,
-    loadingIconOff,
-    starMapIsOn,
-    starMapIsOff,
-    sectorMapIsOn,
-    sectorMapIsOff,
-    mapShouldDisplayForMobile,
-    mapShouldDisplayForDesktop,
-    setMapToZeroZeroZoomOne,
-    deActivateSystemsSearchControls,
-    deActivateHyperspaceNavigationControls,
-    zoomIsChaning,
-    zoomIsStable,
-    zoomToAndPanIsOff
+  setMapCenterAndZoom,
+  updateNorthEastMapHash,
+  updateSouthWestMapHash,
+  setMapZoom,
+  loadingIconOn,
+  loadingIconOff,
+  starMapIsOn,
+  starMapIsOff,
+  sectorMapIsOn,
+  sectorMapIsOff,
+  mapShouldDisplayForMobile,
+  mapShouldDisplayForDesktop,
+  setMapToZeroZeroZoomOne,
+  deActivateSystemsSearchControls,
+  deActivateHyperspaceNavigationControls,
+  zoomIsChaning,
+  zoomIsStable,
+  zoomToAndPanIsOff
 } from '../actions/actionCreators.js';
 import {
   setCursorValue,
@@ -97,25 +95,20 @@ class MapMain extends React.Component {
     const widthLessThanMessageBar = window.innerWidth < messageBarHideWidth;
     const shouldMessageBarHide = (widthLessThanMessageBar && !this.state.hideMessageBar)? true : false;
     const shouldMessageBarReveal = (!widthLessThanMessageBar && this.state.hideMessageBar)? true : false;
-
     if(shouldMessageBarHide) {
       this.setState({hideMessageBar: true});
     }
-
     if(shouldMessageBarReveal) {
       this.setState({hideMessageBar: false});
     }
-
     if(window.innerWidth < mobileWidth && !this.props.mobileStatus) {
-      console.log("set for mobile");
-      console.log("window width: ", window.innerWidth);
       this.setState({minZoom: 1});
       this.props.dispatch(mapShouldDisplayForMobile());
+      if(this.props.systemsSearchControlsOn && this.props.hyperspaceNavigationControlsOn) {
+        this.props.dispatch(deActivateHyperspaceNavigationControls());
+      }
     }
-
     if(window.innerWidth >= mobileWidth && this.props.mobileStatus) {
-      console.log("set for diplay larger than mobile");
-      console.log("window width: ", window.innerWidth);
       this.setState({minZoom: 2});
       this.props.dispatch(mapShouldDisplayForDesktop());
     }
@@ -125,18 +118,13 @@ class MapMain extends React.Component {
     if(window.innerWidth < messageBarHideWidth) {
       this.setState({hideMessageBar: true});
     }
-
     this.props.dispatch(buildHyperspaceLaneNamesSet());
     this.props.dispatch(setCursorValue());
   	const mapBounds = this.refs.map.leafletElement.getBounds();
-    console.log("Starting map Bounds: ", mapBounds);
-
   	this.refs.map.leafletElement.setMaxBounds(MaxBounds);
   	if(this.refs.map) {
-      console.log("Map: ", this.refs.map.leafletElement);
   		this.setState({map: this.refs.map.leafletElement});
   	}
-
     if(window.innerWidth < mobileWidth) {
       this.setState({minZoom: 1});
       this.props.dispatch(setMapToZeroZeroZoomOne());
@@ -144,7 +132,6 @@ class MapMain extends React.Component {
       setTimeout(() => {
         const controlLayer = document.getElementsByClassName('leaflet-control-layers-toggle')[0];
         controlLayer.addEventListener("click", () => {
-          // console.log("Click has fired bitch! Titan A.E. forever");
           this.props.dispatch(deActivateSystemsSearchControls());
           this.props.dispatch(deActivateHyperspaceNavigationControls());
         }); 
@@ -153,10 +140,7 @@ class MapMain extends React.Component {
       const currentZoom = this.refs.map.leafletElement.getZoom();
       this.props.dispatch(setMapZoom(currentZoom)); 
     }
-
     window.addEventListener('resize', this.handleResize.bind(this));
-
-    // console.log("searchLayer: ", this.refs.searchLayer.leafletElement);
   }
 
   componentWillUnmount() {
@@ -180,7 +164,6 @@ class MapMain extends React.Component {
       const mapCenter = map.getCenter();
       map.panBy([0, -100], {animate: true, duration: 2.5});
       const mapCenterAfterPan = this.refs.map.leafletElement.getCenter();
-      console.log("mapCenterAfterPan: ", mapCenterAfterPan);
     }
   }
 
@@ -199,7 +182,6 @@ class MapMain extends React.Component {
       const mapCenter = map.getCenter();
       map.panBy([0, -100], {animate: true, duration: 2.5});
       const mapCenterAfterPan = this.refs.map.leafletElement.getCenter();
-      console.log("mapCenterAfterPan: ", mapCenterAfterPan);
     }
     const mapInstance = this.refs.map.leafletElement;
     const MapBounds = getNorthEastAndSoutWestBounds(mapInstance);
@@ -274,7 +256,6 @@ class MapMain extends React.Component {
   	const zIndexGalaxy = 210;
     const zIndexBlack = 205;
     const zIndexWhite = 204;
-    const windowHeight = window.innerHeight;
 
   	return (
       <div id="container" >
@@ -286,7 +267,7 @@ class MapMain extends React.Component {
     		<Map
           id="map"
           ref='map'
-          style={{zIndex: 5, height: windowHeight}}
+          style={{zIndex: 5}}
           center={this.props.mapCenterAndZoom.center}
           zoom={this.props.mapCenterAndZoom.zoom}
           zoomControl={false}

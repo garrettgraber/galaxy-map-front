@@ -84,6 +84,20 @@ export default class JumpStatus {
 	  }
 	}
 
+	statusMessageString() {
+	  let message = "Select Start and End Points";
+	  const startPointValid = validatePoints(this.startPoint);
+	  const endPointValid = validatePoints(this.endPoint);
+	  const hyperspacePointsAreValid = (startPointValid && endPointValid);
+	  const jumpCanBeCalculated = (this.hyperspacePathsEmpty() || this.activeAndSearchAreDifferent());
+	  if(hyperspacePointsAreValid && jumpCanBeCalculated) {
+	    message = "Jump Ready to be Calculated";
+	  } else if(this.hyperspacePathsNotEmpty() && this.activeAndSearchAreTheSame()) {
+	    message = "Jump Successfully Calculated";
+	  }
+	  return message;
+	}
+
 };
 
 function pointsAreEqual(point1, point2) {

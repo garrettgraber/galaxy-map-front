@@ -35,7 +35,7 @@ class SearchData extends React.Component {
   }
 
   componentDidMount() {
-    if(this.props.currentSeachValue === 'systems' || this.props.mobileStatus) {
+    if(this.props.currentSeachValue === 'systems' || this.props.currentSeachValue === '') {
       this.setState({
         selectedSearchValue: {
           value: 'systems',

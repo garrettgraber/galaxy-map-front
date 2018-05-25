@@ -61,7 +61,8 @@ class JumpGrid extends React.Component {
 
   zoomToHyperspacePath() {
     const map = this.props.map;
-    map.fitBounds(this.props.navigationObjectBoundaries);
+    const FitBoundsOptions = getFitBounds(this.props.mobileStatus, this.props.hyperspaceNavigationControlsOn);
+    map.fitBounds(this.props.navigationObjectBoundaries, FitBoundsOptions);
     const newBounds = map.getBounds();
     this.refs.zoomPathButton.blur();
     const mapIsAtGalaxyView = mapAtGalaxyView(newBounds);
@@ -173,6 +174,17 @@ class JumpGrid extends React.Component {
         </div>
       </div>
     );
+  }
+}
+
+
+function getFitBounds(mobileStatus, navigationControls) {
+  if(!mobileStatus && navigationControls) {
+    return {
+      paddingTopLeft: [420, 0]
+    };
+  } else {
+    return {};
   }
 }
 

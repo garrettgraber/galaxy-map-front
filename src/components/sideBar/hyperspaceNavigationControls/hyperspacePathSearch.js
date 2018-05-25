@@ -34,7 +34,6 @@ class HyperspacePathSearch extends React.Component {
     if(!this.state.isStartActive) {
       this.setState({isStartActive: true});
     }
-
   }
 
   render() {
@@ -54,16 +53,12 @@ class HyperspacePathSearch extends React.Component {
     const desktopHeight = 288;
     const jumpNavigationHeight = (this.props.mobileStatus)? mobileHeight : desktopHeight;
     const navigationPaneStyle = (jumpSuccessfullyCalculated)? {height: singleJumpHeight, overFlow: 'visible'} : {height: jumpNavigationHeight, overFlow: 'visible'};
-
     const StartPoint = this.props.hyperspaceStartPoint;
     const EndPoint = this.props.hyperspaceEndPoint;
-
     let startButtonClasses = (isPointBlank(StartPoint))? "btn btn-danger" : "btn btn-success";
     let endButtonClasses = (isPointBlank(EndPoint))? "btn btn-danger" : "btn btn-success";
-
     startButtonClasses += (this.state.isStartActive)? " glowing-navigation-button" : "";
     endButtonClasses += (!this.state.isStartActive)? " glowing-navigation-button" : "";
-
 
     return (
       <div id="hyperspace-navigation-pane" className="control-row" style={navigationPaneStyle}>
@@ -77,10 +72,10 @@ class HyperspacePathSearch extends React.Component {
               </div>
               <If condition={this.state.isStartActive}>
                 <Then>
-                  <PivotPoint Point={this.props.hyperspaceStartPoint} Node={this.props.hyperspaceStartNode} isStartPosition={true} pointName={'Start'} defaultSystem={startDefault} pinPoint={this.props.pinPointStart} pinPointAlternate={this.props.pinPointEnd} clickSystem={this.props.pathStartClick}  clickSystemAlternate={this.props.pathEndClick}/>
+                  <PivotPoint Point={this.props.hyperspaceStartPoint} Node={this.props.hyperspaceStartNode} isStartPosition={true} pointName={'Start'} defaultSystem={startDefault} pinPoint={this.props.pinPointStart} pinPointAlternate={this.props.pinPointEnd} clickSystem={this.props.pathStartClick}  clickSystemAlternate={this.props.pathEndClick} map={this.props.map}/>
                 </Then>
                 <Else>
-                  <PivotPoint Point={this.props.hyperspaceEndPoint} Node={this.props.hyperspaceEndNode} isStartPosition={false} pointName={'End'} defaultSystem={endDefault} pinPoint={this.props.pinPointEnd} pinPointAlternate={this.props.pinPointStart} clickSystem={this.props.pathEndClick} clickSystemAlternate={this.props.pathStartClick}/>
+                  <PivotPoint Point={this.props.hyperspaceEndPoint} Node={this.props.hyperspaceEndNode} isStartPosition={false} pointName={'End'} defaultSystem={endDefault} pinPoint={this.props.pinPointEnd} pinPointAlternate={this.props.pinPointStart} clickSystem={this.props.pathEndClick} clickSystemAlternate={this.props.pathStartClick} map={this.props.map}/>
                 </Else>
               </If>
               <HyperspaceControls

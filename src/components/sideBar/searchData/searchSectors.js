@@ -5,9 +5,6 @@ import createFilterOptions from 'react-select-fast-filter-options';
 import ReactTooltip from 'react-tooltip';
 import uuidv4 from 'uuid/v4';
 import { If, Then, Else } from 'react-if';
-
-// import * as SearchStyles from './searchStyles.js';
-
 import { getSearchStyles } from './searchStyles.js';
 
 import {
@@ -55,11 +52,7 @@ class SearchSectors extends React.Component {
     if(this.state.sectorValue) {
       const dataStreamMessage = "Zoomed to " + this.state.sectorValue.label + ' Sector ...';
       const map = this.props.map;
-
-      console.log("Search Boundaries: ", this.props.SearchBoundaries);
-
       const FitBoundsOptions = getFitBounds(this.props.mobileStatus, this.props.hyperspaceNavigationControlsOn);
-
       map.fitBounds(this.props.SearchBoundaries, FitBoundsOptions);
       this.props.dispatch(addItemToDataStream(dataStreamMessage));
     }
@@ -135,7 +128,7 @@ function getFitBounds(mobileStatus, navigationControls) {
     };
   } else if(navigationControls) {
     return {
-      paddingTopLeft: [400, 0]
+      paddingTopLeft: [420, 0]
     };
   } else {
     return {};
