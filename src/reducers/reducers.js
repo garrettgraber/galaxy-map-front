@@ -538,6 +538,26 @@ function hyperspacePathCollections(state = [], action) {
 			return state;
 	}
 }
+function shipHyperspaceJumpPath(state = [], action) {
+	switch (action.type) {
+		case Actions.LOAD_SHIP_HYPERSPACE_PATH:
+			if(Array.isArray(action.payload)) {
+				return action.payload;
+			} else {
+				return [action.payload];
+			}
+		case Actions.EMPTY_SHIP_HYPERSPACE_PATH:
+			return [];
+		case Actions.ADD_SHIP_HYPERSPACE_PATH:
+			const stateClone = _.cloneDeep(state);
+			stateClone.push(action.payload);
+			return stateClone;
+		case Actions.ERROR_SHIP_HYPERSPACE_PATH:
+			return state;
+		default:
+			return state;
+	}
+}
 function hyperspacePathChange(state = false, action) {
 	switch (action.type) {
 		case Actions.HYPERSPACE_PATH_CHANGE_ON:
@@ -870,6 +890,7 @@ export default combineReducers({
 	activeSystem,
 	searchSystems,
 	hyperspacePathCollections,
+	shipHyperspaceJumpPath,
 	hyperspacePathChange,
 	pathSearchStart,
 	pathSearchEnd,

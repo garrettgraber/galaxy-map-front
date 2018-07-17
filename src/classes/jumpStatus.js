@@ -98,6 +98,15 @@ export default class JumpStatus {
 	  return message;
 	}
 
+	statusIsComplete() {
+		const statusMessage = this.statusMessageString();
+		if(statusMessage === "Jump Successfully Calculated") {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 };
 
 function pointsAreEqual(point1, point2) {

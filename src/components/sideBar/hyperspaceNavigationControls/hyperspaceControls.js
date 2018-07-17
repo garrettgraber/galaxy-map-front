@@ -24,7 +24,8 @@ import {
 } from '../../../actions/actionCreators.js';
 import {
   getHyperspacePathCollection,
-  plotFreeSpaceJumpToNode
+  plotFreeSpaceJumpToNode,
+  jumpShipToDestination
 } from '../../../actions/actions.js';
 
 import PathGenerator from '../../../classes/pathGenerator.js';
@@ -41,7 +42,8 @@ class HyperspaceControls extends React.Component {
       jumpButtonClasses: 'hyperspace-navigation-button pulsating-button-off',
       singleJump: true,
       multiplePathsEnabled: false,
-      jumpStatusMessage: ''
+      jumpStatusMessage: '',
+      jumpCompletionStatus: false
     };
   }
 
@@ -58,8 +60,10 @@ class HyperspaceControls extends React.Component {
     });
     const jumpButtonClass = CurrentJumpStatus.jumpClassesString();
     const jumpStatusMessage = CurrentJumpStatus.statusMessageString();
+    const jumpCompletionStatus = CurrentJumpStatus.statusIsComplete();
     this.setState({ jumpStatusMessage: jumpStatusMessage });
     this.setState({ jumpButtonClasses: jumpButtonClass });
+    this.setState({ jumpCompletionStatus: jumpCompletionStatus });
   }
 
   componentWillReceiveProps(newProps) {
@@ -75,6 +79,10 @@ class HyperspaceControls extends React.Component {
     });
     const jumpStatusMessage = CurrentJumpStatus.statusMessageString();
     this.setState({ jumpStatusMessage: jumpStatusMessage });
+    const jumpCompletionStatus = CurrentJumpStatus.statusIsComplete();
+    this.setState({ jumpCompletionStatus: jumpCompletionStatus });
+
+
     if(CurrentJumpStatus.newJumpShouldBeCalculated()) {
       const jumpButtonClass = CurrentJumpStatus.jumpClassesString();
       this.setState({ jumpButtonClasses: jumpButtonClass });
@@ -121,6 +129,32 @@ class HyperspaceControls extends React.Component {
           CurentPathGenerator.edgeLocationsSearch()
         ));
       }
+    }
+  }
+
+  initateHyperspaceJump() {
+    if(this.state.jumpCompletionStatus) {
+      const CurentPathGenerator = new PathGenerator(
+        this.props.hyperspaceActiveStartPoint,
+        this.props.hyperspaceActiveEndPoint,
+        this.props.hyperspaceActiveStartNode,
+        this.props.hyperspaceActiveEndNode,
+        this.props.hyperspaceStartPoint,
+        this.props.hyperspaceEndPoint,
+        this.props.hyperspaceStartNode,
+        this.props.hyperspaceEndNode,
+        this.props.activeHyperspaceJump,
+        this.props.hyperspaceHash,
+        this.state.HyperspaceCollectionsComponents,
+        this.props.hyperspacePathCollections,
+        this.props.hyperspacePathChange
+      );
+    
+      this.props.dispatch(jumpShipToDestination(
+        CurentPathGenerator.pathSearch(this.state.maxJumps, this.state.limit),
+        CurentPathGenerator.edgeLocationsSearch()
+      ));
+
     }
   }
 
@@ -234,6 +268,15 @@ class HyperspaceControls extends React.Component {
             </span>
           </Else>
         </If>
+
+
+
+
+
+
+
+
+
         <button  id="reset-hyperspace-jump-search" className="btn hyperspace-navigation-button btn-danger pull-right" style={{width: 40}} onClick={(e) => this.clearCurrentHyperspaceJumpSearch(e)} data-tip="Reset Start & End Points" data-for="reset-hyperspace-jump-search-tooltip" ref="resetJump" >
           <i className="fa fa-close"></i>
         </button>

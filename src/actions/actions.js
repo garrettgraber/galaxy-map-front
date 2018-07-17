@@ -192,6 +192,11 @@ export function getHyperspacePathCollection(HyperspacePathSearch, HyperspacePath
       const dataStreamMessage = "Jump calculated from " + HyperspacePathSearch.startPoint + " to " + HyperspacePathSearch.endPoint;
       dispatch(addItemToDataStream(dataStreamMessage));
       dispatch(loadHyperspacePathCollections(data));
+
+
+      dispatch(loadShipHyperspaceData(data));
+
+
       dispatch(activeStartPosition(HyperspacePathData.StartPoint));
       dispatch(activeEndPosition(HyperspacePathData.EndPoint));
       dispatch(activeStartNode(HyperspacePathData.StartNode));
@@ -209,6 +214,18 @@ export function getHyperspacePathCollection(HyperspacePathSearch, HyperspacePath
     });
     return null;
 	}
+}
+
+
+export function jumpShipToDestination(HyperspacePathSearch, HyperspacePathData) {
+  return function(dispatch, getState) {
+    ApiService.getHyperspacePathData(HyperspacePathSearch).then(data => {
+      console.log("Path Data: ", data);
+    }).catch(err => {
+      console.log("err: ", err);
+    });
+    return null;
+  }
 }
 
 export function setSelectedHyperspaceRoute(hyperspaceHash) {

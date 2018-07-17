@@ -623,6 +623,38 @@ export function errorHyperspacePath(error) {
 		type: Actions.ERROR_HYPERSPACE_COLLECTION
 	}
 }
+
+
+
+
+export function loadShipHyperspacePath(collections) {
+	return {
+		type: Actions.LOAD_SHIP_HYPERSPACE_PATH,
+		payload: collections
+	}
+}
+export function addShipHyperspacePath(collectionToAdd) {
+	return {
+		type: Actions.ADD_SHIP_HYPERSPACE_PATH,
+		payload: collectionToAdd
+	}
+}
+export function emptyShipHyperspacePath() {
+	return {
+		type: Actions.EMPTY_SHIP_HYPERSPACE_PATH
+	}
+}
+export function errorShipHyperspacePath(error) {
+	return {
+		type: Actions.ERROR_SHIP_HYPERSPACE_PATH
+	}
+}
+
+
+
+
+
+
 export function updateHyperspacePaths() {
 	return {
 		type: Actions.HYPERSPACE_PATH_CHANGE_ON
