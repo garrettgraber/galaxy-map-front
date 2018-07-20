@@ -5,11 +5,17 @@ import L from 'leaflet';
 import width from 'text-width';
 import _ from 'lodash';
 import Geohash from 'latlon-geohash';
+// import LeafletMovingMarker from 'leaflet-moving-marker';
 
-import HyperSpaceLane from '../../classes/hyperspaceLane.js';
-import Planet from '../../classes/planet.js';
+import uuidv4 from 'uuid/v4';
 
-import {  
+import Ship from  './ship.js';
+
+import { leafletMovingMarker } from '../../movingMarkerNinja/movingMarker.js';
+
+console.log("leafletMovingMarker: ", leafletMovingMarker);
+
+import {
   updateNorthEastMapHash
 } from '../../actions/actionCreators.js';
 import 'leaflet/dist/leaflet.css';
@@ -18,22 +24,33 @@ import 'leaflet_marker_2x';
 import 'leaflet_marker_shadow';
 
 
-
-
 class StarShips extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      StarShipComponents: [],
-    
-      previousIntersectionMap: new Set(),    
+      StarShipComponents: []
     };
   }
 
+  componentDidMount() {
+    const coruscantLocation = [0, 0];
+    this.state.StarShipComponents.push(<Ship
+      key={uuidv4()}
+      location={coruscantLocation}
+      map={this.props.map}
+    />);
+  }
+
+
+  componentWillReceiveProps(newProps) {
+
+
+  }
+
   render() {
-  	const zIndex = 295;
-    // const StarShipsToRender = renderComponentsOrNull(this.state.StarShipComponents);
-   //  console.log("Total Star Components Rendering: ", (this.state.StarMapComponents)? this.state.StarMapComponents.length : null);
+  	const zIndex = 280;
+    const StarShipsToRender = renderComponentsOrNull(this.state.StarShipComponents);
+    // console.log("Total Star Components Rendering: ", (this.state.StarMapComponents)? this.state.StarMapComponents.length : null);
 
   	return (
   		<Pane name="star-ships-pane" style={{zIndex: zIndex}}>
@@ -63,5 +80,4 @@ const mapStateToProps = (state = {}) => {
   return Object.assign({}, state);
 };
 
-// export default StarShips;
 export default connect(mapStateToProps)(StarShips);

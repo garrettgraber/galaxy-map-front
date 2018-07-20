@@ -52,6 +52,7 @@ import Regions from './regions/regions.js';
 import Sectors from './sectors/sectors.js';
 import HyperspaceLanesData from './hyperspaceData/hyperspaceLanesData.js';
 import StarMap from './stars/starMap.js';
+import StarShips from './starShips/starShips.js';
 import SideBarController from './sideBar/sideBarController.js';
 import SideBar from './sideBar/sideBar.js';
 import DataStream from './dataStream/dataStream.js';
@@ -336,6 +337,9 @@ class MapMain extends React.Component {
             </Overlay>
             <Overlay name="System Search Layer" checked={true} ref='systemSearchLayer'>
               <SystemsSearchResults/>
+            </Overlay>
+            <Overlay name="Star Ship Layer" checked={true} ref='starShipLayer'>
+              <StarShips map={this.state.map}/>
             </Overlay>
 				  </LayersControl>
     		</Map>

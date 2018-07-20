@@ -194,7 +194,7 @@ export function getHyperspacePathCollection(HyperspacePathSearch, HyperspacePath
       dispatch(loadHyperspacePathCollections(data));
 
 
-      dispatch(loadShipHyperspaceData(data));
+      // dispatch(loadShipHyperspaceData(data));
 
 
       dispatch(activeStartPosition(HyperspacePathData.StartPoint));

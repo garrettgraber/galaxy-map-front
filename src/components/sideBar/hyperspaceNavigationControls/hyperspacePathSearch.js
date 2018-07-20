@@ -72,7 +72,18 @@ class HyperspacePathSearch extends React.Component {
               </div>
               <If condition={this.state.isStartActive}>
                 <Then>
-                  <PivotPoint Point={this.props.hyperspaceStartPoint} Node={this.props.hyperspaceStartNode} isStartPosition={true} pointName={'Start'} defaultSystem={startDefault} pinPoint={this.props.pinPointStart} pinPointAlternate={this.props.pinPointEnd} clickSystem={this.props.pathStartClick}  clickSystemAlternate={this.props.pathEndClick} map={this.props.map}/>
+                  <PivotPoint
+                    Point={this.props.hyperspaceStartPoint}
+                    Node={this.props.hyperspaceStartNode}
+                    isStartPosition={true}
+                    pointName={'Start'}
+                    defaultSystem={startDefault}
+                    pinPoint={this.props.pinPointStart}
+                    pinPointAlternate={this.props.pinPointEnd}
+                    clickSystem={this.props.pathStartClick}
+                    clickSystemAlternate={this.props.pathEndClick}
+                    map={this.props.map}
+                  />
                 </Then>
                 <Else>
                   <PivotPoint Point={this.props.hyperspaceEndPoint} Node={this.props.hyperspaceEndNode} isStartPosition={false} pointName={'End'} defaultSystem={endDefault} pinPoint={this.props.pinPointEnd} pinPointAlternate={this.props.pinPointStart} clickSystem={this.props.pathEndClick} clickSystemAlternate={this.props.pathStartClick} map={this.props.map}/>

@@ -30,12 +30,15 @@ module.exports = {
     filename: 'bundle.js',
   },
   resolve: {
-    extensions: ['*', '.html', '.js', '.json', '.scss', '.css'],
+    extensions: ['*', '.html', '.js', '.json', '.scss', '.css', '.ts', '.tsx'],
     alias: {
       leaflet_css: path.join(__dirname, "/node_modules/leaflet/dist/leaflet.css"),
       leaflet_marker: path.join(__dirname, "/node_modules/leaflet/dist/images/marker-icon.png"),
       leaflet_marker_2x: path.join(__dirname, "/node_modules/leaflet/dist/images/marker-icon-2x.png"),
-      leaflet_marker_shadow: path.join(__dirname,"/node_modules/leaflet/dist/images/marker-shadow.png")
+      leaflet_marker_shadow: path.join(__dirname,"/node_modules/leaflet/dist/images/marker-shadow.png"),
+      // leaflet_moving_marker: path.join(__dirname, "/node_modules/leaflet_moving_marker/index.ts")
+      // leaflet_moving_marker: path.join(__dirname,"/src/leafletMovingMarker/MovingMarker.js"),
+
     },
     modules: [
       path.join(__dirname),
