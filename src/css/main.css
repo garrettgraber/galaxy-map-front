@@ -1,5 +1,11 @@
 
 
+
+.shipIconInvisible {
+    opacity: 0.0
+}
+
+
 .rotate-circle {
     -webkit-transform: rotate(45deg);
     -moz-transform: rotate(45deg);

@@ -40,7 +40,8 @@ class PivotPoint extends React.Component {
       const Point = this.props.Point;
       const spaceCoordinates = [Point.lat, Point.lng];
       const map = this.props.map;
-      map.flyTo(spaceCoordinates, newZoom, {animate: false});
+      // map.flyTo(spaceCoordinates, newZoom, {animate: false});
+      this.props.dispatch(setMapCenterAndZoom(spaceCoordinates, newZoom));
       if(this.props.mobileStatus) {
         this.props.dispatch(zoomToAndPanIsOn());
       }

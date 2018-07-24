@@ -138,8 +138,6 @@ const MovingMarker = L.Marker.extend({
         }
         return;
     },
-    setRotationAngle: L.Marker.prototype.setRotationAngle,
-    setRotationOrigin: L.Marker.prototype.setRotationOrigin
 });
 
 

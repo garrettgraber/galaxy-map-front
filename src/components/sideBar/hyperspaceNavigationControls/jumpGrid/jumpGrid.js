@@ -153,6 +153,9 @@ class JumpGrid extends React.Component {
             <div className="pane-column">
               <span className="nav-text">&nbsp;&nbsp;Total Paths:&nbsp;&nbsp;{jumpPaths.length}</span>
             </div>
+
+            
+            
             <button  id="reset-hyperspace-jump" className="btn hyperspace-navigation-button btn-danger pull-right" style={{width: 40}} onClick={(e) => this.clearCurrentHyperspaceJump(e)} data-tip="Reset Hyperspace Jump" data-for="reset-hyperspace-jump-tooltip-foo" ref="resetJump">
               <i className="fa fa-close"></i>
             </button>
