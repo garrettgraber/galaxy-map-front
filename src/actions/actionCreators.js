@@ -652,6 +652,40 @@ export function errorShipHyperspacePath(error) {
 
 
 
+export function freeSpaceJumpStartOn() {
+	return {
+		type: Actions.FREE_SPACE_JUMP_START_ON
+	}
+}
+export function freeSpaceJumpStartOff() {
+	return {
+		type: Actions.FREE_SPACE_JUMP_START_OFF
+	}
+
+}
+export function setDefaultFreeSpaceJumpStart() {
+	return {
+		type: Actions.SET_DEFAULT_FREE_SPACE_JUMP_START
+	}
+}
+
+
+
+export function freeSpaceJumpEndOn() {
+	return {
+		type: Actions.FREE_SPACE_JUMP_END_ON
+	}
+}
+export function freeSpaceJumpEndOff() {
+	return {
+		type: Actions.FREE_SPACE_JUMP_END_OFF
+	}
+}
+export function setDefaultFreeSpaceJumpEnd() {
+	return {
+		type: Actions.SET_DEFAULT_FREE_SPACE_JUMP_END
+	}
+}
 
 
 

@@ -17,7 +17,11 @@ import PathGenerator from '../../classes/pathGenerator.js';
 import {
   stopUpdatingHyperspacePath,
   hyperspaceNavigationUpdateOff,
-  newNavigationObjectBoundaries
+  newNavigationObjectBoundaries,
+  freeSpaceJumpStartOn,
+  freeSpaceJumpStartOff,
+  freeSpaceJumpEndOn,
+  freeSpaceJumpEndOff
 } from '../../actions/actionCreators.js';
 
 
@@ -64,6 +68,32 @@ class HyperspaceNavigation extends React.Component {
       const coordiantes = CurentPathGenerator.generateCoordinatesArray();
       const polyline = L.polyline(coordiantes);
       const polylineBounds = polyline.getBounds();
+      const startFreeSpaceJumpStatus = CurentPathGenerator.startFreeSpaceJumpStatus;
+      const endFreeSpaceJumpStatus = CurentPathGenerator.endFreeSpaceJumpStatus;
+
+      console.log("CurentPathGenerator: ", CurentPathGenerator);
+
+      // console.log("free space jump on start: ", CurentPathGenerator.freeSpaceJumpFromStart());
+      // console.log("free space jump on end: ", CurentPathGenerator.freeSpaceJumpFromEnd());
+
+      console.log("this.props: ", this.props);
+
+      // if(CurentPathGenerator.freeSpaceJumpFromStart()) {
+      //   console.log("Free space jump on the start");
+      //   this.props.dispatch(freeSpaceJumpStartOn());
+      // } else {
+      //   console.log("No Free space jump on the start");
+      //   this.props.dispatch(freeSpaceJumpStartOff());
+      // }
+
+      // if(CurentPathGenerator.freeSpaceJumpFromEnd()) {
+      //   console.log("Free space jump on the end");
+      //   this.props.dispatch(freeSpaceJumpEndOn());
+      // } else {
+      //   console.log("No Free space jump on the end");
+      //   this.props.dispatch(freeSpaceJumpEndOff());
+      // }
+
       this.props.dispatch(newNavigationObjectBoundaries(polylineBounds));
       this.props.dispatch(hyperspaceNavigationUpdateOff());
     }

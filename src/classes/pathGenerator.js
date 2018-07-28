@@ -283,6 +283,14 @@ export default class PathGenerator {
     }
 	}
 
+  freeSpaceJumpFromStart(JumpStartPoint, JumpStartNode) {
+    return nodeAndPointAreEqual(JumpStartPoint, JumpStartNode);
+  }
+
+  freeSpaceJumpFromEnd(JumpEndPoint, JumpEndNode) {
+    return nodeAndPointAreEqual(JumpEndPoint, JumpEndNode);
+  }
+
 	addFreeSpaceLane(Start, End, forwardDirection) {
 		const FreeSpaceLaneComponent = createFreespaceLane(
       Start,

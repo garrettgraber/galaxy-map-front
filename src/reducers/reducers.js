@@ -558,6 +558,19 @@ function shipHyperspaceJumpPath(state = [], action) {
 			return state;
 	}
 }
+function shipHasJumpedToHyperspace(state = false, action) {
+	switch (action.type) {
+		case Actions.SHIP_HAS_JUMPED_TO_HYPERSPACE:
+			return true;
+		case Actions.SHIP_HAS_EXITED_HYPERSPACE:
+			return false;
+		case Actions.SHIP_IS_IN_REAL_SPACE:
+			return false;
+		default:
+			return state;
+	}
+}
+
 function hyperspacePathChange(state = false, action) {
 	switch (action.type) {
 		case Actions.HYPERSPACE_PATH_CHANGE_ON:
@@ -797,6 +810,31 @@ function updateHyperspaceNavigation(state = false, action) {
 			return state;
 	}
 }
+function freeSpaceJumpStart(state = false, action) {
+	switch (action.type) {
+		case Actions.FREE_SPACE_JUMP_START_ON:
+			return true;
+		case Actions.FREE_SPACE_JUMP_START_OFF:
+			return false;
+		case Actions.SET_DEFAULT_FREE_SPACE_JUMP_START:
+			return false;
+		default:
+			return state;
+	}
+}
+function freeSpaceJumpEnd(state = false, action) {
+	switch (action.type) {
+		case Actions.FREE_SPACE_JUMP_END_ON:
+			return true;
+		case Actions.FREE_SPACE_JUMP_END_OFF:
+			return false;
+		case Actions.SET_DEFAULT_FREE_SPACE_JUMP_END:
+			return false;
+		default:
+			return state;
+	}
+}
+
 
 
 function starMapOverlayStatus(state = true, action) {
@@ -907,6 +945,8 @@ export default combineReducers({
 	pathEndClick,
 	calculateHyperspaceJump,
 	updateHyperspaceNavigation,
+	freeSpaceJumpStart,
+	freeSpaceJumpEnd,
 	mapCenterAndZoom,
 	mapControlsDisplayed
 });
