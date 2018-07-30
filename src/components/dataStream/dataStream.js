@@ -7,7 +7,7 @@ import { If, Then, Else } from 'react-if';
 
 import * as DataStreamStyles from './dataStreamStyles.js';
 
-const decodeTimeInMilliseconds = 100;
+const decodeTimeInMilliseconds = 50;
 const copyRightText = 'Star Wars and all related locations, story, and information are copyright of Lucasfilm and Disney.';
 
 class DataStream extends React.Component {

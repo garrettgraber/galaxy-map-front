@@ -94,3 +94,20 @@ export function allPointsAreValid(pointArray) {
     return false;
   }
 }
+
+export function jumpIntoHyperspaceCalculated(Options) {
+  const hyperspacePathCollections = Options.hyperspacePathCollections;
+  const ActiveStartPoint = Options.ActiveStartPoint;
+  const ActiveStartNode = Options.ActiveStartNode;
+  const ActiveEndPoint = Options.ActiveEndPoint;
+  const ActiveEndNode = Options.ActiveEndNode;
+
+  let hyperspacePathData = [];
+  if(hyperspacePathCollections.length > 0) {
+    const FirstHyperspaceCollection = hyperspacePathCollections[0];
+    hyperspacePathData = FirstHyperspaceCollection.paths;
+  }
+  const activeHyperspaceJumpPoints = [ActiveStartPoint, ActiveStartNode, ActiveEndPoint, ActiveEndNode];
+  const jumpSuccessfullyCalculated = (hyperspacePathData.length > 0 || allPointsAreValid(activeHyperspaceJumpPoints))? true : false;
+  return jumpSuccessfullyCalculated;
+}

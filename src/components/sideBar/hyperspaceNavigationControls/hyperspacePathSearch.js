@@ -7,7 +7,8 @@ import JumpGrid from './jumpGrid/jumpGrid.js';
 import PivotPoint from './pivotPoint.js';
 import {
   allPointsAreValid,
-  isPointBlank
+  isPointBlank,
+  jumpIntoHyperspaceCalculated
 } from '../../hyperspaceNavigation/hyperspaceMethods.js';
 
 import '../../../css/main.css';
@@ -37,15 +38,25 @@ class HyperspacePathSearch extends React.Component {
   }
 
   render() {
-    let hyperspacePathData = [];
-    if(this.props.hyperspacePathCollections.length > 0) {
-      const FirstHyperspaceCollection = this.props.hyperspacePathCollections[0];
-      hyperspacePathData = FirstHyperspaceCollection.paths;
-    }
-    const startDefault = 'Kamino';
-    const endDefault = 'Lok';
-    const activeHyperspaceJumpPoints = [this.props.hyperspaceActiveStartPoint, this.props.hyperspaceActiveStartNode, this.props.hyperspaceActiveEndPoint, this.props.hyperspaceActiveEndNode];
-    const jumpSuccessfullyCalculated = (hyperspacePathData.length > 0 || allPointsAreValid(activeHyperspaceJumpPoints))? true : false;
+    // let hyperspacePathData = [];
+    // if(this.props.hyperspacePathCollections.length > 0) {
+    //   const FirstHyperspaceCollection = this.props.hyperspacePathCollections[0];
+    //   hyperspacePathData = FirstHyperspaceCollection.paths;
+    // }
+    // const activeHyperspaceJumpPoints = [this.props.hyperspaceActiveStartPoint, this.props.hyperspaceActiveStartNode, this.props.hyperspaceActiveEndPoint, this.props.hyperspaceActiveEndNode];
+    // const jumpSuccessfullyCalculated = (hyperspacePathData.length > 0 || allPointsAreValid(activeHyperspaceJumpPoints))? true : false;
+
+    const jumpSuccessfullyCalculated = jumpIntoHyperspaceCalculated({
+      hyperspacePathCollections: this.props.hyperspacePathCollections,
+      ActiveStartPoint: this.props.hyperspaceActiveStartPoint,
+      ActiveStartNode: this.props.hyperspaceActiveStartNode,
+      ActiveEndPoint: this.props.hyperspaceActiveEndPoint,
+      ActiveEndNode: this.props.hyperspaceActiveEndNode
+    });
+
+
+    const startDefault = 'Coruscant';
+    const endDefault = 'Alderaan';
     const mobileModifiler = (this.props.mobileStatus)? 95 : 0;
     const multipleJumpHeight = 520 - mobileModifiler;
     const singleJumpHeight = 463 - mobileModifiler;

@@ -432,7 +432,7 @@
 }
 
 .pulsating-button-calculating {
-    animation: pulse-teal 0.5s infinite;
+    animation: pulse-gold 0.5s infinite;
 }
 
 .pulsating-button-success {
@@ -441,6 +441,14 @@
 
 .pulsating-button-ready {
     animation: pulse-teal 0.5s infinite;
+}
+
+.pulsating-button-white {
+    animation: pulse-white 0.5s infinite;
+}
+
+.pulsating-button-black {
+    animation: pulse-black 1.0s infinite;
 }
 
 .pulsating-button-off {
@@ -487,6 +495,26 @@
     border: 3px solid teal;
   }
 }
+
+
+@keyframes pulse-white {
+  0% {
+    border: 3px solid black;
+  }
+  100% {
+    border: 3px solid white;
+  }
+}
+
+@keyframes pulse-black {
+  0% {
+    border: 3px solid white;
+  }
+  100% {
+    border: 3px solid black;
+  }
+}
+
 
 @keyframes pulse-red {
   0% {

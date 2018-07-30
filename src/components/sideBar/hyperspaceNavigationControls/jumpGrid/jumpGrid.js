@@ -20,8 +20,15 @@ import {
   activeEndPositionDefault,
   activeStartNodeDefault,
   activeEndNodeDefault,
-  noNavigationObjectBoundaries
+  noNavigationObjectBoundaries,
+  jumpShipIntoHyperspace,
+  shipHasExitedHyperspace,
+  zoomToShipIsOn
 } from '../../../../actions/actionCreators.js';
+
+import HyperspaceJumpIcon from '../../../../images/hyperspace-jump-icon.jpg';
+import ShipZoomIcon from '../../../../images/icons/falcon-icons/falcon-black.png';
+
 
 import '../../../../css/main.css';
 
@@ -76,6 +83,19 @@ class JumpGrid extends React.Component {
     this.props.dispatch(activeEndPositionDefault());
     this.props.dispatch(noNavigationObjectBoundaries());
     this.props.dispatch(hyperspaceNavigationUpdateOn());
+  }
+
+  jumpShip(e) {
+    console.log("Jump Ship into Hyperspace: ", e);
+    this.props.dispatch( jumpShipIntoHyperspace() );
+  }
+
+  zoomToShipClick(e) {
+    console.log("Zoom to ship has fired: ", e);
+
+    this.props.dispatch( zoomToShipIsOn() );
+
+
   }
 
   componentWillReceiveProps(newProps) {
@@ -138,6 +158,42 @@ class JumpGrid extends React.Component {
       <div className="pane-container">
         <div className="pane-section">
           <div className="hyperspace-controls-pane-row" style={JumpGridControllerStyle}>
+
+            <img
+              id="jump-into-hyperspace"
+              src={HyperspaceJumpIcon}
+
+              className="hyperspace-navigation-button pulsating-button-ready"
+              style={{width: 40, height: 36, padding: 2,  borderRadius: 2, cursor: 'pointer'}}
+              onClick={(e) => this.jumpShip(e)}
+              data-tip="Jump Into Hyperspace"
+              data-for="jump-into-hyperspace-tooltip-foo"
+              ref="jumpIntoHSpace"
+
+              tabIndex="0"
+              onKeyPress={(e) => this.jumpShip(e)}
+            />
+
+            <ReactTooltip id='jump-into-hyperspace-tooltip-foo' place="top" disable={this.props.mobileStatus}>{}</ReactTooltip>
+
+            <img
+              id="zoom-to-ship"
+              src={ShipZoomIcon}
+
+              className="hyperspace-navigation-button pulsating-button-white"
+              style={{width: 40, height: 36, padding: 2,  borderRadius: 2, backgroundColor: 'white', cursor: 'pointer'}}
+              onClick={(e) => this.zoomToShipClick(e)}
+              data-tip="Zoom to Ship"
+              data-for="zoom-to-ship-tooltip-foo"
+              ref="zoomToShip"
+
+              tabIndex="1"
+              onKeyPress={(e) => this.zoomToShipClick(e)}
+            />
+
+            <ReactTooltip id='zoom-to-ship-tooltip-foo' place="top" disable={this.props.mobileStatus}>{}</ReactTooltip>
+
+
             <button
               type="button"
               className={zoomToPathClasses}
@@ -153,6 +209,7 @@ class JumpGrid extends React.Component {
             <div className="pane-column">
               <span className="nav-text">&nbsp;&nbsp;Total Paths:&nbsp;&nbsp;{jumpPaths.length}</span>
             </div>
+
 
             
             

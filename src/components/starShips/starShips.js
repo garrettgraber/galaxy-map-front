@@ -16,6 +16,11 @@ import { leafletMovingMarker } from '../../movingMarkerNinja/movingMarker.js';
 console.log("leafletMovingMarker: ", leafletMovingMarker);
 
 import {
+  jumpIntoHyperspaceCalculated
+} from '../hyperspaceNavigation/hyperspaceMethods.js';
+
+
+import {
   updateNorthEastMapHash
 } from '../../actions/actionCreators.js';
 import 'leaflet/dist/leaflet.css';
@@ -34,23 +39,53 @@ class StarShips extends React.Component {
 
   componentDidMount() {
     const coruscantLocation = [0, 0];
+    const StartPoint = this.props.hyperspaceActiveStartPoint;
+
+    // console.log("StartPoint: ", StartPoint);
+
+    const startLocation = (StartPoint.lat && StartPoint.lng)? [StartPoint.lat, StartPoint.lng] : coruscantLocation;
+
     this.state.StarShipComponents.push(<Ship
       key={uuidv4()}
-      location={coruscantLocation}
+      location={startLocation}
       map={this.props.map}
     />);
   }
 
 
   componentWillReceiveProps(newProps) {
+    const StartPoint = newProps.hyperspaceActiveStartPoint;
 
+    // console.log("StartPoint: ", StartPoint);
 
+    // if() {
+    //   const startLocation = [StartPoint.lat, StartPoint.lng];
+
+    //   this.state.StarShipComponents.push(<Ship
+    //     key={uuidv4()}
+    //     location={startLocation}
+    //     map={this.props.map}
+    //   />);
+    // }
   }
 
   render() {
   	const zIndex = 280;
-    const StarShipsToRender = renderComponentsOrNull(this.state.StarShipComponents);
+    // const StarShipsToRender = renderComponentsOrNull(this.state.StarShipComponents);
     // console.log("Total Star Components Rendering: ", (this.state.StarMapComponents)? this.state.StarMapComponents.length : null);
+
+    const jumpSuccessfullyCalculated = jumpIntoHyperspaceCalculated({
+      hyperspacePathCollections: this.props.hyperspacePathCollections,
+      ActiveStartPoint: this.props.hyperspaceActiveStartPoint,
+      ActiveStartNode: this.props.hyperspaceActiveStartNode,
+      ActiveEndPoint: this.props.hyperspaceActiveEndPoint,
+      ActiveEndNode: this.props.hyperspaceActiveEndNode
+    });
+    const shipHasJumpedToHyperspace = this.props.shipHasJumpedToHyperspace;
+
+    const StarShipsToRender = (jumpSuccessfullyCalculated)? renderComponentsOrNull(this.state.StarShipComponents) : null;
+
+    // console.log("Ship in hyperspace: ", this.props.shipHasJumpedToHyperspace);
 
   	return (
   		<Pane name="star-ships-pane" style={{zIndex: zIndex}}>

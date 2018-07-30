@@ -79,6 +79,7 @@
     "react-leaflet-control": "^1.4.0",
     "react-leaflet-div-icon": "^1.0.2",
     "react-leaflet-draw": "^0.16.0",
+    "react-leaflet-rotatedmarker": "^0.1.0",
     "react-live-clock": "^2.0.1",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",

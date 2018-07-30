@@ -562,6 +562,8 @@ function shipHasJumpedToHyperspace(state = false, action) {
 	switch (action.type) {
 		case Actions.SHIP_HAS_JUMPED_TO_HYPERSPACE:
 			return true;
+		case Actions.SHIP_IS_IN_HYPERSPACE:
+			return false;
 		case Actions.SHIP_HAS_EXITED_HYPERSPACE:
 			return false;
 		case Actions.SHIP_IS_IN_REAL_SPACE:
@@ -570,6 +572,20 @@ function shipHasJumpedToHyperspace(state = false, action) {
 			return state;
 	}
 }
+function zoomToShip(state = false, action) {
+	switch (action.type) {
+		case Actions.ZOOM_TO_SHIP_ON:
+			return true;
+		case Actions.ZOOM_TO_SHIP_OFF:
+			return false;
+		case Actions.ZOOM_TO_SHIP_DEFAULT:
+			return false;
+		default:
+			return state;
+	}
+}
+
+
 
 function hyperspacePathChange(state = false, action) {
 	switch (action.type) {
@@ -929,6 +945,8 @@ export default combineReducers({
 	searchSystems,
 	hyperspacePathCollections,
 	shipHyperspaceJumpPath,
+	shipHasJumpedToHyperspace,
+	zoomToShip,
 	hyperspacePathChange,
 	pathSearchStart,
 	pathSearchEnd,

@@ -9,6 +9,9 @@ import 'rotate-icon';
 
 import 'leaflet-rotatedmarker';
 
+import RotatedMarker from 'react-leaflet-rotatedmarker'
+
+
 
 import width from 'text-width';
 import _ from 'lodash';
@@ -41,9 +44,18 @@ import { leafletMovingMarker } from '../../movingMarkerNinja/movingMarker.js';
 import { movingMarkerGenerator } from '../../leafletMarkerDeus/movingMarker.js';
 
 
+
 import {
 	nodeAndPointAreEqual
 } from '../hyperspaceNavigation/hyperspaceMethods.js';
+
+import {
+	addItemToDataStream,
+	shipHasExitedHyperspace,
+	shipIsInHyperspace,
+	zoomToAndPanIsOn,
+	zoomToShipIsOff
+} from '../../actions/actionCreators.js';
 
 
 const falconTiny = '../../images/icons/falcon-icons/falcon-tiny.png';
@@ -57,12 +69,14 @@ class Ship extends React.Component {
       StarShipComponents: [],
       location: [0, 0],
       inHyperspace: false,
+      // speed: 10.00,
       speed: 10.00,
       name: 'Millennium Falcon',
       startTime: null,
       endTime: null,
       pausingHyperspaceJump: false,
-      currentShipJumpAngle: 0.0
+      currentShipJumpAngle: 0.0,
+      MovingShipMarker: null
     };
   }
 
@@ -71,184 +85,322 @@ class Ship extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-  	if(newProps.hyperspacePathCollections.length > 0 && !this.state.inHyperspace && !this.props.updateHyperspaceNavigation) {
+  	const hyperspaceDataLoaded = (newProps.hyperspacePathCollections.length > 0)? true : false;
+  	const hyperspaceDataNotUpdating = (!newProps.updateHyperspaceNavigation)? true : false;
+  	const hyperspaceDataLoadedAndStatic = (hyperspaceDataLoaded && hyperspaceDataNotUpdating);
+  	const shipInRealSpace = (!this.state.inHyperspace)? true :  false;
+  	const readyToJumpStatus = (hyperspaceDataLoadedAndStatic && shipInRealSpace)? true : false;
+  	const shipHasJumpedToHyperspace = newProps.shipHasJumpedToHyperspace;
 
-
-  		console.log("newProps: ", newProps);
-
-  		const startFreeSpaceJump = !nodeAndPointAreEqual(newProps.hyperspaceStartPoint, newProps.hyperspaceStartNode);
-  		const endFreeSpaceJump = !nodeAndPointAreEqual(newProps.hyperspaceEndPoint, newProps.hyperspaceEndNode);
-
-  		console.log("Start Free Space Jump status: ", startFreeSpaceJump);
-  		console.log("End Free Space Jump status: ", endFreeSpaceJump);
-
-
-
-
-			const map = this.props.map;
-
-  		// const FirstPath = newProps.hyperspacePathCollections[0];
-
-  		const FirstPath = modifyShipPathForFreeSpaceJumps({
-				StartPoint : newProps.hyperspaceStartPoint,
-				EndPoint   : newProps.hyperspaceEndPoint,
-				StartNode  : newProps.hyperspaceStartNode,
-				EndNode    : newProps.hyperspaceEndNode,
-				ShipPath   : newProps.hyperspacePathCollections[0]
+  	if(readyToJumpStatus) {
+  		this.setStationaryShipMarker({
+				hyperspacePathCollections : newProps.hyperspacePathCollections,
+				StartPoint : newProps.hyperspaceActiveStartPoint,
+				StartNode : newProps.hyperspaceActiveStartNode,
   		});
+  	}
 
-  		const startCoordinates = FirstPath.jumpCoordinates[0];
-
-			console.log("map: ", map)
-  		console.log("FirstPath: ", FirstPath);
-  		console.log("this.props: ", this.props);
-
-			const innerNodesArray = getInternalNodes(FirstPath.start, FirstPath.end, FirstPath.nodes, startFreeSpaceJump, endFreeSpaceJump);
-			const internalCoordinates = FirstPath.jumpCoordinates.slice();
-			internalCoordinates.shift();
-			internalCoordinates.pop();
-
-			let internalCoordinatesIndexes = [];
-			for(let i=1; i < FirstPath.jumpCoordinates.length - 1; i++) {
-				internalCoordinatesIndexes.push(i);
-			}
-
-  		const durations = getMarkerDurationsArray(this.state.speed, FirstPath.jumpCoordinates, FirstPath.jumpDistances, startFreeSpaceJump, endFreeSpaceJump);
-  		const shipIcon = getShipIcon(true);
-  		const shipTarget = getTargetIcon(true);
-  		const MovingShipMarker = leafletMovingMarker(FirstPath.jumpCoordinates, durations, {
-  			autostart: true,
-  			icon: shipIcon
+  	if(readyToJumpStatus && shipHasJumpedToHyperspace) {
+  		this.generateMovingShipMarker({
+				StartPoint : newProps.hyperspaceActiveStartPoint,
+				StartNode : newProps.hyperspaceActiveStartNode,
+				EndPoint : newProps.hyperspaceActiveEndPoint,
+				EndNode : newProps.hyperspaceActiveEndNode,
+				hyperspacePathCollections : newProps.hyperspacePathCollections,
   		});
+  	}
 
-  		const startLat = FirstPath.jumpCoordinates[0][0];
-  		const startLng = FirstPath.jumpCoordinates[0][1];
-  		const startingJumpAngle = FirstPath.shipJumpAngles[0];
+  	if(newProps.zoomToShip) {
+  		console.log("newProps.zoomToShip has been clicked: ", newProps.zoomToShip);
 
-  		MovingShipMarker.setRotationAngle(startingJumpAngle);
+  		console.log("location: ", this.state.location);
+      const newZoom = 6;
 
-			for(let coordinateIndex=1; coordinateIndex < FirstPath.jumpCoordinates.length - 1; coordinateIndex++) {
-				const currentCoordinate = FirstPath.jumpCoordinates[coordinateIndex];
-				const CoordinateNodeFound = findNodeByLatLng(currentCoordinate[0], currentCoordinate[1], FirstPath.nodes);
-				if(CoordinateNodeFound && CoordinateNodeFound.isFound) {
-					console.log("\nCoordinate is Node: ", CoordinateNodeFound.data.system);
-					MovingShipMarker.addStation(coordinateIndex, 250.0);
-				} else {
-					MovingShipMarker.addStation(coordinateIndex, 20.0);
-				}				
-			}
+  		const map = this.props.map;
 
-  		let previousShipCoordinateLatitude = startLat;
-  		let previousShipCoordinateLongitude = startLng;
-  		const startingShipJumpAngle = parseFloat(startingJumpAngle);
-  		this.setState({currentShipJumpAngle: startingShipJumpAngle});
+  		console.log("this.state.MovingShipMarker: ", this.state.MovingShipMarker);
 
-  		const coordinateCheck = () => { 
-  			return setInterval(() => {
-  			const CurrentLatLng = MovingShipMarker.getLatLng();
-  			const pausedStatus = (previousShipCoordinateLatitude === CurrentLatLng.lat && previousShipCoordinateLongitude === CurrentLatLng.lng)? true : false;
+  		const zoomLocation = this.movingShipMarkerLocation();
 
-  			if(pausedStatus && !this.state.pausingHyperspaceJump) {
-  				const PausedLatLng = MovingShipMarker.getLatLng();
-
-					const CoordinateFound = findCoordinateByLatLng(CurrentLatLng.lat, CurrentLatLng.lng, FirstPath.jumpCoordinates);
-					const NodeFound = findNodeByLatLng(CurrentLatLng.lat, CurrentLatLng.lng, FirstPath.nodes);
-  				if(CoordinateFound.isFound || NodeFound.isFound) {
-  					console.log("\nMicro pause at Coordinate: ", CoordinateFound.data);
-	  				console.log("CurrentLatLng: ", CurrentLatLng);
-	  				const coordinateLat = CoordinateFound.data.lat;
-	  				const coordinateLng = CoordinateFound.data.lng;
-
-	  				if(NodeFound.isFound) {
-							console.log("Ship has passed: ", NodeFound.data);
-						}
-
-						const currentJumpCoordinatesIndex = findCoordinateIndexLatLng(CurrentLatLng.lat, CurrentLatLng.lng, FirstPath.jumpCoordinates);
-  					const shipJumpAngle = FirstPath.shipJumpAngles[currentJumpCoordinatesIndex];
-
-  					MovingShipMarker.setRotationAngle(shipJumpAngle);
-  					console.log("New Ship Jump Angle: ", shipJumpAngle);
-  					this.setState({pausingHyperspaceJump: true});
-  					this.setState({currentShipJumpAngle: shipJumpAngle});
-  				}
-
-  			} else if(!pausedStatus && this.state.pausingHyperspaceJump){
-  				if(this.state.pausingHyperspaceJump) {
-  					this.setState({pausingHyperspaceJump: false});
-  				}
-  			}
-
-				previousShipCoordinateLatitude = CurrentLatLng.lat;
-				previousShipCoordinateLongitude = CurrentLatLng.lng;
-  		}, 5)};
+			// const FlyBoundsOptions = getFitBounds(this.props.mobileStatus, this.props.hyperspaceNavigationControlsOn);
 
 
-  		let coordinateCheckInterval = coordinateCheck();
-
-  		MovingShipMarker.addTo(map);
-  		console.log("MovingShipMarker: ", MovingShipMarker);
-  		
-  		const startTime = Date.now();
-  		const startTimeLocal = moment.utc(startTime).local().format("DD/MM/YYYY HH:mm:ss");
-  		const startTimeGMT = moment.utc(startTime).format("DD/MM/YYYY HH:mm:ss");
-  		console.log("\nShip start time Local: ", startTimeLocal);
-  		console.log("Ship start time GMT: ", startTimeGMT);
-
-  		MovingShipMarker.on('start', () => {
-  			const StartLatLng = MovingShipMarker.getLatLng();
-	  		previousShipLatitude = StartLatLng.lat;
-	  		previousShipLongitude = StartLatLng.lng;
-  		});
-
-			MovingShipMarker.on('click', e => {
-				console.log("Falcon clicked at: ", e.latlng);
-				const galacticX = getGalacticXFromLongitude(e.latlng.lng);
-				const galacticY = getGalacticYFromLatitude(e.latlng.lat);
-				console.log(`Falcon at X: ${galacticX} and Y: ${galacticY}.`)
-			});
-
-  		MovingShipMarker.on('end', () => {
-	  		const endTime = Date.now();
-	  		clearInterval(coordinateCheckInterval);
-	  		const CurrentLatLng = MovingShipMarker.getLatLng();
-				const currentShipLatitude = MovingShipMarker._latlng.lat;
-				const currentShipLongitude = MovingShipMarker._latlng.lng;
-				const shipDestinationCoordinates = MovingShipMarker._latlngs;
-				const targetDestinationCoordinates = shipDestinationCoordinates[ shipDestinationCoordinates.length - 1];
-				const targetShipLatitude = targetDestinationCoordinates.lat;
-				const targetShipLongitude = targetDestinationCoordinates.lng;
-				const finalLatitudesMatch = (currentShipLatitude === targetShipLatitude)? true : false;
-				const finalLongitudesMatch = (currentShipLongitude === targetShipLongitude)? true : false;
-				const finalCurrentAndTargetMatches = (finalLatitudesMatch && finalLongitudesMatch)? true : false;
-	  		const NodeFound = findNodeByLatLng(currentShipLatitude, currentShipLongitude, FirstPath.nodes);
-
-	  		if(NodeFound.isFound) {
-	  			const NodeData = NodeFound.data;
-	  			const travelTime = endTime - startTime;
-	  			const travelTimeSeconds = (travelTime / 1000.0);
-	  			const travelTimeMinutes = (travelTimeSeconds / 60.0);
-	  			const travelTimeHours = (travelTimeSeconds / 3600.0);
-	  			const travelTimeHoursInt = parseInt(travelTimeHours);
-					const hoursDisplayed = (parseInt(travelTimeHours) > 0)? parseInt(travelTimeHours) + ' hour(s), ' : '';
-					const minutesDisplayed = (parseInt(travelTimeMinutes) > 0)? parseInt(travelTimeMinutes) % 60 + ' minute(s), ' : '';
-					const distanceTraveled = FirstPath.jumpDistances.slice().reduce(getSum, 0);
-					const averageSpeed =  distanceTraveled / travelTimeSeconds;
-	  			const endTimeLocal = moment.utc(endTime).local().format("DD/MM/YYYY HH:mm:ss");
-	  			const endTimeGMT = moment.utc(endTime).format("DD/MM/YYYY HH:mm:ss");
-
-		  		console.log(`\n\nShip has arrived at ${NodeData.system}.`);
-		  		console.log(`Travel Time: ${hoursDisplayed} ${minutesDisplayed} ${travelTimeSeconds % 60} second(s).`);
-		  		console.log(`Distance Traveled:  ${distanceTraveled} parsecs.`);
-		  		console.log(`Average Speed: ${averageSpeed} parsecs per second.`);
-		  		console.log("Current Lat Lng: ", CurrentLatLng);
-	  		}
-	  		this.setState({location: [currentShipLatitude, currentShipLongitude]});
-  		});
-
-  		MovingShipMarker.start();
-  		this.setState({inHyperspace: true});
+  		map.flyTo(zoomLocation, newZoom, {animate: false, paddingTopLeft: [500, 0]});
+      if(this.props.mobileStatus) {
+        this.props.dispatch( zoomToAndPanIsOn() );
+      }
+      const StartPoint = newProps.hyperspaceActiveStartPoint;
+      const EndPoint = newProps.hyperspaceActiveEndPoint;
+      const shipLocationString = this.shipLocationNameString(StartPoint, EndPoint);
+      const zoomMessage = `Zoomed to the ${this.state.name} at ${shipLocationString}.`;
+      this.props.dispatch( addItemToDataStream(zoomMessage) );
+			this.props.dispatch( zoomToShipIsOff() );
   	}
   }
+
+
+  shipLocationNameString(StartPoint, EndPoint) {
+  	if(this.state.MovingShipMarker) {
+  		const MovingShipMarker = this.state.MovingShipMarker;
+  		const CurrentLatLng = MovingShipMarker.getLatLng();
+  		const yGalactic = getGalacticYFromLatitude(CurrentLatLng.lat);
+  		const xGalactic = getGalacticXFromLongitude(CurrentLatLng.lng);
+  		const locationString = `X : ${xGalactic.toFixed(2)} and Y : ${yGalactic.toFixed(2)}`;
+  		return locationString;
+  	} else {
+  		const location = this.state.location;
+  		if(pointAndLocationAreSame(StartPoint, location)) {
+  			return StartPoint.system
+  		} else if(pointAndLocationAreSame(EndPoint, location)) {
+  			return EndPoint.system;
+  		} else {
+  			const lat = location[0];
+  			const lng = location[1];
+  			const yGalactic = getGalacticYFromLatitude(lat);
+	  		const xGalactic = getGalacticXFromLongitude(lng);
+	  		const locationString = `X : ${xGalactic.toFixed(2)} and Y : ${yGalactic.toFixed(2)}`;
+	  		return locationString;
+  		}
+  	}
+  }
+
+  movingShipMarkerLocation() {
+  	if(this.state.MovingShipMarker) {
+  		const MovingShipMarker = this.state.MovingShipMarker;
+  		const CurrentLatLng = MovingShipMarker.getLatLng();
+  		return [CurrentLatLng.lat, CurrentLatLng.lng];
+  	} else {
+  		return this.state.location;
+  	}
+  }
+
+  generateMovingShipMarker(Options) {
+		const StartPoint = Options.StartPoint;
+		const StartNode = Options.StartNode;
+		const EndPoint = Options.EndPoint;
+		const EndNode = Options.EndNode;
+		const hyperspacePathCollections = Options.hyperspacePathCollections;
+
+		const startFreeSpaceJump = !nodeAndPointAreEqual(StartPoint, StartNode);
+		const endFreeSpaceJump = !nodeAndPointAreEqual(EndPoint, EndNode);
+
+		const map = this.props.map;
+
+		const FirstPath = modifyShipPathForFreeSpaceJumps({
+			StartPoint : StartPoint,
+			EndPoint   : EndPoint,
+			StartNode  : StartNode,
+			EndNode    : EndNode,
+			ShipPath   : hyperspacePathCollections[0]
+		});
+
+
+		console.log("map: ", map);
+		console.log("FirstPath: ", FirstPath);
+		console.log("this.props: ", this.props);
+
+		const innerNodesArray = getInternalNodes(FirstPath.start, FirstPath.end, FirstPath.nodes, startFreeSpaceJump, endFreeSpaceJump);
+		const internalCoordinates = FirstPath.jumpCoordinates.slice();
+		internalCoordinates.shift();
+		internalCoordinates.pop();
+
+		let internalCoordinatesIndexes = [];
+		for(let i=1; i < FirstPath.jumpCoordinates.length - 1; i++) {
+			internalCoordinatesIndexes.push(i);
+		}
+
+		const durations = getMarkerDurationsArray(this.state.speed, FirstPath.jumpCoordinates, FirstPath.jumpDistances, startFreeSpaceJump, endFreeSpaceJump);
+		const shipIcon = getShipIcon(true);
+		const shipTarget = getTargetIcon(true);
+		const MovingShipMarker = leafletMovingMarker(FirstPath.jumpCoordinates, durations, {
+			autostart: true,
+			icon: shipIcon
+		});
+
+		const startLat = FirstPath.jumpCoordinates[0][0];
+		const startLng = FirstPath.jumpCoordinates[0][1];
+		const startingJumpAngle = FirstPath.shipJumpAngles[0];
+
+		MovingShipMarker.setRotationAngle(startingJumpAngle);
+
+		for(let coordinateIndex=1; coordinateIndex < FirstPath.jumpCoordinates.length - 1; coordinateIndex++) {
+			const currentCoordinate = FirstPath.jumpCoordinates[coordinateIndex];
+			const CoordinateNodeFound = findNodeByLatLng(currentCoordinate[0], currentCoordinate[1], FirstPath.nodes);
+			if(CoordinateNodeFound && CoordinateNodeFound.isFound) {
+				console.log("\nCoordinate is Node: ", CoordinateNodeFound.data.system);
+				MovingShipMarker.addStation(coordinateIndex, 250.0);
+			} else {
+				MovingShipMarker.addStation(coordinateIndex, 20.0);
+			}				
+		}
+
+		
+		const startingShipJumpAngle = parseFloat(startingJumpAngle);
+		this.setState({currentShipJumpAngle: startingShipJumpAngle});
+
+		let previousShipCoordinateLatitude = startLat;
+		let previousShipCoordinateLongitude = startLng;
+
+		const coordinateCheck = (MovingShipMarkerCurrent) => { 
+			return setInterval(() => {
+			const CurrentLatLng = MovingShipMarkerCurrent.getLatLng();
+			const pausedStatus = (previousShipCoordinateLatitude === CurrentLatLng.lat && previousShipCoordinateLongitude === CurrentLatLng.lng)? true : false;
+
+			if(pausedStatus && !this.state.pausingHyperspaceJump) {
+				const PausedLatLng = MovingShipMarkerCurrent.getLatLng();
+
+				const CoordinateFound = findCoordinateByLatLng(CurrentLatLng.lat, CurrentLatLng.lng, FirstPath.jumpCoordinates);
+				const NodeFound = findNodeByLatLng(CurrentLatLng.lat, CurrentLatLng.lng, FirstPath.nodes);
+				if(CoordinateFound.isFound || NodeFound.isFound) {
+					console.log("\nMicro pause at Coordinate: ", CoordinateFound.data);
+  				console.log("CurrentLatLng: ", CurrentLatLng);
+  				const coordinateLat = CoordinateFound.data.lat;
+  				const coordinateLng = CoordinateFound.data.lng;
+
+  				if(NodeFound.isFound) {
+						console.log("Ship has passed: ", NodeFound.data);
+						const shipNodeText = `The ${this.state.name} has passed ${NodeFound.data.system}.`;
+
+						this.props.dispatch( addItemToDataStream(shipNodeText) );
+					}
+
+					const currentJumpCoordinatesIndex = findCoordinateIndexLatLng(CurrentLatLng.lat, CurrentLatLng.lng, FirstPath.jumpCoordinates);
+					const shipJumpAngle = FirstPath.shipJumpAngles[currentJumpCoordinatesIndex];
+
+					MovingShipMarkerCurrent.setRotationAngle(shipJumpAngle);
+					console.log("New Ship Jump Angle: ", shipJumpAngle);
+					this.setState({pausingHyperspaceJump: true});
+					this.setState({currentShipJumpAngle: shipJumpAngle});
+				}
+
+			} else if(!pausedStatus && this.state.pausingHyperspaceJump){
+				if(this.state.pausingHyperspaceJump) {
+					this.setState({pausingHyperspaceJump: false});
+				}
+			}
+
+			previousShipCoordinateLatitude = CurrentLatLng.lat;
+			previousShipCoordinateLongitude = CurrentLatLng.lng;
+		}, 5)};
+
+		let coordinateCheckInterval = coordinateCheck(MovingShipMarker);
+
+		
+		console.log("MovingShipMarker: ", MovingShipMarker);
+		
+		
+
+		let startTime = Date.now();
+
+		MovingShipMarker.on('start', () => {
+			startTime = Date.now();
+			const startTimeLocal = moment.utc(startTime).local().format("DD/MM/YYYY HH:mm:ss");
+			const startTimeGMT = moment.utc(startTime).format("DD/MM/YYYY HH:mm:ss");
+			console.log("\nShip start time Local: ", startTimeLocal);
+			console.log("Ship start time GMT: ", startTimeGMT);
+
+			const StartLatLng = MovingShipMarker.getLatLng();
+  		previousShipCoordinateLatitude = StartLatLng.lat;
+  		previousShipCoordinateLongitude = StartLatLng.lng;
+  		console.log("Jump has started");
+			const jumpStartText = `The ${this.state.name} has jumped into Hyperspace at ${StartPoint.system}`;
+			this.setState({inHyperspace: true});
+			this.props.dispatch( addItemToDataStream(jumpStartText) );
+			this.props.dispatch( shipIsInHyperspace() );
+		});
+
+		MovingShipMarker.on('click', e => {
+			console.log("Falcon clicked at: ", e.latlng);
+			const galacticX = getGalacticXFromLongitude(e.latlng.lng);
+			const galacticY = getGalacticYFromLatitude(e.latlng.lat);
+			const shipClickText = `The ${this.state.name} is at X: ${galacticX.toFixed(2)} and Y: ${galacticY.toFixed(2)}`;
+			this.props.dispatch( addItemToDataStream(shipClickText) );
+		});
+
+		MovingShipMarker.on('end', () => {
+  		const endTime = Date.now();
+  		clearInterval(coordinateCheckInterval);
+  		const CurrentLatLng = MovingShipMarker.getLatLng();
+			const currentShipLatitude = MovingShipMarker._latlng.lat;
+			const currentShipLongitude = MovingShipMarker._latlng.lng;
+			const shipDestinationCoordinates = MovingShipMarker._latlngs;
+			const targetDestinationCoordinates = shipDestinationCoordinates[ shipDestinationCoordinates.length - 1];
+			const targetShipLatitude = targetDestinationCoordinates.lat;
+			const targetShipLongitude = targetDestinationCoordinates.lng;
+			const finalLatitudesMatch = (currentShipLatitude === targetShipLatitude)? true : false;
+			const finalLongitudesMatch = (currentShipLongitude === targetShipLongitude)? true : false;
+			const finalCurrentAndTargetMatches = (finalLatitudesMatch && finalLongitudesMatch)? true : false;
+  		const NodeFound = findNodeByLatLng(currentShipLatitude, currentShipLongitude, FirstPath.nodes);
+
+  		if(NodeFound.isFound) {
+  			const NodeData = NodeFound.data;
+  			const travelTime = endTime - startTime;
+  			const travelTimeSeconds = (travelTime / 1000.0);
+  			const travelTimeMinutes = (travelTimeSeconds / 60.0);
+  			const travelTimeHours = (travelTimeSeconds / 3600.0);
+  			const travelTimeHoursInt = parseInt(travelTimeHours);
+				const hoursDisplayed = (parseInt(travelTimeHours) > 0)? parseInt(travelTimeHours) + ' hour(s), ' : '';
+				const minutesDisplayed = (parseInt(travelTimeMinutes) > 0)? parseInt(travelTimeMinutes) % 60 + ' minute(s), ' : '';
+				const distanceTraveled = FirstPath.jumpDistances.slice().reduce(getSum, 0);
+				const averageSpeed =  distanceTraveled / travelTimeSeconds;
+  			const endTimeLocal = moment.utc(endTime).local().format("DD/MM/YYYY HH:mm:ss");
+  			const endTimeGMT = moment.utc(endTime).format("DD/MM/YYYY HH:mm:ss");
+
+	  		console.log(`\n\nShip has arrived at ${NodeData.system}.`);
+	  		console.log(`Travel Time: ${hoursDisplayed} ${minutesDisplayed} ${travelTimeSeconds % 60} second(s).`);
+	  		console.log(`Distance Traveled:  ${distanceTraveled} parsecs.`);
+	  		console.log(`Average Speed: ${averageSpeed} parsecs per second.`);
+	  		console.log("Current Lat Lng: ", CurrentLatLng);
+
+	  		const shipArrivalText = `The ${this.state.name} has arrived at ${NodeData.system}.`;
+
+
+	  		this.props.dispatch( addItemToDataStream(shipArrivalText) );
+	  		this.props.dispatch( shipHasExitedHyperspace() );
+
+  		}
+  		this.setState({location: [currentShipLatitude, currentShipLongitude]});
+		});
+
+		MovingShipMarker.addTo(map);
+		MovingShipMarker.start();
+
+		this.setState({MovingShipMarker: MovingShipMarker});
+  }
+
+  setStationaryShipMarker(Options) {
+
+  	const hyperspacePathCollections = Options.hyperspacePathCollections;
+  	const StartPoint = Options.StartPoint;
+  	const StartNode = Options.StartNode;
+		const startFreeSpaceJump = !nodeAndPointAreEqual(StartPoint, StartNode);
+		const FirstPath = hyperspacePathCollections[0];
+		const shipInitialJumpAngle = (startFreeSpaceJump)? jumpAngleGalactic(StartPoint, StartNode) : FirstPath.shipJumpAngles[0];
+		this.setState({location: [StartPoint.lat, StartPoint.lng]});
+		this.setState({currentShipJumpAngle: shipInitialJumpAngle});
+
+  }
+
+
+ 
+  zoomToShip(e) {
+
+  		console.log("this.state.MovingShipMarker: ", this.state.MovingShipMarker);
+
+      // const lat = this.props.activeSystem.lat;
+      // const lng = this.props.activeSystem.lng;
+      // const systemCenter = [lat, lng];
+      // const newZoom = 6;
+      // const map = this.props.map;
+      // const dataStreamMessage = "Zoomed to " + this.props.activeSystem.system + ' ...';
+      // this.props.dispatch( addItemToDataStream(dataStreamMessage) );
+      // map.flyTo(systemCenter, newZoom, {animate: false});
+      // if(this.props.mobileStatus) {
+      //   this.props.dispatch(zoomToAndPanIsOn());
+      // }
+
+  }
+
 
   onClick(e) {
   	console.log("Ship Clicked: ", this.state.name);
@@ -258,6 +410,8 @@ class Ship extends React.Component {
   	const zIndex = 282;
     const StarShipsToRender = renderComponentsOrNull(this.state.StarShipComponents);
 		const shipIcon = getShipIcon(true);
+		// const shipAngleInitial = (this.props.hyperspacePathCollections.length > 0)? 
+
 
   	return (
   		<div style={ {} }>
@@ -266,14 +420,42 @@ class Ship extends React.Component {
           	{ StarShipsToRender }
           </Then>
           <Else>
-          	<div style={ {} }>
-	          	<Marker key={uuidv4()} position={this.state.location} zIndexOffset={2} icon={shipIcon} onClick={(e) => this.onClick(e)}>
-			        </Marker>
+          	<div style={ {} }>	          	
+							<RotatedMarker
+							  key={uuidv4()} 
+							  position={this.state.location}
+							  rotationAngle={this.state.currentShipJumpAngle}
+							  rotationOrigin={'center'} 
+							  zIndexOffset={2}
+							  icon={shipIcon}
+							  onClick={(e) => this.onClick(e)}
+							>
+							</RotatedMarker>
 		        </div>
           </Else>
         </If>
   		</div>
   	)
+  }
+}
+
+
+function pointAndLocationAreSame(Point, location) {
+	if(Point.lat === location[0] && Point.lng === location[1]) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+function getFlyBounds(mobileStatus, navigationControls) {
+  if(!mobileStatus && navigationControls) {
+    return {
+      paddingTopLeft: [420, 0]
+    };
+  } else {
+    return {};
   }
 }
 

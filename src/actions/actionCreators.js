@@ -651,6 +651,43 @@ export function errorShipHyperspacePath(error) {
 }
 
 
+export function jumpShipIntoHyperspace() {
+	return {
+		type: Actions.SHIP_HAS_JUMPED_TO_HYPERSPACE
+	}
+}
+export function shipIsInHyperspace() {
+	return {
+		type: Actions.SHIP_IS_IN_HYPERSPACE
+	}
+}
+export function shipHasExitedHyperspace() {
+	return {
+		type: Actions.SHIP_HAS_EXITED_HYPERSPACE
+	}
+}
+export function shipIsInRealSpace() {
+	return {
+		type: Actions.SHIP_IS_IN_REAL_SPACE
+	}
+}
+
+export function zoomToShipIsOn() {
+	return {
+		type: Actions.ZOOM_TO_SHIP_ON
+	}
+}
+export function zoomToShipIsOff() {
+	return {
+		type: Actions.ZOOM_TO_SHIP_OFF
+	}
+}
+export function zoomToShipDefault() {
+	return {
+		type: Actions.ZOOM_TO_SHIP_DEFAULT
+	}
+}
+
 
 export function freeSpaceJumpStartOn() {
 	return {
