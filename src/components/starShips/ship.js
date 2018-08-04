@@ -70,7 +70,7 @@ class Ship extends React.Component {
       location: [0, 0],
       inHyperspace: false,
       // speed: 10.00,
-      speed: 10.00,
+      speed: 20.00,
       name: 'Millennium Falcon',
       startTime: null,
       endTime: null,
@@ -633,45 +633,28 @@ function modifyShipPathForFreeSpaceJumps(Options) {
 	const StartNode = Options.StartNode;
 	const EndNode = Options.EndNode;
 	let ShipPath = Options.ShipPath;
-
-
-
 	const startFreeSpaceJump = !nodeAndPointAreEqual(StartPoint, StartNode);
 	const endFreeSpaceJump = !nodeAndPointAreEqual(EndPoint, EndNode);
 
 	if(startFreeSpaceJump) {
 		ShipPath.jumpCoordinates.unshift([StartPoint.lat, StartPoint.lng]);
-
 		const startFreeSpaceJumpDistance = distanceBetweenPoints(StartPoint, StartNode);
-
 		ShipPath.jumpDistances.unshift(0);
 		ShipPath.jumpDistances[1] = startFreeSpaceJumpDistance;
-
 		const freeSpaceJumpStartAngle = jumpAngleGalactic(StartPoint, StartNode); 
-
 		ShipPath.shipJumpAngles.unshift(freeSpaceJumpStartAngle);
 	}
 
 	if(endFreeSpaceJump) {
 		ShipPath.jumpCoordinates.push([EndPoint.lat, EndPoint.lng]);
-
-
 		const endFreeSpaceJumpDistance = distanceBetweenPoints(EndPoint, EndNode);
 		ShipPath.jumpDistances.push(endFreeSpaceJumpDistance);
-
 		const freeSpaceJumpEndAngle = jumpAngleGalactic(EndNode, EndPoint); 
-
 		ShipPath.shipJumpAngles.push(freeSpaceJumpEndAngle);
-
 		ShipPath.nodes.push(EndPoint);
-
 	}
-
 	return ShipPath;
-
-}
-
-
+};
 
 
 // Gives accurate ship display angles
@@ -688,20 +671,20 @@ function jumpAngleGalactic(CurrentPoint, TargetPoint) { // (3, 3) and (4, 1)
   const targetHasCrossedXAxis = (targetIsPositiveY || targetIsNegativeY)? true : false ;
 
   if(targetHasCrossedXAxis || targetHasCrossedYAxis) {
-    console.log("\ntargetHasCrossedYAxis: ", targetHasCrossedYAxis);
-    console.log("targetHasCrossedXAxis: ", targetHasCrossedXAxis);
-    console.log("TargetPoint: ", TargetPoint);
-    console.log("CurrentPoint: ", CurrentPoint);
+    // console.log("\ntargetHasCrossedYAxis: ", targetHasCrossedYAxis);
+    // console.log("targetHasCrossedXAxis: ", targetHasCrossedXAxis);
+    // console.log("TargetPoint: ", TargetPoint);
+    // console.log("CurrentPoint: ", CurrentPoint);
   }
 
   if(targetHasCrossedYAxis) {
     const targetXFromOriginCrossOver = Math.abs(TargetPoint.xGalactic - CurrentPoint.xGalactic);
-    console.log("targetXFromOriginCrossOver: ", targetXFromOriginCrossOver);
+    // console.log("targetXFromOriginCrossOver: ", targetXFromOriginCrossOver);
   }
 
   if(targetHasCrossedXAxis) {
     const targetYFromOriginCrossOver = Math.abs(TargetPoint.yGalactic - CurrentPoint.yGalactic);
-    console.log("targetYFromOriginCrossOver: ", targetYFromOriginCrossOver);
+    // console.log("targetYFromOriginCrossOver: ", targetYFromOriginCrossOver);
   }
 
   const targetXFromOrigin = (targetHasCrossedYAxis)? Math.abs(TargetPoint.xGalactic - CurrentPoint.xGalactic) : (Math.abs(TargetPoint.xGalactic) - Math.abs(CurrentPoint.xGalactic));
@@ -713,27 +696,27 @@ function jumpAngleGalactic(CurrentPoint, TargetPoint) { // (3, 3) and (4, 1)
   const targetXOverRadius = (targetXFromOrigin / radius);
   const jumpAngle = Math.acos(targetXOverRadius);
   const jumpAngleDegrees = radiansToDegrees(jumpAngle);
-  console.log("\nJump angle is: ", jumpAngleDegrees);
+  // console.log("\nJump angle is: ", jumpAngleDegrees);
 
   if((TargetPoint.xGalactic < 0.00 && TargetPoint.yGalactic < 0.00)) { // III
     const jumpAngleInQuad3 = (TargetPoint.yGalactic < CurrentPoint.yGalactic)?  270.0 - jumpAngleDegrees :   270.0 + jumpAngleDegrees;
     const adjustedJumpAngle = jumpAngleInQuad3;
-    console.log("Jump angle in III: ", adjustedJumpAngle % 360);
+    // console.log("Jump angle in III: ", adjustedJumpAngle % 360);
     return (adjustedJumpAngle % 360);
   } else if(TargetPoint.xGalactic  >= 0.00 && TargetPoint.yGalactic >= 0.00) { // I
     const jumpAngleInQuad1 = (TargetPoint.yGalactic > CurrentPoint.yGalactic)?  90.0 - jumpAngleDegrees :   90 + jumpAngleDegrees;
     const adjustedJumpAngle = jumpAngleInQuad1;
-    console.log("Jump angle in I: ", adjustedJumpAngle % 360);
+    // console.log("Jump angle in I: ", adjustedJumpAngle % 360);
     return (adjustedJumpAngle % 360);
   } else if(TargetPoint.xGalactic  >= 0.00 && TargetPoint.yGalactic < 0.00) { // II
     const jumpAngleInQuad2 = (TargetPoint.yGalactic > CurrentPoint.yGalactic)? 450.0 - jumpAngleDegrees :   90.0 + jumpAngleDegrees;
     const adjustedJumpAngle = jumpAngleInQuad2;
-    console.log("Jump angle in II: ", adjustedJumpAngle % 360);
+    // console.log("Jump angle in II: ", adjustedJumpAngle % 360);
     return (adjustedJumpAngle % 360);
   } else if(TargetPoint.xGalactic  < 0.00 && TargetPoint.yGalactic >= 0.00){ // IV
     const jumpAngleInQuad4 = (TargetPoint.yGalactic > CurrentPoint.yGalactic)?  jumpAngleDegrees + 270.0 :   270.0 - jumpAngleDegrees;
     const adjustedJumpAngle = jumpAngleInQuad4;
-    console.log("Jump angle in IV: ", adjustedJumpAngle % 360);
+    // console.log("Jump angle in IV: ", adjustedJumpAngle % 360);
     return (adjustedJumpAngle % 360);
   }
 };
