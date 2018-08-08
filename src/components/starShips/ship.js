@@ -549,7 +549,7 @@ function getMarkerDurationsArray(speed, coordinatesArray, distanceBetweenPointsA
 		const distanceBetweenPoints = distanceBetweenPointsArray[i];
 		const jumpIsStartAndFreeSpace = startFreeSpaceJump && i === 1;
 		const jumpIsEndAndFreeSpace = endFreeSpaceJump && i === coordinatesArray.length - 1;
-		let currentSpped = (jumpIsStartAndFreeSpace || jumpIsEndAndFreeSpace)? speed / 2.0 : speed;
+		let currentSpped = (jumpIsStartAndFreeSpace || jumpIsEndAndFreeSpace)? speed / 5.0 : speed;
 
 		const duration = (distanceBetweenPoints / currentSpped) * 1000.0;
 		durationsArray.push(duration);

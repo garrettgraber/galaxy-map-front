@@ -78,6 +78,18 @@ class ApiService {
     });
 	}
 
+	findNearestPseudoNode(SearchPoint) {
+	  const nodeQuery = this.API_ENDPOINT + 'hyperspacenode/nearest-pseudo-node?' + queryString.stringify(SearchPoint);
+	  return fetch(nodeQuery, {
+	    method: 'GET',
+	    headers: {
+	      'Content-Type': 'application/json'
+	    },
+	  }).then(response => {
+    	return response.json();
+    });
+	}
+
 	findNearestNodeOfPoint(SearchPoint) {
 	  const nodeQuery = this.API_ENDPOINT + 'hyperspacenode/nearest-node-to-point?' + queryString.stringify(SearchPoint);
 	  return fetch(nodeQuery, {

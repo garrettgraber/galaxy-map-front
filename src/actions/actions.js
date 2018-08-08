@@ -393,7 +393,7 @@ function xor(){
 
 async function createNodeAndPositionObjects(PlaceObject) {
   try {
-    const NearestNode = await ApiService.findNearestNodeOfPoint(PlaceObject.searchQuery());
+    const NearestNode = await ApiService.findNearestPseudoNode(PlaceObject.searchQuery());
     const NewNodeState = createNodeState(NearestNode);
     const NewPositionState = await createPositionObject(PlaceObject);
     return {
