@@ -46,7 +46,8 @@ import { movingMarkerGenerator } from '../../leafletMarkerDeus/movingMarker.js';
 
 
 import {
-	nodeAndPointAreEqual
+	nodeAndPointAreEqual,
+	isPointBlank
 } from '../hyperspaceNavigation/hyperspaceMethods.js';
 
 import {
@@ -92,7 +93,23 @@ class Ship extends React.Component {
   	const readyToJumpStatus = (hyperspaceDataLoadedAndStatic && shipInRealSpace)? true : false;
   	const shipHasJumpedToHyperspace = newProps.shipHasJumpedToHyperspace;
 
-  	if(readyToJumpStatus) {
+  	const oldStartPoint = this.props.hyperspaceActiveStartPoint;
+  	const newStartPoint = newProps.hyperspaceActiveStartPoint;
+  	const newStartPointIsBlank = isPointBlank(newStartPoint);
+
+  	console.log("new start point is blank: ", newStartPointIsBlank);
+
+  	if(newStartPointIsBlank) {
+			const map = newProps.map;
+			const MovingShipMarker = this.state.MovingShipMarker;
+			map.removeLayer(MovingShipMarker);
+  		this.setState({MovingShipMarker: null});
+  	}
+
+
+
+
+  	if(readyToJumpStatus && !newStartPointIsBlank) {
   		this.setStationaryShipMarker({
 				hyperspacePathCollections : newProps.hyperspacePathCollections,
 				StartPoint : newProps.hyperspaceActiveStartPoint,
@@ -100,7 +117,7 @@ class Ship extends React.Component {
   		});
   	}
 
-  	if(readyToJumpStatus && shipHasJumpedToHyperspace) {
+  	if(readyToJumpStatus && shipHasJumpedToHyperspace && !newStartPointIsBlank) {
   		this.generateMovingShipMarker({
 				StartPoint : newProps.hyperspaceActiveStartPoint,
 				StartNode : newProps.hyperspaceActiveStartNode,
@@ -110,7 +127,7 @@ class Ship extends React.Component {
   		});
   	}
 
-  	if(newProps.zoomToShip) {
+  	if(newProps.zoomToShip && !newStartPointIsBlank) {
   		console.log("newProps.zoomToShip has been clicked: ", newProps.zoomToShip);
 
   		console.log("location: ", this.state.location);

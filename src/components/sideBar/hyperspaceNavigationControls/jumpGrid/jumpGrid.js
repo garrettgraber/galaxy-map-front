@@ -81,6 +81,7 @@ class JumpGrid extends React.Component {
     this.props.dispatch(activeStartNodeDefault());
     this.props.dispatch(activeEndNodeDefault());
     this.props.dispatch(activeEndPositionDefault());
+    
     this.props.dispatch(noNavigationObjectBoundaries());
     this.props.dispatch(hyperspaceNavigationUpdateOn());
   }
@@ -92,10 +93,7 @@ class JumpGrid extends React.Component {
 
   zoomToShipClick(e) {
     console.log("Zoom to ship has fired: ", e);
-
     this.props.dispatch( zoomToShipIsOn() );
-
-
   }
 
   componentWillReceiveProps(newProps) {

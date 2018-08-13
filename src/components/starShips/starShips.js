@@ -16,7 +16,9 @@ import { leafletMovingMarker } from '../../movingMarkerNinja/movingMarker.js';
 console.log("leafletMovingMarker: ", leafletMovingMarker);
 
 import {
-  jumpIntoHyperspaceCalculated
+  jumpIntoHyperspaceCalculated,
+  nodeAndPointAreEqual,
+  isPointBlank
 } from '../hyperspaceNavigation/hyperspaceMethods.js';
 
 
@@ -33,7 +35,8 @@ class StarShips extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      StarShipComponents: []
+      StarShipComponents: [],
+      startShipsShouldRender: false
     };
   }
 
@@ -50,23 +53,34 @@ class StarShips extends React.Component {
       location={startLocation}
       map={this.props.map}
     />);
+
+    this.setState({startShipsShouldRender: true});
   }
 
 
   componentWillReceiveProps(newProps) {
     const StartPoint = newProps.hyperspaceActiveStartPoint;
+    const OldStartPoint = this.props.hyperspaceActiveStartPoint;
+    const oldAndNewStartPointsAreTheSame = nodeAndPointAreEqual(StartPoint, OldStartPoint);
+    const newStartPointIsBlank = isPointBlank(StartPoint);
 
-    // console.log("StartPoint: ", StartPoint);
+    console.log("New Start Point: ", StartPoint);
+    console.log("Start Point is Blank: ", newStartPointIsBlank);
 
-    // if() {
-    //   const startLocation = [StartPoint.lat, StartPoint.lng];
+    if(!oldAndNewStartPointsAreTheSame && !newStartPointIsBlank) {
+      const startLocation = [StartPoint.lat, StartPoint.lng];
+      this.state.StarShipComponents.push(<Ship
+        key={uuidv4()}
+        location={startLocation}
+        map={this.props.map}
+      />);
+      this.setState({startShipsShouldRender: true});
+    }
 
-    //   this.state.StarShipComponents.push(<Ship
-    //     key={uuidv4()}
-    //     location={startLocation}
-    //     map={this.props.map}
-    //   />);
-    // }
+    if(newStartPointIsBlank) {
+      // this.setState({StarShipComponents: []});
+      this.setState({startShipsShouldRender: false});
+    }
   }
 
   render() {
@@ -81,11 +95,13 @@ class StarShips extends React.Component {
       ActiveEndPoint: this.props.hyperspaceActiveEndPoint,
       ActiveEndNode: this.props.hyperspaceActiveEndNode
     });
-    const shipHasJumpedToHyperspace = this.props.shipHasJumpedToHyperspace;
+    // const shipHasJumpedToHyperspace = this.props.shipHasJumpedToHyperspace;
 
     const StarShipsToRender = (jumpSuccessfullyCalculated)? renderComponentsOrNull(this.state.StarShipComponents) : null;
 
     // console.log("Ship in hyperspace: ", this.props.shipHasJumpedToHyperspace);
+
+    console.log("Star Ships to Render: ", StarShipsToRender);
 
   	return (
   		<Pane name="star-ships-pane" style={{zIndex: zIndex}}>
