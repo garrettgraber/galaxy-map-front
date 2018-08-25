@@ -102,6 +102,19 @@ class ApiService {
     });
 	}
 
+	findHyperspaceLaneById(searchLaneId) {
+		const SearchLane = {id: searchLaneId};
+	  const laneIdQuery = this.API_ENDPOINT + 'hyperspacelane/search-lane-id?' + queryString.stringify(SearchLane);
+	  return fetch(laneIdQuery, {
+	    method: 'GET',
+	    headers: {
+	      'Content-Type': 'application/json'
+	    },
+	  }).then(response => {
+    	return response.json();
+    });
+	}
+
 	getHyperspacePathData(PathSearch) {
 		let jumpEndpoint = this.API_ENDPOINT + 'hyperspace-jump/';
 		jumpEndpoint += (PathSearch.shortest)? 'calc-shortest' : 'calc-many';

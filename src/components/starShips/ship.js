@@ -39,6 +39,9 @@ import {
 	zoomToShipIsOff
 } from '../../actions/actionCreators.js';
 
+import ApiService from '../../remoteServices/apiService.js';
+
+console.log("ApiService: ", ApiService);
 
 
 // import StationaryShip from './stationaryShip.js';
@@ -160,6 +163,9 @@ class Ship extends React.Component {
 		const EndPoint = Options.EndPoint;
 		const EndNode = Options.EndNode;
 		const hyperspacePathCollections = Options.hyperspacePathCollections;
+
+		console.log("hyperspacePathCollections: ", hyperspacePathCollections);
+
 		const startFreeSpaceJump = !nodeAndPointAreEqual(StartPoint, StartNode);
 		const endFreeSpaceJump = !nodeAndPointAreEqual(EndPoint, EndNode);
 		const map = this.props.map;
@@ -203,6 +209,7 @@ class Ship extends React.Component {
 		this.setState({currentShipJumpAngle: startingShipJumpAngle});
 		let previousShipCoordinateLatitude = startLat;
 		let previousShipCoordinateLongitude = startLng;
+		let coordinateCounter = 0;
 
 		const coordinateCheck = (MovingShipMarkerCurrent) => { 
 			return setInterval(() => {
@@ -217,10 +224,35 @@ class Ship extends React.Component {
 				if(CoordinateFound.isFound || NodeFound.isFound) {
   				const coordinateLat = CoordinateFound.data.lat;
   				const coordinateLng = CoordinateFound.data.lng;
+  				coordinateCounter++;
 
   				if(NodeFound.isFound) {
-						const shipNodeText = `The ${this.state.name} has passed ${NodeFound.data.system}.`;
-						this.props.dispatch( addItemToDataStream(shipNodeText) );
+
+  					if(NodeFound.data.system.slice(0, 2) === 'PN') {
+
+  						const hyperspaceLaneId = parseInt(NodeFound.data.system.split('-')[5]);
+
+  						console.log("Pseudo node hyperlane number: ", hyperspaceLaneId);
+  						console.log("Coordinate count: ", coordinateCounter);
+
+  						ApiService.findHyperspaceLaneById(hyperspaceLaneId).then(laneFound => {
+
+  							console.log("Name of hyperspace lane: ", laneFound);
+
+  							
+
+  							const shipActionText = (coordinateCounter > 2)? 'exited' : 'entered';
+  							const shipNodeText = `The ${this.state.name} has ${shipActionText} The ${laneFound}.`;
+								this.props.dispatch( addItemToDataStream(shipNodeText) );
+
+  						}).catch(LaneDataError => {
+  							console.log("Error getting lane data: ", LaneDataError);
+  						});
+  					} else {
+  						const shipNodeText = `The ${this.state.name} has passed ${NodeFound.data.system}.`;
+							this.props.dispatch( addItemToDataStream(shipNodeText) );
+  					}
+
 					}
 
 					const currentJumpCoordinatesIndex = findCoordinateIndexLatLng(CurrentLatLng.lat, CurrentLatLng.lng, FirstPath.jumpCoordinates);
@@ -318,18 +350,21 @@ class Ship extends React.Component {
   			const travelTimeMinutes = (travelTimeSeconds / 60.0);
   			const travelTimeHours = (travelTimeSeconds / 3600.0);
   			const travelTimeHoursInt = parseInt(travelTimeHours);
-				const hoursDisplayed = (parseInt(travelTimeHours) > 0)? parseInt(travelTimeHours) + ' hour(s), ' : '';
-				const minutesDisplayed = (parseInt(travelTimeMinutes) > 0)? parseInt(travelTimeMinutes) % 60 + ' minute(s), ' : '';
+				const hoursDisplayed = (parseInt(travelTimeHours) > 0)? parseInt(travelTimeHours) + ' hours, ' : '';
+				const minutesDisplayed = (parseInt(travelTimeMinutes) > 0)? parseInt(travelTimeMinutes) % 60 + ' mins, ' : '';
 				const distanceTraveled = FirstPath.jumpDistances.slice().reduce(getSum, 0);
 				const averageSpeed =  distanceTraveled / travelTimeSeconds;
   			const endTimeLocal = moment.utc(endTime).local().format("DD/MM/YYYY HH:mm:ss");
   			const endTimeGMT = moment.utc(endTime).format("DD/MM/YYYY HH:mm:ss");
+  			const travelTimeSecondsExcess = travelTimeSeconds % 60;
+  			const travelTimeText = `${hoursDisplayed} ${minutesDisplayed} ${travelTimeSecondsExcess.toFixed(2)} secs.`;
 	  		console.log(`\n\nShip has arrived at ${NodeData.system}.`);
-	  		console.log(`Travel Time: ${hoursDisplayed} ${minutesDisplayed} ${travelTimeSeconds % 60} second(s).`);
+	  		console.log(`Travel Time: ${travelTimeText}`);
 	  		console.log(`Distance Traveled:  ${distanceTraveled} parsecs.`);
 	  		console.log(`Average Speed: ${averageSpeed} parsecs per second.`);
 	  		console.log("Current Lat Lng: ", CurrentLatLng);
-	  		const shipArrivalText = `The ${this.state.name} has arrived at ${NodeData.system}.`;
+	  		const shipTravelTimeText = `${travelTimeHoursInt}:${parseInt(travelTimeMinutes)}:${travelTimeSecondsExcess}`;
+	  		const shipArrivalText = `The ${this.state.name} has arrived at ${NodeData.system} in ${travelTimeText}`;
 
 				const MovingShipMarker = this.state.MovingShipMarker;
 				map.removeLayer(MovingShipMarker);
