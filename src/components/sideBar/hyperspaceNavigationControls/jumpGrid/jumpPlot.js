@@ -89,7 +89,6 @@ class JumpPlot extends React.Component {
       border: '1px solid #49fb35',
     };
 
-    console.log("this.props.PathObject: ", this.props.PathObject);
     const jumpDistance = parseFloat(this.props.PathObject.length.toFixed(2));
 
     return (

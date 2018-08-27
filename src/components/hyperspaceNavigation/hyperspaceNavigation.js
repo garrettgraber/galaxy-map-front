@@ -71,12 +71,9 @@ class HyperspaceNavigation extends React.Component {
       const startFreeSpaceJumpStatus = CurentPathGenerator.startFreeSpaceJumpStatus;
       const endFreeSpaceJumpStatus = CurentPathGenerator.endFreeSpaceJumpStatus;
 
-      console.log("CurentPathGenerator: ", CurentPathGenerator);
-
       // console.log("free space jump on start: ", CurentPathGenerator.freeSpaceJumpFromStart());
       // console.log("free space jump on end: ", CurentPathGenerator.freeSpaceJumpFromEnd());
 
-      console.log("this.props: ", this.props);
 
       // if(CurentPathGenerator.freeSpaceJumpFromStart()) {
       //   console.log("Free space jump on the start");
@@ -128,8 +125,7 @@ function renderComponentsOrNull(currentComponents) {
   } else {
     return null;
   }
-}
-
+};
 
 function reverseToLatLng(lanesArray) {
   const latLngArray = [];
@@ -138,7 +134,7 @@ function reverseToLatLng(lanesArray) {
     latLngArray.push(lane);
   }
   return latLngArray;
-}
+};
 
 const mapStateToProps = (state = {}) => {
     return Object.assign({}, state);

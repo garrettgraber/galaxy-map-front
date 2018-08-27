@@ -50,7 +50,7 @@ class JumpGrid extends React.Component {
     const distanceBetweenEndNodeAndPoint = distanceBetweenPoints(EndPoint, EndNode);
     const freeSpaceDistance = distanceBetweenStartNodeAndPoint + distanceBetweenEndNodeAndPoint;
     this.setState({freeSpaceDistance: freeSpaceDistance});
-    this.refs.zoomPathButton.focus();
+    this.refs.jumpIntoHSpace.focus();
   }
 
   getJumpPaths() {
@@ -87,12 +87,12 @@ class JumpGrid extends React.Component {
   }
 
   jumpShip(e) {
-    console.log("Jump Ship into Hyperspace: ", e);
+    // console.log("Jump Ship into Hyperspace: ", e);
     this.props.dispatch( jumpShipIntoHyperspace() );
   }
 
   zoomToShipClick(e) {
-    console.log("Zoom to ship has fired: ", e);
+    // console.log("Zoom to ship has fired: ", e);
     this.props.dispatch( zoomToShipIsOn() );
   }
 
@@ -112,7 +112,8 @@ class JumpGrid extends React.Component {
     const startPointHasChanged = !nodeAndPointAreEqual(ActiveStartPoint, OldActiveStartPoint);
     const endPointHasChanged = !nodeAndPointAreEqual(ActiveEndPoint, OldActiveEndPoint);
     if(startPointHasChanged || endPointHasChanged) {
-      this.refs.zoomPathButton.focus();
+      // this.refs.zoomPathButton.focus();
+      this.refs.jumpIntoHSpace.focus();
     }
   }
 
@@ -167,8 +168,8 @@ class JumpGrid extends React.Component {
               data-tip="Jump Into Hyperspace"
               data-for="jump-into-hyperspace-tooltip-foo"
               ref="jumpIntoHSpace"
-
               tabIndex="0"
+
               onKeyPress={(e) => this.jumpShip(e)}
             />
 
@@ -184,8 +185,6 @@ class JumpGrid extends React.Component {
               data-tip="Zoom to Ship"
               data-for="zoom-to-ship-tooltip-foo"
               ref="zoomToShip"
-
-              tabIndex="1"
               onKeyPress={(e) => this.zoomToShipClick(e)}
             />
 

@@ -41,8 +41,6 @@ import {
 
 import ApiService from '../../remoteServices/apiService.js';
 
-console.log("ApiService: ", ApiService);
-
 
 // import StationaryShip from './stationaryShip.js';
 
@@ -163,9 +161,6 @@ class Ship extends React.Component {
 		const EndPoint = Options.EndPoint;
 		const EndNode = Options.EndNode;
 		const hyperspacePathCollections = Options.hyperspacePathCollections;
-
-		console.log("hyperspacePathCollections: ", hyperspacePathCollections);
-
 		const startFreeSpaceJump = !nodeAndPointAreEqual(StartPoint, StartNode);
 		const endFreeSpaceJump = !nodeAndPointAreEqual(EndPoint, EndNode);
 		const map = this.props.map;
@@ -227,24 +222,12 @@ class Ship extends React.Component {
   				coordinateCounter++;
 
   				if(NodeFound.isFound) {
-
   					if(NodeFound.data.system.slice(0, 2) === 'PN') {
-
   						const hyperspaceLaneId = parseInt(NodeFound.data.system.split('-')[5]);
-
-  						console.log("Pseudo node hyperlane number: ", hyperspaceLaneId);
-  						console.log("Coordinate count: ", coordinateCounter);
-
   						ApiService.findHyperspaceLaneById(hyperspaceLaneId).then(laneFound => {
-
-  							console.log("Name of hyperspace lane: ", laneFound);
-
-  							
-
   							const shipActionText = (coordinateCounter > 2)? 'exited' : 'entered';
   							const shipNodeText = `The ${this.state.name} has ${shipActionText} The ${laneFound}.`;
 								this.props.dispatch( addItemToDataStream(shipNodeText) );
-
   						}).catch(LaneDataError => {
   							console.log("Error getting lane data: ", LaneDataError);
   						});
@@ -252,7 +235,6 @@ class Ship extends React.Component {
   						const shipNodeText = `The ${this.state.name} has passed ${NodeFound.data.system}.`;
 							this.props.dispatch( addItemToDataStream(shipNodeText) );
   					}
-
 					}
 
 					const currentJumpCoordinatesIndex = findCoordinateIndexLatLng(CurrentLatLng.lat, CurrentLatLng.lng, FirstPath.jumpCoordinates);
@@ -281,8 +263,8 @@ class Ship extends React.Component {
 
 			const startTimeLocal = moment.utc(startTime).local().format("DD/MM/YYYY HH:mm:ss");
 			const startTimeGMT = moment.utc(startTime).format("DD/MM/YYYY HH:mm:ss");
-			console.log("\nShip start time Local: ", startTimeLocal);
-			console.log("Ship start time GMT: ", startTimeGMT);
+			// console.log("\nShip start time Local: ", startTimeLocal);
+			// console.log("Ship start time GMT: ", startTimeGMT);
 
 			const StartLatLng = MovingShipMarker.getLatLng();
   		previousShipCoordinateLatitude = StartLatLng.lat;
@@ -321,7 +303,7 @@ class Ship extends React.Component {
 		});
 
 		MovingShipMarker.on('click', e => {
-			console.log("Falcon clicked at: ", e.latlng);
+			// console.log("Falcon clicked at: ", e.latlng);
 			const galacticX = getGalacticXFromLongitude(e.latlng.lng);
 			const galacticY = getGalacticYFromLatitude(e.latlng.lat);
 			const shipClickText = `The ${this.state.name} is at X: ${galacticX.toFixed(2)} and Y: ${galacticY.toFixed(2)}`;
