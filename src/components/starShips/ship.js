@@ -220,7 +220,6 @@ class Ship extends React.Component {
   				const coordinateLat = CoordinateFound.data.lat;
   				const coordinateLng = CoordinateFound.data.lng;
   				coordinateCounter++;
-
   				if(NodeFound.isFound) {
   					if(NodeFound.data.system.slice(0, 2) === 'PN') {
   						const hyperspaceLaneId = parseInt(NodeFound.data.system.split('-')[5]);
@@ -296,7 +295,10 @@ class Ship extends React.Component {
 
 			// StationaryShipElement.remove();
 			
-			
+
+
+
+
 			
 			this.props.dispatch( addItemToDataStream(jumpStartText) );
 			this.props.dispatch( shipIsInHyperspace() );
@@ -421,7 +423,11 @@ function getInternalNodes(startNodeId, endNodeId, nodes, startFreeSpaceJump, end
 };
 
 function findNodeByLatLng(lat, lng, nodesArray) {
-  const NodeFound = _.find(nodesArray, (n) => { return n.lat === lat && n.lng === lng });
+  const NodeFound = _.find(nodesArray, (n) => {
+  	const nodeLatitude = numberToEightSignificantFigures(n.lat);
+  	const nodeLongitude = numberToEightSignificantFigures(n.lng);
+  	return nodeLatitude === lat && nodeLongitude === lng
+  });
   if(NodeFound) {
     return {
     	isFound: true,
@@ -434,6 +440,13 @@ function findNodeByLatLng(lat, lng, nodesArray) {
     };
   }
 };
+
+
+function numberToEightSignificantFigures(floatingCoordinate) {
+	const precisionValue = (floatingCoordinate >= 100.0)? 9 : 8;
+	return parseFloat(Number.parseFloat(floatingCoordinate).toPrecision(precisionValue));
+};
+
 
 function findCoordinateByLatLng(lat, lng, coordinatesArray) {
   const CoordinateFound = _.find(coordinatesArray, (n) => { return n[0] === lat && n[1] === lng });
