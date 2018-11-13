@@ -1,5 +1,15 @@
 
+.shipIcon {
+    /*background-color: #fff;*/
+    
+    box-shadow: 0px 20px 10px -10px #0ff, inset 0px -20px 16px -24px #0ff;
+    /*box-shadow: inset 0px 10px 10px -8px #0ff;*/
+    border-radius: 14px;
 
+    /* in order: x offset, y offset, blur size, spread size, color */
+    /* blur size and spread size are optional (they default to 0) */
+
+}
 
 .shipIconInvisible {
     opacity: 0.0

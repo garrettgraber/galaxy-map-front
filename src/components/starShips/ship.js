@@ -181,6 +181,7 @@ class Ship extends React.Component {
 		}
 		const durations = getMarkerDurationsArray(this.state.speed, FirstPath.jumpCoordinates, FirstPath.jumpDistances, startFreeSpaceJump, endFreeSpaceJump);
 		const shipIcon = getShipIcon(true);
+		// const shipIcon = shipDivIcon(true);
 		const MovingShipMarker = leafletMovingMarker(FirstPath.jumpCoordinates, durations, {
 			autostart: true,
 			icon: shipIcon
@@ -502,11 +503,22 @@ function getShipIcon(visibility) {
  	const shipIconClasses = (visibility)? 'shipIcon' : 'shipIcon shipIconInvisible';
 	return new L.Icon({
 		iconUrl: require('../../images/icons/falcon-icons/falcon-color-small.png'),
-		iconSize: [40, 40],
+		iconSize: [44, 40],
 		iconAnchor: [20, 20],
 		className: shipIconClasses
 	});
 };
+
+
+function shipDivIcon(visibility) {
+	const shipIconClasses = (visibility)? 'shipIcon' : 'shipIcon shipIconInvisible';
+	return new L.divIcon({
+		iconUrl: require('../../images/icons/falcon-icons/falcon-color-small.png'),
+		iconSize: [40, 40],
+		iconAnchor: [20, 20],
+		className: shipIconClasses
+	});
+}
 
 function modifyShipPathForFreeSpaceJumps(Options) {
 	const StartPoint = Options.StartPoint;
