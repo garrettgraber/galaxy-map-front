@@ -1,4 +1,4 @@
-FROM node:9-slim
+FROM node:10-slim
 
 # Update packages
 RUN apt-get update -y --fix-missing;
