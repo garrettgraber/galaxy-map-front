@@ -35,11 +35,16 @@ echo "Current node environment: $NODE_ENV"
 echo "Run status in bootstrap: $RUN_STATUS"
 
 if [ "$RUN_STATUS" == "compile_production" ]; then
-  echo "Compiling webpack for production...'"
+  echo "Compiling webpack for production..."
   npm run build 
 fi
 
-if [ "$RUN_STATUS" != "compile_production" ]; then
+if [ "$NODE_ENV" == "production" ]; then
+	echo "Runing production express server"
+	npm run production
+fi
+
+if [ "$RUN_STATUS" != "compile_production" ] && [ "$NODE_ENV" != "production" ]; then
   echo "Starting express server..."
   npm start
 fi
