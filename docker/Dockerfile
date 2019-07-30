@@ -1,4 +1,4 @@
-FROM node:9-slim
+FROM node:12-slim
 
 # Update packages
 RUN apt-get update -y --fix-missing;
@@ -27,7 +27,7 @@ RUN npm install nodemon -g
 RUN npm install webpack -g
 
 # install webpack-dev-server globally
-RUN npm install webpack-dev-server -g
+#RUN npm install webpack-dev-server -g
 
 # install typescript globally
 RUN npm install -g typescript

@@ -16,7 +16,6 @@ console.log("buildPath:", buildPath);
 console.log("srcPath: ", srcPath);
 
 module.exports = {
-  devtool: 'source-map',
   entry: [
     'react-hot-loader/patch',
     'whatwg-fetch',
@@ -50,22 +49,19 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         include: srcPath,
-        exclude: /(node_modules|bower_components)/,
+        exclude: /node_modules/,
+        use: ['babel-loader']
+      },
+      {
+        test: /\.css$/,
         use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: [
-                'es2017',
-                'react',
-                'stage-3'
-              ].map(dep => require.resolve(`babel-preset-${dep}`))
-            }
-          }
+          "style-loader",
+          "css-loader",
+          "less-loader"
         ]
       },
       {
-        test: /\.html$/,
+        test:  /\.html$/,
         use: [
           {
             loader: "file-loader",
@@ -73,14 +69,6 @@ module.exports = {
               name: "[name].[ext]"
             }
           }
-        ]
-      },
-       {
-        test: /\.css$/,
-        use: [
-          "style-loader",
-          "css-loader",
-          "less-loader"
         ]
       },
       {   
@@ -116,7 +104,8 @@ module.exports = {
           }
         ]
       },
-    ],
+
+    ]
   },
   externals: {
     'Config': JSON.stringify(environmentSetup(process.env.NODE_ENV))

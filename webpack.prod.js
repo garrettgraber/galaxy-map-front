@@ -2,13 +2,14 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
-const CompressionPlugin = require('compression-webpack-plugin');
+const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const common = require('./webpack.config.js');
 
 
 module.exports = merge(common, {
+  mode: 'production',
   plugins: [
-    new webpack.optimize.ModuleConcatenationPlugin(),
+    new webpack.optimize.concatenateModules(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production')
     }),
@@ -47,7 +48,7 @@ module.exports = merge(common, {
       cache: true
     }),
     new webpack.optimize.AggressiveMergingPlugin(), //Merge chunks
-    new CompressionPlugin({
+    new CompressionWebpackPlugin({
       asset: "[path].gz[query]",
       algorithm: "gzip",
       test: /\.js$|\.css$|\.html$/,

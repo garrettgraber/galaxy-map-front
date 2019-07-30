@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import ReactTooltip from 'react-tooltip';
@@ -31,7 +31,7 @@ import {
 
 import Place from '../../../classes/place.js';
 
-class NavigationSystemSearch extends React.Component {
+class NavigationSystemSearch extends Component {
   constructor() {
     super();
     this.state = { 
@@ -103,7 +103,13 @@ class NavigationSystemSearch extends React.Component {
         emptySpace: false,
         isStartPosition: this.props.isStartPosition
       });
+
+      console.log("this.props: ", this.props);
+
       this.props.dispatch(setHyperspaceNavigationPoints(SearchPlace));
+
+      // this.props.setHyperspaceNavigationPoints(SearchPlace);
+
     }
   }
 
@@ -196,6 +202,12 @@ class NavigationSystemSearch extends React.Component {
   }
 }
 
+
+// function mapDispatchToProps(dispatch) {
+//   return({
+//     setHyperspaceNavigationPoints: (SearchPlace) => {dispatch(setHyperspaceNavigationPoints(SearchPlace))}
+//   })
+// };
 
 const mapStateToProps = (state = {}) => {
     return Object.assign({}, state);
