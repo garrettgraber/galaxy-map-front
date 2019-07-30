@@ -1,7 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Control from 'react-leaflet-control';
-import { Map, TileLayer, LayersControl, Pane, LayerGroup, FeatureGroup } from 'react-leaflet';
+import {
+  Map,
+  TileLayer,
+  LayersControl,
+  Pane,
+  LayerGroup,
+  FeatureGroup,
+  withLeaflet,
+  LeafletConsumer,
+  LeafletProvider
+} from 'react-leaflet';
 import L from 'leaflet';
 import Geohash from 'latlon-geohash';
 import ScrollArea from 'react-scrollbar';
@@ -11,6 +21,10 @@ import Logger from '../classes/logger.js';
 
 
 console.log("React: ", React);
+console.log("withLeaflet: ", withLeaflet);
+console.log("LeafletConsumer: ", LeafletConsumer);
+console.log("LeafletProvider: ", LeafletProvider);
+
 
 const LoggerInstance = new Logger();
 LoggerInstance.setInActive();
