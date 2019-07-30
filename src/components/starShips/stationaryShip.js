@@ -11,7 +11,7 @@ import 'rotate-icon';
 
 import 'leaflet-rotatedmarker';
 
-import RotatedMarker from 'react-leaflet-rotatedmarker'
+
 
 
 
@@ -19,8 +19,6 @@ import width from 'text-width';
 import _ from 'lodash';
 import Geohash from 'latlon-geohash';
 import moment from 'moment';
-// import 'leaflet-moving-marker';
-// import LeafletMovingMarker from 'leaflet_moving_marker';
 
 
 import uuidv4 from 'uuid/v4';
@@ -103,21 +101,24 @@ class StationaryShip extends React.Component {
 
   	return (
   		<div  id={uuidv4()} style={MarkerStyles} className="stationary-ship-container">
-				<RotatedMarker
-				  key={uuidv4()}
-				  position={this.state.location}
-				  rotationAngle={this.state.jumpAngle}
-				  rotationOrigin={'center'} 
-				  zIndexOffset={2}
-				  icon={this.state.shipIcon}
-				  onClick={(e) => this.onClick(e)}
-				  ref="stationaryShip"
-				>
-				</RotatedMarker>
+				
 	  	</div>
   	)
   }
 }
+
+
+// <RotatedMarker
+//   key={uuidv4()}
+//   position={this.state.location}
+//   rotationAngle={this.state.jumpAngle}
+//   rotationOrigin={'center'} 
+//   zIndexOffset={2}
+//   icon={this.state.shipIcon}
+//   onClick={(e) => this.onClick(e)}
+//   ref="stationaryShip"
+// >
+// </RotatedMarker>
 
 
 

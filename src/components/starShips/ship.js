@@ -7,7 +7,6 @@ import distance from 'euclidean-distance';
 import $ from "jquery";
 import 'rotate-icon';
 import 'leaflet-rotatedmarker';
-import RotatedMarker from 'react-leaflet-rotatedmarker'
 import uuidv4 from 'uuid/v4';
 
 

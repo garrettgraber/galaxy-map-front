@@ -1,0 +1,77 @@
+
+npm install --save react react-bootstrap react-burger-menu react-dom react-faux-dom react-hot-loader react-if react-leaflet 
+
+npm install --save react-leaflet-animated-marker react-leaflet-ant-path react-leaflet-control react-leaflet-div-icon react-leaflet-draw react-leaflet-rotatedmarker
+
+npm install --save react-live-clock react-redux react-router react-router-redux
+
+npm install --save react-scroll-table react-scrollbar react-select react-select-fast-filter-options react-svg-pan-zoom react-table react-tap-event-plugin react-tooltip react-virtualized-select
+
+npm install --save redux redux-actions redux-batched-actions redux-chain redux-multi redux-thunk 
+
+npm install --save leaflet leaflet-ant-path leaflet-draw leaflet-moving-marker @ansur/leaflet-pulse-icon leaflet-rotatedmarker leaflet-virtual-grid leaflet-ajax
+
+
+
+
+
+npm install --save request reselect rotate-icon sass-loader string-hash string-width text-width ts-loader uglify-es uglifyjs-webpack-plugin url-loader urlencode uuid webpack-merge whatwg-fetch
+
+
+npm install --save lodash moment moment-timezone mongoose object.omit query-string
+
+
+
+npm install --save babel-preset-es2015 babel-register body-parser bootstrap compression cors docker-links dotenv-webpack euclidean-distance execution-time express finalhandler font-loader geolib html-webpack-plugin ip jquery js-search json-loader jsonfile latlon-geohash
+
+
+
+npm install --save-dev babel-core babel-loader babel-preset-env babel-preset-es2015 babel-preset-es2017 babel-preset-flow babel-preset-react babel-preset-stage-3 babel-register compression-webpack-plugin css-loader file-loader less less-loader style-loader webpack webpack-dev-middleware webpack-dev-server webpack-hot-middleware
+
+
+npm install --save-dev @babel/core @babel/preset-env @babel/preset-react @babel/register 
+
+
+npm install --save0dev cross-env css-loader json-loader react-hot-loader style-loader webpack webpack-cli webpack-dev-middleware webpack-dev-server webpack-hot-middleware
+
+
+
+
+ajv@5.9.0
+
+npm install --save ajv
+
+npm install --save ajv@5.5.2
+
+npm i --save @babel/core pm i --save leaflet@1.0.
+1.0.1 requires a peer of ajv@>=5.0.0 but none is installed. You must install peer dependencies yourself.
+npm WARN babel-loader@8.0.6 requires a peer of @babel/core@^7.0.0 but none is installed. You must install peer dependencies yourself.
+npm WARN leaflet-moving-marker@0.3.0 requires a peer of leaflet@1.0.2 but none is installed. You must install peer dependencies yourself.
+npm WARN react-leaflet-div-icon@1.1.0 requires a peer of leaflet@^0.7.0 but none is installed. You must install peer dependencies yourself.
+npm WARN react-leaflet-div-icon@1.1.0 requires a peer of react-leaflet@^0.11.5 but none is installed. You must install peer dependencies yourself.
+npm WARN react-leaflet-rotatedmarker@0.1.0 requires a peer of react-leaflet@^1.7.8 but none is installed. You must install peer dependencies yourself.
+npm WARN react-live-clock@3.1.0 requires a peer of react@^0.14 || ^15 but none is installed. You must install peer dependencies yourself.
+npm WARN react-scroll-table@1.0.8 requires a peer of react@^15.5.4 but none is installed. You must install peer dependencies yourself.
+npm WARN react-select-fast-filter-options@0.2.3 requires a peer of react-select@^1.0.0-beta14 but none is installed. You must install peer dependencies yourself.
+npm WARN react-tap-event-plugin@3.0.3 requires a peer of react@^16.0.0-0 < 16.4.0 but none is installed. You must install peer dependencies yourself.
+npm WARN react-tap-event-plugin@3.0.3 requires a peer of react-dom@^16.0.0-0 < 16.4.0 but none is installed. You must install peer dependencies yourself.
+
+
+
+
+
+
+
+
+
+
+
+npm WARN react-leaflet-div-icon@1.1.0 requires a peer of leaflet@^0.7.0 but none is installed. You must install peer dependencies yourself.
+npm WARN react-leaflet-div-icon@1.1.0 requires a peer of react-leaflet@^0.11.5 but none is installed. You must install peer dependencies yourself.
+npm WARN react-leaflet-rotatedmarker@0.1.0 requires a peer of react-leaflet@^1.7.8 but none is installed. You must install peer dependencies yourself.
+npm WARN react-live-clock@3.1.0 requires a peer of react@^0.14 || ^15 but none is installed. You must install peer dependencies yourself.
+npm WARN react-scroll-table@1.0.8 requires a peer of react@^15.5.4 but none is installed. You must install peer dependencies yourself.
+npm WARN react-select-fast-filter-options@0.2.3 requires a peer of react-select@^1.0.0-beta14 but none is installed. You must install peer dependencies yourself.
+npm WARN react-tap-event-plugin@3.0.3 requires a peer of react@^16.0.0-0 < 16.4.0 but none is installed. You must install peer dependencies yourself.
+npm WARN react-tap-event-plugin@3.0.3 requires a peer of react-dom@^16.0.0-0 < 16.4.0 but none is installed. You must install peer dependencies yourself.
+npm WARN leaflet-moving-marker@0.3.0 requires a peer of leaflet@1.0.2 but none is installed. You must install peer dependencies yourself.
