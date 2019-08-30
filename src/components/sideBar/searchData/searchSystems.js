@@ -99,9 +99,11 @@ class SearchSystems extends React.Component {
             onChange={(selectValue) => this.onChange(selectValue)}
             value={this.state.selectValue}
             placeholder="Go To System..."
+            isClearable={true}
             autoBlur={true}
             onFocus={(e) => this.selectFocus(e)}
             onBlur={(e) => this.selectBlur(e)}
+            components={{IndicatorSeparator: () => null}}
           />
         </div>
         <span>

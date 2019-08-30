@@ -689,6 +689,19 @@ export function zoomToShipDefault() {
 }
 
 
+export function setSelectedShip(payload) {
+	return {
+		type: Actions.SET_SELECTED_SHIP,
+		payload: payload
+	}
+}
+export function noSelectedShip() {
+	return {
+		type: Actions.NO_SELECTED_SHIP
+	}
+}
+
+
 export function freeSpaceJumpStartOn() {
 	return {
 		type: Actions.FREE_SPACE_JUMP_START_ON

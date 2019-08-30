@@ -20,10 +20,10 @@ import SystemsSearchResults from './search/systemsSearchResults.js';
 import Logger from '../classes/logger.js';
 
 
-console.log("React: ", React);
-console.log("withLeaflet: ", withLeaflet);
-console.log("LeafletConsumer: ", LeafletConsumer);
-console.log("LeafletProvider: ", LeafletProvider);
+// console.log("React: ", React);
+// console.log("withLeaflet: ", withLeaflet);
+// console.log("LeafletConsumer: ", LeafletConsumer);
+// console.log("LeafletProvider: ", LeafletProvider);
 
 
 const LoggerInstance = new Logger();
@@ -70,6 +70,8 @@ import Sectors from './sectors/sectors.js';
 import HyperspaceLanesData from './hyperspaceData/hyperspaceLanesData.js';
 import StarMap from './stars/starMap.js';
 import StarShips from './starShips/starShips.js';
+import GalacticStarShips from './starShips/galacticStarShips.js';
+
 import SideBarController from './sideBar/sideBarController.js';
 import SideBar from './sideBar/sideBar.js';
 import DataStream from './dataStream/dataStream.js';
@@ -357,7 +359,7 @@ class MapMain extends React.Component {
               <SystemsSearchResults/>
             </Overlay>
             <Overlay name="Star Ship Layer" checked={true} ref='starShipLayer'>
-              <StarShips map={this.state.map}/>
+              <GalacticStarShips map={this.state.map}/>
             </Overlay>
 				  </LayersControl>
     		</Map>

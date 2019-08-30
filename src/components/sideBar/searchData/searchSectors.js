@@ -97,9 +97,11 @@ class SearchSectors extends React.Component {
             onChange={(sectorValue) => this.onChange(sectorValue)}
             value={this.state.sectorValue}
             placeholder="Go To Sector..."
+            isClearable={true}
             autoBlur={true}
             onFocus={(e) => this.selectFocus(e)}
             onBlur={(e) => this.selectBlur(e)}
+            components={{IndicatorSeparator: () => null}}
           />
         </div>
         <span>

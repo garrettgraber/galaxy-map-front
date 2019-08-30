@@ -27,7 +27,8 @@ export default class PathGenerator {
 		hyperspaceHash,
 		HyperspaceCollectionsComponents,
 		hyperspacePathCollections,
-		hyperspacePathChange
+		hyperspacePathChange,
+    selectedShip
 	) {
 		this.StartPoint = _.cloneDeep(StartPoint);
 		this.EndPoint = _.cloneDeep(EndPoint);
@@ -52,6 +53,7 @@ export default class PathGenerator {
     this.HyperspaceCollectionsComponents = HyperspaceCollectionsComponents;
     this.hyperspacePathCollections = hyperspacePathCollections;
     this.hyperspacePathChange = hyperspacePathChange;
+    this.selectedShip = selectedShip;
 	}
 
   distanceStartPointToStartNode() { 
@@ -305,7 +307,9 @@ export default class PathGenerator {
 	}
 
 	generateHyperspaceNavigationPoints() {
-	  for(let PointValues of this.hyperspacePointsArray()) {
+    const hyperspacePointsArray = this.hyperspacePointsArray().slice();
+    const pointsArray = (this.selectedShip)? hyperspacePointsArray.filter(n => n.isStart === false) : hyperspacePointsArray;
+	  for(let PointValues of pointsArray) {
 	    this.addPointToHyperspaceArray(PointValues.Point, PointValues.isStart, PointValues.isActive);
 	  }
 	}

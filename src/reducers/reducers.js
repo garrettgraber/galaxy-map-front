@@ -585,6 +585,16 @@ function zoomToShip(state = false, action) {
 	}
 }
 
+function shipSelectedForJump(state = {}, action) {
+	switch (action.type) {
+		case Actions.SET_SELECTED_SHIP:
+			return action.payload;
+		case Actions.NO_SELECTED_SHIP:
+			return {};
+		default:
+			return state;
+	}
+}
 
 
 function hyperspacePathChange(state = false, action) {
@@ -947,6 +957,9 @@ export default combineReducers({
 	shipHyperspaceJumpPath,
 	shipHasJumpedToHyperspace,
 	zoomToShip,
+
+	shipSelectedForJump,
+	
 	hyperspacePathChange,
 	pathSearchStart,
 	pathSearchEnd,

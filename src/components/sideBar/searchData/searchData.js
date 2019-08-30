@@ -165,6 +165,7 @@ class SearchData extends React.Component {
             autoBlur={true}
             onFocus={(e) => this.selectFocus(e)}
             onBlur={(e) => this.selectBlur(e)}
+            components={{IndicatorSeparator: () => null}}
           />
         </div>
         <If condition={ searchingSystems }>

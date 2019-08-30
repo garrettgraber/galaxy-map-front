@@ -2,11 +2,13 @@
 
 
 import L from 'leaflet';
+import React, { Component } from 'react';
 
+import { connect } from 'react-redux';
 
 import 'leaflet-rotatedmarker';
 
-// import { Marker,  } from 'react-leaflet';
+import { Marker, MapComponent, MapEvented, DivOverlay } from 'react-leaflet';
 
 // import { type Icon, Marker as LeafletMarker } from 'leaflet'
 
@@ -15,13 +17,13 @@ import 'leaflet-rotatedmarker';
 
 // import { LatLng, MapLayerProps } from 'react-leaflet'
 
-import { withLeaflet, MapControl } from "react-leaflet";
+import { withLeaflet, MapControl, LeafletProvider, LeafletConsumer, LatLng } from "react-leaflet";
 
 
-// console.log("LeafletProvider: ", LeafletProvider);
-// console.log("LeafletConsumer: ", LeafletConsumer);
-// console.log("withLeaflet: ", withLeaflet);
-// console.log("LatLng: ", LatLng);
+console.log("LeafletProvider: ", LeafletProvider);
+console.log("LeafletConsumer: ", LeafletConsumer);
+console.log("withLeaflet: ", withLeaflet);
+console.log("L.Marker: ", L.Marker);
 // console.log("MapLayerProps: ", MapLayerProps);
 
 
@@ -37,6 +39,30 @@ L.interpolatePosition = function(p1, p2, duration, t) {
     return L.latLng(p1.lat + k * (p2.lat - p1.lat),
         p1.lng + k * (p2.lng - p1.lng));
 };
+
+
+
+
+// class MovingMarker extends Marker {
+
+//   constructor(props, context) {
+//     super(props);
+//     state = {};
+//   }
+
+
+//   render() {
+
+//     console.log("this.props: ", this.props);
+
+//     console.log("Moving Marker rendering");
+//     return (
+//       <div></div>
+//     );
+//   }
+// }
+
+
 
 L.Marker.MovingMarker = L.Marker.extend({
 
@@ -56,7 +82,7 @@ L.Marker.MovingMarker = L.Marker.extend({
     initialize: function (latlngs, durations, options) {
         L.Marker.prototype.initialize.call(this, latlngs[0], options);
 
-        this._latlngs = latlngs.map(function(e, index) {
+        this._latlngs = latlngs.map((e, index) => {
             return L.latLng(e);
         });
 
@@ -328,11 +354,52 @@ L.Marker.MovingMarker = L.Marker.extend({
             this._animId = L.Util.requestAnimFrame(this._animate, this, false);
             this._animRequested = true;
         }
-    },
-    // setRotationAngle: L.Marker.prototype.setRotationAngle,
-    // setRotationOrigin: L.Marker.prototype.setRotationOrigin
+    }
 });
 
-export function leafletMovingMarker(latlngs, duration, options) {
-    return new L.Marker.MovingMarker(latlngs, duration, options);
+
+
+function interpolatePosition(p1, p2, duration, t) {
+  var k = t / duration;
+  k = (k > 0) ? k : 0;
+  k = (k > 1) ? 1 : k;
+  return L.latLng(p1.lat + k * (p2.lat - p1.lat), p1.lng + k * (p2.lng - p1.lng));
 };
+
+
+
+class AdvancedMarker extends DivOverlay {
+  constructor(props, context) {
+    super(props);
+  }
+
+  createLeafletElement(opts) {
+    console.log("opts: ", opts);
+    // return new ExtendedMarker(opts);
+    // const NewMovingMarker = L.Marker.extend(MovingMarkerExtension);
+    // const NewMovingMarker = new ExtendedMarker(latlngs, duration, options);
+    const NewMovingMarker = new L.Marker.MovingMarker(opts.latlngs, opts.duration, opts.options);
+    // const NewMovingMarker = new L.marker(opts.latlngs);
+    return NewMovingMarker;
+  }
+
+  componentDidMount() {
+    console.log("Advanced Marker has mounted");
+    const { map } = this.props.leaflet;
+    this.leafletElement.addTo(map);
+  }
+}
+
+export default withLeaflet(AdvancedMarker);
+
+
+
+// const mapStateToProps = (state = {}) => {
+//     return Object.assign({}, state);
+// };
+// export default connect(mapStateToProps)(withLeaflet(AdvancedMarker));
+
+
+// export function advancedMarker(latlngs, duration, options) {
+//     return new L.Marker.MovingMarker(latlngs, duration, options);
+// };

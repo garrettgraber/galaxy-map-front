@@ -1,15 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { If, Then, Else } from 'react-if';
+import _ from 'lodash';
 import HyperspaceControls from './hyperspaceControls.js';
 import HyperspaceShipDetails from './hyperspaceShipDetails.js';
 import JumpGrid from './jumpGrid/jumpGrid.js';
 import PivotPoint from './pivotPoint.js';
+
 import {
   allPointsAreValid,
   isPointBlank,
   jumpIntoHyperspaceCalculated
 } from '../../hyperspaceNavigation/hyperspaceMethods.js';
+
 
 import '../../../css/main.css';
 
@@ -17,11 +20,12 @@ class HyperspacePathSearch extends React.Component {
   constructor() {
     super();
     this.state = {
+      shipSelectedName: undefined,
       isStartActive: true
     };
   }
 
-  componentDidMount() { }
+  componentDidMount() {}
 
   endClick(e) {
     this.refs.endNavigationButton.blur();
@@ -34,6 +38,19 @@ class HyperspacePathSearch extends React.Component {
     this.refs.startNavigationButton.blur();
     if(!this.state.isStartActive) {
       this.setState({isStartActive: true});
+    }
+  }
+
+
+  selectFocus(e) {
+    if(this.props.mobileStatus) {
+      this.props.dispatch(focusSelect());
+    }
+  }
+
+  selectBlur(e) {
+    if(this.props.mobileStatus) {
+      this.props.dispatch(blurSelect());
     }
   }
 
@@ -61,7 +78,7 @@ class HyperspacePathSearch extends React.Component {
     const multipleJumpHeight = 520 - mobileModifiler;
     const singleJumpHeight = 463 - mobileModifiler;
     const mobileHeight = 193;
-    const desktopHeight = 288;
+    const desktopHeight = 298;
     const jumpNavigationHeight = (this.props.mobileStatus)? mobileHeight : desktopHeight;
     const navigationPaneStyle = (jumpSuccessfullyCalculated)? {height: singleJumpHeight, overFlow: 'visible'} : {height: jumpNavigationHeight, overFlow: 'visible'};
     const StartPoint = this.props.hyperspaceStartPoint;
@@ -79,7 +96,7 @@ class HyperspacePathSearch extends React.Component {
               <div className="pane-row-control pane-section">
                 <button type="button" className={startButtonClasses} style={{verticalAlign: "top", width: 54, marginRight: 3, marginLeft: 3}}  onClick={(e) => this.startClick(e)} ref="startNavigationButton">Start</button>
                 <button type="button" className={endButtonClasses} style={{verticalAlign: "top", width: 54, marginRight: 3, marginLeft: 3}}  onClick={(e) => this.endClick(e)} ref="endNavigationButton">End</button>
-                <span className="nav-text">&nbsp;&nbsp;Calculate Hyperspace Jump</span>
+                
               </div>
               <If condition={this.state.isStartActive}>
                 <Then>
@@ -143,6 +160,9 @@ function getCorrectPath(startNode, endNode, pathsArray) {
     return (path.start === startNode && path.end === endNode); 
   });
 }
+
+
+
 
 const mapStateToProps = (state = {}) => {
     return Object.assign({}, state);

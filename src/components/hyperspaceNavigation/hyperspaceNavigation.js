@@ -38,6 +38,7 @@ class HyperspaceNavigation extends React.Component {
 
   componentWillReceiveProps(newProps) {
     if(newProps.update) {
+      const shipSelectedForJump = (_.isEmpty(newProps.shipSelectedForJump))? false : false;
       const CurentPathGenerator = new PathGenerator(
         newProps.hyperspaceActiveStartPoint,
         newProps.hyperspaceActiveEndPoint,
@@ -51,7 +52,8 @@ class HyperspaceNavigation extends React.Component {
         newProps.hyperspaceHash,
         this.state.HyperspaceCollectionsComponents,
         newProps.hyperspacePathCollections,
-        newProps.hyperspacePathChange
+        newProps.hyperspacePathChange,
+        shipSelectedForJump
       );
       CurentPathGenerator.generateNavigationComponents();
       if(CurentPathGenerator.pathUpdateAndHyperspaceJumpsInArray()){

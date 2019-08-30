@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Circle, Marker, CircleMarker } from 'react-leaflet';
 import { If, Then, Else } from 'react-if';
@@ -23,8 +23,6 @@ import 'leaflet-rotatedmarker';
 import '../../css/main.css';
 
 import { leafletMovingMarker } from '../../movingMarkerNinja/movingMarker.js';
-import { movingMarkerGenerator } from '../../leafletMarkerDeus/movingMarker.js';
-// import AdvancedMarker from '../../advancedMarker/movingMarker.js';
 
 
 import {
@@ -40,208 +38,206 @@ import {
 	zoomToShipIsOff
 } from '../../actions/actionCreators.js';
 
-import ApiService from '../../remoteServices/apiService.js';
 
 
-// import StationaryShip from './stationaryShip.js';
-
-const falconTiny = '../../images/icons/falcon-icons/falcon-tiny.png';
-const falconMedium = '../../images/icons/falcon-icons/falcon-medium.png';
-
-
-class Ship extends React.Component {
+class Fleet extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      location: [0, 0],
+    	fleetID: uuidv4(),
+    	location: props.location,
       currentShipJumpAngle: 0.0,
-      speed: 20.00,
-      name: 'Millennium Falcon',
       MovingShipMarker: null,
-      pausingHyperspaceJump: false,
-      inHyperspace: false
+      StationaryShipMarker: null,
+      inHyperspace: false,
+      generateMovingShip: false,
+      pausingHyperspaceJump: false
     };
   }
 
   componentDidMount() {
-  	this.setState({location: this.props.location});
+
+  	const { location, map, icon } = this.props;
+
+  	if(this.state.generateMovingShip) {
+
+			console.log("\n\nGenerate a Moving Ship Right NOW!!!\n\n");
+
+	  	const { Course, speed } = props;
+	  	const StartPoint = props.hyperspaceActiveStartPoint;
+	  	const EndPoint = props.hyperspaceActiveEndPoint;
+	  	const { jumpCoordinates, jumpDistances, startIsFreeSpace, endIsFreeSpace, icon } = Course;
+
+
+			const MovingShipMarker = this.generateMovingShipMarker({
+				speed,
+				jumpCoordinates,
+				jumpDistances,
+				startIsFreeSpace,
+				endIsFreeSpace,
+				icon,
+				StartPoint,
+				EndPoint
+			});
+			MovingShipMarker.start();
+			this.setState({ MovingShipMarker })
+			this.setState({generateMovingShip: false});
+
+		} else {
+
+			console.log(`\n\nGenerate a Static Ship Right NOW!!!: ` + icon + `\n\n`);
+			// const StationaryShipMarker = L.marker(location, {icon: fleetDivIcon()});
+			const StationaryShipMarker = L.marker(location);
+
+			StationaryShipMarker.addTo(map);
+			// Generate a stationary marker instead
+		}
+
   }
 
-  componentWillReceiveProps(newProps) {
-  	const hyperspaceDataLoaded = (newProps.hyperspacePathCollections.length > 0)? true : false;
-  	const hyperspaceDataNotUpdating = (!newProps.updateHyperspaceNavigation)? true : false;
-  	const hyperspaceDataLoadedAndStatic = (hyperspaceDataLoaded && hyperspaceDataNotUpdating);
-  	const shipInRealSpace = (!this.state.inHyperspace)? true :  false;
-  	const readyToJumpStatus = (hyperspaceDataLoadedAndStatic && shipInRealSpace)? true : false;
-  	const shipHasJumpedToHyperspace = newProps.shipHasJumpedToHyperspace;
+  static getDerivedStateFromProps(props, state) {
+  	console.log("Fleet props: ", props);
+  	console.log("Fleet state: ", state);
+  	const shipHasJumpedToHyperspace = props.shipHasJumpedToHyperspace;
 
-  	const oldStartPoint = this.props.hyperspaceActiveStartPoint;
-  	const newStartPoint = newProps.hyperspaceActiveStartPoint;
-  	const newStartPointIsBlank = isPointBlank(newStartPoint);
-
-  	if(newStartPointIsBlank) {
-			const map = newProps.map;
-			const MovingShipMarker = this.state.MovingShipMarker;
-			map.removeLayer(MovingShipMarker);
-  		this.setState({MovingShipMarker: null});
-  	}
-
-  	if(readyToJumpStatus && !newStartPointIsBlank) {
-  		// this.setStationaryShipMarker({
-				// hyperspacePathCollections : newProps.hyperspacePathCollections,
-				// StartPoint : newProps.hyperspaceActiveStartPoint,
-				// StartNode : newProps.hyperspaceActiveStartNode,
-  		// });
-  	}
-
-  	if(readyToJumpStatus && shipHasJumpedToHyperspace && !newStartPointIsBlank) {
-  		this.generateMovingShipMarker({
-				StartPoint : newProps.hyperspaceActiveStartPoint,
-				StartNode : newProps.hyperspaceActiveStartNode,
-				EndPoint : newProps.hyperspaceActiveEndPoint,
-				EndNode : newProps.hyperspaceActiveEndNode,
-				hyperspacePathCollections : newProps.hyperspacePathCollections,
-  		});
-  	}
-
-  	if(newProps.zoomToShip && !newStartPointIsBlank) {
-      const newZoom = 6;
-  		const map = this.props.map;
-  		const zoomLocation = this.movingShipMarkerLocation();
-  		map.flyTo(zoomLocation, newZoom, {animate: false, paddingTopLeft: [500, 0]});
-      if(this.props.mobileStatus) {
-        this.props.dispatch( zoomToAndPanIsOn() );
-      }
-      const StartPoint = newProps.hyperspaceActiveStartPoint;
-      const EndPoint = newProps.hyperspaceActiveEndPoint;
-      const shipLocationString = this.shipLocationNameString(StartPoint, EndPoint);
-      const zoomMessage = `Zoomed to the ${this.state.name} at ${shipLocationString}.`;
-      this.props.dispatch( addItemToDataStream(zoomMessage) );
-			this.props.dispatch( zoomToShipIsOff() );
-  	}
-  }
-
-  shipLocationNameString(StartPoint, EndPoint) {
-  	if(this.state.MovingShipMarker) {
-  		const MovingShipMarker = this.state.MovingShipMarker;
-  		const CurrentLatLng = MovingShipMarker.getLatLng();
-  		const yGalactic = getGalacticYFromLatitude(CurrentLatLng.lat);
-  		const xGalactic = getGalacticXFromLongitude(CurrentLatLng.lng);
-  		const locationString = `X : ${xGalactic.toFixed(2)} and Y : ${yGalactic.toFixed(2)}`;
-  		return locationString;
-  	} else {
-  		const location = this.state.location;
-  		if(pointAndLocationAreSame(StartPoint, location)) {
-  			return StartPoint.system
-  		} else if(pointAndLocationAreSame(EndPoint, location)) {
-  			return EndPoint.system;
-  		} else {
-  			const lat = location[0];
-  			const lng = location[1];
-  			const yGalactic = getGalacticYFromLatitude(lat);
-	  		const xGalactic = getGalacticXFromLongitude(lng);
-	  		const locationString = `X : ${xGalactic.toFixed(2)} and Y : ${yGalactic.toFixed(2)}`;
-	  		return locationString;
-  		}
-  	}
-  }
-
-  movingShipMarkerLocation() {
-  	if(this.state.MovingShipMarker) {
-  		const MovingShipMarker = this.state.MovingShipMarker;
-  		const CurrentLatLng = MovingShipMarker.getLatLng();
-  		return [CurrentLatLng.lat, CurrentLatLng.lng];
-  	} else {
-  		return this.state.location;
-  	}
+  	if(state.MovingShipMarker === null && shipHasJumpedToHyperspace) {
+			return { generateMovingShip : true };
+		} else {
+			return null;
+		}
   }
 
   generateMovingShipMarker(Options) {
-		const StartPoint = Options.StartPoint;
-		const StartNode = Options.StartNode;
-		const EndPoint = Options.EndPoint;
-		const EndNode = Options.EndNode;
-		const hyperspacePathCollections = Options.hyperspacePathCollections;
-		const startFreeSpaceJump = !nodeAndPointAreEqual(StartPoint, StartNode);
-		const endFreeSpaceJump = !nodeAndPointAreEqual(EndPoint, EndNode);
+
+		const { speed, jumpCoordinates, jumpDistances, startIsFreeSpace, endIsFreeSpace, icon, StartPoint, EndPoint } = Options;
+
 		const map = this.props.map;
 
-		console.log("Start Point: ", StartPoint);
-		console.log("End Point: ", EndPoint);
+		const durations = getMarkerDurationsArray(speed, jumpCoordinates, jumpDistances, startIsFreeSpace, endIsFreeSpace);
 
-		const FirstPath = modifyShipPathForFreeSpaceJumps({
-			StartPoint : StartPoint,
-			EndPoint   : EndPoint,
-			StartNode  : StartNode,
-			EndNode    : EndNode,
-			ShipPath   : hyperspacePathCollections[0]
-		});
-		const innerNodesArray = getInternalNodes(FirstPath.start, FirstPath.end, FirstPath.nodes, startFreeSpaceJump, endFreeSpaceJump);
-		const internalCoordinates = FirstPath.jumpCoordinates.slice();
-		internalCoordinates.shift();
-		internalCoordinates.pop();
-		let internalCoordinatesIndexes = [];
-		for(let i=1; i < FirstPath.jumpCoordinates.length - 1; i++) {
-			internalCoordinatesIndexes.push(i);
-		}
-		const durations = getMarkerDurationsArray(this.state.speed, FirstPath.jumpCoordinates, FirstPath.jumpDistances, startFreeSpaceJump, endFreeSpaceJump);
-		const shipIcon = getShipIcon(true);
-		// const shipIcon = shipDivIcon(true);
-		const MovingShipMarker = leafletMovingMarker(FirstPath.jumpCoordinates, durations, {
+		const MovingShipMarker = leafletMovingMarker(jumpCoordinates, durations, {
 			autostart: true,
-			icon: shipIcon
+			icon: icon
 		});
-		const startLat = FirstPath.jumpCoordinates[0][0];
-		const startLng = FirstPath.jumpCoordinates[0][1];
-		const startingJumpAngle = FirstPath.shipJumpAngles[0];
+		const startLat = jumpCoordinates[0][0];
+		const startLng = jumpCoordinates[0][1];
+		const startingJumpAngle = jumpAngles[0];
 		MovingShipMarker.setRotationAngle(startingJumpAngle);
 
-		for(let coordinateIndex=1; coordinateIndex < FirstPath.jumpCoordinates.length - 1; coordinateIndex++) {
-			const currentCoordinate = FirstPath.jumpCoordinates[coordinateIndex];
-			const CoordinateNodeFound = findNodeByLatLng(currentCoordinate[0], currentCoordinate[1], FirstPath.nodes);
-			if(CoordinateNodeFound && CoordinateNodeFound.isFound) {
-				MovingShipMarker.addStation(coordinateIndex, 250.0);
-			} else {
-				MovingShipMarker.addStation(coordinateIndex, 20.0);
-			}				
+		for(let coordinateIndex=1; coordinateIndex < jumpCoordinates.length - 1; coordinateIndex++) {
+			const currentCoordinate = jumpCoordinates[coordinateIndex];
+			MovingShipMarker.addStation(coordinateIndex, 20.0);			
 		}
 
 		const startingShipJumpAngle = parseFloat(startingJumpAngle);
+
 		this.setState({currentShipJumpAngle: startingShipJumpAngle});
-		let previousShipCoordinateLatitude = startLat;
+
+
+		let coordinateCounter = 0;
+
+
+		let coordinateCheckInterval = this.coordinateCheck(MovingShipMarker, startLat, startLng, jumpCoordinates);		
+
+
+		let startTime = Date.now();
+
+		MovingShipMarker.on('start', () => {
+			startTime = Date.now();
+
+			const startTimeLocal = moment.utc(startTime).local().format("DD/MM/YYYY HH:mm:ss");
+			const startTimeGMT = moment.utc(startTime).format("DD/MM/YYYY HH:mm:ss");
+			const jumpStartText = `The ${this.props.name} has jumped into Hyperspace at ${StartPoint.system}`;
+
+			this.setState({inHyperspace: true});
+			this.props.dispatch( addItemToDataStream(jumpStartText) );
+			this.props.dispatch( shipIsInHyperspace() );
+		});
+
+		MovingShipMarker.on('click', e => {
+			// console.log("Falcon clicked at: ", e.latlng);
+			const galacticX = getGalacticXFromLongitude(e.latlng.lng);
+			const galacticY = getGalacticYFromLatitude(e.latlng.lat);
+			const shipClickText = `The ${this.props.name} is at X: ${galacticX.toFixed(2)} and Y: ${galacticY.toFixed(2)}`;
+			this.props.dispatch( addItemToDataStream(shipClickText) );
+		});
+
+		MovingShipMarker.on('end', () => {
+  		const endTime = Date.now();
+  		clearInterval(coordinateCheckInterval);
+
+  		const CurrentLatLng = MovingShipMarker.getLatLng();
+			const currentShipLatitude = MovingShipMarker._latlng.lat;
+			const currentShipLongitude = MovingShipMarker._latlng.lng;
+			const shipDestinationCoordinates = MovingShipMarker._latlngs;
+			const targetDestinationCoordinates = shipDestinationCoordinates[ shipDestinationCoordinates.length - 1];
+			const targetShipLatitude = targetDestinationCoordinates.lat;
+			const targetShipLongitude = targetDestinationCoordinates.lng;
+			const finalLatitudesMatch = (currentShipLatitude === targetShipLatitude)? true : false;
+			const finalLongitudesMatch = (currentShipLongitude === targetShipLongitude)? true : false;
+			const finalCurrentAndTargetMatches = (finalLatitudesMatch && finalLongitudesMatch)? true : false;
+  		const NodeFound = findNodeByLatLng(currentShipLatitude, currentShipLongitude, FirstPath.nodes);
+
+  			// const NodeData = NodeFound.data;
+  			const travelTime = endTime - startTime;
+  			const travelTimeSeconds = (travelTime / 1000.0);
+  			const travelTimeMinutes = (travelTimeSeconds / 60.0);
+  			const travelTimeHours = (travelTimeSeconds / 3600.0);
+  			const travelTimeHoursInt = parseInt(travelTimeHours);
+				const hoursDisplayed = (parseInt(travelTimeHours) > 0)? parseInt(travelTimeHours) + ' hours, ' : '';
+				const minutesDisplayed = (parseInt(travelTimeMinutes) > 0)? parseInt(travelTimeMinutes) % 60 + ' mins, ' : '';
+				const distanceTraveled = jumpDistances.slice().reduce(getSum, 0);
+				const averageSpeed =  distanceTraveled / travelTimeSeconds;
+  			const endTimeLocal = moment.utc(endTime).local().format("DD/MM/YYYY HH:mm:ss");
+  			const endTimeGMT = moment.utc(endTime).format("DD/MM/YYYY HH:mm:ss");
+  			const travelTimeSecondsExcess = travelTimeSeconds % 60;
+  			const travelTimeText = `${hoursDisplayed} ${minutesDisplayed} ${travelTimeSecondsExcess.toFixed(2)} secs.`;
+	  		// console.log(`\n\nShip has arrived at ${NodeData.system}.`);
+	  		console.log(`Travel Time: ${travelTimeText}`);
+	  		console.log(`Distance Traveled:  ${distanceTraveled} parsecs.`);
+	  		console.log(`Average Speed: ${averageSpeed} parsecs per second.`);
+	  		console.log("Current Lat Lng: ", CurrentLatLng);
+	  		const shipTravelTimeText = `${travelTimeHoursInt}:${parseInt(travelTimeMinutes)}:${travelTimeSecondsExcess}`;
+	  		const shipArrivalText = `The ${this.props.name} has arrived in ${travelTimeText}`;
+
+
+
+				const MovingShipMarker = this.state.MovingShipMarker;
+				map.removeLayer(MovingShipMarker);
+	  		this.setState({MovingShipMarker: null});
+	  		const endingJumpAngle = jumpAngles[jumpAngles.length - 1];
+	  		this.setState({inHyperspace: false});
+	  		this.setState({location: [currentShipLatitude, currentShipLongitude]});
+				this.setState({currentShipJumpAngle: endingJumpAngle});
+	  		this.props.dispatch( addItemToDataStream(shipArrivalText) );
+	  		this.props.dispatch( shipHasExitedHyperspace() );
+  		
+		});
+
+		MovingShipMarker.addTo(map);
+		return MovingShipMarker;
+  }
+
+
+
+	coordinateCheck(MovingShipMarkerCurrent, startLat, startLng, jumpCoordinates) {
+
+		let previousShipCoordinateLatitude = startLat;		
 		let previousShipCoordinateLongitude = startLng;
 		let coordinateCounter = 0;
 
-		const coordinateCheck = (MovingShipMarkerCurrent) => { 
-			return setInterval(() => {
+		return setInterval(() => {
 			const CurrentLatLng = MovingShipMarkerCurrent.getLatLng();
 			const pausedStatus = (previousShipCoordinateLatitude === CurrentLatLng.lat && previousShipCoordinateLongitude === CurrentLatLng.lng)? true : false;
 
 			if(pausedStatus && !this.state.pausingHyperspaceJump) {
-				const PausedLatLng = MovingShipMarkerCurrent.getLatLng();
 
-				const CoordinateFound = findCoordinateByLatLng(CurrentLatLng.lat, CurrentLatLng.lng, FirstPath.jumpCoordinates);
-				const NodeFound = findNodeByLatLng(CurrentLatLng.lat, CurrentLatLng.lng, FirstPath.nodes);
-				if(CoordinateFound.isFound || NodeFound.isFound) {
+				const CoordinateFound = findCoordinateByLatLng(CurrentLatLng.lat, CurrentLatLng.lng, jumpCoordinates);
+				if(CoordinateFound.isFound) {
   				const coordinateLat = CoordinateFound.data.lat;
   				const coordinateLng = CoordinateFound.data.lng;
   				coordinateCounter++;
-  				if(NodeFound.isFound) {
-  					if(NodeFound.data.system.slice(0, 2) === 'PN') {
-  						const hyperspaceLaneId = parseInt(NodeFound.data.system.split('-')[5]);
-  						ApiService.findHyperspaceLaneById(hyperspaceLaneId).then(laneFound => {
-  							const shipActionText = (coordinateCounter > 2)? 'exited' : 'entered';
-  							const shipNodeText = `The ${this.state.name} has ${shipActionText} The ${laneFound}.`;
-								this.props.dispatch( addItemToDataStream(shipNodeText) );
-  						}).catch(LaneDataError => {
-  							console.log("Error getting lane data: ", LaneDataError);
-  						});
-  					} else {
-  						const shipNodeText = `The ${this.state.name} has passed ${NodeFound.data.system}.`;
-							this.props.dispatch( addItemToDataStream(shipNodeText) );
-  					}
-					}
-
+  				
 					const currentJumpCoordinatesIndex = findCoordinateIndexLatLng(CurrentLatLng.lat, CurrentLatLng.lng, FirstPath.jumpCoordinates);
 					const shipJumpAngle = FirstPath.shipJumpAngles[currentJumpCoordinatesIndex];
 
@@ -258,133 +254,9 @@ class Ship extends React.Component {
 
 			previousShipCoordinateLatitude = CurrentLatLng.lat;
 			previousShipCoordinateLongitude = CurrentLatLng.lng;
-		}, 5)};
+		},
+	5)};
 
-		let coordinateCheckInterval = coordinateCheck(MovingShipMarker);		
-		let startTime = Date.now();
-
-		MovingShipMarker.on('start', () => {
-			startTime = Date.now();
-
-			const startTimeLocal = moment.utc(startTime).local().format("DD/MM/YYYY HH:mm:ss");
-			const startTimeGMT = moment.utc(startTime).format("DD/MM/YYYY HH:mm:ss");
-			// console.log("\nShip start time Local: ", startTimeLocal);
-			// console.log("Ship start time GMT: ", startTimeGMT);
-
-			const StartLatLng = MovingShipMarker.getLatLng();
-  		previousShipCoordinateLatitude = StartLatLng.lat;
-  		previousShipCoordinateLongitude = StartLatLng.lng;
-			const jumpStartText = `The ${this.state.name} has jumped into Hyperspace at ${StartPoint.system}`;
-
-
-			// const ShipRef = this.refs.stationaryShip.leafletElement;
-			// console.log("ShipRef: ", ShipRef);
-			// map.removeLayer(ShipRef);
-			// ShipRef.options.icon = null;
-
-			// $(".shipIconStationary").remove();
-
-			// const shipIcons = document.getElementsByClassName("shipIconStationary");
-			// shipIcons[0].remove();
-
-
-			this.setState({inHyperspace: true});
-
-
-			// const ShipRef = this.refs.stationaryShip.leafletElement;
-			// console.log("ShipRef: ", ShipRef);
-			// map.removeLayer(ShipRef);
-			// ShipRef.options.icon = null;
-
-			// const StationaryShipElement = document.getElementById("stationary-ship");
-			// console.log("StationaryShipElement: ", StationaryShipElement);
-
-			// StationaryShipElement.remove();
-			
-
-
-
-
-			
-			this.props.dispatch( addItemToDataStream(jumpStartText) );
-			this.props.dispatch( shipIsInHyperspace() );
-		});
-
-		MovingShipMarker.on('click', e => {
-			// console.log("Falcon clicked at: ", e.latlng);
-			const galacticX = getGalacticXFromLongitude(e.latlng.lng);
-			const galacticY = getGalacticYFromLatitude(e.latlng.lat);
-			const shipClickText = `The ${this.state.name} is at X: ${galacticX.toFixed(2)} and Y: ${galacticY.toFixed(2)}`;
-			this.props.dispatch( addItemToDataStream(shipClickText) );
-		});
-
-		MovingShipMarker.on('end', () => {
-  		const endTime = Date.now();
-  		clearInterval(coordinateCheckInterval);
-  		const CurrentLatLng = MovingShipMarker.getLatLng();
-			const currentShipLatitude = MovingShipMarker._latlng.lat;
-			const currentShipLongitude = MovingShipMarker._latlng.lng;
-			const shipDestinationCoordinates = MovingShipMarker._latlngs;
-			const targetDestinationCoordinates = shipDestinationCoordinates[ shipDestinationCoordinates.length - 1];
-			const targetShipLatitude = targetDestinationCoordinates.lat;
-			const targetShipLongitude = targetDestinationCoordinates.lng;
-			const finalLatitudesMatch = (currentShipLatitude === targetShipLatitude)? true : false;
-			const finalLongitudesMatch = (currentShipLongitude === targetShipLongitude)? true : false;
-			const finalCurrentAndTargetMatches = (finalLatitudesMatch && finalLongitudesMatch)? true : false;
-  		const NodeFound = findNodeByLatLng(currentShipLatitude, currentShipLongitude, FirstPath.nodes);
-
-  		if(NodeFound.isFound) {
-  			const NodeData = NodeFound.data;
-  			const travelTime = endTime - startTime;
-  			const travelTimeSeconds = (travelTime / 1000.0);
-  			const travelTimeMinutes = (travelTimeSeconds / 60.0);
-  			const travelTimeHours = (travelTimeSeconds / 3600.0);
-  			const travelTimeHoursInt = parseInt(travelTimeHours);
-				const hoursDisplayed = (parseInt(travelTimeHours) > 0)? parseInt(travelTimeHours) + ' hours, ' : '';
-				const minutesDisplayed = (parseInt(travelTimeMinutes) > 0)? parseInt(travelTimeMinutes) % 60 + ' mins, ' : '';
-				const distanceTraveled = FirstPath.jumpDistances.slice().reduce(getSum, 0);
-				const averageSpeed =  distanceTraveled / travelTimeSeconds;
-  			const endTimeLocal = moment.utc(endTime).local().format("DD/MM/YYYY HH:mm:ss");
-  			const endTimeGMT = moment.utc(endTime).format("DD/MM/YYYY HH:mm:ss");
-  			const travelTimeSecondsExcess = travelTimeSeconds % 60;
-  			const travelTimeText = `${hoursDisplayed} ${minutesDisplayed} ${travelTimeSecondsExcess.toFixed(2)} secs.`;
-	  		console.log(`\n\nShip has arrived at ${NodeData.system}.`);
-	  		console.log(`Travel Time: ${travelTimeText}`);
-	  		console.log(`Distance Traveled:  ${distanceTraveled} parsecs.`);
-	  		console.log(`Average Speed: ${averageSpeed} parsecs per second.`);
-	  		console.log("Current Lat Lng: ", CurrentLatLng);
-	  		const shipTravelTimeText = `${travelTimeHoursInt}:${parseInt(travelTimeMinutes)}:${travelTimeSecondsExcess}`;
-	  		const shipArrivalText = `The ${this.state.name} has arrived at ${NodeData.system} in ${travelTimeText}`;
-
-
-
-				const MovingShipMarker = this.state.MovingShipMarker;
-				map.removeLayer(MovingShipMarker);
-	  		this.setState({MovingShipMarker: null});
-	  		const endingJumpAngle = FirstPath.shipJumpAngles[FirstPath.shipJumpAngles.length - 1];
-	  		this.setState({inHyperspace: false});
-	  		this.setState({location: [currentShipLatitude, currentShipLongitude]});
-				this.setState({currentShipJumpAngle: endingJumpAngle});
-	  		this.props.dispatch( addItemToDataStream(shipArrivalText) );
-	  		this.props.dispatch( shipHasExitedHyperspace() );
-  		}
-		});
-
-		MovingShipMarker.addTo(map);
-		MovingShipMarker.start();
-		this.setState({MovingShipMarker: MovingShipMarker});
-  }
-
-  setStationaryShipMarker(Options) {
-  	const hyperspacePathCollections = Options.hyperspacePathCollections;
-  	const StartPoint = Options.StartPoint;
-  	const StartNode = Options.StartNode;
-		const startFreeSpaceJump = !nodeAndPointAreEqual(StartPoint, StartNode);
-		const FirstPath = hyperspacePathCollections[0];
-		const shipInitialJumpAngle = (startFreeSpaceJump)? jumpAngleGalactic(StartPoint, StartNode) : FirstPath.shipJumpAngles[0];
-		this.setState({location: [StartPoint.lat, StartPoint.lng]});
-		this.setState({currentShipJumpAngle: shipInitialJumpAngle});
-  }
 
   render() {
   	const zIndex = 282;
@@ -396,14 +268,6 @@ class Ship extends React.Component {
   }
 }
 
-
-function pointAndLocationAreSame(Point, location) {
-	if(Point.lat === location[0] && Point.lng === location[1]) {
-		return true;
-	} else {
-		return false;
-	}
-};
 
 function getInternalNodes(startNodeId, endNodeId, nodes, startFreeSpaceJump, endFreeSpaceJump) {
 	const internalNodes = nodes.filter(n => {
@@ -538,7 +402,7 @@ function modifyShipPathForFreeSpaceJumps(Options) {
 		ShipPath.jumpDistances.unshift(0);
 		ShipPath.jumpDistances[1] = startFreeSpaceJumpDistance;
 		const freeSpaceJumpStartAngle = jumpAngleGalactic(StartPoint, StartNode); 
-		ShipPath.shipJumpAngles.unshift(freeSpaceJumpStartAngle);
+		ShipPath.jumpAngles.unshift(freeSpaceJumpStartAngle);
 	}
 
 	if(endFreeSpaceJump) {
@@ -546,7 +410,7 @@ function modifyShipPathForFreeSpaceJumps(Options) {
 		const endFreeSpaceJumpDistance = distanceBetweenPoints(EndPoint, EndNode);
 		ShipPath.jumpDistances.push(endFreeSpaceJumpDistance);
 		const freeSpaceJumpEndAngle = jumpAngleGalactic(EndNode, EndPoint); 
-		ShipPath.shipJumpAngles.push(freeSpaceJumpEndAngle);
+		ShipPath.jumpAngles.push(freeSpaceJumpEndAngle);
 		ShipPath.nodes.push(EndPoint);
 	}
 	console.log("Ship Path: ", ShipPath);
@@ -610,6 +474,20 @@ function getGalacticXFromLongitude(longitude) {
   return (111.3194866138503 * longitude);
 };
 
+
+
+function fleetDivIcon() {
+	const shipIconClasses = 'shipIcon';
+	return new L.divIcon({
+		iconUrl: require('../../images/icons/falcon-icons/falcon-color-small.png'),
+		iconSize: [40, 40],
+		iconAnchor: [20, 20],
+		className: shipIconClasses
+	});
+};
+
+
+
 function renderComponentsOrNull(currentComponents) {
   if(currentComponents && currentComponents.length > 1) {
     return currentComponents;
@@ -624,4 +502,4 @@ const mapStateToProps = (state = {}) => {
   return Object.assign({}, state);
 };
 
-export default connect(mapStateToProps)(Ship);
+export default connect(mapStateToProps)(Fleet);

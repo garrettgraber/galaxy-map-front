@@ -32,10 +32,10 @@ import {
 import Place from '../../../classes/place.js';
 
 class NavigationSystemSearch extends Component {
-  constructor() {
-    super();
-    this.state = { 
-      system: '',
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectValue: undefined,
       componentId: uuidv4(),
       searchBarWidth: 200
     };
@@ -45,11 +45,10 @@ class NavigationSystemSearch extends Component {
     const startSystem = this.props.hyperspaceStartPoint.system;
     const endSystem = this.props.hyperspaceEndPoint.system;
     const isStartPosition = this.props.isStartPosition;
-    this.setSystemValue(isStartPosition, startSystem, endSystem);
+    const systemValue = setSystemValue(isStartPosition, startSystem, endSystem);
     if(this.props.clickSystem) {
       this.props.dispatch(notAllowedCursor());
     }
-
     if(window.innerWidth < 400) {
       const windowDifference = 400 - window.innerWidth;
       const newSearchBarWidth = 200 - windowDifference - 8;
@@ -57,36 +56,36 @@ class NavigationSystemSearch extends Component {
     }
   }
 
-  componentWillReceiveProps(newProps) {
+  static getDerivedStateFromProps(newProps, state) {
     const startSystem = newProps.hyperspaceStartPoint.system;
     const endSystem = newProps.hyperspaceEndPoint.system;
     const isStartPosition = newProps.isStartPosition;
-    this.setSystemValue(isStartPosition, startSystem, endSystem);
+    const systemName = setSystemValue(isStartPosition, startSystem, endSystem);
     if(newProps.clickSystem) {
-      this.props.dispatch(notAllowedCursor());
+      newProps.dispatch(notAllowedCursor());
     }
-
+    let newSearchBarWidth = state.searchBarWidth;
     if(window.innerWidth < 400) {
       const windowDifference = 400 - window.innerWidth;
-      const newSearchBarWidth = 200 - windowDifference - 8;
-      this.setState({searchBarWidth: newSearchBarWidth});
+      newSearchBarWidth = 200 - windowDifference - 8;
     }
-  }
-
-  setSystemValue(isStartPosition, startSystem, endSystem) {
-    const isStartEmptySpace = startSystem.slice(0, 3) === 'ES@';
-    const isEndEmptySpace = endSystem.slice(0, 3) === 'ES@';
-    if(!isStartEmptySpace && isStartPosition) {
-      this.setState({system: startSystem});
-    }
-    if(!isEndEmptySpace && !isStartPosition) {
-      this.setState({system: endSystem});
+    return {
+      selectValue: {
+        value: systemName,
+        label: systemName
+      },
+      searchBarWidth: newSearchBarWidth
     }
   }
 
   systemChange(systemValue) {
     if(systemValue === null) {
-      this.setState({system: ""});
+      this.setState({
+        selectValue: {
+          value: "",
+          label: ""
+        }
+      });
       if(this.props.isStartPosition) {
         this.props.dispatch(setDefaultStartPosition());
         this.props.dispatch(setDefaultStartNode());
@@ -96,20 +95,18 @@ class NavigationSystemSearch extends Component {
       }
       this.props.dispatch(hyperspaceNavigationUpdateOn());
     } else {
-      const Search = {system: systemValue.value, isStartPosition: this.props.isStartPosition};
-      this.setState({system: Search.system});
+      this.setState({
+        selectValue: {
+          value: systemValue.value,
+          label: systemValue.label
+        }
+      });
       const SearchPlace = new Place({
         system: systemValue.value,
         emptySpace: false,
         isStartPosition: this.props.isStartPosition
       });
-
-      console.log("this.props: ", this.props);
-
       this.props.dispatch(setHyperspaceNavigationPoints(SearchPlace));
-
-      // this.props.setHyperspaceNavigationPoints(SearchPlace);
-
     }
   }
 
@@ -159,17 +156,6 @@ class NavigationSystemSearch extends Component {
     const filterOptions = createFilterOptions({ options: filteredSelectedOptions });
     let searchBarWidth = 200;
 
-    // if(window.innerWidth < 400) {
-
-    //   const windowDifference = 400 - window.innerWidth;
-
-    //   const newSearchBarWidth = 200 - windowDifference - 8;
-
-    //   searchBarWidth = newSearchBarWidth
-
-    //   // this.setState({searchBarWidth: newSearchBarWidth});
-    // }
-
     return (
       <div className="pane-column">
         <div style={{display: 'inline-block', width: this.state.searchBarWidth, marginRight: 3, marginLeft: 3}}>
@@ -179,10 +165,12 @@ class NavigationSystemSearch extends Component {
             options={filteredSelectedOptions}
             style={{height: 32}}
             onChange={(selectValue) => this.systemChange(selectValue)}
-            value={this.state.system}
+            value={this.state.selectValue}
+            isClearable={true}
             autoBlur={true}
             onFocus={(e) => this.selectFocus(e)}
             onBlur={(e) => this.selectBlur(e)}
+            components={{IndicatorSeparator: () => null}}
           />
         </div>
         <button
@@ -199,6 +187,19 @@ class NavigationSystemSearch extends Component {
         <ReactTooltip id={'star-system-hyperspace-click' + this.state.componentId} place="top" disable={this.props.mobileStatus}>{}</ReactTooltip>
       </div>
     );
+  }
+}
+
+
+
+function setSystemValue(isStartPosition, startSystem, endSystem) {
+  const isStartEmptySpace = startSystem.slice(0, 3) === 'ES@';
+  const isEndEmptySpace = endSystem.slice(0, 3) === 'ES@';
+  if(!isStartEmptySpace && isStartPosition) {
+    return startSystem;
+  }
+  if(!isEndEmptySpace && !isStartPosition) {
+    return endSystem;
   }
 }
 

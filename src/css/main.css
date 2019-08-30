@@ -97,6 +97,9 @@
     padding-bottom: 4px;
 }
 
+.pane-ship-row-control {
+    height: 50px;
+}
 
 .hyperspace-controls-pane-row {
     height: 45px;

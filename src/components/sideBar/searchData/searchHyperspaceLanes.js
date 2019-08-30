@@ -101,9 +101,11 @@ class SearchHyperspaceLanes extends React.Component {
             onChange={(laneValue) => this.onChange(laneValue)}
             value={this.state.laneValue}
             placeholder="Go To Hyperspace Route..."
+            isClearable={true}
             autoBlur={true}
             onFocus={(e) => this.selectFocus(e)}
             onBlur={(e) => this.selectBlur(e)}
+            components={{IndicatorSeparator: () => null}}
           />
         </div>
         <span>
