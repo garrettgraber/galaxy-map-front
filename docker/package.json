@@ -64,7 +64,7 @@
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "moment-timezone": "^0.5.13",
-    "mongoose": "^4.11.12",
+    "mongoose": "^5.7.7",
     "object.omit": "^3.0.0",
     "query-string": "^5.0.0",
     "react": "^15.6.1",
