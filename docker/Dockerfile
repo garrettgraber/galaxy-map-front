@@ -1,4 +1,6 @@
-FROM node:12-slim
+#FROM node:12-slim
+#FROM node:16-buster-slim
+FROM node:14-slim
 
 # Update packages
 RUN apt-get update -y --fix-missing;
@@ -9,7 +11,7 @@ RUN apt-get install -y \
 	build-essential \
 	git \
 	redis-server \
-	tcl8.5 \
+	tcl \
 	telnet \
 	wget
 
@@ -17,7 +19,7 @@ RUN apt-get install -y \
 RUN apt-get clean;
 
 # install dumb init for signal passing
-RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.0.3/dumb-init_1.0.3_amd64
+RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_amd64.deb
 RUN chmod +x /usr/local/bin/dumb-init
 
 # install nodemon globally
@@ -37,7 +39,8 @@ RUN npm install -g typescript
 ADD ./package.json /root/package.json
 
 # install npm modules
-RUN cd /root; npm config set registry http://registry.npmjs.org/; npm install --save
+RUN cd /root; npm config set registry http://registry.npmjs.org/; npm install --save react-select --legacy-peer-deps; npm install --save;
+
 
 # expose the port
 EXPOSE 8108
