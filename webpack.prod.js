@@ -22,7 +22,7 @@ module.exports = merge(common, {
         // warnings: false,
         parse: {},
         compress: {
-          warnings: false, // Suppress uglification warnings
+          // warnings: false, // Suppress uglification warnings
           pure_getters: true,
           conditionals: true,
           unused: true,
