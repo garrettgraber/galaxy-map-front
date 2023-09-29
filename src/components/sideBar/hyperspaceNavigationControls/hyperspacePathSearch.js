@@ -78,7 +78,7 @@ class HyperspacePathSearch extends React.Component {
     const multipleJumpHeight = 520 - mobileModifiler;
     const singleJumpHeight = 423 - mobileModifiler;
     const mobileHeight = 193;
-    const desktopHeight = 298;
+    const desktopHeight = 248;
     const jumpNavigationHeight = (this.props.mobileStatus)? mobileHeight : desktopHeight;
     const navigationPaneStyle = (jumpSuccessfullyCalculated)? {height: singleJumpHeight, overFlow: 'visible'} : {height: jumpNavigationHeight, overFlow: 'visible'};
     const StartPoint = this.props.hyperspaceStartPoint;
