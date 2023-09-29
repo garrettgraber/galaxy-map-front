@@ -19,7 +19,7 @@ module.exports = merge(common, {
       parallel: true,
       exclude: [/\/images/, /[\/.](json)$/i],
       uglifyOptions: {
-        warnings: false,
+        // warnings: false,
         parse: {},
         compress: {
           warnings: false, // Suppress uglification warnings
