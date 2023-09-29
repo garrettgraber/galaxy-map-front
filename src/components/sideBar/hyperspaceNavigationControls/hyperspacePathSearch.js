@@ -76,7 +76,7 @@ class HyperspacePathSearch extends React.Component {
     const endDefault = 'Alderaan';
     const mobileModifiler = (this.props.mobileStatus)? 95 : 0;
     const multipleJumpHeight = 520 - mobileModifiler;
-    const singleJumpHeight = 463 - mobileModifiler;
+    const singleJumpHeight = 423 - mobileModifiler;
     const mobileHeight = 193;
     const desktopHeight = 298;
     const jumpNavigationHeight = (this.props.mobileStatus)? mobileHeight : desktopHeight;
