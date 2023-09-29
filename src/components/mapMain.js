@@ -359,7 +359,8 @@ class MapMain extends React.Component {
               <SystemsSearchResults/>
             </Overlay>
             <Overlay name="Star Ship Layer" checked={true} ref='starShipLayer'>
-              <GalacticStarShips map={this.state.map}/>
+              {/*<GalacticStarShips map={this.state.map}/>*/}
+              <StarShips map={this.state.map}/>
             </Overlay>
 				  </LayersControl>
     		</Map>

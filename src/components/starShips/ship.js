@@ -55,7 +55,8 @@ class Ship extends React.Component {
     this.state = {
       location: [0, 0],
       currentShipJumpAngle: 0.0,
-      speed: 20.00,
+      speed: 50.00,
+      // speed: 20.00,
       name: 'Millennium Falcon',
       MovingShipMarker: null,
       pausingHyperspaceJump: false,

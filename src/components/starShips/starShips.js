@@ -29,15 +29,17 @@ class StarShips extends React.Component {
   }
 
   componentDidMount() {
-    const coruscantLocation = [0, 0];
-    const StartPoint = this.props.hyperspaceActiveStartPoint;
-    const startLocation = (StartPoint.lat && StartPoint.lng)? [StartPoint.lat, StartPoint.lng] : coruscantLocation;
-    this.state.StarShipComponents.push(<Ship
-      key={uuidv4()}
-      location={startLocation}
-      map={this.props.map}
-    />);
-    this.setState({startShipsShouldRender: true});
+    if(this.state.StarShipComponents.length < 1) {
+      const coruscantLocation = [0, 0];
+      const StartPoint = this.props.hyperspaceActiveStartPoint;
+      const startLocation = (StartPoint.lat && StartPoint.lng)? [StartPoint.lat, StartPoint.lng] : coruscantLocation;
+      this.state.StarShipComponents.push(<Ship
+        key={uuidv4()}
+        location={startLocation}
+        map={this.props.map}
+      />);
+      this.setState({startShipsShouldRender: true});
+    }
   }
 
   componentWillReceiveProps(newProps) {
@@ -46,7 +48,7 @@ class StarShips extends React.Component {
     const oldAndNewStartPointsAreTheSame = nodeAndPointAreEqual(StartPoint, OldStartPoint);
     const newStartPointIsBlank = isPointBlank(StartPoint);
 
-    if(!oldAndNewStartPointsAreTheSame && !newStartPointIsBlank) {
+    if(!oldAndNewStartPointsAreTheSame && !newStartPointIsBlank && this.state.StarShipComponents.length < 1) {
       const startLocation = [StartPoint.lat, StartPoint.lng];
       this.state.StarShipComponents.push(<Ship
         key={uuidv4()}
@@ -70,17 +72,16 @@ class StarShips extends React.Component {
       ActiveEndPoint: this.props.hyperspaceActiveEndPoint,
       ActiveEndNode: this.props.hyperspaceActiveEndNode
     });
-    const StarShipsToRender = (jumpSuccessfullyCalculated)? renderComponentsOrNull(this.state.StarShipComponents) : null;
 
+    const StarShipsToRender = (jumpSuccessfullyCalculated)? renderComponentsOrNull(this.state.StarShipComponents) : null;
   	return (
   		<Pane name="star-ships-pane" style={{zIndex: zIndex}}>
-  			<FeatureGroup  >  
+  			<FeatureGroup  >
           { StarShipsToRender }
   			</FeatureGroup>
   		</Pane>
   	)
   }
-
 }
 
 
