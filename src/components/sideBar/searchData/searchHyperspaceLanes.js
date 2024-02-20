@@ -107,7 +107,7 @@ class SearchHyperspaceLanes extends React.Component {
           />
         </div>
         <span>
-          <button type="button" className={pointZoom} style={Styles.SearchButton} onClick={(e) => this.zoomToPoint(e)}   data-tip={tooltipZoomText}  data-for={'go-to-sector-from-search' + this.state.componentId} ref="zoomToButton">
+          <button type="button" className={pointZoom} style={Styles.SearchButton} onClick={(e) => this.zoomToPoint(e)}   data-tip={tooltipZoomText}  data-for={'go-to-lane-from-search' + this.state.componentId} ref="zoomToButton">
             <If condition={ this.props.mobileStatus && selectedLane !== null}>
               <Then>
                 <span>
