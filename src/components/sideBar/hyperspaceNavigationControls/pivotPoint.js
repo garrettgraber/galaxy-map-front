@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { If, Then, Else } from 'react-if';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 import uuidv4 from 'uuid/v4';
 
 import HyperspacePoint from './hyperspacePoint.js';

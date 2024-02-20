@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 import uuidv4 from 'uuid/v4';
 
 import JumpPlot from './jumpPlot.js';

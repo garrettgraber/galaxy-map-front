@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import createFilterOptions from 'react-select-fast-filter-options';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 import uuidv4 from 'uuid/v4';
 import { If, Then, Else } from 'react-if';
 import { getSearchStyles } from './searchStyles.js';

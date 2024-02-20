@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 import uuidv4 from 'uuid/v4';
 import Select from 'react-select';
 import createFilterOptions from 'react-select-fast-filter-options';
