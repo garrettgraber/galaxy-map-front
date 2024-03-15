@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./build.sh
+# ./build.sh
 
 echo "Compiling..."
 ./compile-production.sh
